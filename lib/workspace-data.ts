@@ -12,6 +12,7 @@ export async function getWorkspaceDashboardData(churchId: string) {
         newThisMonth,
         pendingApplications,
         followUpMembers,
+        unassignedMembers,
         recentMembers,
         recentApplications,
         recentNotices,
@@ -21,6 +22,7 @@ export async function getWorkspaceDashboardData(churchId: string) {
         prisma.member.count({ where: { churchId, isDeleted: false, registeredAt: { gte: monthStart } } }),
         prisma.application.count({ where: { churchId, status: "PENDING" } }),
         prisma.member.count({ where: { churchId, isDeleted: false, requiresFollowUp: true } }),
+        prisma.member.count({ where: { churchId, isDeleted: false, OR: [{ districtId: null }, { groupId: null }] } }),
         prisma.member.findMany({
           where: { churchId, isDeleted: false },
           orderBy: { createdAt: "desc" },
@@ -52,6 +54,7 @@ export async function getWorkspaceDashboardData(churchId: string) {
         newThisMonth,
         pendingApplications,
         followUpMembers,
+        unassignedMembers,
         recentMembers,
         recentApplications,
         recentNotices,
