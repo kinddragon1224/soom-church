@@ -3,7 +3,29 @@
 @tailwind utilities;
 
 :root {
+  --background: 220 33% 97%;
+  --foreground: 222 29% 16%;
+  --card: 0 0% 100%;
+  --border: 214 33% 87%;
+  --primary: 217 48% 40%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 220 40% 95%;
+  --muted-foreground: 220 10% 45%;
   color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 222 28% 8%;
+    --foreground: 210 20% 94%;
+    --card: 222 24% 12%;
+    --border: 217 22% 24%;
+    --primary: 257 88% 67%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 220 18% 16%;
+    --muted-foreground: 220 10% 70%;
+    color-scheme: dark;
+  }
 }
 
 body {
@@ -13,9 +35,12 @@ body {
 table {
   @apply w-full border-collapse;
 }
-th, td {
+
+th,
+td {
   @apply border-b border-border px-3 py-2 text-left text-sm;
 }
+
 th {
   @apply bg-muted text-xs uppercase tracking-wide text-muted-foreground;
 }

@@ -10,18 +10,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#f7f8fb",
-        foreground: "#1f2937",
-        card: "#ffffff",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        card: "hsl(var(--card))",
+        border: "hsl(var(--border))",
         primary: {
-          DEFAULT: "#355c9a",
-          foreground: "#ffffff"
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         muted: {
-          DEFAULT: "#eff3f9",
-          foreground: "#6b7280"
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
-        border: "#d9e2ee"
+      },
+      boxShadow: {
+        panel: "0 1px 2px rgba(15, 23, 42, 0.06)",
       },
     },
   },
