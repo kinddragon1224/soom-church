@@ -14,11 +14,11 @@ const menus = [
   { href: "/activity-logs", label: "활동 로그", icon: History },
 ];
 
-export function Sidebar({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className={cn("shrink-0 border-r border-border bg-white", mobile ? "h-full w-72 p-4" : "hidden w-64 p-4 lg:block")}>
+    <>
       <div className="mb-5">
         <p className="text-xs text-muted-foreground">SOOM CHURCH HUB</p>
         <h1 className="text-lg font-bold text-primary sm:text-xl">숨 관리자</h1>
@@ -43,6 +43,22 @@ export function Sidebar({ mobile = false, onNavigate }: { mobile?: boolean; onNa
           );
         })}
       </nav>
+    </>
+  );
+}
+
+export function DesktopSidebar() {
+  return (
+    <aside className="hidden w-64 shrink-0 border-r border-border bg-white p-4 lg:block">
+      <SidebarContent />
+    </aside>
+  );
+}
+
+export function MobileSidebar({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <aside className="h-full w-full border-r border-border bg-white p-4">
+      <SidebarContent onNavigate={onNavigate} />
     </aside>
   );
 }

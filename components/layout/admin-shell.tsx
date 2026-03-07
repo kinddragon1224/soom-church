@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/header";
-import { Sidebar } from "@/components/layout/sidebar";
+import { DesktopSidebar, MobileSidebar } from "@/components/layout/sidebar";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,11 +10,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
@@ -29,12 +25,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
+    <div className="flex min-h-screen w-full min-w-0">
+      <DesktopSidebar />
 
       <div
         className={cn(
-          "fixed inset-0 z-40 lg:hidden",
+          "fixed inset-0 z-50 lg:hidden",
           mobileOpen ? "pointer-events-auto" : "pointer-events-none",
         )}
         role="dialog"
@@ -43,7 +39,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       >
         <button
           className={cn(
-            "absolute inset-0 bg-black/30 transition-opacity duration-200",
+            "absolute inset-0 bg-black/35 transition-opacity duration-200",
             mobileOpen ? "opacity-100" : "opacity-0",
           )}
           aria-label="메뉴 닫기"
@@ -52,7 +48,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
         <div
           className={cn(
-            "absolute left-0 top-0 h-full w-72 transform bg-white transition-transform duration-250 ease-out",
+            "absolute left-0 top-0 h-full w-[82vw] max-w-[320px] transform transition-transform duration-250 ease-out",
             mobileOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
@@ -66,13 +62,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               <X size={16} />
             </button>
           </div>
-          <Sidebar mobile onNavigate={() => setMobileOpen(false)} />
+          <MobileSidebar onNavigate={() => setMobileOpen(false)} />
         </div>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex w-full min-w-0 flex-1 flex-col">
         <Header onOpenMenu={() => setMobileOpen(true)} />
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <main className="flex-1 w-full min-w-0 p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );
