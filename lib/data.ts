@@ -105,12 +105,19 @@ export async function getDashboardData() {
     }),
   );
 
+  const urgentChecklist = [
+    { label: "후속관리 확인", value: followUpMembers, href: "/members?followup=1" },
+    { label: "미처리 신청 확인", value: pendingApplications, href: "/applications" },
+    { label: "미배정 교인 점검", value: unassignedMembers, href: "/districts" },
+  ];
+
   return {
     totalMembers,
     newThisMonth,
     pendingApplications,
     followUpMembers,
     unassignedMembers,
+    urgentChecklist,
     districtCounts: districtFollowups,
     recentMembers: recentMembers.map((m) => ({
       ...m,

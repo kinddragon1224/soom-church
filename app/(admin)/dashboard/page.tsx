@@ -32,6 +32,18 @@ export default async function DashboardPage() {
               미배정 교인 {data.unassignedMembers}명, 미처리 신청 {data.pendingApplications}건, 후속관리 {data.followUpMembers}명, 최근 공지 {data.recentNotices.length}건
             </p>
             <p className="mt-1 text-[11px] text-slate-400 sm:text-xs">교회 운영에서 지금 바로 확인해야 할 항목을 한눈에 정리합니다.</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {data.urgentChecklist.map((task) => (
+                <Link
+                  key={task.label}
+                  href={task.href}
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-800/80 px-2 py-1 text-[11px] text-slate-200 transition hover:bg-slate-700"
+                >
+                  <span>{task.label}</span>
+                  <span className="font-semibold text-white">{task.value}</span>
+                </Link>
+              ))}
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs sm:w-[300px]">
             <HeroMini label="미배정" value={`${data.unassignedMembers}명`} />
@@ -292,6 +304,12 @@ function QuickAction({ href, title, desc }: { href: string; title: string; desc:
 
 function ModuleCard({ title, desc, href, state }: { title: string; desc: string; href: string; state: string }) {
   const disabled = href === "#";
+  const stateClass = state === "활성"
+    ? "bg-emerald-100 text-emerald-700"
+    : state === "곧 연결"
+      ? "bg-blue-100 text-blue-700"
+      : "bg-muted text-muted-foreground";
+
   return (
     <Link
       href={href}
@@ -300,7 +318,7 @@ function ModuleCard({ title, desc, href, state }: { title: string; desc: string;
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-semibold">{title}</p>
-        <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">{state}</span>
+        <span className={`rounded-full px-2 py-0.5 text-[11px] ${stateClass}`}>{state}</span>
       </div>
       <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
     </Link>
