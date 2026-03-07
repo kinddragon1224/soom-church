@@ -1,4 +1,5 @@
 import { setLoginCookie } from "@/lib/auth";
+import { getFirstChurchByUserId } from "@/lib/church-context";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
@@ -13,6 +14,12 @@ export async function POST(request: Request) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  setLoginCookie();
-  return NextResponse.redirect(new URL("/dashboard", request.url));
+  setLoginCookie(user.id);
+
+  const church = await getFirstChurchByUserId(user.id);
+  if (church) {
+    return NextResponse.redirect(new URL(`/app/${church.slug}/dashboard`, request.url));
+  }
+
+  return NextResponse.redirect(new URL("/app", request.url));
 }

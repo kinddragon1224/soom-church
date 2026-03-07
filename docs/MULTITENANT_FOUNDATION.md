@@ -97,9 +97,15 @@
 
 ---
 
-## 8) 다음 단계 제안
-1. 로그인 후 current membership 선택/고정(세션에 churchId)
-2. 대시보드/목록 쿼리를 churchId 스코프 기반으로 전면 전환
-3. membership role 기반 권한 미들웨어 도입
-4. 초대 토큰(Invitation) 모델 추가
-5. billing webhook 연동 대비 Subscription 상태 전이 규칙 정의
+## 8) 2차 적용 상태 (이번 작업)
+1. 로그인 성공 시 사용자 첫 멤버십 교회로 `/app/[churchSlug]/dashboard` 리다이렉트
+2. `/app` 엔트리 라우트 추가(현재 사용자 기준 churchSlug 자동 진입)
+3. `lib/workspace-data.ts` 추가: dashboard/members/applications/notices 쿼리를 churchId로 스코프
+4. `/app/[churchSlug]/*` 페이지들이 실제 churchId 스코프 데이터를 조회하도록 반영
+
+## 9) 다음 단계 제안
+1. current church 선택 UI(다중 멤버십 전환)
+2. role 기반 권한 미들웨어(OWNER/ADMIN/PASTOR/LEADER/VIEWER)
+3. 초대 토큰(Invitation) 모델 + 가입 승인 플로우
+4. 결제 연동 전 Subscription 상태 전이 규칙 명문화
+5. 기존 `/dashboard` 레거시 라우트를 `/app/[churchSlug]/*`로 통합

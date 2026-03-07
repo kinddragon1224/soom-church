@@ -4,7 +4,7 @@ import { isLoggedIn } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default function LoginPage() {
-  if (isLoggedIn()) redirect("/dashboard");
+  if (isLoggedIn()) redirect("/app");
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">

@@ -10,3 +10,13 @@ export async function getChurchBySlug(churchSlug: string) {
   if (!church || !church.isActive) notFound();
   return church;
 }
+
+export async function getFirstChurchByUserId(userId: string) {
+  const membership = await prisma.churchMembership.findFirst({
+    where: { userId, isActive: true, church: { isActive: true } },
+    include: { church: { select: { id: true, slug: true, name: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+
+  return membership?.church ?? null;
+}
