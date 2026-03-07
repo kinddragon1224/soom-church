@@ -1,9 +1,12 @@
-import { getChurchBySlug } from "@/lib/church-context";
+import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceApplications } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
 
 export default async function ChurchApplicationsPage({ params }: { params: { churchSlug: string } }) {
-  const church = await getChurchBySlug(params.churchSlug);
+  const { membership } = await requireWorkspaceMembership(params.churchSlug);
+  if (!membership) return null;
+
+  const church = membership.church;
   const applications = await getWorkspaceApplications(church.id);
 
   return (

@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentUserId, requireAuth } from "@/lib/auth";
 
 export async function getChurchBySlug(churchSlug: string) {
   const church = await prisma.church.findUnique({
@@ -7,7 +8,7 @@ export async function getChurchBySlug(churchSlug: string) {
     select: { id: true, slug: true, name: true, timezone: true, isActive: true },
   });
 
-  if (!church || !church.isActive) notFound();
+  if (!church || !church.isActive) return null;
   return church;
 }
 
@@ -19,4 +20,37 @@ export async function getFirstChurchByUserId(userId: string) {
   });
 
   return membership?.church ?? null;
+}
+
+export function getCurrentUserOrRedirect() {
+  requireAuth();
+  const userId = getCurrentUserId();
+  if (!userId) redirect("/login");
+  return userId;
+}
+
+export async function getAccessibleChurchBySlug(userId: string, churchSlug: string) {
+  const membership = await prisma.churchMembership.findFirst({
+    where: {
+      userId,
+      isActive: true,
+      church: {
+        slug: churchSlug,
+        isActive: true,
+      },
+    },
+    select: {
+      role: true,
+      church: { select: { id: true, slug: true, name: true, timezone: true, isActive: true } },
+    },
+  });
+
+  if (!membership) return null;
+  return membership;
+}
+
+export async function requireWorkspaceMembership(churchSlug: string) {
+  const userId = getCurrentUserOrRedirect();
+  const membership = await getAccessibleChurchBySlug(userId, churchSlug);
+  return { userId, membership };
 }

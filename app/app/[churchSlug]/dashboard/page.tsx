@@ -1,10 +1,14 @@
-import { getChurchBySlug } from "@/lib/church-context";
+import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
 import { StatusBadge } from "@/components/ui/badge";
 
 export default async function ChurchDashboardPage({ params }: { params: { churchSlug: string } }) {
-  const church = await getChurchBySlug(params.churchSlug);
+  const { membership } = await requireWorkspaceMembership(params.churchSlug);
+
+  if (!membership) return null;
+  const church = membership.church;
+
   const data = await getWorkspaceDashboardData(church.id);
 
   const kpis = [
@@ -18,7 +22,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
     <div className="space-y-4">
       <section className="rounded-xl border border-border bg-card p-4">
         <h2 className="text-lg font-semibold">{church.name} 운영 현황</h2>
-        <p className="mt-1 text-xs text-muted-foreground">데이터는 churchId={church.id} 스코프로 조회됩니다.</p>
+        <p className="mt-1 text-xs text-muted-foreground">데이터는 churchId 스코프로 조회됩니다.</p>
       </section>
 
       <section className="grid grid-cols-2 gap-2 sm:grid-cols-4">

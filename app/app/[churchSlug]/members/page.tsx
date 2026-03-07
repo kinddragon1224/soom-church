@@ -1,9 +1,12 @@
 import { StatusBadge } from "@/components/ui/badge";
-import { getChurchBySlug } from "@/lib/church-context";
+import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceMembers } from "@/lib/workspace-data";
 
 export default async function ChurchMembersPage({ params }: { params: { churchSlug: string } }) {
-  const church = await getChurchBySlug(params.churchSlug);
+  const { membership } = await requireWorkspaceMembership(params.churchSlug);
+  if (!membership) return null;
+
+  const church = membership.church;
   const members = await getWorkspaceMembers(church.id);
 
   return (
