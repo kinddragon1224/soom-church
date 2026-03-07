@@ -15,7 +15,7 @@ export function Header({ onOpenMenu }: { onOpenMenu: () => void }) {
         </button>
         <div>
           <p className="text-xs text-muted-foreground sm:text-sm">교회 운영 허브</p>
-          <h2 className="text-base font-semibold sm:text-lg">오늘의 행정 상태</h2>
+          <h2 className="text-base font-semibold sm:text-lg">오늘의 운영 현황</h2>
         </div>
       </div>
       <form action="/api/logout" method="post">

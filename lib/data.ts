@@ -12,6 +12,20 @@ function inferNextAction(statusTag: string, requiresFollowUp: boolean) {
   return "상태 확인";
 }
 
+function inferFollowUpReason(member: {
+  statusTag: string;
+  groupId: string | null;
+  notes: string | null;
+  registeredAt: Date;
+}) {
+  if (!member.groupId) return "목장 미배정";
+  if (member.statusTag === "심방필요") return "심방 필요 상태";
+  if (member.notes?.includes("심방")) return "심방 필요 메모 있음";
+  const daysFromRegistered = Math.floor((Date.now() - new Date(member.registeredAt).getTime()) / (1000 * 60 * 60 * 24));
+  if (daysFromRegistered >= 7) return "등록 후 7일 경과";
+  return "신청 후 미응답";
+}
+
 export async function getDashboardData() {
   const monthStart = startOfMonth(new Date());
 
@@ -69,7 +83,16 @@ export async function getDashboardData() {
       where: { isDeleted: false, requiresFollowUp: true },
       orderBy: { updatedAt: "desc" },
       take: 5,
-      select: { id: true, name: true, statusTag: true, district: { select: { name: true } }, updatedAt: true },
+      select: {
+        id: true,
+        name: true,
+        statusTag: true,
+        district: { select: { name: true } },
+        groupId: true,
+        notes: true,
+        registeredAt: true,
+        updatedAt: true,
+      },
     }),
   ]);
 
@@ -101,6 +124,9 @@ export async function getDashboardData() {
       publishStatus: "게시중",
     })),
     recentActivityLogs,
-    followUpPanel,
+    followUpPanel: followUpPanel.map((m) => ({
+      ...m,
+      reason: inferFollowUpReason(m),
+    })),
   };
 }
