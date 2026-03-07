@@ -3,7 +3,7 @@ import { Menu } from "lucide-react";
 
 export function Header({ onOpenMenu }: { onOpenMenu: () => void }) {
   return (
-    <header className="flex w-full min-w-0 items-center justify-between gap-2 border-b border-border bg-white px-4 py-3 sm:px-6 sm:py-4">
+    <header className="flex w-full min-w-0 items-center justify-between gap-2 border-b border-border bg-white/95 px-4 py-3 shadow-[0_1px_0_rgba(15,23,42,0.05)] backdrop-blur sm:px-6 sm:py-4">
       <div className="flex min-w-0 items-center gap-2">
         <button
           type="button"
