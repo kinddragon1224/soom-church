@@ -17,8 +17,8 @@ export default async function NoticesPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <section className="rounded-xl border border-border bg-white p-4">
+    <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
+      <section className="rounded-xl border border-border bg-white p-3 sm:p-4">
         <h1 className="text-lg font-semibold">공지 작성</h1>
         <form action={createNotice} className="mt-3 space-y-2">
           <input name="title" placeholder="제목" className="w-full rounded border border-border px-3 py-2 text-sm" />
@@ -27,7 +27,7 @@ export default async function NoticesPage() {
           <button className="rounded bg-primary px-3 py-2 text-sm text-white">저장</button>
         </form>
       </section>
-      <section className="rounded-xl border border-border bg-white p-4">
+      <section className="rounded-xl border border-border bg-white p-3 sm:p-4">
         <h2 className="text-lg font-semibold">최근 공지</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {notices.map((n) => (

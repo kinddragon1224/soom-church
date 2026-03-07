@@ -25,8 +25,8 @@ export default async function DistrictsPage() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <section className="rounded-xl border border-border bg-white p-4">
+    <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-2">
+      <section className="rounded-xl border border-border bg-white p-3 sm:p-4">
         <h1 className="text-lg font-semibold">교구 관리</h1>
         <form action={createDistrict} className="mt-3 flex gap-2">
           <input name="name" placeholder="교구명" className="w-full rounded border border-border px-3 py-2 text-sm" />
@@ -44,7 +44,7 @@ export default async function DistrictsPage() {
         </ul>
       </section>
 
-      <section className="rounded-xl border border-border bg-white p-4">
+      <section className="rounded-xl border border-border bg-white p-3 sm:p-4">
         <h2 className="text-lg font-semibold">목장 추가</h2>
         <form action={createGroup} className="mt-3 space-y-2">
           <select name="districtId" className="w-full rounded border border-border px-3 py-2 text-sm">

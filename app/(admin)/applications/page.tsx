@@ -14,10 +14,10 @@ export default async function ApplicationsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">신청 관리</h1>
-      <div className="rounded-xl border border-border bg-white">
-        <table>
+    <div className="space-y-3 sm:space-y-4">
+      <h1 className="text-lg font-semibold sm:text-xl">신청 관리</h1>
+      <div className="overflow-x-auto rounded-xl border border-border bg-white">
+        <table className="min-w-[700px]">
           <thead><tr><th>신청자</th><th>폼</th><th>상태</th><th>처리</th></tr></thead>
           <tbody>
             {applications.map((app) => (

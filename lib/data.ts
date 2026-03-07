@@ -1,6 +1,17 @@
 import { startOfMonth } from "./date";
 import { prisma } from "./prisma";
 
+function inferNextAction(statusTag: string, requiresFollowUp: boolean) {
+  if (requiresFollowUp) return "48시간 내 연락";
+  if (statusTag === "등록대기") return "등록 검토";
+  if (statusTag === "새가족") return "첫 만남 안내";
+  if (statusTag === "정착중") return "목장 연결 점검";
+  if (statusTag === "목장배정완료") return "리더 인사 연결";
+  if (statusTag === "봉사연결") return "봉사 온보딩";
+  if (statusTag === "심방필요") return "심방 일정 수립";
+  return "상태 확인";
+}
+
 export async function getDashboardData() {
   const monthStart = startOfMonth(new Date());
 
@@ -9,15 +20,19 @@ export async function getDashboardData() {
     newThisMonth,
     pendingApplications,
     followUpMembers,
+    unassignedMembers,
     districtCounts,
     recentMembers,
     recentApplications,
     recentNotices,
+    recentActivityLogs,
+    followUpPanel,
   ] = await Promise.all([
     prisma.member.count({ where: { isDeleted: false } }),
     prisma.member.count({ where: { isDeleted: false, registeredAt: { gte: monthStart } } }),
     prisma.application.count({ where: { status: "PENDING" } }),
     prisma.member.count({ where: { isDeleted: false, requiresFollowUp: true } }),
+    prisma.member.count({ where: { isDeleted: false, OR: [{ districtId: null }, { groupId: null }] } }),
     prisma.district.findMany({
       include: { _count: { select: { members: { where: { isDeleted: false } } } } },
       orderBy: { name: "asc" },
@@ -26,7 +41,14 @@ export async function getDashboardData() {
       where: { isDeleted: false },
       orderBy: { createdAt: "desc" },
       take: 5,
-      select: { id: true, name: true, statusTag: true, district: { select: { name: true } }, registeredAt: true },
+      select: {
+        id: true,
+        name: true,
+        statusTag: true,
+        requiresFollowUp: true,
+        district: { select: { name: true, leadName: true } },
+        registeredAt: true,
+      },
     }),
     prisma.application.findMany({
       orderBy: { createdAt: "desc" },
@@ -36,18 +58,49 @@ export async function getDashboardData() {
     prisma.notice.findMany({
       orderBy: { createdAt: "desc" },
       take: 5,
-      select: { id: true, title: true, createdAt: true },
+      select: { id: true, title: true, pinned: true, createdAt: true },
+    }),
+    prisma.activityLog.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { id: true, action: true, targetType: true, createdAt: true },
+    }),
+    prisma.member.findMany({
+      where: { isDeleted: false, requiresFollowUp: true },
+      orderBy: { updatedAt: "desc" },
+      take: 5,
+      select: { id: true, name: true, statusTag: true, district: { select: { name: true } }, updatedAt: true },
     }),
   ]);
+
+  const districtFollowups = await Promise.all(
+    districtCounts.map(async (d) => {
+      const followUps = await prisma.member.count({
+        where: { isDeleted: false, districtId: d.id, requiresFollowUp: true },
+      });
+      return { district: d.name, count: d._count.members, followUps };
+    }),
+  );
 
   return {
     totalMembers,
     newThisMonth,
     pendingApplications,
     followUpMembers,
-    districtCounts: districtCounts.map((d) => ({ district: d.name, count: d._count.members })),
-    recentMembers,
+    unassignedMembers,
+    districtCounts: districtFollowups,
+    recentMembers: recentMembers.map((m) => ({
+      ...m,
+      nextAction: inferNextAction(m.statusTag, m.requiresFollowUp),
+      leaderName: m.district?.leadName ?? "미배정",
+    })),
     recentApplications,
-    recentNotices,
+    recentNotices: recentNotices.map((n) => ({
+      ...n,
+      scopeLabel: n.pinned ? "전체 공지" : "일반 공지",
+      publishStatus: "게시중",
+    })),
+    recentActivityLogs,
+    followUpPanel,
   };
 }

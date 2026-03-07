@@ -9,10 +9,10 @@ export default async function ActivityLogsPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">활동 로그 / 리포트</h1>
-      <div className="rounded-xl border border-border bg-white">
-        <table>
+    <div className="space-y-3 sm:space-y-4">
+      <h1 className="text-lg font-semibold sm:text-xl">활동 로그 / 리포트</h1>
+      <div className="overflow-x-auto rounded-xl border border-border bg-white">
+        <table className="min-w-[760px]">
           <thead><tr><th>시각</th><th>액션</th><th>대상</th><th>담당자</th><th>메모</th></tr></thead>
           <tbody>
             {logs.map((log) => (
