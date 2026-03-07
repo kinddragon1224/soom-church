@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getCurrentUserOrRedirect, getFirstChurchByUserId, getChurchBySlug } from "@/lib/church-context";
 import { redirect } from "next/navigation";
 
+export const preferredRegion = "sin1";
+
 export default async function AppEntryPage() {
   const userId = getCurrentUserOrRedirect();
 

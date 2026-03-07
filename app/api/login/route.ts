@@ -3,6 +3,8 @@ import { getFirstChurchByUserId } from "@/lib/church-context";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+export const preferredRegion = "sin1";
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "");
