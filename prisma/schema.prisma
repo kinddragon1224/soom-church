@@ -20,63 +20,155 @@ enum ApplicationStatus {
   REJECTED
 }
 
+enum MembershipRole {
+  OWNER
+  ADMIN
+  PASTOR
+  LEADER
+  VIEWER
+}
+
+enum Plan {
+  FREE
+  STARTER
+  GROWTH
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+}
+
+model Church {
+  id               String             @id @default(cuid())
+  slug             String             @unique
+  name             String
+  timezone         String             @default("Asia/Seoul")
+  isActive         Boolean            @default(true)
+  memberships      ChurchMembership[]
+  subscriptions    Subscription[]
+  roles            Role[]
+  households       Household[]
+  districts        District[]
+  groups           Group[]
+  members          Member[]
+  applicationForms ApplicationForm[]
+  applications     Application[]
+  notices          Notice[]
+  activityLogs     ActivityLog[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
+  id           String             @id @default(cuid())
+  email        String             @unique
   passwordHash String
   name         String
-  isActive     Boolean       @default(true)
-  roleId       String
-  role         Role          @relation(fields: [roleId], references: [id])
+  isActive     Boolean            @default(true)
+  memberships  ChurchMembership[]
   activityLogs ActivityLog[]
-  notices      Notice[]      @relation("NoticeAuthor")
-  applications Application[] @relation("ApplicationAssignee")
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  notices      Notice[]           @relation("NoticeAuthor")
+  applications Application[]      @relation("ApplicationAssignee")
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model ChurchMembership {
+  id         String         @id @default(cuid())
+  userId     String
+  churchId   String
+  role       MembershipRole @default(VIEWER)
+  roleId     String?
+  isActive   Boolean        @default(true)
+  joinedAt   DateTime       @default(now())
+  user       User           @relation(fields: [userId], references: [id])
+  church     Church         @relation(fields: [churchId], references: [id])
+  customRole Role?          @relation(fields: [roleId], references: [id])
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@unique([userId, churchId])
+  @@index([churchId, role])
 }
 
 model Role {
-  id        String   @id @default(cuid())
-  key       String   @unique
-  name      String
-  users     User[]
-  createdAt DateTime @default(now())
+  id          String             @id @default(cuid())
+  churchId    String?
+  key         String
+  name        String
+  church      Church?            @relation(fields: [churchId], references: [id])
+  memberships ChurchMembership[]
+  createdAt   DateTime           @default(now())
+
+  @@unique([churchId, key])
+  @@index([churchId])
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  churchId         String
+  plan             Plan               @default(FREE)
+  status           SubscriptionStatus @default(TRIALING)
+  trialEndsAt      DateTime?
+  currentPeriodEnd DateTime?
+  church           Church             @relation(fields: [churchId], references: [id])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([churchId, status])
 }
 
 model Household {
   id        String   @id @default(cuid())
+  churchId  String?
   name      String
   address   String?
   notes     String?
+  church    Church?  @relation(fields: [churchId], references: [id])
   members   Member[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([churchId, name])
 }
 
 model District {
   id        String   @id @default(cuid())
-  name      String   @unique
+  churchId  String?
+  name      String
   leadName  String?
+  church    Church?  @relation(fields: [churchId], references: [id])
   groups    Group[]
   members   Member[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([churchId, name])
+  @@index([churchId])
 }
 
 model Group {
   id         String    @id @default(cuid())
+  churchId   String?
   name       String
   districtId String
+  church     Church?   @relation(fields: [churchId], references: [id])
   district   District  @relation(fields: [districtId], references: [id])
   members    Member[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  @@unique([districtId, name])
+  @@unique([churchId, districtId, name])
+  @@index([churchId])
 }
 
 model Member {
   id               String        @id @default(cuid())
+  churchId         String?
   name             String
   gender           Gender
   birthDate        DateTime
@@ -84,10 +176,11 @@ model Member {
   email            String?
   address          String?
   householdId      String?
-  household        Household?    @relation(fields: [householdId], references: [id])
   districtId       String?
-  district         District?     @relation(fields: [districtId], references: [id])
   groupId          String?
+  church           Church?       @relation(fields: [churchId], references: [id])
+  household        Household?    @relation(fields: [householdId], references: [id])
+  district         District?     @relation(fields: [districtId], references: [id])
   group            Group?        @relation(fields: [groupId], references: [id])
   registeredAt     DateTime      @default(now())
   position         String?
@@ -99,22 +192,28 @@ model Member {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  @@index([statusTag])
-  @@index([requiresFollowUp])
+  @@index([churchId, statusTag])
+  @@index([churchId, requiresFollowUp])
+  @@index([churchId, registeredAt])
 }
 
 model ApplicationForm {
   id           String        @id @default(cuid())
+  churchId     String?
   title        String
   description  String?
   isActive     Boolean       @default(true)
+  church       Church?       @relation(fields: [churchId], references: [id])
   applications Application[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
+  @@index([churchId, isActive])
 }
 
 model Application {
   id             String            @id @default(cuid())
+  churchId       String?
   formId         String
   form           ApplicationForm   @relation(fields: [formId], references: [id])
   applicantName  String
@@ -123,23 +222,32 @@ model Application {
   status         ApplicationStatus @default(PENDING)
   assignedToId   String?
   assignedTo     User?             @relation("ApplicationAssignee", fields: [assignedToId], references: [id])
+  church         Church?           @relation(fields: [churchId], references: [id])
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
+
+  @@index([churchId, status])
+  @@index([churchId, createdAt])
 }
 
 model Notice {
   id        String   @id @default(cuid())
+  churchId  String?
   title     String
   content   String
   pinned    Boolean  @default(false)
   authorId  String
   author    User     @relation("NoticeAuthor", fields: [authorId], references: [id])
+  church    Church?  @relation(fields: [churchId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([churchId, createdAt])
 }
 
 model ActivityLog {
   id         String   @id @default(cuid())
+  churchId   String?
   actorId    String?
   actor      User?    @relation(fields: [actorId], references: [id])
   action     String
@@ -148,7 +256,8 @@ model ActivityLog {
   memberId   String?
   member     Member?  @relation(fields: [memberId], references: [id])
   metadata   String?
+  church     Church?  @relation(fields: [churchId], references: [id])
   createdAt  DateTime @default(now())
 
-  @@index([createdAt])
+  @@index([churchId, createdAt])
 }

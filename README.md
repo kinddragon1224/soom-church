@@ -32,6 +32,12 @@ npm run dev
 - 공지 관리
 - 활동 로그
 
+## 멀티테넌트 SaaS 1차 울타리
+- Prisma 스키마에 Church / ChurchMembership / Subscription 추가
+- 핵심 운영 엔티티 churchId 스코프 도입
+- 홈페이지/앱 라우트 분리 기반 추가
+- 상세 문서: `docs/MULTITENANT_FOUNDATION.md`
+
 ## 롤백 플랜
 1. 배포 전 커밋 태그 생성: `git tag pre-mvp`.
 2. 장애 발생 시 즉시 복구:
