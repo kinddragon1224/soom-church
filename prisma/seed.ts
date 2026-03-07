@@ -1,0 +1,125 @@
+import { PrismaClient, Gender, ApplicationStatus } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+async function main() {
+  const adminRole = await prisma.role.upsert({
+    where: { key: "ADMIN" },
+    update: {},
+    create: { key: "ADMIN", name: "관리자" },
+  });
+
+  const admin = await prisma.user.upsert({
+    where: { email: "admin@soom.church" },
+    update: {},
+    create: {
+      email: "admin@soom.church",
+      passwordHash: "demo-admin",
+      name: "숨 관리자",
+      roleId: adminRole.id,
+    },
+  });
+
+  const districtA = await prisma.district.upsert({
+    where: { name: "1교구" },
+    update: {},
+    create: { name: "1교구", leadName: "홍길동 목자" },
+  });
+
+  const districtB = await prisma.district.upsert({
+    where: { name: "2교구" },
+    update: {},
+    create: { name: "2교구", leadName: "김은혜 목자" },
+  });
+
+  const groupA = await prisma.group.upsert({
+    where: { districtId_name: { districtId: districtA.id, name: "소망 목장" } },
+    update: {},
+    create: { districtId: districtA.id, name: "소망 목장" },
+  });
+
+  const groupB = await prisma.group.upsert({
+    where: { districtId_name: { districtId: districtB.id, name: "은혜 목장" } },
+    update: {},
+    create: { districtId: districtB.id, name: "은혜 목장" },
+  });
+
+  const household = await prisma.household.create({
+    data: { name: "박가정", address: "대전 중구" },
+  });
+
+  await prisma.member.createMany({
+    data: [
+      {
+        name: "박수진",
+        gender: Gender.FEMALE,
+        birthDate: new Date("1993-02-14"),
+        phone: "010-1111-2222",
+        email: "sujin@example.com",
+        address: "대전 서구",
+        householdId: household.id,
+        districtId: districtA.id,
+        groupId: groupA.id,
+        position: "집사",
+        statusTag: "정착중",
+        requiresFollowUp: true,
+      },
+      {
+        name: "이민호",
+        gender: Gender.MALE,
+        birthDate: new Date("1988-06-03"),
+        phone: "010-2222-3333",
+        districtId: districtB.id,
+        groupId: groupB.id,
+        position: "성도",
+        statusTag: "목장배정완료",
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  const form = await prisma.applicationForm.create({
+    data: {
+      title: "새가족 등록 신청",
+      description: "주일 예배 방문자 등록",
+    },
+  });
+
+  await prisma.application.create({
+    data: {
+      formId: form.id,
+      applicantName: "최하나",
+      applicantPhone: "010-4444-5555",
+      status: ApplicationStatus.PENDING,
+      assignedToId: admin.id,
+    },
+  });
+
+  await prisma.notice.create({
+    data: {
+      title: "이번 주일 새가족 환영팀 모집",
+      content: "예배 후 로비에서 안내 봉사자를 모집합니다.",
+      pinned: true,
+      authorId: admin.id,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      actorId: admin.id,
+      action: "SEED_INIT",
+      targetType: "SYSTEM",
+      metadata: "Initial seed completed",
+    },
+  });
+}
+
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (error) => {
+    console.error(error);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
