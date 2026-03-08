@@ -1,31 +1,15 @@
-<svg viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" fill="none">
   <defs>
-    <linearGradient id="loop" x1="110" y1="60" x2="300" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#EEF7FB"/>
-      <stop offset="45%" stop-color="#A8E7EE"/>
-      <stop offset="100%" stop-color="#5FD7E4"/>
+    <linearGradient id="loop" x1="220" y1="110" x2="500" y2="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EEF7FB"/>
+      <stop offset="0.48" stop-color="#A8E7EE"/>
+      <stop offset="1" stop-color="#5FD7E4"/>
     </linearGradient>
-    <filter id="softGlow" x="90" y="20" width="230" height="80" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="1.2" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
   </defs>
 
-  <text x="10" y="88" font-family="Inter, SF Pro Display, Segoe UI, Arial, sans-serif" font-size="72" font-weight="500" letter-spacing="-2" fill="#F5F7FA">s</text>
+  <text x="20" y="158" font-family="Inter, SF Pro Display, Segoe UI, Arial, sans-serif" font-size="150" font-weight="500" letter-spacing="-4" fill="#F5F7FA">s</text>
 
-  <path
-    d="M110 72 C110 54, 124 42, 144 42 C164 42, 178 52, 186 64
-       M186 64 C196 78, 207 90, 226 90 C245 90, 260 77, 260 58 C260 39, 245 26, 225 26 C206 26, 192 36, 184 48
-       M184 48 C174 62, 163 74, 144 74 C125 74, 110 61, 110 42 C110 23, 125 10, 145 10 C165 10, 179 22, 187 34"
-    stroke="url(#loop)"
-    stroke-width="14"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    filter="url(#softGlow)"
-  />
+  <path d="M240 113 C240 79, 267 56, 303 56 C339 56, 363 75, 377 96 C391 117, 409 136, 438 136 C471 136, 498 111, 498 78 C498 45, 471 20, 438 20 C402 20, 378 39, 364 60 C350 81, 332 100, 303 100 C270 100, 243 75, 243 42 C243 9, 270 -16, 303 -16 C339 -16, 366 7, 382 31" transform="translate(0 36)" stroke="url(#loop)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
 
-  <text x="290" y="88" font-family="Inter, SF Pro Display, Segoe UI, Arial, sans-serif" font-size="72" font-weight="500" letter-spacing="-4" fill="#F5F7FA">m</text>
+  <text x="530" y="158" font-family="Inter, SF Pro Display, Segoe UI, Arial, sans-serif" font-size="150" font-weight="500" letter-spacing="-6" fill="#F5F7FA">m</text>
 </svg>
