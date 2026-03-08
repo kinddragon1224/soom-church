@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { requirePlatformAdmin } from "@/lib/platform-admin";
 
@@ -7,7 +8,9 @@ export default async function PlatformAdminLayout({ children }: { children: Reac
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card px-4 py-3 sm:px-6">
-        <p className="text-xs text-muted-foreground">SOOM PLATFORM ADMIN</p>
+        <div className="inline-flex items-center">
+          <Image src="/soom-logo-main.png" alt="SOOM" width={110} height={30} className="h-6 w-auto" />
+        </div>
         <div className="mt-1 flex flex-wrap items-center gap-3">
           <h1 className="text-lg font-semibold">숨 플랫폼 운영 콘솔</h1>
           <span className="text-xs text-muted-foreground">{user.name}</span>

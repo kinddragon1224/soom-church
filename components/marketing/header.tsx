@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type HeaderAction = {
@@ -11,8 +12,8 @@ export function MarketingHeader({ action }: { action: HeaderAction }) {
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-[#07090f]/80 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="text-sm font-semibold tracking-[0.18em] text-white">
-          SOOM
+        <Link href="/" className="inline-flex items-center">
+          <Image src="/soom-logo-main.png" alt="SOOM" width={110} height={30} className="h-7 w-auto" priority />
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
