@@ -1,55 +1,32 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Card } from "@/components/ui/card";
 
 export function MarketingHero() {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-panel sm:p-8">
-      <div className="pointer-events-none absolute -left-20 -top-20 h-56 w-56 rounded-full bg-violet-500/15 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 right-0 h-64 w-64 rounded-full bg-blue-500/15 blur-3xl" />
-
-      <div className="relative grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
-        <div>
-          <p className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
-            <Sparkles size={12} /> SOOM PLATFORM
-          </p>
-          <h1 className="mt-3 text-3xl font-bold leading-tight sm:text-4xl">
-            교회 운영을 위한 워크스페이스 SaaS, 숨
+    <section className="relative overflow-hidden border-b border-white/10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(106,76,255,0.25),transparent_38%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.18),transparent_40%)]" />
+      <div className="mx-auto grid min-h-[72vh] w-full max-w-6xl items-end px-4 pb-14 pt-20 sm:min-h-[78vh] sm:px-6 sm:pb-16">
+        <div className="relative max-w-4xl">
+          <p className="text-xs tracking-[0.22em] text-white/55">SOOM PLATFORM</p>
+          <h1 className="mt-4 text-5xl font-semibold leading-[0.95] text-white sm:text-7xl md:text-8xl">
+            교회 AX의
+            <br />
+            새로운 기준, 숨
           </h1>
-          <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-            교적, 신청, 공지, 후속관리를 교회별 워크스페이스에서 운영하세요.
-            숨은 교회 운영을 더 질서 있게, 더 가볍게, 더 연결되게 만듭니다.
+          <p className="mt-6 max-w-2xl text-base text-white/70 sm:text-lg">
+            섬기는 이들을 위한 운영 플랫폼.
+            교적, 신청, 공지, 후속관리 흐름을 교회별 워크스페이스로 정리합니다.
           </p>
 
-          <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <Link href="/login" className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
-              숨 로그인 <ArrowRight size={14} className="ml-1" />
-            </Link>
-            <Link href="/signup" className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold transition hover:bg-muted">
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/signup" className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black hover:opacity-90">
               숨 시작하기
             </Link>
-            <Link href="/features" className="inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted">
-              기능 보기
+            <Link href="/login" className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-medium text-white hover:border-white/55">
+              숨 로그인
             </Link>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 gap-3 self-stretch sm:grid-cols-2">
-          <PreviewPanel title="교회별 워크스페이스" desc="교회 단위 데이터 분리" />
-          <PreviewPanel title="운영 요약 홈" desc="후속관리·신청·공지 집중" />
-          <PreviewPanel title="모듈형 구조" desc="교적·신청·알림 확장" />
-          <PreviewPanel title="모바일 관리자 대응" desc="현장에서도 빠른 점검" />
-        </div>
       </div>
     </section>
-  );
-}
-
-function PreviewPanel({ title, desc }: { title: string; desc: string }) {
-  return (
-    <Card className="p-3 shadow-panel">
-      <p className="text-sm font-semibold">{title}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
-    </Card>
   );
 }

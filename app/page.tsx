@@ -1,13 +1,19 @@
-import { FeatureCards } from "@/components/marketing/feature-cards";
+import { BrandSection } from "@/components/marketing/brand-section";
+import { FooterCta } from "@/components/marketing/footer-cta";
+import { MarketingHeader } from "@/components/marketing/header";
 import { MarketingHero } from "@/components/marketing/hero";
-import { TrustStrip } from "@/components/marketing/trust-strip";
+import { ModuleSection } from "@/components/marketing/module-section";
+import { PlatformSection } from "@/components/marketing/platform-section";
 
 export default function HomePage() {
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-5 px-4 py-8 sm:px-6 sm:py-10">
+    <main className="min-h-screen bg-[#07090f] text-white">
+      <MarketingHeader />
       <MarketingHero />
-      <TrustStrip />
-      <FeatureCards />
+      <BrandSection />
+      <PlatformSection />
+      <ModuleSection />
+      <FooterCta />
     </main>
   );
 }
