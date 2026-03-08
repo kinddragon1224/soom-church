@@ -18,7 +18,7 @@ export function MarketingHero() {
           </h1>
           <p className="mt-3 text-sm text-muted-foreground sm:text-base">
             교적, 신청, 공지, 후속관리를 교회별 워크스페이스에서 운영하세요.
-            교회 운영을 더 질서 있게, 더 가볍게, 더 연결되게 만듭니다.
+            숨은 교회 운영을 더 질서 있게, 더 가볍게, 더 연결되게 만듭니다.
           </p>
 
           <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -34,23 +34,22 @@ export function MarketingHero() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 self-stretch">
-          <PreviewCard label="미처리 신청" value="12" sub="오늘 +3" />
-          <PreviewCard label="후속관리" value="28" sub="우선 확인" />
-          <PreviewCard label="이번 주 공지" value="6" sub="3개 상단고정" />
-          <PreviewCard label="활성 모듈" value="3" sub="2개 준비 중" />
+        <div className="grid grid-cols-1 gap-3 self-stretch sm:grid-cols-2">
+          <PreviewPanel title="교회별 워크스페이스" desc="교회 단위 데이터 분리" />
+          <PreviewPanel title="운영 요약 홈" desc="후속관리·신청·공지 집중" />
+          <PreviewPanel title="모듈형 구조" desc="교적·신청·알림 확장" />
+          <PreviewPanel title="모바일 관리자 대응" desc="현장에서도 빠른 점검" />
         </div>
       </div>
     </section>
   );
 }
 
-function PreviewCard({ label, value, sub }: { label: string; value: string; sub: string }) {
+function PreviewPanel({ title, desc }: { title: string; desc: string }) {
   return (
     <Card className="p-3 shadow-panel">
-      <p className="text-[11px] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-bold leading-none">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+      <p className="text-sm font-semibold">{title}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
     </Card>
   );
 }

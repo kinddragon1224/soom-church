@@ -1,4 +1,4 @@
-import { Blocks, Building2, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { Building2, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const features = [
@@ -15,12 +15,6 @@ const features = [
     icon: Building2,
   },
   {
-    title: "핵심 모듈",
-    desc: "교적·신청·알림·후속관리",
-    sub: "한 화면에서 운영 흐름을 연결",
-    icon: Blocks,
-  },
-  {
     title: "운영 안정성",
     desc: "권한 가드와 확장 가능한 구조",
     sub: "SaaS 확장을 위한 기초 울타리 내장",
@@ -30,7 +24,7 @@ const features = [
 
 export function FeatureCards() {
   return (
-    <section className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       {features.map((item) => {
         const Icon = item.icon;
         return (
