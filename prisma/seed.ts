@@ -2,45 +2,60 @@ import { PrismaClient, Gender, ApplicationStatus, MembershipRole, Plan, Subscrip
 
 const prisma = new PrismaClient();
 
+const DEMO_CHURCH_SLUG = "daehung-ieum-dubit";
+const DEMO_CHURCH_NAME = "대흥교회 이음두빛";
+
 async function main() {
+  // Legacy demo slug migration guard
+  const legacy = await prisma.church.findUnique({ where: { slug: "demo-soom" } });
+  if (legacy) {
+    await prisma.church.update({
+      where: { id: legacy.id },
+      data: { slug: DEMO_CHURCH_SLUG, name: DEMO_CHURCH_NAME },
+    });
+  }
+
   const church = await prisma.church.upsert({
-    where: { slug: "demo-soom" },
-    update: {},
+    where: { slug: DEMO_CHURCH_SLUG },
+    update: { name: DEMO_CHURCH_NAME, timezone: "Asia/Seoul", isActive: true },
     create: {
-      slug: "demo-soom",
-      name: "숨 데모교회",
+      slug: DEMO_CHURCH_SLUG,
+      name: DEMO_CHURCH_NAME,
       timezone: "Asia/Seoul",
     },
   });
 
-  await prisma.subscription.create({
-    data: {
-      churchId: church.id,
-      plan: Plan.FREE,
-      status: SubscriptionStatus.TRIALING,
-      trialEndsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
-    },
-  });
+  const existingSubscription = await prisma.subscription.findFirst({ where: { churchId: church.id } });
+  if (!existingSubscription) {
+    await prisma.subscription.create({
+      data: {
+        churchId: church.id,
+        plan: Plan.FREE,
+        status: SubscriptionStatus.TRIALING,
+        trialEndsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+      },
+    });
+  }
 
   const adminRole = await prisma.role.upsert({
     where: { churchId_key: { churchId: church.id, key: "ADMIN" } },
-    update: {},
+    update: { name: "관리자" },
     create: { churchId: church.id, key: "ADMIN", name: "관리자" },
   });
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@soom.church" },
-    update: {},
+    update: { name: "숨 플랫폼 관리자" },
     create: {
       email: "admin@soom.church",
       passwordHash: "demo-admin",
-      name: "숨 관리자",
+      name: "숨 플랫폼 관리자",
     },
   });
 
   await prisma.churchMembership.upsert({
     where: { userId_churchId: { userId: admin.id, churchId: church.id } },
-    update: {},
+    update: { role: MembershipRole.OWNER, isActive: true, roleId: adminRole.id },
     create: {
       userId: admin.id,
       churchId: church.id,
@@ -143,7 +158,7 @@ async function main() {
       actorId: admin.id,
       action: "SEED_INIT",
       targetType: "SYSTEM",
-      metadata: "Initial multi-tenant seed completed",
+      metadata: "Daehung Ieum Dubit demo workspace seeded",
     },
   });
 }

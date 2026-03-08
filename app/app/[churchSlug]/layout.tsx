@@ -38,11 +38,12 @@ export default async function ChurchWorkspaceLayout({
 
       <div className="min-w-0">
         <header className="border-b border-border bg-card px-4 py-3 sm:px-6">
-          <p className="text-xs text-muted-foreground">WORKSPACE</p>
+          <p className="text-xs text-muted-foreground">SOOM PLATFORM</p>
           <div className="mt-1 flex items-center justify-between gap-3">
             <h1 className="text-lg font-semibold">{church.name}</h1>
             <Link href="/app" className="text-xs text-primary hover:underline">워크스페이스 변경</Link>
           </div>
+          <p className="mt-1 text-xs text-muted-foreground">숨 / {church.name} 워크스페이스</p>
           <nav className="mt-3 flex gap-2 overflow-x-auto pb-1 text-xs lg:hidden">
             <MobileTab href={`${base}/dashboard`} label="운영 현황" />
             <MobileTab href={`${base}/members`} label="교인" />
@@ -61,8 +62,9 @@ export default async function ChurchWorkspaceLayout({
 function WorkspaceSidebar({ base, churchName }: { base: string; churchName: string }) {
   return (
     <div>
-      <p className="text-xs text-muted-foreground">숨 워크스페이스</p>
+      <p className="text-xs text-muted-foreground">SOOM PLATFORM</p>
       <h2 className="mt-1 text-lg font-semibold">{churchName}</h2>
+      <p className="text-xs text-muted-foreground">교회 워크스페이스</p>
 
       <div className="mt-5 space-y-4 text-sm">
         <SidebarGroup title="대시보드" items={[{ href: `${base}/dashboard`, label: "운영 현황" }]} />

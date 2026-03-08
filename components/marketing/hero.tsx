@@ -22,14 +22,14 @@ export function MarketingHero() {
           </p>
 
           <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <Link href="/app/demo-soom/dashboard" className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
-              데모 보기 <ArrowRight size={14} className="ml-1" />
+            <Link href="/app/daehung-ieum-dubit/dashboard" className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
+              대흥교회 이음두빛 워크스페이스 보기 <ArrowRight size={14} className="ml-1" />
             </Link>
             <Link href="/login" className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold transition hover:bg-muted">
-              로그인
+              숨 로그인
             </Link>
             <Link href="/signup" className="inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted">
-              회원가입
+              숨 시작하기
             </Link>
           </div>
         </div>

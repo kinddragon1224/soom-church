@@ -9,14 +9,14 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md p-6">
-        <h1 className="text-2xl font-bold">숨 관리자 로그인</h1>
-        <p className="mt-1 text-sm text-muted-foreground">교회 교적/행정 운영 허브</p>
+        <h1 className="text-2xl font-bold">숨 로그인</h1>
+        <p className="mt-1 text-sm text-muted-foreground">숨 플랫폼에 로그인하고 교회 워크스페이스로 진입하세요.</p>
         <form action="/api/login" method="post" className="mt-5 space-y-3">
           <input name="email" type="email" required placeholder="admin@soom.church" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
           <input name="password" type="password" required placeholder="••••••••" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
           <Button className="w-full" type="submit">로그인</Button>
         </form>
-        <p className="mt-3 text-xs text-muted-foreground">데모 계정: admin@soom.church / demo-admin</p>
+        <p className="mt-3 text-xs text-muted-foreground">데모 계정: admin@soom.church / demo-admin (대흥교회 이음두빛 워크스페이스)</p>
       </Card>
     </div>
   );

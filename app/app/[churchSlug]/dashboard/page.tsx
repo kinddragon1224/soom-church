@@ -27,9 +27,9 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   ];
 
   const modules = [
-    { title: "숨 교적", desc: "교인·가족·상태를 관리", href: `/app/${church.slug}/members`, state: "활성" },
-    { title: "숨 신청", desc: "신청과 접수 현황 관리", href: `/app/${church.slug}/applications`, state: "활성" },
-    { title: "숨 알림", desc: "공지와 전달 흐름 관리", href: `/app/${church.slug}/notices`, state: "활성" },
+    { title: "숨 교적", desc: `${church.name} 교인·가족·상태를 관리`, href: `/app/${church.slug}/members`, state: "활성" },
+    { title: "숨 신청", desc: `${church.name} 신청과 접수 현황 관리`, href: `/app/${church.slug}/applications`, state: "활성" },
+    { title: "숨 알림", desc: `${church.name} 공지와 전달 흐름 관리`, href: `/app/${church.slug}/notices`, state: "활성" },
     { title: "숨 기록", desc: "행사/아카이브 기능", href: "#", state: "준비 중" },
     { title: "숨 모임", desc: "목장/소모임 확장 기능", href: "#", state: "곧 연결" },
   ];
@@ -118,7 +118,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
       <section className="space-y-2">
         <div>
           <h3 className="text-sm font-semibold">숨 모듈 허브</h3>
-          <p className="text-xs text-muted-foreground">교회 운영 기능을 한 플랫폼 안에서 연결합니다.</p>
+          <p className="text-xs text-muted-foreground">숨 플랫폼 기능을 {church.name} 워크스페이스에서 연결해 사용합니다.</p>
         </div>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
           {modules.map((module) => (
