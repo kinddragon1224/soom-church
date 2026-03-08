@@ -5,8 +5,13 @@ const prisma = new PrismaClient();
 const DEMO_CHURCH_SLUG = "daehung-ieum-dubit";
 const DEMO_CHURCH_NAME = "대흥교회 이음두빛";
 
+const PLATFORM_ADMIN_EMAIL = "platform-admin@soom.church";
+const PLATFORM_ADMIN_PASSWORD = "soom-platform-admin";
+
+const DEMO_USER_EMAIL = "daehung@ieumdubit.church";
+const DEMO_USER_PASSWORD = "daehung-demo-user";
+
 async function main() {
-  // Legacy demo slug migration guard
   const legacy = await prisma.church.findUnique({ where: { slug: "demo-soom" } });
   if (legacy) {
     await prisma.church.update({
@@ -37,30 +42,40 @@ async function main() {
     });
   }
 
-  const adminRole = await prisma.role.upsert({
-    where: { churchId_key: { churchId: church.id, key: "ADMIN" } },
-    update: { name: "관리자" },
-    create: { churchId: church.id, key: "ADMIN", name: "관리자" },
+  const ownerRole = await prisma.role.upsert({
+    where: { churchId_key: { churchId: church.id, key: "OWNER" } },
+    update: { name: "워크스페이스 오너" },
+    create: { churchId: church.id, key: "OWNER", name: "워크스페이스 오너" },
   });
 
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@soom.church" },
-    update: { name: "숨 플랫폼 관리자" },
+  const demoUser = await prisma.user.upsert({
+    where: { email: DEMO_USER_EMAIL },
+    update: { name: "대흥교회 이음두빛 운영자", passwordHash: DEMO_USER_PASSWORD },
     create: {
-      email: "admin@soom.church",
-      passwordHash: "demo-admin",
-      name: "숨 플랫폼 관리자",
+      email: DEMO_USER_EMAIL,
+      passwordHash: DEMO_USER_PASSWORD,
+      name: "대흥교회 이음두빛 운영자",
     },
   });
 
   await prisma.churchMembership.upsert({
-    where: { userId_churchId: { userId: admin.id, churchId: church.id } },
-    update: { role: MembershipRole.OWNER, isActive: true, roleId: adminRole.id },
+    where: { userId_churchId: { userId: demoUser.id, churchId: church.id } },
+    update: { role: MembershipRole.OWNER, isActive: true, roleId: ownerRole.id },
     create: {
-      userId: admin.id,
+      userId: demoUser.id,
       churchId: church.id,
       role: MembershipRole.OWNER,
-      roleId: adminRole.id,
+      roleId: ownerRole.id,
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: PLATFORM_ADMIN_EMAIL },
+    update: { name: "숨 플랫폼 관리자", passwordHash: PLATFORM_ADMIN_PASSWORD },
+    create: {
+      email: PLATFORM_ADMIN_EMAIL,
+      passwordHash: PLATFORM_ADMIN_PASSWORD,
+      name: "숨 플랫폼 관리자",
     },
   });
 
@@ -138,7 +153,7 @@ async function main() {
       applicantName: "최하나",
       applicantPhone: "010-4444-5555",
       status: ApplicationStatus.PENDING,
-      assignedToId: admin.id,
+      assignedToId: demoUser.id,
     },
   });
 
@@ -148,14 +163,14 @@ async function main() {
       title: "이번 주일 새가족 환영팀 모집",
       content: "예배 후 로비에서 안내 봉사자를 모집합니다.",
       pinned: true,
-      authorId: admin.id,
+      authorId: demoUser.id,
     },
   });
 
   await prisma.activityLog.create({
     data: {
       churchId: church.id,
-      actorId: admin.id,
+      actorId: demoUser.id,
       action: "SEED_INIT",
       targetType: "SYSTEM",
       metadata: "Daehung Ieum Dubit demo workspace seeded",

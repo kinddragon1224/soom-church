@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { getCurrentUserOrRedirect, getFirstChurchByUserId, getChurchBySlug } from "@/lib/church-context";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
 export const preferredRegion = "sin1";
 
 export default async function AppEntryPage() {
   const userId = getCurrentUserOrRedirect();
+
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+  if (user?.email === "platform-admin@soom.church" || user?.email === "admin@soom.church") {
+    redirect("/platform-admin");
+  }
 
   const church = await getFirstChurchByUserId(userId);
   if (church) {

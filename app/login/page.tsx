@@ -16,7 +16,7 @@ export default function LoginPage() {
           <input name="password" type="password" required placeholder="••••••••" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
           <Button className="w-full" type="submit">로그인</Button>
         </form>
-        <p className="mt-3 text-xs text-muted-foreground">데모 계정: admin@soom.church / demo-admin (대흥교회 이음두빛 워크스페이스)</p>
+        <p className="mt-3 text-xs text-muted-foreground">교회 워크스페이스 계정으로 로그인하세요.</p>
       </Card>
     </div>
   );
