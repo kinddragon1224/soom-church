@@ -1,6 +1,13 @@
 import Link from "next/link";
 
-export function MarketingHero() {
+type HeroAction = {
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+};
+
+export function MarketingHero({ action }: { action: HeroAction }) {
   return (
     <section className="relative overflow-hidden border-b border-white/10">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(106,76,255,0.25),transparent_38%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.18),transparent_40%)]" />
@@ -18,11 +25,11 @@ export function MarketingHero() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/signup" className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black hover:opacity-90">
-              숨 시작하기
+            <Link href={action.primaryHref} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black hover:opacity-90">
+              {action.primaryLabel}
             </Link>
-            <Link href="/login" className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-medium text-white hover:border-white/55">
-              숨 로그인
+            <Link href={action.secondaryHref} className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-medium text-white hover:border-white/55">
+              {action.secondaryLabel}
             </Link>
           </div>
         </div>
