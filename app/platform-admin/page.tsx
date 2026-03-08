@@ -1,24 +1,36 @@
-import { getCurrentUserOrRedirect } from "@/lib/church-context";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
-
-const PLATFORM_ADMIN_EMAILS = ["platform-admin@soom.church", "admin@soom.church"];
 
 export default async function PlatformAdminPage() {
-  const userId = getCurrentUserOrRedirect();
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, name: true } });
+  const [churchCount, userCount, activeMembershipCount, subscriptionCount] = await Promise.all([
+    prisma.church.count({ where: { isActive: true } }),
+    prisma.user.count({ where: { isActive: true } }),
+    prisma.churchMembership.count({ where: { isActive: true } }),
+    prisma.subscription.count(),
+  ]);
 
-  if (!user || !PLATFORM_ADMIN_EMAILS.includes(user.email)) {
-    redirect("/app");
-  }
+  const cards = [
+    ["활성 교회", churchCount, "/platform-admin/churches"],
+    ["활성 사용자", userCount, "/platform-admin/users"],
+    ["활성 멤버십", activeMembershipCount, "/platform-admin/users"],
+    ["구독 레코드", subscriptionCount, "/platform-admin/subscriptions"],
+  ] as const;
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
+    <div className="space-y-4">
       <section className="rounded-xl border border-border bg-card p-5">
-        <p className="text-xs text-muted-foreground">SOOM PLATFORM ADMIN</p>
-        <h1 className="mt-1 text-2xl font-bold">숨 플랫폼 관리자 페이지</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{user.name} 계정으로 접속 중입니다. 이 영역은 플랫폼 운영 전용입니다.</p>
+        <h2 className="text-xl font-semibold">플랫폼 운영 개요</h2>
+        <p className="mt-2 text-sm text-muted-foreground">교회 워크스페이스, 사용자, 구독 상태를 한 화면에서 점검합니다.</p>
       </section>
-    </main>
+
+      <section className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {cards.map(([label, value, href]) => (
+          <Link key={label} href={href} className="rounded-lg border border-border bg-card p-3 hover:bg-muted">
+            <p className="text-xs text-muted-foreground">{label}</p>
+            <p className="mt-1 text-2xl font-bold leading-none">{value}</p>
+          </Link>
+        ))}
+      </section>
+    </div>
   );
 }
