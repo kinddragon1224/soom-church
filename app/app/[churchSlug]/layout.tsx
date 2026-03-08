@@ -41,7 +41,10 @@ export default async function ChurchWorkspaceLayout({
           <p className="text-xs text-muted-foreground">SOOM PLATFORM</p>
           <div className="mt-1 flex items-center justify-between gap-3">
             <h1 className="text-lg font-semibold">{church.name}</h1>
-            <Link href="/app" className="text-xs text-primary hover:underline">워크스페이스 변경</Link>
+            <div className="flex items-center gap-3 text-xs">
+              <Link href="/" className="text-primary hover:underline">홈</Link>
+              <Link href="/app" className="text-primary hover:underline">워크스페이스 변경</Link>
+            </div>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">숨 / {church.name} 워크스페이스</p>
           <nav className="mt-3 flex gap-2 overflow-x-auto pb-1 text-xs lg:hidden">
