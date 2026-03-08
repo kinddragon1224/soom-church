@@ -40,7 +40,7 @@ export default async function ChurchWorkspaceLayout({
       <div className="min-w-0">
         <header className="border-b border-border bg-card px-4 py-3 sm:px-6">
           <div className="inline-flex items-center">
-            <Image src="/soom-logo-main.png" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
+            <Image src="/soom-logo-main.svg" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
           </div>
           <div className="mt-1 flex items-center justify-between gap-3">
             <h1 className="text-lg font-semibold">{church.name}</h1>
@@ -69,7 +69,7 @@ function WorkspaceSidebar({ base, churchName }: { base: string; churchName: stri
   return (
     <div>
       <div className="inline-flex items-center">
-        <Image src="/soom-logo-main.png" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
+        <Image src="/soom-logo-main.svg" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
       </div>
       <h2 className="mt-1 text-lg font-semibold">{churchName}</h2>
       <p className="text-xs text-muted-foreground">교회 워크스페이스</p>
