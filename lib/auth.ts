@@ -14,8 +14,11 @@ export function isLoggedIn() {
   return session && Boolean(userId);
 }
 
-export function requireAuth() {
-  if (!isLoggedIn()) redirect("/login");
+export function requireAuth(next?: string) {
+  if (!isLoggedIn()) {
+    const loginPath = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
+    redirect(loginPath);
+  }
 }
 
 export function setLoginCookie(userId: string) {

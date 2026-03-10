@@ -11,14 +11,22 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
+  const next = String(formData.get("next") ?? "");
 
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user || user.passwordHash !== password) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("error", "invalid");
+    if (next.startsWith("/")) loginUrl.searchParams.set("next", next);
+    return NextResponse.redirect(loginUrl);
   }
 
   setLoginCookie(user.id);
+
+  if (next.startsWith("/")) {
+    return NextResponse.redirect(new URL(next, request.url));
+  }
 
   if (PLATFORM_ADMIN_EMAILS.includes(user.email)) {
     return NextResponse.redirect(new URL("/platform-admin", request.url));
