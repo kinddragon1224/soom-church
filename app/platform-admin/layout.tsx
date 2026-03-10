@@ -20,7 +20,6 @@ export default async function PlatformAdminLayout({ children }: { children: Reac
           <Link href="/app" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">워크스페이스</Link>
           <Link href="/platform-admin" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">개요</Link>
           <Link href="/platform-admin/churches" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">교회 목록</Link>
-          <Link href="/platform-admin/users" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">사용자</Link>
           <Link href="/platform-admin/subscriptions" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">구독</Link>
           <Link href="/platform-admin/provisioning" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">워크스페이스 생성</Link>
         </nav>
