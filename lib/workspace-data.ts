@@ -66,30 +66,56 @@ export async function getWorkspaceDashboardData(churchId: string) {
   )();
 }
 
-export async function getWorkspaceMembers(churchId: string) {
+export async function getWorkspaceMembers(
+  churchId: string,
+  options?: { followUpOnly?: boolean; registeredFrom?: Date },
+) {
+  const followUpOnly = Boolean(options?.followUpOnly);
+  const registeredFromKey = options?.registeredFrom ? options.registeredFrom.toISOString() : "all";
+
   return unstable_cache(
     async () =>
       prisma.member.findMany({
-        where: { churchId, isDeleted: false },
+        where: {
+          churchId,
+          isDeleted: false,
+          ...(followUpOnly ? { requiresFollowUp: true } : {}),
+          ...(options?.registeredFrom ? { registeredAt: { gte: options.registeredFrom } } : {}),
+        },
         include: { district: true, group: true },
         orderBy: { createdAt: "desc" },
         take: 50,
       }),
-    [`workspace-members-${churchId}`],
+    [`workspace-members-${churchId}-${followUpOnly ? "followup" : "all"}-${registeredFromKey}`],
     { revalidate: 20, tags: [`church:${churchId}:members`] },
   )();
 }
 
-export async function getWorkspaceApplications(churchId: string) {
+export async function getWorkspaceApplications(churchId: string, options?: { status?: string }) {
+  const status = options?.status === "PENDING" ? "PENDING" : "ALL";
+
   return unstable_cache(
     async () =>
       prisma.application.findMany({
-        where: { churchId },
-        include: { form: true },
+        where: {
+          churchId,
+          ...(status === "PENDING" ? { status: "PENDING" } : {}),
+        },
         orderBy: { createdAt: "desc" },
         take: 50,
+        select: {
+          id: true,
+          applicantName: true,
+          status: true,
+          createdAt: true,
+          form: {
+            select: {
+              title: true,
+            },
+          },
+        },
       }),
-    [`workspace-applications-${churchId}`],
+    [`workspace-applications-${churchId}-${status}`],
     { revalidate: 20, tags: [`church:${churchId}:applications`] },
   )();
 }

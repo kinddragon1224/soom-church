@@ -20,10 +20,10 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const data = await getWorkspaceDashboardData(church.id);
 
   const kpis = [
-    ["총 교인 수", data.totalMembers],
-    ["이번 달 신규", data.newThisMonth],
-    ["미처리 신청", data.pendingApplications],
-    ["후속관리", data.followUpMembers],
+    { label: "총 교인 수", value: data.totalMembers, href: `/app/${church.slug}/members?filter=all` },
+    { label: "이번 달 신규", value: data.newThisMonth, href: `/app/${church.slug}/members?filter=new` },
+    { label: "미처리 신청", value: data.pendingApplications, href: `/app/${church.slug}/applications?status=PENDING` },
+    { label: "후속관리", value: data.followUpMembers, href: `/app/${church.slug}/members?filter=followup` },
   ];
 
   const modules = [
@@ -45,11 +45,14 @@ export default async function ChurchDashboardPage({ params }: { params: { church
       </section>
 
       <section className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-        {kpis.map(([label, value]) => (
-          <div key={String(label)} className="rounded-lg border border-border bg-card p-3">
-            <p className="text-xs text-muted-foreground">{label}</p>
-            <p className="mt-1 text-2xl font-bold leading-none">{value}</p>
-          </div>
+        {kpis.map((item) => (
+          <Link key={item.label} href={item.href} className="rounded-lg border border-border bg-card p-3 transition active:scale-[0.99] hover:bg-muted/40">
+            <p className="text-xs text-muted-foreground">{item.label}</p>
+            <div className="mt-1 flex items-end justify-between gap-2">
+              <p className="text-2xl font-bold leading-none">{item.value}</p>
+              <ChevronRight size={14} className="text-primary" />
+            </div>
+          </Link>
         ))}
       </section>
 
