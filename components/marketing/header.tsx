@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type HeaderAction = {
+export type HeaderAction = {
   primaryHref: string;
   primaryLabel: string;
   secondaryHref: string;
   secondaryLabel: string;
+  loggedIn?: boolean;
 };
 
 export function MarketingHeader({ action }: { action: HeaderAction }) {
@@ -29,6 +30,16 @@ export function MarketingHeader({ action }: { action: HeaderAction }) {
           <Link href={action.primaryHref} className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-black hover:opacity-90">
             {action.primaryLabel}
           </Link>
+          {action.loggedIn ? (
+            <form action="/api/logout" method="post">
+              <button
+                type="submit"
+                className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-medium text-white/70 hover:border-white/40 hover:text-white"
+              >
+                로그아웃
+              </button>
+            </form>
+          ) : null}
         </div>
       </div>
     </header>

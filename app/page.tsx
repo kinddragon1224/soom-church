@@ -17,6 +17,7 @@ export default async function HomePage() {
     primaryLabel: "숨 시작하기",
     secondaryHref: "/login",
     secondaryLabel: "숨 로그인",
+    loggedIn: false,
   };
 
   if (userId) {
@@ -28,6 +29,7 @@ export default async function HomePage() {
         primaryLabel: "플랫폼 콘솔로 이동",
         secondaryHref: "/app",
         secondaryLabel: "워크스페이스 보기",
+        loggedIn: true,
       };
     } else {
       const church = await getFirstChurchByUserId(userId);
@@ -37,6 +39,7 @@ export default async function HomePage() {
           primaryLabel: "내 워크스페이스로 이동",
           secondaryHref: "/app",
           secondaryLabel: "워크스페이스 목록",
+          loggedIn: true,
         };
       } else {
         action = {
@@ -44,6 +47,7 @@ export default async function HomePage() {
           primaryLabel: "워크스페이스 연결",
           secondaryHref: "/signup",
           secondaryLabel: "온보딩 보기",
+          loggedIn: true,
         };
       }
     }
