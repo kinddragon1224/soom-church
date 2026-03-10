@@ -5,7 +5,7 @@ import { MarketingHero } from "@/components/marketing/hero";
 import { ModuleSection } from "@/components/marketing/module-section";
 import { PlatformSection } from "@/components/marketing/platform-section";
 import { getCurrentUserId } from "@/lib/auth";
-import { getFirstChurchByUserId } from "@/lib/church-context";
+import { getChurchBySlug, getFirstChurchByUserId } from "@/lib/church-context";
 import { PLATFORM_ADMIN_EMAILS } from "@/lib/platform-admin";
 import { prisma } from "@/lib/prisma";
 
@@ -24,11 +24,12 @@ export default async function HomePage() {
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
 
     if (user && PLATFORM_ADMIN_EMAILS.includes(user.email)) {
+      const demoChurch = await getChurchBySlug("daehung-ieum-dubit");
       action = {
         primaryHref: "/platform-admin",
         primaryLabel: "플랫폼 콘솔로 이동",
-        secondaryHref: "/app",
-        secondaryLabel: "워크스페이스 보기",
+        secondaryHref: demoChurch ? `/app/${demoChurch.slug}/dashboard` : "/app",
+        secondaryLabel: demoChurch ? "데모 워크스페이스 보기" : "워크스페이스 보기",
         loggedIn: true,
       };
     } else {
