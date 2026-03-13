@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model ApplicationForm {
+  id           String        @id @default(cuid())
+  churchId     String?
+  title        String
+  description  String?
+  isActive     Boolean       @default(true)
+  applications Application[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([churchId, isActive])
+}
+
+model Application {
+  id             String            @id @default(cuid())
+  churchId       String?
+  formId         String
+  form           ApplicationForm   @relation(fields: [formId], references: [id])
+  applicantName  String
+  applicantPhone String?
+  payloadJson    String?
+  status         ApplicationStatus @default(PENDING)
+  assignedToId   String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([churchId, status])
+  @@index([churchId, createdAt])
+}

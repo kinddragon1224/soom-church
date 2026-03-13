@@ -1,0 +1,214 @@
+version: "3.8"
+
+services:
+  gateway:
+    image: nginx:alpine
+    container_name: soom-gateway
+    ports:
+      - "8081:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - core-service
+      - content-service
+      - application-service
+      - notification-service
+      - ai-service
+    networks:
+      - soom-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: soom-postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: soom
+      POSTGRES_PASSWORD: soom_password
+      POSTGRES_DB: soom_church
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - soom-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soom -d soom_church"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: soom-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - soom-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  core-service:
+    build:
+      context: ./services/core-service
+      dockerfile: Dockerfile
+    container_name: soom-core
+    ports:
+      - "3002:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://soom:soom_password@postgres:5432/soom_core?schema=public
+      REDIS_URL: redis://redis:6379
+      APPLICATION_SERVICE_URL: http://application-service:3000
+      PORT: 3000
+      JWT_SECRET: dev-jwt-secret-change-in-production
+    volumes:
+      - ./services/core-service:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      application-service:
+        condition: service_started
+    networks:
+      - soom-network
+    command: sh -c "npx prisma migrate dev --name init --skip-generate 2>/dev/null || true && npm run dev"
+
+  content-service:
+    build:
+      context: ./services/content-service
+      dockerfile: Dockerfile
+    container_name: soom-content
+    ports:
+      - "3003:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://soom:soom_password@postgres:5432/soom_content?schema=public
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
+    volumes:
+      - ./services/content-service:/app
+      - content-storage:/app/storage
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - soom-network
+
+  application-service:
+    build:
+      context: ./services/application-service
+      dockerfile: Dockerfile
+    container_name: soom-application
+    ports:
+      - "3004:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://soom:soom_password@postgres:5432/soom_application?schema=public
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+    volumes:
+      - ./services/application-service:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - soom-network
+    command: sh -c "npx prisma migrate dev --name init --skip-generate 2>/dev/null || true && npm run dev"
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile
+    container_name: soom-notification
+    ports:
+      - "3005:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://soom:soom_password@postgres:5432/soom_notification?schema=public
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+    volumes:
+      - ./services/notification-service:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - soom-network
+
+  ai-service:
+    build:
+      context: ./services/ai-service
+      dockerfile: Dockerfile
+    container_name: soom-ai
+    ports:
+      - "3007:3000"
+    environment:
+      NODE_ENV: development
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+    volumes:
+      - ./services/ai-service:/app
+      - /app/node_modules
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - soom-network
+
+  community-service:
+    build:
+      context: ./services/community-service
+      dockerfile: Dockerfile
+    container_name: soom-community
+    ports:
+      - "3006:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://soom:soom_password@postgres:5432/soom_community?schema=public
+      REDIS_URL: redis://redis:6379
+      PORT: 3000
+    volumes:
+      - ./services/community-service:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - soom-network
+
+volumes:
+  postgres-data:
+  redis-data:
+  content-storage:
+
+networks:
+  soom-network:
+    driver: bridge

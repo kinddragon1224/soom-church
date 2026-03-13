@@ -1,50 +1,67 @@
-# 숨 (Sum) 관리자 대시보드 MVP
+# Soom Church
 
-교회 교적/행정 운영 허브를 위한 Next.js + Prisma 기반 MVP.
+교회 운영 플랫폼을 위한 워크스페이스다. 현재 제품 현실은 `core-service` 중심의 관리자 운영 허브이며, `application-service`가 첫 번째 분리 도메인으로 이동 중이다.
 
-## 기술 스택
-- Next.js 14
-- TypeScript
-- Tailwind CSS
-- shadcn/ui 스타일 컴포넌트 패턴
-- PostgreSQL
-- Prisma
+## 현재 상태
 
-## 실행 방법
+- 제품 중심: 교인/교구/목장/신청/공지/활동 로그를 다루는 관리자 웹
+- 아키텍처 상태: 모놀리스에서 서비스 분리로 넘어가는 과도기
+- 구현 상태: `core-service`가 대부분의 기능을 보유, 나머지 서비스는 주로 스켈레톤
+
+## 빠른 시작
+
 ```bash
 cp .env.example .env
 npm install
-npm run prisma:generate
-npx prisma migrate dev --name init
-npm run prisma:seed
 npm run dev
 ```
 
-- 로그인: `admin@soom.church / demo-admin`
+주요 포트:
 
-## 1차 구현 범위
-- 로그인
-- 관리자 공통 레이아웃 (좌측 사이드바 + 상단 헤더)
-- 대시보드 홈 (핵심 KPI + 최근 데이터 + 빠른작업)
-- 교인 목록/상세/등록/수정
-- 교구/목장 관리
-- 신청 관리
-- 공지 관리
-- 활동 로그
+- Gateway: `8081`
+- Core: `3002`
+- Application: `3004`
+- PostgreSQL: `5434`
+- Redis: `6379`
 
-## 멀티테넌트 SaaS 1차 울타리
-- Prisma 스키마에 Church / ChurchMembership / Subscription 추가
-- 핵심 운영 엔티티 churchId 스코프 도입
-- 홈페이지/앱 라우트 분리 기반 추가
-- 상세 문서: `docs/MULTITENANT_FOUNDATION.md`
+## 워크스페이스 구조
 
-## 롤백 플랜
-1. 배포 전 커밋 태그 생성: `git tag pre-mvp`.
-2. 장애 발생 시 즉시 복구:
-   - 코드: `git reset --hard pre-mvp`
-   - DB: 직전 백업 복원 또는 `prisma migrate reset` 후 seed
-3. 핫픽스 후 재배포, 로그 점검.
+```text
+/
+├── docker/                      # gateway, DB 초기화, 개발용 compose
+├── docker-compose.yml           # 현재 실행 기준 compose
+├── packages/                    # contracts, events, service-client, shared
+├── services/
+│   ├── core-service/            # Next.js UI 셸, 인증, 워크스페이스 허브
+│   ├── application-service/     # 신청 도메인 API
+│   ├── content-service/         # 스켈레톤
+│   ├── notification-service/    # 스켈레톤
+│   ├── ai-service/              # 스켈레톤
+│   └── community-service/       # 스켈레톤
+├── docs/                        # 실행 문서 세트
+├── PRD.md                       # 제품 요구사항 원문
+├── ARCHITECTURE.md              # 시스템 설계 기준
+└── PROJECT_WORKING_DOC.md       # 현재 상태, 진행 기록, 남은 일
+```
 
-## 확장 가이드
-- 후속 모듈(설교 요약/나눔지/TTS/커뮤니티)은 현재 `app/(admin)` 라우트 그룹 하위로 모듈 추가.
-- 엔티티 확장은 `prisma/schema.prisma` 중심으로 관리.
+## 문서 맵
+
+- 제품 요구사항: [PRD.md](./PRD.md)
+- 시스템 구조: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- 프로젝트 현황: [PROJECT_WORKING_DOC.md](./PROJECT_WORKING_DOC.md)
+- 기능 상세: [docs/FEATURE_SPECS.md](./docs/FEATURE_SPECS.md)
+- 도메인 모델: [docs/DOMAIN_MODEL.md](./docs/DOMAIN_MODEL.md)
+- API 계약: [docs/API_CONTRACTS.md](./docs/API_CONTRACTS.md)
+- 운영 런북: [docs/OPERATIONS_RUNBOOK.md](./docs/OPERATIONS_RUNBOOK.md)
+- 런칭 체크리스트: [docs/LAUNCH_CHECKLIST.md](./docs/LAUNCH_CHECKLIST.md)
+
+## 개발 명령
+
+```bash
+npm run dev
+npm run dev:detach
+npm run down
+npm run logs
+npm run build
+npm run typecheck
+```
