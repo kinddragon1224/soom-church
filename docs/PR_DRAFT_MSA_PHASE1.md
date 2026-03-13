@@ -9,6 +9,14 @@
 - add gateway and local compose scaffolding for service-oriented development
 - add architecture and working docs for the staged migration
 
+## Why this migration started
+
+- the original monolith made every domain change land in the same Next.js app, which increased coupling between admin UI, domain logic, and data access
+- application flows started to stand out as a good first extraction target because they have clear CRUD boundaries and can be separated without rewriting the whole product
+- the service split is intended to make domain ownership clearer, reduce the blast radius of future changes, and let the team evolve high-change areas independently
+- shared contracts and service-client packages were introduced so the team can move domain logic out of the monolith without losing type safety at service boundaries
+- this also creates a path for later extractions such as notifications, content, AI, and community without forcing a big-bang rewrite
+
 ## What is implemented
 
 - `core-service` now owns the main admin UI, auth routes, workspace context, and most product logic
