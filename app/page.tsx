@@ -66,12 +66,12 @@ export default function HomePage() {
           <div className="flex flex-1 items-center pb-10 pt-16 sm:pt-20 lg:pb-16 lg:pt-24">
             <div className="relative z-10 max-w-[760px]">
               <h1 className="max-w-[760px] text-[2.95rem] font-semibold leading-[0.96] tracking-[-0.045em] text-white sm:text-[4.4rem] lg:text-[5.05rem]">
-                교회에 필요한 디지털 사역을
+                교회에 필요한 디지털 작업을
                 <br className="hidden sm:block" />
-                더 선명하고 단정하게
+                더 빠르고 단정하게
               </h1>
               <div className="mt-6 max-w-[560px] space-y-2.5 text-sm leading-7 text-white/80 sm:text-base sm:leading-8">
-                <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞는 구조로 빠르게 제작합니다.</p>
+                <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
                 <p>복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
               </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
