@@ -87,20 +87,20 @@ export default function HomePage() {
       </section>
 
       <section id="message" className="border-t border-white/10 bg-[#f4f5f7] text-[#0a1020]">
-        <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(420px,1fr)] lg:items-center lg:gap-12 xl:gap-16">
-            <div className="max-w-[520px]">
-              <p className="font-display text-[11px] tracking-[0.22em] text-[#5c6785]">MESSAGE</p>
-              <h2 className="mt-5 font-display text-[3.2rem] font-light leading-[0.94] tracking-[-0.06em] text-[#081126] sm:text-[4.2rem] lg:text-[5.3rem] xl:text-[6rem]">
+        <div className="mx-auto flex min-h-screen max-w-[1440px] items-center px-5 py-14 sm:px-8 lg:px-10">
+          <div className="grid w-full gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(480px,1fr)] lg:items-center lg:gap-14 xl:gap-20">
+            <div className="max-w-[560px]">
+              <p className="text-[11px] font-medium tracking-[0.24em] text-[#5c6785]">MESSAGE</p>
+              <h2 className="mt-6 text-[3.1rem] font-light leading-[0.88] tracking-[-0.075em] text-[#0a1226] sm:text-[4.25rem] lg:text-[5.2rem] xl:text-[5.9rem]">
                 사람에 더 집중하고,
                 <br />
                 기술은 더 조용하게.
               </h2>
-              <p className="mt-8 max-w-[430px] text-sm leading-7 text-[#44506d] sm:text-[15px] sm:leading-7">
+              <p className="mt-8 max-w-[420px] text-[15px] leading-7 text-[#44506d]">
                 교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록,
                 필요한 디지털 작업을 단정한 구조로 정리하고 제작합니다.
               </p>
-              <div className="mt-8">
+              <div className="mt-9">
                 <Link
                   href="/login"
                   className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#0b1327] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_30px_rgba(8,17,38,0.14)] transition hover:bg-[#16203a]"
@@ -120,7 +120,7 @@ export default function HomePage() {
                   </div>
                   <p className="text-[11px] font-medium tracking-[0.18em] text-[#8a94aa]">PORTFOLIO PREVIEW</p>
                 </div>
-                <div className="mt-4 flex aspect-[1.18/1] items-center justify-center rounded-[22px] border border-dashed border-[#d6ddeb] bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f9_100%)] text-center sm:rounded-[28px]">
+                <div className="mt-4 flex aspect-[1.16/1] items-center justify-center rounded-[22px] border border-dashed border-[#d6ddeb] bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f9_100%)] text-center sm:rounded-[28px]">
                   <div>
                     <p className="text-sm font-medium text-[#6d7892]">포트폴리오 이미지 영역</p>
                     <p className="mt-2 text-xs text-[#98a3b8]">나중에 작업 이미지 / 사례 캡처 추가 예정</p>
