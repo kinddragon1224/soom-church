@@ -5,6 +5,9 @@ import { formatDate } from "@/lib/date";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function MemberDetailPage({ params }: { params: { id: string } }) {
   const member = await prisma.member.findUnique({
     where: { id: params.id },

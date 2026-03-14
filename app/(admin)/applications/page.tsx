@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function ApplicationsPage() {
   const applications = await prisma.application.findMany({ include: { form: true }, orderBy: { createdAt: "desc" } });
 

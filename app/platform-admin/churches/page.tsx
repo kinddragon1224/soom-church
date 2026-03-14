@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function PlatformAdminChurchesPage() {
   const churches = await prisma.church.findMany({
     orderBy: { createdAt: "desc" },

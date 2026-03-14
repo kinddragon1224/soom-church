@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/date";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function ActivityLogsPage() {
   const logs = await prisma.activityLog.findMany({
     orderBy: { createdAt: "desc" },

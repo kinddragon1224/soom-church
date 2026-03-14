@@ -2,6 +2,9 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { StatusBadge } from "@/components/ui/badge";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function MembersPage({
   searchParams,
 }: {

@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function NoticesPage() {
   const notices = await prisma.notice.findMany({ orderBy: { createdAt: "desc" }, include: { author: true } });
 

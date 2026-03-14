@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function PlatformAdminPage() {
   const [churchCount, subscriptionCount] = await Promise.all([
     prisma.church.count({ where: { isActive: true } }),

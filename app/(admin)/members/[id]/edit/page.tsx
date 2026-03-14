@@ -2,6 +2,9 @@ import { MemberForm } from "@/components/members/member-form";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function EditMemberPage({ params }: { params: { id: string } }) {
   const member = await prisma.member.findUnique({ where: { id: params.id } });
   if (!member) notFound();

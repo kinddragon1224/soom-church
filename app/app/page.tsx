@@ -3,6 +3,9 @@ import { getCurrentUserOrRedirect, getFirstChurchByUserId, getChurchBySlug } fro
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
+
 export const preferredRegion = "sin1";
 
 export default async function AppEntryPage() {

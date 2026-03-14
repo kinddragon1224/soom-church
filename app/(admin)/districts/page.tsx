@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function DistrictsPage() {
   const districts = await prisma.district.findMany({ include: { groups: true, _count: { select: { members: true } } } });
 
