@@ -88,7 +88,7 @@ export default function HomePage() {
 
       <section id="message" className="border-t border-white/10 bg-[#f4f5f7] text-[#0a1020]">
         <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-5 py-14 sm:px-8 lg:px-12">
-          <div className="grid w-full gap-12 lg:grid-cols-[minmax(420px,0.78fr)_minmax(560px,1fr)] lg:items-center lg:gap-20 xl:gap-28">
+          <div className="grid w-full gap-12 lg:grid-cols-[minmax(420px,0.78fr)_minmax(0,1fr)] lg:items-center lg:gap-20 xl:gap-28">
             <div className="max-w-[620px] lg:-translate-y-1">
               <p className="text-[11px] font-medium tracking-[0.24em] text-[#5c6785]">MESSAGE</p>
               <h2
@@ -114,24 +114,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative lg:justify-self-end">
-              <div className="rounded-[28px] border border-[#d8deeb] bg-white p-3 shadow-[0_28px_80px_rgba(17,24,39,0.08)] sm:rounded-[34px] sm:p-4">
-                <div className="flex items-center justify-between border-b border-[#edf1f7] px-3 pb-3 sm:px-4">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#cfd7e6]" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#dbe2ee]" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#e7ecf5]" />
-                  </div>
-                  <p className="text-[11px] font-medium tracking-[0.18em] text-[#8a94aa]">PORTFOLIO PREVIEW</p>
-                </div>
-                <div className="mt-4 flex aspect-[1.16/1] items-center justify-center rounded-[22px] border border-dashed border-[#d6ddeb] bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f9_100%)] text-center sm:rounded-[28px]">
-                  <div>
-                    <p className="text-sm font-medium text-[#6d7892]">포트폴리오 이미지 영역</p>
-                    <p className="mt-2 text-xs text-[#98a3b8]">나중에 작업 이미지 / 사례 캡처 추가 예정</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div className="hidden lg:block" />
           </div>
         </div>
       </section>
