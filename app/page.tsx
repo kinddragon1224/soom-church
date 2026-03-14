@@ -62,8 +62,9 @@ export default function HomePage() {
                 단정하게
               </h1>
               <p className="mt-6 max-w-lg text-sm leading-7 text-white/70 sm:mt-7 sm:text-lg sm:leading-8">
-                행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구까지.
-                숨은 교회가 지금 바로 써야 하는 결과물을 빠르게 정리하고 제작한다.
+                숨(SOOM)은 이렇게 바꾸고
+                <br />
+                운용 도구까지.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row">
                 <a href="#offers" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">대표 상품 보기</a>
