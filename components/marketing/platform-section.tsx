@@ -6,7 +6,7 @@ export function PlatformSection() {
   ];
 
   return (
-    <section className="border-y border-white/10 bg-white/[0.02]">
+    <section id="platform-structure" className="border-y border-white/10 bg-white/[0.02]">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
         <p className="text-xs tracking-[0.2em] text-white/50">PLATFORM STRUCTURE</p>
         <div className="mt-6 divide-y divide-white/10 border-y border-white/10">

@@ -24,9 +24,9 @@ export function MarketingHeader({ action }: { action: HeaderAction }) {
         </Link>
 
         <nav className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-2 py-2 text-sm text-white/70 shadow-[0_8px_30px_rgba(0,0,0,0.14)] md:flex">
-          <Link href="/features" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Platform</Link>
+          <Link href="#platform-structure" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Platform</Link>
           <Link href="#service-offers" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Services</Link>
-          <Link href="/contact" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Contact</Link>
+          <Link href="#contact-consulting" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Consulting</Link>
         </nav>
 
         <div className="grid w-full grid-cols-2 gap-2 md:flex md:w-auto md.items-center md:rounded-full md:border md:border-white/10 md:bg-white/[0.02] md:p-1.5 md:shadow-[0_8px_30px_rgba(0,0,0,0.14)]">

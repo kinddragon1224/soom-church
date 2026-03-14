@@ -8,7 +8,7 @@ const steps = [
 
 export function ContactCtaSection() {
   return (
-    <section className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(99,102,241,0.02),rgba(255,255,255,0))]">
+    <section id="contact-consulting" className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(99,102,241,0.02),rgba(255,255,255,0))]">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 sm:py-18">
         <div className="overflow-hidden rounded-[32px] border border-white/10 bg-[#0b1327]/92 shadow-[0_24px_80px_rgba(2,6,23,0.42)]">
           <div className="grid gap-8 px-5 py-6 sm:px-8 sm:py-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-10 lg:py-10">
