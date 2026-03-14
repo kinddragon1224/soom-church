@@ -1,4 +1,5 @@
 import { BrandSection } from "@/components/marketing/brand-section";
+import { ContactCtaSection } from "@/components/marketing/contact-cta-section";
 import { FooterCta } from "@/components/marketing/footer-cta";
 import { MarketingHeader } from "@/components/marketing/header";
 import { MarketingHero } from "@/components/marketing/hero";
@@ -63,6 +64,7 @@ export default async function HomePage() {
       <ServiceOffersSection />
       <PlatformSection />
       <ModuleSection />
+      <ContactCtaSection />
       <FooterCta action={action} />
     </main>
   );
