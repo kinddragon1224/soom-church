@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const solutions = [
@@ -42,16 +43,16 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.86)_0%,rgba(5,11,22,0.72)_38%,rgba(5,11,22,0.42)_62%,rgba(5,11,22,0.68)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.12)_0%,rgba(5,11,22,0.36)_58%,rgba(5,11,22,0.74)_100%)]" />
-        <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col px-5 pb-10 pt-6 sm:px-8 lg:px-10">
-          <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <nav className="hidden items-center gap-2 text-sm text-white/68 lg:flex">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 pb-10 pt-5 sm:px-8 sm:pt-6 lg:px-10">
+          <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 lg:gap-6">
+            <nav className="hidden items-center gap-1 justify-self-start rounded-full border border-white/10 bg-black/18 px-2 py-1.5 text-sm text-white/72 backdrop-blur-sm lg:flex">
               <a href="#message" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Message</a>
               <a href="#solutions" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Solutions</a>
               <a href="#outputs" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Outputs</a>
               <a href="#contact" className="rounded-full px-4 py-2 transition hover:bg-white/[0.06] hover:text-white">Consulting</a>
             </nav>
             <Link href="/" className="justify-self-center inline-flex items-center rounded-full border border-white/10 bg-black/20 px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.2)] backdrop-blur-sm">
-              <span className="font-display text-sm tracking-[0.2em] text-white/86">SOOM</span>
+              <Image src="/soom-logo-main.svg" alt="SOOM" width={120} height={32} className="h-6 w-auto sm:h-7" priority />
             </Link>
             <div className="justify-self-end">
               <Link href="/login" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/12 bg-black/20 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-black/28">
@@ -60,22 +61,17 @@ export default function HomePage() {
             </div>
           </header>
 
-          <div className="mt-auto grid gap-8 pb-10 pt-20 lg:pb-16 lg:pt-28">
-            <div className="relative z-10 max-w-5xl">
-              <h1 className="mt-6 max-w-5xl text-[2.9rem] font-semibold leading-[0.94] text-white sm:text-6xl lg:text-[6.2rem]">
+          <div className="flex flex-1 items-center pb-10 pt-14 sm:pt-16 lg:pb-16 lg:pt-20">
+            <div className="relative z-10 max-w-[980px]">
+              <h1 className="max-w-[980px] text-[2.9rem] font-semibold leading-[0.92] tracking-[-0.04em] text-white sm:text-[4.6rem] lg:text-[5.4rem] xl:text-[5.8rem]">
                 교회 운영과 사역을,
-                <br />
+                <br className="hidden sm:block" />
                 하나의 흐름으로 이어갑니다
               </h1>
-              <p className="mt-6 max-w-lg text-sm leading-7 text-white/82 sm:text-lg sm:leading-8">
-                행사, 설교, 신청, 운영에 필요한 디지털 작업을
-                <br />
-                교회에 맞는 구조로 정리하고 제작합니다.
-                <br />
-                흩어진 일을 줄일수록, 준비가 단순해질수록,
-                <br />
-                교회는 더 본질에 집중할 수 있습니다.
-              </p>
+              <div className="mt-7 max-w-xl space-y-2.5 text-sm leading-7 text-white/82 sm:text-lg sm:leading-8">
+                <p>행사, 설교, 신청, 운영에 필요한 디지털 작업을 교회에 맞는 구조로 정리하고 제작합니다.</p>
+                <p>흩어진 일을 줄일수록, 준비가 단순해질수록, 교회는 더 본질에 집중할 수 있습니다.</p>
+              </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a href="#outputs" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">대표 상품 보기</a>
                 <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-black/20 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm">상담 문의</a>
