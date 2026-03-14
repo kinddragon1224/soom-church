@@ -87,13 +87,48 @@ export default function HomePage() {
       </section>
 
       <section id="message" className="border-t border-white/10 bg-[#f4f5f7] text-[#0a1020]">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <p className="font-display text-xs tracking-[0.2em] text-[#4d5a7a]">MESSAGE</p>
-          <h2 className="mt-6 max-w-6xl text-[3rem] font-semibold leading-[0.95] sm:text-6xl lg:text-[7rem]">
-            교회 운영은 더 단정하게.
-            <br />
-            메시지는 더 선명하게.
-          </h2>
+        <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(420px,1fr)] lg:items-center lg:gap-12 xl:gap-16">
+            <div className="max-w-[520px]">
+              <p className="font-display text-[11px] tracking-[0.22em] text-[#5c6785]">MESSAGE</p>
+              <h2 className="mt-5 font-display text-[3.2rem] font-light leading-[0.94] tracking-[-0.06em] text-[#081126] sm:text-[4.2rem] lg:text-[5.3rem] xl:text-[6rem]">
+                사람에 더 집중하고,
+                <br />
+                기술은 더 조용하게.
+              </h2>
+              <p className="mt-8 max-w-[430px] text-sm leading-7 text-[#44506d] sm:text-[15px] sm:leading-7">
+                교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록,
+                필요한 디지털 작업을 단정한 구조로 정리하고 제작합니다.
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/login"
+                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#0b1327] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_30px_rgba(8,17,38,0.14)] transition hover:bg-[#16203a]"
+                >
+                  로그인
+                </Link>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="rounded-[28px] border border-[#d8deeb] bg-white p-3 shadow-[0_28px_80px_rgba(17,24,39,0.08)] sm:rounded-[34px] sm:p-4">
+                <div className="flex items-center justify-between border-b border-[#edf1f7] px-3 pb-3 sm:px-4">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#cfd7e6]" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#dbe2ee]" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#e7ecf5]" />
+                  </div>
+                  <p className="text-[11px] font-medium tracking-[0.18em] text-[#8a94aa]">PORTFOLIO PREVIEW</p>
+                </div>
+                <div className="mt-4 flex aspect-[1.18/1] items-center justify-center rounded-[22px] border border-dashed border-[#d6ddeb] bg-[linear-gradient(180deg,#f8fafc_0%,#eef3f9_100%)] text-center sm:rounded-[28px]">
+                  <div>
+                    <p className="text-sm font-medium text-[#6d7892]">포트폴리오 이미지 영역</p>
+                    <p className="mt-2 text-xs text-[#98a3b8]">나중에 작업 이미지 / 사례 캡처 추가 예정</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
