@@ -4,6 +4,7 @@ import { MarketingHeader } from "@/components/marketing/header";
 import { MarketingHero } from "@/components/marketing/hero";
 import { ModuleSection } from "@/components/marketing/module-section";
 import { PlatformSection } from "@/components/marketing/platform-section";
+import { ServiceOffersSection } from "@/components/marketing/service-offers-section";
 import { getCurrentUserId } from "@/lib/auth";
 import { getChurchBySlug, getFirstChurchByUserId } from "@/lib/church-context";
 import { PLATFORM_ADMIN_EMAILS } from "@/lib/platform-admin";
@@ -14,7 +15,7 @@ export default async function HomePage() {
 
   let action = {
     primaryHref: "/signup",
-    primaryLabel: "숨 시작하기",
+    primaryLabel: "상품 보기",
     secondaryHref: "/login",
     secondaryLabel: "숨 로그인",
     loggedIn: false,
@@ -27,7 +28,7 @@ export default async function HomePage() {
       const demoChurch = await getChurchBySlug("daehung-ieum-dubit");
       action = {
         primaryHref: "/platform-admin",
-        primaryLabel: "플랫폼 콘솔로 이동",
+        primaryLabel: "운영 콘솔 열기",
         secondaryHref: demoChurch ? `/app/${demoChurch.slug}/dashboard` : "/app",
         secondaryLabel: demoChurch ? "데모 워크스페이스 보기" : "워크스페이스 보기",
         loggedIn: true,
@@ -37,7 +38,7 @@ export default async function HomePage() {
       if (church) {
         action = {
           primaryHref: `/app/${church.slug}/dashboard`,
-          primaryLabel: "내 워크스페이스로 이동",
+          primaryLabel: "진행 중인 작업 보기",
           secondaryHref: "/app",
           secondaryLabel: "워크스페이스 목록",
           loggedIn: true,
@@ -45,9 +46,9 @@ export default async function HomePage() {
       } else {
         action = {
           primaryHref: "/app",
-          primaryLabel: "워크스페이스 연결",
+          primaryLabel: "상품 진행 현황 보기",
           secondaryHref: "/signup",
-          secondaryLabel: "온보딩 보기",
+          secondaryLabel: "도입 흐름 보기",
           loggedIn: true,
         };
       }
@@ -59,6 +60,7 @@ export default async function HomePage() {
       <MarketingHeader action={action} />
       <MarketingHero action={action} />
       <BrandSection />
+      <ServiceOffersSection />
       <PlatformSection />
       <ModuleSection />
       <FooterCta action={action} />
