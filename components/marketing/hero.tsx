@@ -9,8 +9,8 @@ type HeroAction = {
 
 export function MarketingHero({ action }: { action: HeroAction }) {
   return (
-    <section className="relative overflow-hidden border-b border-white/10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(106,76,255,0.25),transparent_38%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.18),transparent_40%)]" />
+    <section className="relative overflow-hidden border-b border-white/10 bg-[linear-gradient(180deg,#081226_0%,#0b1530_100%)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(99,102,241,0.3),transparent_38%),radial-gradient(circle_at_18%_78%,rgba(236,72,153,0.16),transparent_24%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.16),transparent_40%)]" />
       <div className="mx-auto grid min-h-[72vh] w-full max-w-6xl items-end px-4 pb-14 pt-20 sm:min-h-[78vh] sm:px-6 sm:pb-16">
         <div className="relative max-w-4xl">
           <p className="text-xs tracking-[0.22em] text-white/55">SOOM FOR CHURCHES</p>
@@ -25,10 +25,16 @@ export function MarketingHero({ action }: { action: HeroAction }) {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href={action.primaryHref} className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black hover:opacity-90">
+            <Link
+              href={action.primaryHref}
+              className="rounded-full bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(99,102,241,0.35)] transition hover:bg-indigo-400"
+            >
               {action.primaryLabel}
             </Link>
-            <Link href={action.secondaryHref} className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-medium text-white hover:border-white/55">
+            <Link
+              href={action.secondaryHref}
+              className="rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition hover:border-pink-300/40 hover:bg-pink-400/10"
+            >
               {action.secondaryLabel}
             </Link>
           </div>
