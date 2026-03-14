@@ -92,18 +92,15 @@ export default function HomePage() {
             <div className="max-w-[560px] lg:-translate-y-2">
               <p className="text-[11px] font-medium tracking-[0.24em] text-[#5c6785]">MESSAGE</p>
               <h2
-                className="mt-5 text-[3.1rem] font-normal leading-[0.86] tracking-[-0.08em] text-[#0a1226] sm:text-[4.2rem] lg:text-[5.15rem] xl:text-[5.8rem]"
+                className="mt-5 text-[3.1rem] font-normal tracking-[-0.08em] text-[#0a1226] sm:text-[4.2rem] lg:text-[5.15rem] xl:text-[5.8rem]"
                 style={{ fontFamily: 'var(--font-serif-ko)' }}
               >
-                사람에 더
-                <br />
-                집중하고,
-                <br />
-                기술은 더
-                <br />
-                조용하게.
+                <span className="block leading-[0.9]">사람에 더</span>
+                <span className="block leading-[0.9]">집중하고</span>
+                <span className="mt-[0.24em] block leading-[0.9]">기술은 더</span>
+                <span className="block leading-[0.9]">조용하게.</span>
               </h2>
-              <p className="mt-10 max-w-[460px] whitespace-pre-line text-[15px] leading-7 text-[#44506d]">
+              <p className="mt-12 max-w-[460px] whitespace-pre-line text-[15px] leading-7 text-[#44506d]">
                 {`교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록, 
 필요한 디지털 작업을 단정한 구조로 정리하고 제작합니다.`}
               </p>
