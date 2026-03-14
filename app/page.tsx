@@ -35,8 +35,13 @@ const principles = [
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#050b16] text-white">
-      <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_80%_18%,rgba(99,102,241,0.18),transparent_24%),linear-gradient(180deg,#050b16_0%,#091224_100%)]">
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.1),rgba(5,11,22,0.62))]" />
+      <section className="relative min-h-screen overflow-hidden bg-[#050b16]">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/hero-church-main.png')" }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.86)_0%,rgba(5,11,22,0.72)_38%,rgba(5,11,22,0.42)_62%,rgba(5,11,22,0.68)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.12)_0%,rgba(5,11,22,0.36)_58%,rgba(5,11,22,0.74)_100%)]" />
         <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col px-5 pb-10 pt-6 sm:px-8 lg:px-10">
           <header className="flex items-center justify-between">
             <Link href="/" className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
@@ -51,8 +56,8 @@ export default function HomePage() {
           </header>
 
           <div className="mt-auto grid gap-8 pb-10 pt-20 lg:grid-cols-[1.08fr_0.92fr] lg:items-end lg:pb-16 lg:pt-28">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 backdrop-blur-sm">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 <span className="font-display text-xs tracking-[0.22em] text-white/55">CHURCH DIGITAL STUDIO</span>
               </div>
@@ -61,33 +66,33 @@ export default function HomePage() {
                 <br />
                 더 선명하고 단정하게
               </h1>
-              <p className="mt-6 max-w-lg text-sm leading-7 text-white/72 sm:text-lg sm:leading-8">
+              <p className="mt-6 max-w-lg text-sm leading-7 text-white/80 sm:text-lg sm:leading-8">
                 행사 페이지, 설교 콘텐츠, 신청 웹, 운용 도구까지.
                 <br />
                 숨(SOOM)은 교회가 지금 바로 써야 하는 결과물을 빠르게 정리하고 제작합니다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a href="#outputs" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">대표 상품 보기</a>
-                <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">상담 문의</a>
+                <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-black/20 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm">상담 문의</a>
               </div>
             </div>
 
-            <div className="grid gap-4">
-              <div className="rounded-[30px] border border-white/10 bg-white/[0.05] p-5 shadow-[0_24px_80px_rgba(2,6,23,0.42)] backdrop-blur-sm">
+            <div className="grid gap-4 lg:pl-6">
+              <div className="rounded-[30px] border border-white/10 bg-black/30 p-5 shadow-[0_24px_80px_rgba(2,6,23,0.42)] backdrop-blur-md">
                 <p className="font-display text-xs tracking-[0.18em] text-white/42">LIVE OUTPUT</p>
                 <h2 className="mt-3 text-2xl font-semibold text-white">행사 페이지, 설교 쇼츠, 신청 웹</h2>
                 <p className="mt-3 text-sm leading-7 text-white/68">지금 필요한 결과물을 먼저 정리하고, 이후 운영 구조로 확장합니다.</p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div className="rounded-[28px] border border-white/10 bg-[#0b1327]/90 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)]">
+                <div className="rounded-[28px] border border-white/10 bg-black/28 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)] backdrop-blur-md">
                   <p className="text-xs tracking-[0.18em] text-white/42">01</p>
                   <p className="mt-3 text-lg font-semibold text-white">행사·부서 랜딩페이지</p>
                 </div>
-                <div className="rounded-[28px] border border-white/10 bg-[#0b1327]/90 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)]">
+                <div className="rounded-[28px] border border-white/10 bg-black/28 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)] backdrop-blur-md">
                   <p className="text-xs tracking-[0.18em] text-white/42">02</p>
                   <p className="mt-3 text-lg font-semibold text-white">설교 쇼츠 패키지</p>
                 </div>
-                <div className="rounded-[28px] border border-white/10 bg-[#0b1327]/90 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)] sm:col-span-2">
+                <div className="rounded-[28px] border border-white/10 bg-black/28 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)] backdrop-blur-md sm:col-span-2">
                   <p className="text-xs tracking-[0.18em] text-white/42">03</p>
                   <p className="mt-3 text-lg font-semibold text-white">작은 납품에서 운용 도구까지 한 흐름으로</p>
                 </div>
