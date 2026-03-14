@@ -63,14 +63,14 @@ export default function HomePage() {
           <div className="mt-auto grid gap-8 pb-10 pt-20 lg:pb-16 lg:pt-28">
             <div className="relative z-10 max-w-5xl">
               <h1 className="mt-6 max-w-5xl text-[2.9rem] font-semibold leading-[0.94] text-white sm:text-6xl lg:text-[6.2rem]">
-                교회에 필요한 디지털 사역을
+                교회 홈페이지부터 운용 도구까지,
                 <br />
-                더 선명하고 단정하게
+                빠르게 시작하세요
               </h1>
               <p className="mt-6 max-w-lg text-sm leading-7 text-white/82 sm:text-lg sm:leading-8">
-                하늘의 숨결로,
+                행사, 설교, 신청, 운영에 필요한 디지털 작업을
                 <br />
-                땅에서 숨 쉬게.
+                교회에 맞는 구조로 정리하고 제작합니다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a href="#outputs" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">대표 상품 보기</a>
