@@ -15,13 +15,13 @@ export function MarketingHero({ action }: { action: HeroAction }) {
         <div className="relative max-w-4xl">
           <p className="font-display text-xs tracking-[0.22em] text-white/55">SOOM FOR CHURCHES</p>
           <h1 className="mt-4 text-4xl font-semibold leading-[1.02] text-white sm:text-6xl md:text-8xl">
-            교회에 필요한 디지털 작업,
+            교회를 위한 디지털 사역,
             <br />
-            숨에서 빠르게 만든다
+            더 단정하고 더 선명하게
           </h1>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-white/75 sm:mt-6 sm:text-lg sm:leading-8">
-            설교 쇼츠, 행사 랜딩페이지, 신청 웹, 간편 명단 관리까지.
-            당장 필요한 결과물을 먼저 빠르게 납품하고, 이후 교회별 운영 플랫폼으로 확장합니다.
+            설교 영상, 행사 페이지, 신청 웹, 운영 도구까지.
+            교회 현장에 바로 필요한 결과물을 품위 있게 설계하고 빠르게 제작합니다.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">

@@ -1,12 +1,5 @@
 const offers = [
   {
-    title: '설교 쇼츠 패키지',
-    badge: '월 4개 · 5만 원',
-    description:
-      '주일 예배 말씀 중 1분 이내 핵심 구간을 쇼츠로 제작합니다. 원하는 부분 지정 가능, 교회 채널 업로드용으로 바로 납품합니다.',
-    bullets: ['기본 컷 편집', '기본 자막 포함', '원하는 구간 요청 가능', '자막/편집 스타일 커스텀은 추가요금'],
-  },
-  {
     title: '행사·부서 랜딩페이지',
     badge: '기본 6.9만 원부터',
     description:
@@ -14,18 +7,25 @@ const offers = [
     bullets: ['소개 / 일정 / 장소 / 신청 버튼', '모바일 중심 1페이지 구성', '수정 1회', '확장형은 7만 원대 후반~9만 원대'],
   },
   {
-    title: '교구·부속교회 간편 명단 관리 웹',
-    badge: 'MVP 15만 원',
-    description:
-      '작은 조직이 바로 쓸 수 있는 원클릭형 명단 관리 웹을 MVP로 제공합니다. 복잡한 구축보다 빠른 사용과 현장 적용에 초점을 둡니다.',
-    bullets: ['소규모 조직용 MVP', '핵심 기능 중심 고정 범위', '초기 셋업형 1회 납품', '유지보수·기능 확장은 별도'],
-  },
-  {
     title: '행사용·설교용 AI 영상 제작',
     badge: '15초 5만 원부터',
     description:
       '행사 홍보, 설교 하이라이트, 사역 소개에 맞는 고퀄리티 AI 영상을 제작합니다. 짧고 강한 메시지를 모바일 중심 영상으로 빠르게 납품합니다.',
     bullets: ['15초 5만 원 / 30초 10만 원 / 1분 15만 원', '기본 기획 협의 포함', '수정 1회', '고난도 합성·실사 인물합성·TTS는 별도 협의'],
+  },
+  {
+    title: '설교 쇼츠 패키지',
+    badge: '월 4개 · 5만 원',
+    description:
+      '주일 예배 말씀 중 1분 이내 핵심 구간을 쇼츠로 제작합니다. 원하는 부분 지정 가능, 교회 채널 업로드용으로 바로 납품합니다.',
+    bullets: ['기본 컷 편집', '기본 자막 포함', '원하는 구간 요청 가능', '자막/편집 스타일 커스텀은 추가요금'],
+  },
+  {
+    title: '교구·부속교회 간편 명단 관리 웹',
+    badge: 'MVP 15만 원',
+    description:
+      '작은 조직이 바로 쓸 수 있는 원클릭형 명단 관리 웹을 MVP로 제공합니다. 복잡한 구축보다 빠른 사용과 현장 적용에 초점을 둡니다.',
+    bullets: ['소규모 조직용 MVP', '핵심 기능 중심 고정 범위', '초기 셋업형 1회 납품', '유지보수·기능 확장은 별도'],
   },
 ];
 
@@ -39,21 +39,19 @@ const principles = [
 
 export function ServiceOffersSection() {
   return (
-    <section className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.01),rgba(99,102,241,0.025))]">
+    <section id="service-offers" className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.01),rgba(99,102,241,0.025))]">
       <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="font-display text-xs tracking-[0.2em] text-white/50">SERVICE OFFERS</p>
             <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-5xl">
-              숨은 플랫폼이면서,
+              교회에 필요한 디지털 결과물을
               <br />
-              교회 현장을 위한
-              <br />
-              디지털 납품도 바로 시작한다.
+              더 빠르고 더 정돈되게 제공합니다.
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
-              대흥침례교회에서 실제로 진행 중인 흐름을 바탕으로, 먼저 필요한 결과물을 빠르게 납품합니다.
-              플랫폼 구축과 별개로, 교회가 바로 체감할 수 있는 작은 실행 단위부터 시작합니다.
+              실제 교회 현장에서 검증한 흐름을 바탕으로, 행사·영상·신청·운영도구를 상황에 맞게 설계하고 제작합니다.
+              복잡한 설명보다 바로 쓸 수 있는 결과물이 먼저 전달되도록 구성했습니다.
             </p>
 
             <div className="mt-8 rounded-3xl border border-white/10 bg-[#0b1327]/88 p-5 shadow-[0_16px_50px_rgba(2,6,23,0.32)] backdrop-blur-sm">

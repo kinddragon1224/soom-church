@@ -14,7 +14,7 @@ export default async function HomePage() {
   const userId = getCurrentUserId();
 
   let action = {
-    primaryHref: "/signup",
+    primaryHref: "#service-offers",
     primaryLabel: "상품 보기",
     secondaryHref: "/login",
     secondaryLabel: "숨 로그인",
