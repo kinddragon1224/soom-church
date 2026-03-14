@@ -3,18 +3,18 @@ import Link from "next/link";
 const solutions = [
   {
     label: "제작",
-    title: "행사 페이지와 설교 콘텐츠를 빠르게 제작합니다",
-    desc: "교회가 지금 바로 써야 하는 페이지와 영상을 단정하게 정리합니다.",
+    title: "필요한 페이지와 영상을 빠르게 만듭니다",
+    desc: "행사, 부서, 설교에 맞는 결과물을 바로 쓰게 정리합니다.",
   },
   {
     label: "운영",
-    title: "신청 웹과 운용 도구를 가볍고 명확하게 구축합니다",
-    desc: "복잡한 흐름보다 현장에서 바로 쓰는 구조를 먼저 만듭니다.",
+    title: "복잡한 신청과 운영 흐름을 단순하게 바꿉니다",
+    desc: "현장에서 바로 쓰는 구조를 먼저 만들고 필요한 만큼 확장합니다.",
   },
   {
     label: "콘텐츠",
-    title: "설교 요약과 나눔지, 음성 콘텐츠까지 이어갑니다",
-    desc: "메시지가 한 번 전달되고 끝나지 않도록 콘텐츠 흐름을 연결합니다.",
+    title: "한 번 전한 메시지를 계속 이어가게 만듭니다",
+    desc: "설교 요약, 나눔지, 음성 콘텐츠까지 한 흐름으로 연결합니다.",
   },
 ];
 
@@ -144,29 +144,39 @@ export default function HomePage() {
       </section>
 
       <section id="solutions" className="bg-[#050b16]">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="font-display text-xs tracking-[0.2em] text-white/45">SOLUTIONS</p>
-              <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-                숨은 교회를 위해
+        <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-5 py-16 sm:px-8 lg:px-12">
+          <div className="w-full">
+            <div className="max-w-[1180px]">
+              <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">SOLUTIONS</p>
+              <h2 className="mt-5 text-[3rem] font-light leading-[0.92] tracking-[-0.06em] text-white sm:text-[4.2rem] lg:text-[5.3rem] xl:text-[6rem]">
+                교회 운영을 더 단순하게.
                 <br />
-                세 가지 방식으로 일합니다.
+                메시지는 더 멀리 가게.
               </h2>
             </div>
-            <p className="max-w-md text-sm leading-7 text-white/62 sm:text-base">
-              제작, 운영, 콘텐츠를 따로 보지 않고 교회가 실제로 겪는 필요를 장면처럼 이어서 설계합니다.
-            </p>
-          </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {solutions.map((item) => (
-              <article key={item.label} className="rounded-[34px] border border-white/10 bg-[#0b1327]/92 p-6 shadow-[0_24px_80px_rgba(2,6,23,0.34)] sm:p-7">
-                <p className="font-display text-xs tracking-[0.18em] text-indigo-100/58">{item.label}</p>
-                <h3 className="mt-4 text-3xl font-semibold text-white">{item.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-white/66">{item.desc}</p>
-              </article>
-            ))}
+            <div className="mt-8 flex flex-col gap-4 lg:mt-10 lg:flex-row lg:items-end lg:justify-between">
+              <p className="text-[1.75rem] font-light tracking-[-0.04em] text-white/92 sm:text-[2.2rem] lg:text-[2.6rem]">
+                제작하고. 정리하고. 이어갑니다.
+              </p>
+              <p className="max-w-[360px] text-sm leading-6 text-white/58 sm:text-[15px] sm:leading-7">
+                교회가 지금 바로 설명하고 바로 사용할 수 있는 방식으로 세 가지 흐름을 나눴습니다.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-4 lg:mt-12 lg:grid-cols-3">
+              {solutions.map((item) => (
+                <article key={item.label} className="group rounded-[30px] border border-white/8 bg-[#0a1122] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.28)] transition hover:border-white/14 hover:bg-[#0c152a] sm:p-7">
+                  <p className="text-[11px] font-medium tracking-[0.18em] text-indigo-100/55">{item.label}</p>
+                  <h3 className="mt-4 max-w-[14ch] text-[1.9rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[2.1rem]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-5 max-w-[28ch] text-sm leading-6 text-white/62 sm:text-[15px] sm:leading-7">
+                    {item.desc}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
