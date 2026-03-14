@@ -64,19 +64,19 @@ export default function HomePage() {
             <p className="absolute left-0 top-[27%] hidden text-sm font-medium text-white/78 lg:block">
               Solutions for Churches
             </p>
-            <div className="mx-auto w-full max-w-[1120px] text-center">
-              <h1 className="font-display text-[3.25rem] font-light leading-[0.94] tracking-[-0.06em] text-white sm:text-[4.6rem] md:text-[5.8rem] lg:text-[6.9rem] xl:text-[7.6rem]">
-                <span className="block">교회에 필요한 디지털 작업을</span>
-                <span className="mt-2 block">더 빠르고 단정하게</span>
+            <div className="mx-auto w-full max-w-[1040px] text-center">
+              <h1 className="font-display text-[2.8rem] font-light leading-[0.98] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
+                <span className="block">교회에 필요한 디지털</span>
+                <span className="block">작업을 더 빠르고 단정하게</span>
               </h1>
             </div>
 
-            <div className="mx-auto mt-8 max-w-[720px] text-center text-sm leading-7 text-white/82 sm:mt-10 sm:text-base sm:leading-8">
+            <div className="mx-auto mt-7 max-w-[680px] text-center text-sm leading-7 text-white/82 sm:mt-8 sm:text-[15px] sm:leading-7">
               <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
               <p>복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
             </div>
 
-            <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+            <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
               <a href="#outputs" className="inline-flex min-h-12 min-w-[168px] items-center justify-center rounded-full border border-white/55 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10">
                 대표 상품 보기
               </a>
