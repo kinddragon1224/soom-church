@@ -13,7 +13,7 @@ export function MarketingHero({ action }: { action: HeroAction }) {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(99,102,241,0.3),transparent_38%),radial-gradient(circle_at_18%_78%,rgba(236,72,153,0.16),transparent_24%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.16),transparent_40%)]" />
       <div className="mx-auto grid min-h-[66vh] w-full max-w-6xl items-end px-4 pb-12 pt-16 sm:min-h-[72vh] sm:px-6 sm:pb-16 sm:pt-20">
         <div className="relative max-w-4xl">
-          <p className="text-xs tracking-[0.22em] text-white/55">SOOM FOR CHURCHES</p>
+          <p className="font-display text-xs tracking-[0.22em] text-white/55">SOOM FOR CHURCHES</p>
           <h1 className="mt-4 text-4xl font-semibold leading-[1.02] text-white sm:text-6xl md:text-8xl">
             교회에 필요한 디지털 작업,
             <br />

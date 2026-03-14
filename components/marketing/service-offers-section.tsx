@@ -35,7 +35,7 @@ export function ServiceOffersSection() {
       <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <p className="text-xs tracking-[0.2em] text-white/50">SERVICE OFFERS</p>
+            <p className="font-display text-xs tracking-[0.2em] text-white/50">SERVICE OFFERS</p>
             <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-5xl">
               숨은 플랫폼이면서,
               <br />

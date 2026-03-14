@@ -1,3 +1,6 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+@import url('//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,6 +14,8 @@
   --primary-foreground: 0 0% 100%;
   --muted: 220 33% 96%;
   --muted-foreground: 222 18% 38%;
+  --font-ui: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  --font-display: 'Spoqa Han Sans Neo', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
   color-scheme: light;
 }
 
@@ -30,9 +35,28 @@
 
 body {
   @apply bg-background text-foreground;
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   background-image:
     radial-gradient(circle at top, rgba(99, 102, 241, 0.08), transparent 36%),
     radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.08), transparent 24%);
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-ui);
 }
 
 table {
