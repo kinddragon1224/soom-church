@@ -1,5 +1,6 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 @import url('//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css');
+@import url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.1/MaruBuri.css');
 
 @tailwind base;
 @tailwind components;
@@ -16,6 +17,7 @@
   --muted-foreground: 220 16% 74%;
   --font-ui: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
   --font-display: 'Spoqa Han Sans Neo', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-serif-ko: 'MaruBuri', 'Iropke Batang', 'Noto Serif KR', serif;
   color-scheme: dark;
 }
 
