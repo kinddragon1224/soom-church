@@ -44,13 +44,13 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.12)_30%,rgba(5,11,22,0.28)_72%,rgba(5,11,22,0.7)_100%)]" />
         <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col px-5 pb-8 pt-5 sm:px-8 sm:pt-6 lg:px-10">
           <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <nav className="hidden items-center gap-6 justify-self-start text-sm font-medium text-white/90 lg:flex">
+            <nav className="hidden items-center gap-5 justify-self-start text-[13px] font-medium text-white/90 lg:flex xl:gap-6">
               <a href="#solutions" className="transition hover:text-white/70">Solutions</a>
               <a href="#message" className="transition hover:text-white/70">Message</a>
               <a href="#outputs" className="transition hover:text-white/70">Outputs</a>
               <a href="#contact" className="transition hover:text-white/70">Consulting</a>
             </nav>
-            <Link href="/" className="justify-self-center text-center font-display text-[2rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.4rem]">
+            <Link href="/" className="justify-self-center text-center font-display text-[1.9rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.2rem]">
               soom
             </Link>
             <div className="justify-self-end">
@@ -61,18 +61,17 @@ export default function HomePage() {
           </header>
 
           <div className="relative flex flex-1 flex-col justify-center pb-24 pt-16 sm:pt-20 lg:pt-12">
-            <p className="absolute left-0 top-[26%] hidden text-sm font-medium text-white/78 lg:block">
+            <p className="absolute left-0 top-[27%] hidden text-sm font-medium text-white/78 lg:block">
               Solutions for Churches
             </p>
-            <div className="mx-auto w-full max-w-[1320px] text-center">
-              <h1 className="font-display text-[4rem] font-light leading-[0.92] tracking-[-0.07em] text-white sm:text-[5.6rem] md:text-[7rem] lg:text-[8.8rem] xl:text-[10.2rem]">
-                교회에 필요한 디지털 작업을
-                <br />
-                더 빠르고 단정하게
+            <div className="mx-auto w-full max-w-[1120px] text-center">
+              <h1 className="font-display text-[3.25rem] font-light leading-[0.94] tracking-[-0.06em] text-white sm:text-[4.6rem] md:text-[5.8rem] lg:text-[6.9rem] xl:text-[7.6rem]">
+                <span className="block">교회에 필요한 디지털 작업을</span>
+                <span className="mt-2 block">더 빠르고 단정하게</span>
               </h1>
             </div>
 
-            <div className="mx-auto mt-8 max-w-[760px] text-center text-sm leading-7 text-white/82 sm:mt-10 sm:text-base sm:leading-8">
+            <div className="mx-auto mt-8 max-w-[720px] text-center text-sm leading-7 text-white/82 sm:mt-10 sm:text-base sm:leading-8">
               <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
               <p>복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
             </div>
