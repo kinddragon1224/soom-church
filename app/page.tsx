@@ -87,20 +87,20 @@ export default function HomePage() {
       </section>
 
       <section id="message" className="border-t border-white/10 bg-[#f4f5f7] text-[#0a1020]">
-        <div className="mx-auto flex min-h-screen max-w-[1440px] items-center px-5 py-14 sm:px-8 lg:px-10">
-          <div className="grid w-full gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(480px,1fr)] lg:items-center lg:gap-14 xl:gap-20">
-            <div className="max-w-[560px] lg:-translate-y-2">
+        <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-5 py-14 sm:px-8 lg:px-12">
+          <div className="grid w-full gap-12 lg:grid-cols-[minmax(420px,0.78fr)_minmax(560px,1fr)] lg:items-center lg:gap-20 xl:gap-28">
+            <div className="max-w-[620px] lg:-translate-y-1">
               <p className="text-[11px] font-medium tracking-[0.24em] text-[#5c6785]">MESSAGE</p>
               <h2
-                className="mt-5 text-[3.1rem] font-normal tracking-[-0.08em] text-[#0a1226] sm:text-[4.2rem] lg:text-[5.15rem] xl:text-[5.8rem]"
+                className="mt-5 text-[2.8rem] font-normal tracking-[-0.05em] text-[#0a1226] sm:text-[3.7rem] lg:text-[4.45rem] xl:text-[5rem]"
                 style={{ fontFamily: 'var(--font-serif-ko)' }}
               >
-                <span className="block leading-[0.9]">사람에 더</span>
-                <span className="block leading-[0.9]">집중하고</span>
-                <span className="mt-[0.24em] block leading-[0.9]">기술은 더</span>
-                <span className="block leading-[0.9]">조용하게.</span>
+                <span className="block leading-[1.02]">사람에 더</span>
+                <span className="block leading-[1.02]">집중하고</span>
+                <span className="mt-[0.34em] block leading-[1.02]">기술은 더</span>
+                <span className="block leading-[1.02]">조용하게.</span>
               </h2>
-              <p className="mt-12 max-w-[460px] whitespace-pre-line text-[15px] leading-7 text-[#44506d]">
+              <p className="mt-12 max-w-[500px] whitespace-pre-line text-[15px] leading-7 text-[#44506d]">
                 {`교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록, 
 필요한 디지털 작업을 단정한 구조로 정리하고 제작합니다.`}
               </p>
@@ -114,7 +114,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative lg:justify-self-end">
               <div className="rounded-[28px] border border-[#d8deeb] bg-white p-3 shadow-[0_28px_80px_rgba(17,24,39,0.08)] sm:rounded-[34px] sm:p-4">
                 <div className="flex items-center justify-between border-b border-[#edf1f7] px-3 pb-3 sm:px-4">
                   <div className="flex items-center gap-2">
