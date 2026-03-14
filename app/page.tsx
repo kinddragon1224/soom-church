@@ -71,9 +71,17 @@ export default function HomePage() {
               </h1>
             </div>
 
-            <div className="mx-auto mt-6 max-w-[330px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
-              <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
-              <p className="mt-1.5 sm:mt-0">복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
+            <div className="mx-auto mt-6 max-w-[300px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
+              <div className="sm:hidden">
+                <p>행사 페이지, 설교 콘텐츠, 신청 웹을</p>
+                <p>교회에 맞게 빠르게 제작합니다.</p>
+                <p className="mt-2">바로 이해되고 바로 쓸 수 있는</p>
+                <p>결과물을 먼저 만듭니다.</p>
+              </div>
+              <div className="hidden sm:block">
+                <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
+                <p>복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
+              </div>
             </div>
 
             <div className="mx-auto mt-7 flex w-full max-w-[320px] flex-col items-center justify-center gap-2.5 sm:mt-9 sm:max-w-none sm:flex-row sm:gap-4">
