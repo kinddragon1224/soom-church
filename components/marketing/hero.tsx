@@ -9,9 +9,9 @@ type HeroAction = {
 };
 
 const quickStats = [
-  { label: "핵심 구조", value: "제작 · 운영 · 콘텐츠" },
-  { label: "대표 상품", value: "랜딩페이지 · 설교 쇼츠 · AI 영상" },
-  { label: "확장 방향", value: "작은 납품에서 워크스페이스까지" },
+  { label: "Solutions", value: "제작 · 운영 · 콘텐츠" },
+  { label: "Primary offers", value: "랜딩페이지 · AI 영상" },
+  { label: "Expansion", value: "작은 납품에서 플랫폼까지" },
 ];
 
 export function MarketingHero({ action }: { action: HeroAction }) {
@@ -26,13 +26,12 @@ export function MarketingHero({ action }: { action: HeroAction }) {
               <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
               <p className="font-display text-xs tracking-[0.22em] text-white/55">SOOM FOR CHURCHES</p>
             </div>
-            <h1 className="mt-5 text-4xl font-semibold leading-[1.02] text-white sm:text-6xl md:text-7xl xl:text-[5.6rem]">
-              교회가 지금 필요한 디지털 작업을,
+            <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-[0.98] text-white sm:text-6xl md:text-7xl xl:text-[5.8rem]">
+              교회를 위한 디지털 작업을
               <br />
-              하나의 흐름으로 정리하다
+              더 명확하고 단정하게.
             </h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/75 sm:text-lg sm:leading-8">
-              숨은 교회를 위한 디지털 제작 스튜디오이자 운영 플랫폼입니다.
+            <p className="mt-6 max-w-xl text-sm leading-7 text-white/72 sm:text-base sm:leading-8">
               행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 빠르게 제공하고 필요한 만큼 더 깊게 연결합니다.
             </p>
 

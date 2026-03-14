@@ -17,11 +17,10 @@ export function ContactCtaSection() {
               <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-4xl">
                 필요한 작업이 있다면,
                 <br />
-                짧게 남겨도 충분해.
+                짧고 분명하게 남겨주세요.
               </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/68 sm:text-base">
-                교회 행사 페이지, 설교 영상, 신청 웹, 운영 도구까지.
-                지금 필요한 결과물과 일정만 알려주면 가장 가볍고 빠른 방식으로 제안합니다.
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
+                필요한 결과물과 일정만 알려주면 가장 가볍고 빠른 방식으로 제안합니다.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">

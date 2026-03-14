@@ -41,8 +41,8 @@ export function SolutionsSection() {
               세 가지 방식으로 일합니다.
             </h2>
           </div>
-          <p className="max-w-xl text-sm leading-7 text-white/65 sm:text-base">
-            하나의 서비스만 파는 것이 아니라, 교회가 실제로 겪는 필요를 제작·운영·콘텐츠의 세 축으로 정리해 제안합니다.
+          <p className="max-w-lg text-sm leading-7 text-white/62 sm:text-base">
+            교회가 실제로 겪는 필요를 제작, 운영, 콘텐츠의 세 축으로 정리해 제안합니다.
           </p>
         </div>
 
