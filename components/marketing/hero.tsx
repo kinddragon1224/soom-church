@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeroScene } from "@/components/marketing/hero-scene";
 
 type HeroAction = {
   primaryHref: string;
@@ -10,7 +11,8 @@ type HeroAction = {
 export function MarketingHero({ action }: { action: HeroAction }) {
   return (
     <section className="relative overflow-hidden border-b border-white/10 bg-[linear-gradient(180deg,#060b17_0%,#0a1329_100%)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(99,102,241,0.22),transparent_34%),radial-gradient(circle_at_18%_78%,rgba(236,72,153,0.08),transparent_18%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.12),transparent_36%)]" />
+      <HeroScene />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(99,102,241,0.18),transparent_34%),radial-gradient(circle_at_18%_78%,rgba(236,72,153,0.05),transparent_18%),radial-gradient(circle_at_20%_80%,rgba(58,134,255,0.08),transparent_36%)]" />
       <div className="mx-auto grid min-h-[66vh] w-full max-w-6xl items-end px-4 pb-12 pt-16 sm:min-h-[72vh] sm:px-6 sm:pb-16 sm:pt-20">
         <div className="relative max-w-4xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.16)]">
