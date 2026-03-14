@@ -6,29 +6,29 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 40% 98%;
-  --foreground: 223 47% 11%;
-  --card: 0 0% 100%;
-  --border: 221 35% 88%;
-  --primary: 239 84% 67%;
+  --background: 222 52% 9%;
+  --foreground: 210 40% 98%;
+  --card: 223 45% 13%;
+  --border: 223 28% 24%;
+  --primary: 239 70% 62%;
   --primary-foreground: 0 0% 100%;
-  --muted: 220 33% 96%;
-  --muted-foreground: 222 18% 38%;
+  --muted: 223 30% 16%;
+  --muted-foreground: 220 16% 74%;
   --font-ui: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
   --font-display: 'Spoqa Han Sans Neo', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: 222 55% 10%;
+    --background: 222 52% 9%;
     --foreground: 210 40% 98%;
-    --card: 223 47% 14%;
-    --border: 222 31% 24%;
-    --primary: 239 84% 67%;
+    --card: 223 45% 13%;
+    --border: 223 28% 24%;
+    --primary: 239 70% 62%;
     --primary-foreground: 0 0% 100%;
-    --muted: 223 36% 18%;
-    --muted-foreground: 220 18% 72%;
+    --muted: 223 30% 16%;
+    --muted-foreground: 220 16% 74%;
     color-scheme: dark;
   }
 }
@@ -39,8 +39,8 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background-image:
-    radial-gradient(circle at top, rgba(99, 102, 241, 0.08), transparent 36%),
-    radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.08), transparent 24%);
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.06), transparent 34%),
+    radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.04), transparent 20%);
 }
 
 h1,

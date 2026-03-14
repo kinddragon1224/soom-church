@@ -31,7 +31,7 @@ const principles = [
 
 export function ServiceOffersSection() {
   return (
-    <section className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(99,102,241,0.04))]">
+    <section className="border-t border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.01),rgba(99,102,241,0.025))]">
       <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
@@ -48,12 +48,12 @@ export function ServiceOffersSection() {
               플랫폼 구축과 별개로, 교회가 바로 체감할 수 있는 작은 실행 단위부터 시작합니다.
             </p>
 
-            <div className="mt-8 rounded-3xl border border-indigo-300/15 bg-white/[0.04] p-5 shadow-[0_16px_50px_rgba(8,18,38,0.18)] backdrop-blur-sm">
+            <div className="mt-8 rounded-3xl border border-white/10 bg-[#0b1327]/88 p-5 shadow-[0_16px_50px_rgba(2,6,23,0.32)] backdrop-blur-sm">
               <p className="text-sm font-medium text-white">운영 원칙</p>
               <ul className="mt-4 space-y-3 text-sm text-white/70">
                 {principles.map((item) => (
                   <li key={item} className="flex gap-3">
-                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-pink-400" />
+                    <span className="mt-1 h-1.5 w-1.5 rounded-full bg-indigo-400/90" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -63,20 +63,20 @@ export function ServiceOffersSection() {
 
           <div className="grid gap-4">
             {offers.map((offer) => (
-              <article key={offer.title} className="rounded-3xl border border-indigo-300/15 bg-white/[0.04] p-6 shadow-[0_18px_60px_rgba(8,18,38,0.22)] backdrop-blur-sm transition hover:border-indigo-300/30 hover:bg-white/[0.06] sm:p-7">
+              <article key={offer.title} className="rounded-3xl border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_18px_60px_rgba(2,6,23,0.34)] backdrop-blur-sm transition hover:border-indigo-300/20 hover:bg-[#101a35] sm:p-7">
                 <div className="flex flex-col gap-3">
                   <div>
                     <h3 className="text-xl font-semibold text-white">{offer.title}</h3>
                     <p className="mt-3 text-sm leading-7 text-white/65 sm:text-base">{offer.description}</p>
                   </div>
-                  <div className="inline-flex w-fit rounded-full border border-pink-300/20 bg-pink-400/10 px-3 py-1 text-xs font-medium tracking-[0.12em] text-pink-100 shadow-[0_8px_24px_rgba(236,72,153,0.18)]">
+                  <div className="inline-flex w-fit rounded-full border border-indigo-300/18 bg-indigo-400/10 px-3 py-1 text-xs font-medium tracking-[0.12em] text-indigo-100 shadow-[0_8px_20px_rgba(79,70,229,0.14)]">
                     {offer.badge}
                   </div>
                 </div>
 
                 <ul className="mt-6 grid gap-3 text-sm text-white/70 sm:grid-cols-2">
                   {offer.bullets.map((bullet) => (
-                    <li key={bullet} className="rounded-2xl border border-white/10 bg-[#0d1732]/70 px-4 py-3 text-white/80">
+                    <li key={bullet} className="rounded-2xl border border-white/8 bg-[#091122] px-4 py-3 text-white/78">
                       {bullet}
                     </li>
                   ))}
