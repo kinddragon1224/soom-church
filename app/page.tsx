@@ -42,45 +42,49 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.38)_0%,rgba(5,11,22,0.2)_24%,rgba(5,11,22,0.12)_50%,rgba(5,11,22,0.3)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.12)_30%,rgba(5,11,22,0.28)_72%,rgba(5,11,22,0.7)_100%)]" />
-        <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col px-5 pb-8 pt-5 sm:px-8 sm:pt-6 lg:px-10">
-          <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col px-4 pb-8 pt-4 sm:px-8 sm:pt-6 lg:px-10">
+          <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3">
             <nav className="hidden items-center gap-5 justify-self-start text-[13px] font-medium text-white/90 lg:flex xl:gap-6">
               <a href="#solutions" className="transition hover:text-white/70">Solutions</a>
               <a href="#message" className="transition hover:text-white/70">Message</a>
               <a href="#outputs" className="transition hover:text-white/70">Outputs</a>
               <a href="#contact" className="transition hover:text-white/70">Consulting</a>
             </nav>
-            <Link href="/" className="justify-self-center text-center font-display text-[1.9rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.2rem]">
+            <Link href="/" className="justify-self-center text-center font-display text-[1.65rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.2rem]">
               soom
             </Link>
             <div className="justify-self-end">
-              <Link href="/login" className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/60 px-4 py-2 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-white/10 sm:min-h-11 sm:px-5 sm:text-sm">
+              <Link href="/login" className="inline-flex min-h-9 items-center justify-center rounded-full border border-white/60 px-3.5 py-2 text-[11px] font-medium text-white backdrop-blur-sm transition hover:bg-white/10 sm:min-h-11 sm:px-5 sm:text-sm">
                 로그인
               </Link>
             </div>
           </header>
 
-          <div className="relative flex flex-1 flex-col justify-center pb-20 pt-24 sm:pt-28 lg:pb-16 lg:pt-24">
+          <div className="relative flex flex-1 flex-col justify-center pb-16 pt-20 sm:pt-28 lg:pb-16 lg:pt-24">
             <div className="mx-auto w-full max-w-[1180px] text-center">
-              <h1 className="font-display text-[2.8rem] font-light leading-[0.98] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
-                <span className="block whitespace-nowrap">교회에 필요한 디지털 작업을</span>
-                <span className="block whitespace-nowrap lg:translate-x-[0.32em]">더 빠르고 단정하게</span>
+              <h1 className="font-display text-[2.15rem] font-light leading-[1.02] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
+                <span className="block sm:hidden">교회에 필요한</span>
+                <span className="block sm:hidden">디지털 작업을</span>
+                <span className="block sm:hidden">더 빠르고 단정하게</span>
+                <span className="hidden whitespace-nowrap sm:block">교회에 필요한 디지털 작업을</span>
+                <span className="hidden whitespace-nowrap sm:block lg:translate-x-[0.32em]">더 빠르고 단정하게</span>
               </h1>
             </div>
 
-            <div className="mx-auto mt-7 max-w-[680px] text-center text-sm leading-7 text-white/82 sm:mt-8 sm:text-[15px] sm:leading-7">
+            <div className="mx-auto mt-6 max-w-[330px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
               <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
-              <p>복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
+              <p className="mt-1.5 sm:mt-0">복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
             </div>
 
-            <div className="mx-auto mt-8 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row sm:gap-4">
-              <a href="#outputs" className="inline-flex min-h-12 min-w-[168px] items-center justify-center rounded-full border border-white/55 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10">
+            <div className="mx-auto mt-7 flex w-full max-w-[320px] flex-col items-center justify-center gap-2.5 sm:mt-9 sm:max-w-none sm:flex-row sm:gap-4">
+              <a href="#outputs" className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-white/55 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:min-w-[168px] sm:w-auto sm:px-6">
                 대표 상품 보기
               </a>
-              <a href="#contact" className="inline-flex min-h-12 min-w-[168px] items-center justify-center rounded-full border border-white/55 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10">
+              <a href="#contact" className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-white/55 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:min-w-[168px] sm:w-auto sm:px-6">
                 상담 문의
               </a>
             </div>
+            <div className="mx-auto mt-5 h-px w-[220px] bg-gradient-to-r from-indigo-400/0 via-indigo-400/90 to-pink-400/80 sm:mt-6 sm:hidden" />
             <div className="mx-auto mt-6 hidden h-px w-[320px] bg-gradient-to-r from-indigo-400/0 via-indigo-400/90 to-pink-400/80 sm:block lg:w-[420px]" />
           </div>
         </div>
