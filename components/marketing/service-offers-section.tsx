@@ -36,7 +36,7 @@ export function ServiceOffersSection() {
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <p className="text-xs tracking-[0.2em] text-white/50">SERVICE OFFERS</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-5xl">
+            <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-5xl">
               숨은 플랫폼이면서,
               <br />
               교회 현장을 위한
@@ -64,12 +64,12 @@ export function ServiceOffersSection() {
           <div className="grid gap-4">
             {offers.map((offer) => (
               <article key={offer.title} className="rounded-3xl border border-indigo-300/15 bg-white/[0.04] p-6 shadow-[0_18px_60px_rgba(8,18,38,0.22)] backdrop-blur-sm transition hover:border-indigo-300/30 hover:bg-white/[0.06] sm:p-7">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex flex-col gap-3">
                   <div>
                     <h3 className="text-xl font-semibold text-white">{offer.title}</h3>
                     <p className="mt-3 text-sm leading-7 text-white/65 sm:text-base">{offer.description}</p>
                   </div>
-                  <div className="rounded-full border border-pink-300/20 bg-pink-400/10 px-3 py-1 text-xs font-medium tracking-[0.12em] text-pink-100 shadow-[0_8px_24px_rgba(236,72,153,0.18)]">
+                  <div className="inline-flex w-fit rounded-full border border-pink-300/20 bg-pink-400/10 px-3 py-1 text-xs font-medium tracking-[0.12em] text-pink-100 shadow-[0_8px_24px_rgba(236,72,153,0.18)]">
                     {offer.badge}
                   </div>
                 </div>
