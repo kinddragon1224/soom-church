@@ -52,13 +52,14 @@ export default function HomePage() {
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 <span className="font-display text-xs tracking-[0.22em] text-white/55">CHURCH DIGITAL STUDIO</span>
               </div>
-              <h1 className="mt-5 max-w-5xl text-[2.6rem] font-semibold leading-[0.96] text-white sm:mt-6 sm:text-6xl lg:text-[6.2rem]">
-                교회가 지금 필요한 디지털 작업을
+              <h1 className="mt-5 max-w-4xl text-[2.5rem] font-semibold leading-[0.98] text-white sm:mt-6 sm:text-6xl lg:text-[6.2rem]">
+                교회에 필요한 디지털 사역을
                 <br />
-                더 크게, 더 단순하게.
+                더 선명하고 단정하게
               </h1>
-              <p className="mt-6 max-w-xl text-sm leading-7 text-white/70 sm:mt-7 sm:text-lg sm:leading-8">
-                숨은 교회를 위한 디지털 제작 스튜디오이자 운영 플랫폼이다. 행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 하나의 흐름으로 정리한다.
+              <p className="mt-6 max-w-lg text-sm leading-7 text-white/70 sm:mt-7 sm:text-lg sm:leading-8">
+                행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구까지.
+                숨은 교회가 지금 바로 써야 하는 결과물을 빠르게 정리하고 제작한다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row">
                 <a href="#offers" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">대표 상품 보기</a>
