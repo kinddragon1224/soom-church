@@ -1,11 +1,12 @@
-import { BrandSection } from "@/components/marketing/brand-section";
 import { ContactCtaSection } from "@/components/marketing/contact-cta-section";
 import { FooterCta } from "@/components/marketing/footer-cta";
+import { HighlightsSection } from "@/components/marketing/highlights-section";
 import { MarketingHeader } from "@/components/marketing/header";
 import { MarketingHero } from "@/components/marketing/hero";
 import { ModuleSection } from "@/components/marketing/module-section";
 import { PlatformSection } from "@/components/marketing/platform-section";
 import { ServiceOffersSection } from "@/components/marketing/service-offers-section";
+import { SolutionsSection } from "@/components/marketing/solutions-section";
 import { getCurrentUserId } from "@/lib/auth";
 import { getChurchBySlug, getFirstChurchByUserId } from "@/lib/church-context";
 import { PLATFORM_ADMIN_EMAILS } from "@/lib/platform-admin";
@@ -60,7 +61,8 @@ export default async function HomePage() {
     <main className="min-h-screen bg-[#07090f] text-white">
       <MarketingHeader action={action} />
       <MarketingHero action={action} />
-      <BrandSection />
+      <SolutionsSection />
+      <HighlightsSection />
       <ServiceOffersSection />
       <PlatformSection />
       <ModuleSection />

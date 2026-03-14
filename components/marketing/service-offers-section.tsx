@@ -45,13 +45,12 @@ export function ServiceOffersSection() {
           <div>
             <p className="font-display text-xs tracking-[0.2em] text-white/50">SERVICE OFFERS</p>
             <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-5xl">
-              교회에 필요한 디지털 결과물을
+              지금 바로 설명되고,
               <br />
-              더 빠르고 더 정돈되게 제공합니다.
+              바로 납품되는 대표 상품입니다.
             </h2>
             <p className="mt-5 max-w-xl text-sm leading-7 text-white/65 sm:text-base">
-              실제 교회 현장에서 검증한 흐름을 바탕으로, 행사·영상·신청·운영도구를 상황에 맞게 설계하고 제작합니다.
-              복잡한 설명보다 바로 쓸 수 있는 결과물이 먼저 전달되도록 구성했습니다.
+              솔루션 구조를 이해한 뒤에는, 교회가 가장 빠르게 결정할 수 있도록 대표 상품을 명확한 가격과 범위로 제안합니다.
             </p>
 
             <div className="mt-8 rounded-3xl border border-white/10 bg-[#0b1327]/88 p-5 shadow-[0_16px_50px_rgba(2,6,23,0.32)] backdrop-blur-sm">
