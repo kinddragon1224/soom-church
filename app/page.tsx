@@ -2,19 +2,19 @@ import Link from "next/link";
 
 const solutions = [
   {
-    label: "제작",
-    title: "필요한 페이지와 영상을 빠르게 만듭니다",
-    desc: "행사, 부서, 설교에 맞는 결과물을 바로 쓰게 정리합니다.",
+    label: "디지털 제작",
+    title: "교회가 지금 바로 써야 하는 결과물을 만듭니다",
+    desc: "행사 페이지, 설교 쇼츠, 신청 웹처럼 바로 설명되고 바로 쓰이는 결과물을 제작합니다.",
   },
   {
-    label: "운영",
-    title: "복잡한 신청과 운영 흐름을 단순하게 바꿉니다",
-    desc: "현장에서 바로 쓰는 구조를 먼저 만들고 필요한 만큼 확장합니다.",
+    label: "운영 시스템",
+    title: "교회 운영에 맞는 시스템을 만듭니다",
+    desc: "교적 관리, 내부 운영 웹, 교회 전용 AI 봇처럼 사역과 행정을 더 단순하게 정리합니다.",
   },
   {
-    label: "콘텐츠",
-    title: "한 번 전한 메시지를 계속 이어가게 만듭니다",
-    desc: "설교 요약, 나눔지, 음성 콘텐츠까지 한 흐름으로 연결합니다.",
+    label: "사역 프로젝트",
+    title: "교회만의 사역을 디지털로 구현합니다",
+    desc: "성경필사, 성도 목소리 보존 TTS, 교구·부속교회 전용 앱까지 함께 설계하고 만듭니다.",
   },
 ];
 
@@ -146,21 +146,21 @@ export default function HomePage() {
       <section id="solutions" className="bg-[#050b16]">
         <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-5 py-16 sm:px-8 lg:px-12">
           <div className="w-full">
-            <div className="max-w-[1180px]">
+            <div className="max-w-[1240px]">
               <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">SOLUTIONS</p>
               <h2 className="mt-5 text-[3rem] font-light leading-[0.92] tracking-[-0.06em] text-white sm:text-[4.2rem] lg:text-[5.3rem] xl:text-[6rem]">
-                교회 운영을 더 단순하게.
+                제작만 하지 않습니다.
                 <br />
-                메시지는 더 멀리 가게.
+                교회 운영과 사역 구조까지 함께 만듭니다
               </h2>
             </div>
 
             <div className="mt-8 flex flex-col gap-4 lg:mt-10 lg:flex-row lg:items-end lg:justify-between">
               <p className="text-[1.75rem] font-light tracking-[-0.04em] text-white/92 sm:text-[2.2rem] lg:text-[2.6rem]">
-                제작하고. 정리하고. 이어갑니다.
+                제작부터 시스템, 사역 프로젝트까지.
               </p>
-              <p className="max-w-[360px] text-sm leading-6 text-white/58 sm:text-[15px] sm:leading-7">
-                교회가 지금 바로 설명하고 바로 사용할 수 있는 방식으로 세 가지 흐름을 나눴습니다.
+              <p className="max-w-[420px] text-sm leading-6 text-white/58 sm:text-[15px] sm:leading-7">
+                지금 바로 필요한 제작부터, 운영을 줄여주는 시스템, 교회에 맞춘 사역 프로젝트까지 연결합니다.
               </p>
             </div>
 
