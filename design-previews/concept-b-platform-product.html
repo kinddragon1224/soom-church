@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>숨 B안 - 플랫폼·제품형</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07111f;color:#edf2ff;font-family:Pretendard,Inter,sans-serif}a{text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}.hero{padding:24px 0 80px;background:radial-gradient(circle at 78% 18%,rgba(99,102,241,.16),transparent 26%),linear-gradient(180deg,#060b17,#0a1329)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:6px 0 28px}.logo{font-weight:700;letter-spacing:.08em}.actions{display:flex;gap:10px}.chip,.btn{border-radius:999px;display:inline-flex;align-items:center;justify-content:center}.chip{padding:10px 14px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#c1cae0}.btn{min-height:46px;padding:0 18px}.primary{background:#6366f1;color:white}.secondary{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:white}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#95a9d8}h1{font-family:'Spoqa Han Sans Neo',Pretendard,sans-serif;font-size:clamp(44px,6vw,84px);line-height:1.02;letter-spacing:-.04em;margin:16px 0}.lead{font-size:17px;line-height:1.8;color:#c8d1e8;max-width:640px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.product-shell{border:1px solid rgba(255,255,255,.08);background:#0b1327;border-radius:28px;padding:18px;box-shadow:0 24px 80px rgba(0,0,0,.32)}.product-shell .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.module{padding:18px;border-radius:20px;background:#091122;border:1px solid rgba(255,255,255,.06)}.module h3{margin:0 0 8px;font-size:18px}.module p{margin:0;color:#afbddb;line-height:1.7;font-size:14px}
+.section{padding:80px 0}.section h2{font-size:38px;margin:0 0 12px}.section p{color:#b5bfd8;line-height:1.8}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}.flow .step{padding:22px;border-radius:22px;background:#0b1327;border:1px solid rgba(255,255,255,.08)}.n{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:999px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);margin-bottom:12px}
+@media (max-width:900px){.hero-grid,.product-shell .row,.flow{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start;gap:14px}.actions{flex-wrap:wrap}h1{font-size:44px}}
+</style>
+</head>
+<body>
+<section class="hero">
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">SOOM PLATFORM</div>
+      <div class="actions"><span class="chip">Platform</span><span class="chip">Services</span><span class="chip">Consulting</span></div>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Church Workspace Platform</div>
+        <h1>교회 운영과 디지털 제작을<br>하나의 흐름으로 연결한다</h1>
+        <p class="lead">숨은 행사 페이지, 설교 콘텐츠, 신청 웹 같은 즉시 필요한 결과물부터 시작해 교회별 워크스페이스와 운영 모듈로 확장되는 플랫폼이다.</p>
+        <div class="cta"><a class="btn primary" href="#">플랫폼 보기</a><a class="btn secondary" href="#">서비스 보기</a></div>
+      </div>
+      <div class="product-shell">
+        <div class="row">
+          <div class="module"><h3>숨 교적</h3><p>교회별 데이터 분리와 관리 흐름</p></div>
+          <div class="module"><h3>숨 신청</h3><p>행사와 접수 흐름을 모바일 중심으로 정리</p></div>
+          <div class="module"><h3>숨 알림</h3><p>공지와 후속 커뮤니케이션 연결</p></div>
+          <div class="module"><h3>숨 제작</h3><p>영상·랜딩·운영도구를 즉시 납품</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <h2>플랫폼 중심 구조</h2>
+    <p>B안은 숨이 단순 제작사가 아니라 앞으로 확장 가능한 제품이라는 점을 분명하게 보여준다.</p>
+    <div class="flow">
+      <div class="step"><div class="n">1</div>랜딩·영상 같은 즉시 수요 대응</div>
+      <div class="step"><div class="n">2</div>교회별 워크스페이스 연결</div>
+      <div class="step"><div class="n">3</div>운영 모듈 확장</div>
+      <div class="step"><div class="n">4</div>장기 플랫폼 전환</div>
+    </div>
+  </div>
+</section>
+</body>
+</html>
