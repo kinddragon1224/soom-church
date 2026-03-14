@@ -34,7 +34,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#050b16] text-white">
       <section className="relative overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_80%_18%,rgba(99,102,241,0.18),transparent_24%),linear-gradient(180deg,#050b16_0%,#091224_100%)]">
-        <div className="mx-auto max-w-7xl px-5 pb-20 pt-6 sm:px-8 lg:px-10 lg:pb-28 lg:pt-8">
+        <div className="mx-auto max-w-7xl px-5 pb-16 pt-5 sm:px-8 sm:pb-20 lg:px-10 lg:pb-28 lg:pt-8">
           <header className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <Link href="/" className="inline-flex w-fit items-center rounded-full border border-white/10 bg-white/[0.03] px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
               <span className="font-display text-sm tracking-[0.2em] text-white/86">SOOM</span>
@@ -46,45 +46,45 @@ export default function HomePage() {
             </nav>
           </header>
 
-          <div className="grid gap-10 pt-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-end lg:pt-24">
+          <div className="grid gap-8 pt-12 sm:gap-10 sm:pt-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-end lg:pt-24">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 <span className="font-display text-xs tracking-[0.22em] text-white/55">CHURCH DIGITAL STUDIO</span>
               </div>
-              <h1 className="mt-6 max-w-5xl text-5xl font-semibold leading-[0.95] text-white sm:text-6xl lg:text-[6.2rem]">
+              <h1 className="mt-5 max-w-5xl text-[2.6rem] font-semibold leading-[0.96] text-white sm:mt-6 sm:text-6xl lg:text-[6.2rem]">
                 교회가 지금 필요한 디지털 작업을
                 <br />
                 더 크게, 더 단순하게.
               </h1>
-              <p className="mt-7 max-w-xl text-base leading-8 text-white/70 sm:text-lg">
+              <p className="mt-6 max-w-xl text-sm leading-7 text-white/70 sm:mt-7 sm:text-lg sm:leading-8">
                 숨은 교회를 위한 디지털 제작 스튜디오이자 운영 플랫폼이다. 행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 하나의 흐름으로 정리한다.
               </p>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:mt-9 sm:flex-row">
                 <a href="#offers" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">대표 상품 보기</a>
                 <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">상담 문의</a>
               </div>
             </div>
 
             <div>
-              <div className="rounded-[36px] border border-white/10 bg-[#0b1327]/92 p-4 shadow-[0_24px_80px_rgba(2,6,23,0.42)] sm:p-5">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-[28px] border border-white/8 bg-[#091122] p-5 sm:col-span-2">
+              <div className="rounded-[30px] border border-white/10 bg-[#0b1327]/92 p-3.5 shadow-[0_24px_80px_rgba(2,6,23,0.42)] sm:rounded-[36px] sm:p-5">
+                <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
+                  <div className="rounded-[24px] border border-white/8 bg-[#091122] p-4 sm:rounded-[28px] sm:p-5 sm:col-span-2">
                     <p className="font-display text-xs tracking-[0.18em] text-white/45">PRIMARY MESSAGE</p>
-                    <h2 className="mt-3 text-3xl font-semibold text-white">작은 납품에서 시작해 구조로 확장</h2>
-                    <p className="mt-3 text-sm leading-7 text-white/66">지금 당장 필요한 결과물을 먼저 만들고, 반복되는 운영 문제는 플랫폼 구조로 연결한다.</p>
+                    <h2 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl">작은 납품에서 시작해 구조로 확장</h2>
+                    <p className="mt-3 text-sm leading-6 text-white/66 sm:leading-7">지금 당장 필요한 결과물을 먼저 만들고, 반복되는 운영 문제는 플랫폼 구조로 연결한다.</p>
                   </div>
-                  <div className="rounded-[24px] border border-white/8 bg-[#091122] p-5">
+                  <div className="rounded-[20px] border border-white/8 bg-[#091122] p-4 sm:rounded-[24px] sm:p-5">
                     <p className="text-xs tracking-[0.18em] text-white/42">SOLUTIONS</p>
-                    <p className="mt-3 text-2xl font-semibold text-white">3</p>
+                    <p className="mt-2 text-xl font-semibold text-white sm:mt-3 sm:text-2xl">3</p>
                   </div>
-                  <div className="rounded-[24px] border border-white/8 bg-[#091122] p-5">
+                  <div className="rounded-[20px] border border-white/8 bg-[#091122] p-4 sm:rounded-[24px] sm:p-5">
                     <p className="text-xs tracking-[0.18em] text-white/42">PRIMARY OFFERS</p>
-                    <p className="mt-3 text-2xl font-semibold text-white">3</p>
+                    <p className="mt-2 text-xl font-semibold text-white sm:mt-3 sm:text-2xl">3</p>
                   </div>
-                  <div className="rounded-[24px] border border-white/8 bg-[#091122] p-5 sm:col-span-2">
+                  <div className="rounded-[20px] border border-white/8 bg-[#091122] p-4 sm:rounded-[24px] sm:p-5 sm:col-span-2">
                     <p className="text-xs tracking-[0.18em] text-white/42">WORKFLOW</p>
-                    <p className="mt-3 text-base leading-7 text-white/76">제작 · 운영 · 콘텐츠를 분리하지 않고 하나의 흐름으로 제안</p>
+                    <p className="mt-2 text-sm leading-6 text-white/76 sm:mt-3 sm:text-base sm:leading-7">제작 · 운영 · 콘텐츠를 분리하지 않고 하나의 흐름으로 제안</p>
                   </div>
                 </div>
               </div>
@@ -94,11 +94,11 @@ export default function HomePage() {
       </section>
 
       <section id="solutions" className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 py-18 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="font-display text-xs tracking-[0.2em] text-white/45">SOLUTIONS</p>
-              <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+              <h2 className="mt-4 text-3xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
                 숨은 교회를 위해
                 <br />
                 세 가지 방식으로 일한다.
@@ -109,18 +109,18 @@ export default function HomePage() {
 
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
             {solutions.map((item, index) => (
-              <article key={item.title} className="overflow-hidden rounded-[34px] border border-white/10 bg-[#0b1327]/90 shadow-[0_24px_80px_rgba(2,6,23,0.34)]">
-                <div className="h-28 bg-gradient-to-b from-indigo-500/18 to-transparent" />
-                <div className="-mt-10 px-6 pb-7 sm:px-7 sm:pb-8">
+              <article key={item.title} className="overflow-hidden rounded-[28px] border border-white/10 bg-[#0b1327]/90 shadow-[0_24px_80px_rgba(2,6,23,0.34)] sm:rounded-[34px]">
+                <div className="h-20 bg-gradient-to-b from-indigo-500/18 to-transparent sm:h-28" />
+                <div className="-mt-7 px-5 pb-6 sm:-mt-10 sm:px-7 sm:pb-8">
                   <div className="flex items-center justify-between">
                     <p className="font-display text-xs tracking-[0.18em] text-white/48">0{index + 1}</p>
                     <div className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-white/52">{item.title}</div>
                   </div>
-                  <h3 className="mt-5 text-3xl font-semibold text-white">{item.title}</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/66">{item.desc}</p>
+                  <h3 className="mt-4 text-[1.75rem] font-semibold text-white sm:mt-5 sm:text-3xl">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-white/66 sm:mt-4 sm:leading-7">{item.desc}</p>
                   <ul className="mt-6 space-y-3 text-sm text-white/80">
                     {item.items.map((sub) => (
-                      <li key={sub} className="rounded-2xl border border-white/8 bg-[#091122] px-4 py-4">{sub}</li>
+                      <li key={sub} className="rounded-2xl border border-white/8 bg-[#091122] px-4 py-3.5 sm:py-4">{sub}</li>
                     ))}
                   </ul>
                 </div>
@@ -131,11 +131,11 @@ export default function HomePage() {
       </section>
 
       <section id="offers" className="border-b border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.01),rgba(99,102,241,0.02))]">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+        <div className="mx-auto max-w-7xl px-5 py-18 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="font-display text-xs tracking-[0.2em] text-white/45">PRIMARY OFFERS</p>
-              <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+              <h2 className="mt-4 text-3xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
                 지금 가장 빠르게
                 <br />
                 결정할 수 있는 제안.
@@ -145,18 +145,18 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-            <article className="overflow-hidden rounded-[36px] border border-white/10 bg-[#0b1327]/92 shadow-[0_24px_80px_rgba(2,6,23,0.42)]">
+            <article className="overflow-hidden rounded-[30px] border border-white/10 bg-[#0b1327]/92 shadow-[0_24px_80px_rgba(2,6,23,0.42)] sm:rounded-[36px]">
               <div className="border-b border-white/10 px-6 py-6 sm:px-8">
                 <p className="font-display text-xs tracking-[0.18em] text-indigo-100/58">FEATURED OFFER</p>
                 <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <h3 className="text-4xl font-semibold text-white">행사·부서 랜딩페이지</h3>
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-white/66 sm:text-base">행사 소개, 일정, 장소, 신청 버튼까지. 교회가 가장 빠르게 결정할 수 있는 대표 상품.</p>
+                    <h3 className="text-[2rem] font-semibold leading-tight text-white sm:text-4xl">행사·부서 랜딩페이지</h3>
+                    <p className="mt-3 max-w-2xl text-sm leading-6 text-white/66 sm:mt-4 sm:text-base sm:leading-7">행사 소개, 일정, 장소, 신청 버튼까지. 교회가 가장 빠르게 결정할 수 있는 대표 상품.</p>
                   </div>
                   <div className="inline-flex w-fit rounded-full border border-indigo-300/18 bg-indigo-400/10 px-3 py-1 text-xs font-medium tracking-[0.12em] text-indigo-100">6.9만 원부터</div>
                 </div>
               </div>
-              <div className="grid gap-4 px-6 py-6 sm:grid-cols-2 sm:px-8 sm:py-8">
+              <div className="grid gap-3 px-5 py-5 sm:grid-cols-2 sm:gap-4 sm:px-8 sm:py-8">
                 <div className="rounded-2xl border border-white/8 bg-[#091122] px-4 py-4 text-sm text-white/78">모바일 중심 1페이지 구성</div>
                 <div className="rounded-2xl border border-white/8 bg-[#091122] px-4 py-4 text-sm text-white/78">수정 1회</div>
                 <div className="rounded-2xl border border-white/8 bg-[#091122] px-4 py-4 text-sm text-white/78">짧은 납기</div>
@@ -166,11 +166,11 @@ export default function HomePage() {
 
             <div className="grid gap-4">
               {offers.map((offer) => (
-                <article key={offer.title} className="rounded-[30px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_18px_60px_rgba(2,6,23,0.34)] sm:p-7">
+                <article key={offer.title} className="rounded-[26px] border border-white/10 bg-[#0b1327]/88 p-5 shadow-[0_18px_60px_rgba(2,6,23,0.34)] sm:rounded-[30px] sm:p-7">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h3 className="text-2xl font-semibold text-white">{offer.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-white/64">{offer.desc}</p>
+                      <h3 className="text-[1.6rem] font-semibold leading-tight text-white sm:text-2xl">{offer.title}</h3>
+                      <p className="mt-3 text-sm leading-6 text-white/64 sm:leading-7">{offer.desc}</p>
                     </div>
                     <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">{offer.price}</div>
                   </div>
@@ -191,12 +191,12 @@ export default function HomePage() {
       </section>
 
       <section id="contact" className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
-          <div className="grid gap-8 rounded-[38px] border border-white/10 bg-[#0b1327]/92 p-6 shadow-[0_24px_80px_rgba(2,6,23,0.42)] lg:grid-cols-[1.1fr_0.9fr] lg:p-10">
+        <div className="mx-auto max-w-7xl px-5 py-18 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
+          <div className="grid gap-6 rounded-[30px] border border-white/10 bg-[#0b1327]/92 p-5 shadow-[0_24px_80px_rgba(2,6,23,0.42)] sm:rounded-[38px] sm:p-6 lg:grid-cols-[1.1fr_0.9fr] lg:p-10">
             <div>
               <p className="font-display text-xs tracking-[0.2em] text-white/45">CONSULTING</p>
-              <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl">필요한 작업이 있다면 짧고 분명하게 남겨주세요.</h2>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-white/66 sm:text-base">필요한 결과물과 일정만 알려주면 가장 가볍고 빠른 방식으로 제안합니다.</p>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight text-white sm:text-5xl">필요한 작업이 있다면 짧고 분명하게 남겨주세요.</h2>
+              <p className="mt-4 max-w-xl text-sm leading-6 text-white/66 sm:mt-5 sm:text-base sm:leading-7">필요한 결과물과 일정만 알려주면 가장 가볍고 빠른 방식으로 제안합니다.</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">문의 남기기</Link>
                 <a href="#offers" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">대표 상품 보기</a>
