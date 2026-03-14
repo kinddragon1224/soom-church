@@ -66,8 +66,8 @@ export default function HomePage() {
             </p>
             <div className="mx-auto w-full max-w-[1040px] text-center">
               <h1 className="font-display text-[2.8rem] font-light leading-[0.98] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
-                <span className="block">교회에 필요한 디지털</span>
-                <span className="block">작업을 더 빠르고 단정하게</span>
+                <span className="block">교회에 필요한 디지털 작업을</span>
+                <span className="block">더 빠르고 단정하게</span>
               </h1>
             </div>
 
