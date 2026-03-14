@@ -61,13 +61,11 @@ export default function HomePage() {
           </header>
 
           <div className="relative flex flex-1 flex-col justify-center pb-24 pt-16 sm:pt-20 lg:pt-12">
-            <p className="absolute left-0 top-[27%] hidden text-sm font-medium text-white/78 lg:block">
-              Solutions for Churches
-            </p>
+            <div className="pointer-events-none absolute left-1/2 top-[31%] hidden h-px w-28 -translate-x-[530px] bg-gradient-to-r from-indigo-400/0 via-indigo-400/80 to-pink-400/70 lg:block" />
             <div className="mx-auto w-full max-w-[1040px] text-center">
               <h1 className="font-display text-[2.8rem] font-light leading-[0.98] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
                 <span className="block">교회에 필요한 디지털 작업을</span>
-                <span className="block">더 빠르고 단정하게</span>
+                <span className="block lg:translate-x-[0.32em]">더 빠르고 단정하게</span>
               </h1>
             </div>
 
