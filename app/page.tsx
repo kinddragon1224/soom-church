@@ -99,27 +99,39 @@ export default function HomePage() {
       </section>
 
       <section id="message" className="border-t border-white/10 bg-[#f4f5f7] text-[#0a1020]">
-        <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-5 py-14 sm:px-8 lg:px-12">
+        <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-4 py-14 sm:px-8 lg:px-12">
           <div className="grid w-full gap-12 lg:grid-cols-[minmax(420px,0.78fr)_minmax(0,1fr)] lg:items-center lg:gap-20 xl:gap-28">
             <div className="max-w-[620px] lg:-translate-y-1">
               <p className="text-[11px] font-medium tracking-[0.24em] text-[#5c6785]">MESSAGE</p>
               <h2
-                className="mt-5 text-[2.8rem] font-normal tracking-[-0.05em] text-[#0a1226] sm:text-[3.7rem] lg:text-[4.45rem] xl:text-[5rem]"
+                className="mt-5 text-[2.35rem] font-normal tracking-[-0.04em] text-[#0a1226] sm:text-[3.7rem] lg:text-[4.45rem] xl:text-[5rem]"
                 style={{ fontFamily: 'var(--font-serif-ko)' }}
               >
-                <span className="block leading-[1.02]">사람에 더</span>
-                <span className="block leading-[1.02]">집중하고</span>
-                <span className="mt-[0.34em] block leading-[1.02]">기술은 더</span>
-                <span className="block leading-[1.02]">조용하게.</span>
+                <span className="block leading-[1.08] sm:hidden">사람에 더</span>
+                <span className="block leading-[1.08] sm:hidden">집중하고</span>
+                <span className="mt-[0.38em] block leading-[1.08] sm:hidden">기술은 더</span>
+                <span className="block leading-[1.08] sm:hidden">조용하게.</span>
+                <span className="hidden sm:block leading-[1.02]">사람에 더</span>
+                <span className="hidden sm:block leading-[1.02]">집중하고</span>
+                <span className="hidden sm:block mt-[0.34em] leading-[1.02]">기술은 더</span>
+                <span className="hidden sm:block leading-[1.02]">조용하게.</span>
               </h2>
-              <p className="mt-12 max-w-[500px] whitespace-pre-line text-[15px] leading-7 text-[#44506d]">
-                {`교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록, 
+              <div className="mt-10 max-w-[320px] whitespace-pre-line text-[14px] leading-7 text-[#44506d] sm:mt-12 sm:max-w-[500px] sm:text-[15px]">
+                <div className="sm:hidden">
+                  <p>교회가 사람을 더 잘 돌보고</p>
+                  <p>메시지를 더 선명하게 전할 수 있도록,</p>
+                  <p className="mt-2">필요한 디지털 작업을 단정한 구조로</p>
+                  <p>정리하고 제작합니다.</p>
+                </div>
+                <div className="hidden sm:block">
+                  {`교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록, 
 필요한 디지털 작업을 단정한 구조로 정리하고 제작합니다.`}
-              </p>
-              <div className="mt-8">
+                </div>
+              </div>
+              <div className="mt-7 sm:mt-8">
                 <Link
                   href="/login"
-                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#0b1327] px-6 py-3 text-sm font-medium text-white shadow-[0_12px_30px_rgba(8,17,38,0.14)] transition hover:bg-[#16203a]"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#0b1327] px-5 py-3 text-sm font-medium text-white shadow-[0_12px_30px_rgba(8,17,38,0.14)] transition hover:bg-[#16203a] sm:min-h-12 sm:px-6"
                 >
                   로그인
                 </Link>
