@@ -44,32 +44,30 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.12)_30%,rgba(5,11,22,0.28)_72%,rgba(5,11,22,0.7)_100%)]" />
         <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col px-4 pb-8 pt-4 sm:px-8 sm:pt-6 lg:px-10">
           <header className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-3">
-            <nav className="hidden items-center gap-5 justify-self-start text-[13px] font-medium text-white/90 lg:flex xl:gap-6">
-              <a href="#solutions" className="transition hover:text-white/70">Solutions</a>
-              <a href="#message" className="transition hover:text-white/70">Message</a>
-              <a href="#outputs" className="transition hover:text-white/70">Outputs</a>
-              <a href="#contact" className="transition hover:text-white/70">Consulting</a>
-            </nav>
-            <Link href="/" className="justify-self-center text-center font-display text-[1.65rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.2rem]">
-              soom
-            </Link>
-            <div className="justify-self-end">
+            <div className="justify-self-start">
               <details className="group relative lg:hidden">
                 <summary className="flex min-h-9 min-w-9 cursor-pointer list-none items-center justify-center rounded-full border border-white/60 bg-black/10 px-3 text-white backdrop-blur-sm transition hover:bg-white/10 [&::-webkit-details-marker]:hidden">
                   <span className="text-lg leading-none">☰</span>
                 </summary>
-                <div className="absolute right-0 top-full z-30 mt-2 w-44 overflow-hidden rounded-2xl border border-white/12 bg-[#0a1122]/96 p-2 text-sm text-white shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                <div className="absolute left-0 top-full z-30 mt-2 w-44 overflow-hidden rounded-2xl border border-white/12 bg-[#0a1122]/96 p-2 text-sm text-white shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl">
                   <a href="#solutions" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Solutions</a>
                   <a href="#message" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Message</a>
                   <a href="#outputs" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Outputs</a>
                   <a href="#contact" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Consulting</a>
-                  <div className="my-1 h-px bg-white/10" />
-                  <Link href="/login" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">
-                    로그인
-                  </Link>
                 </div>
               </details>
-              <Link href="/login" className="hidden min-h-11 items-center justify-center rounded-full border border-white/60 px-5 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10 lg:inline-flex">
+              <nav className="hidden items-center gap-5 text-[13px] font-medium text-white/90 lg:flex xl:gap-6">
+                <a href="#solutions" className="transition hover:text-white/70">Solutions</a>
+                <a href="#message" className="transition hover:text-white/70">Message</a>
+                <a href="#outputs" className="transition hover:text-white/70">Outputs</a>
+                <a href="#contact" className="transition hover:text-white/70">Consulting</a>
+              </nav>
+            </div>
+            <Link href="/" className="justify-self-center text-center font-display text-[1.65rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.2rem]">
+              soom
+            </Link>
+            <div className="justify-self-end">
+              <Link href="/login" className="inline-flex min-h-9 items-center justify-center rounded-full border border-white/60 px-3.5 py-2 text-[11px] font-medium text-white backdrop-blur-sm transition hover:bg-white/10 sm:min-h-11 sm:px-5 sm:text-sm">
                 로그인
               </Link>
             </div>
