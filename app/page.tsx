@@ -2,34 +2,27 @@ import Link from "next/link";
 
 const solutions = [
   {
-    label: "디지털 제작",
-    title: "교회가 지금 바로 써야 하는 결과물을 만듭니다",
-    desc: "행사 페이지, 설교 쇼츠, 신청 웹처럼 바로 설명되고 바로 쓰이는 결과물을 제작합니다.",
+    label: "처음 맡기기 쉬운 상품",
+    title: "교회가 바로 써야 하는 대표 결과물부터 시작합니다",
+    desc: "행사 안내, 부서 소개, 신청 페이지처럼 설명하기 쉽고 바로 전달할 수 있는 결과물을 짧고 분명하게 제작합니다.",
   },
   {
-    label: "운영 시스템",
-    title: "교회 운영에 맞는 시스템을 만듭니다",
-    desc: "교적 관리, 내부 운영 웹, 교회 전용 AI 봇처럼 사역과 행정을 더 단순하게 정리합니다.",
+    label: "계속 맡길 수 있는 상품",
+    title: "반복해서 필요한 콘텐츠를 꾸준히 납품합니다",
+    desc: "설교 핵심 요약, 짧은 전달용 콘텐츠처럼 한 번으로 끝나지 않는 작업을 가볍게 이어갈 수 있도록 구성합니다.",
   },
   {
-    label: "사역 프로젝트",
-    title: "교회만의 사역을 디지털로 구현합니다",
-    desc: "성경필사, 성도 목소리 보존 TTS, 교구·부속교회 전용 앱까지 함께 설계하고 만듭니다.",
+    label: "운영으로 이어지는 상품",
+    title: "작은 납품 이후 교회 운영 구조로 확장합니다",
+    desc: "명단, 신청, 상태 관리처럼 교회 안에서 반복되는 흐름을 더 단순하게 정리할 수 있는 구조로 이어갑니다.",
   },
-];
-
-const outputs = [
-  { title: "행사·부서 랜딩페이지", meta: "6.9만 원부터", desc: "교회가 가장 빠르게 결정할 수 있는 대표 상품" },
-  { title: "설교 쇼츠 패키지", meta: "월 4개 5만 원", desc: "주일 설교 핵심 구간 반복 납품" },
-  { title: "AI 영상 제작", meta: "15초 5만 원부터", desc: "행사 홍보, 설교 하이라이트, 사역 소개용" },
-  { title: "간편 명단 관리 웹", meta: "MVP 15만 원", desc: "작은 조직이 바로 쓸 수 있는 운영용 도구" },
 ];
 
 const principles = [
   "교회가 지금 바로 써야 하는 결과물부터 시작",
-  "짧은 납기와 명확한 범위",
-  "운영과 유지보수는 별도",
-  "작은 납품에서 플랫폼 구조로 확장",
+  "짧은 납기와 분명한 범위로 제안",
+  "운영과 유지보수는 별도 구조로 정리",
+  "작은 납품에서 교회별 운영 구조로 확장",
 ];
 
 export default function HomePage() {
@@ -76,24 +69,24 @@ export default function HomePage() {
           <div className="relative flex flex-1 flex-col justify-center pb-16 pt-20 sm:pt-28 lg:pb-16 lg:pt-24">
             <div className="mx-auto w-full max-w-[1180px] text-center">
               <h1 className="font-display text-[2.15rem] font-light leading-[1.02] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
-                <span className="block sm:hidden">교회에 필요한</span>
-                <span className="block sm:hidden">디지털 작업을</span>
-                <span className="block sm:hidden">더 빠르고 단정하게</span>
-                <span className="hidden whitespace-nowrap sm:block">교회에 필요한 디지털 작업을</span>
-                <span className="hidden whitespace-nowrap sm:block lg:translate-x-[0.32em]">더 빠르고 단정하게</span>
+                <span className="block sm:hidden">교회가 바로 맡길 수 있는</span>
+                <span className="block sm:hidden">디지털 결과물부터 만듭니다</span>
+                <span className="hidden whitespace-nowrap sm:block">교회가 가장 빨리 맡길 수 있는</span>
+                <span className="hidden whitespace-nowrap sm:block lg:translate-x-[0.32em]">디지털 결과물부터 만듭니다</span>
               </h1>
             </div>
 
-            <div className="mx-auto mt-6 max-w-[300px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
+            <div className="mx-auto mt-6 max-w-[320px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
               <div className="sm:hidden">
                 <p>행사 페이지, 설교 콘텐츠, 신청 웹을</p>
-                <p>교회에 맞게 빠르게 제작합니다.</p>
+                <p>짧고 분명하게 제작합니다.</p>
                 <p className="mt-2">바로 이해되고 바로 쓸 수 있는</p>
                 <p>결과물을 먼저 만듭니다.</p>
               </div>
               <div className="hidden sm:block">
-                <p>행사 페이지, 설교 콘텐츠, 신청 웹, 운영 도구를 교회에 맞게 빠르게 제작합니다.</p>
-                <p>복잡한 설명보다 바로 이해되고 바로 쓸 수 있는 결과물을 먼저 만듭니다.</p>
+                <p>행사 페이지, 부서 소개, 신청 웹처럼</p>
+                <p>바로 설명되고 바로 쓸 수 있는 결과물을</p>
+                <p>짧은 납기와 분명한 범위로 제작합니다</p>
               </div>
             </div>
 
@@ -133,12 +126,14 @@ export default function HomePage() {
                 <div className="sm:hidden">
                   <p>교회가 사람을 더 잘 돌보고</p>
                   <p>메시지를 더 선명하게 전할 수 있도록,</p>
-                  <p className="mt-2">필요한 디지털 작업을 단정한 구조로</p>
-                  <p>정리하고 제작합니다.</p>
+                  <p className="mt-2">필요한 디지털 작업을 복잡한 설명 없이</p>
+                  <p>단정한 구조로 정리하고 제작합니다.</p>
                 </div>
                 <div className="hidden sm:block">
-                  {`교회가 사람을 더 잘 돌보고 메시지를 더 선명하게 전할 수 있도록, 
-필요한 디지털 작업을 단정한 구조로 정리하고 제작합니다.`}
+                  {`교회가 사람을 더 잘 돌보고
+메시지를 더 선명하게 전할 수 있도록,
+필요한 디지털 작업을 복잡한 설명 없이
+단정한 구조로 정리하고 제작합니다.`}
                 </div>
               </div>
               <div className="mt-7 sm:mt-8">
@@ -165,10 +160,12 @@ export default function HomePage() {
 
             <div className="mt-6 flex flex-col gap-4 lg:mt-8 lg:flex-row lg:items-end lg:justify-between">
               <p className="text-[1.75rem] font-light tracking-[-0.04em] text-white/92 sm:text-[2.2rem] lg:text-[2.6rem]">
-                제작부터 시스템, 사역 프로젝트까지.
+                교회가 바로 시작할 수 있는 작업부터,
+                운영으로 이어지는 구조까지.
               </p>
               <p className="max-w-[420px] text-sm leading-6 text-white/58 sm:text-[15px] sm:leading-7">
-                지금 바로 필요한 제작부터, 운영을 줄여주는 시스템, 교회에 맞춘 사역 프로젝트까지 연결합니다.
+                처음에는 바로 써야 하는 결과물부터 시작하고,
+                필요에 따라 반복 납품과 운영 구조까지 교회 상황에 맞게 차근차근 이어갑니다.
               </p>
             </div>
 
@@ -281,34 +278,97 @@ export default function HomePage() {
 
       <section id="outputs" className="bg-[linear-gradient(180deg,#0b1327_0%,#050b16_100%)]">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="font-display text-xs tracking-[0.2em] text-white/45">OUTPUTS</p>
-              <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-                지금 바로 설명되고,
-                <br />
-                바로 납품되는 결과물.
-              </h2>
-            </div>
-            <p className="max-w-md text-sm leading-7 text-white/62 sm:text-base">
-              제품처럼 보이지만 설명은 짧고 분명해야 합니다. 교회가 듣자마자 이해할 수 있는 구조로 제안합니다.
-            </p>
+          <div>
+            <p className="font-display text-xs tracking-[0.2em] text-white/45">REPRESENTATIVE</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">처음 맡기기 쉬운 대표 상품</h2>
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-2">
-            {outputs.map((item) => (
-              <article key={item.title} className="rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <h3 className="text-2xl font-semibold text-white sm:text-3xl">{item.title}</h3>
-                    <p className="mt-3 text-sm leading-7 text-white/66">{item.desc}</p>
-                  </div>
-                  <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                    {item.meta}
-                  </div>
+          <div className="mt-12 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div className="max-w-2xl">
+                <h3 className="text-2xl font-semibold text-white sm:text-3xl">행사·부서 랜딩페이지</h3>
+                <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
+                  교회 행사, 부서, 집회, 수련회, 모집 안내를
+                  한 페이지에 깔끔하게 정리해
+                  링크 하나로 바로 전달할 수 있게 만듭니다.
+                </p>
+                <p className="mt-4 text-sm text-white/54">교회가 가장 빠르게 결정할 수 있는 입구 상품</p>
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                  <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">샘플 보기</a>
+                  <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">문의하기</a>
                 </div>
-              </article>
-            ))}
+              </div>
+              <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
+                6.9만 원부터
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <p className="font-display text-xs tracking-[0.2em] text-white/45">REPEAT</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">계속 맡길 수 있는 상품</h2>
+            <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                <div className="max-w-2xl">
+                  <h3 className="text-2xl font-semibold text-white sm:text-3xl">설교 쇼츠 패키지</h3>
+                  <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
+                    주일 설교 핵심 구간을 짧게 정리해
+                    교회 채널과 성도에게 다시 전달할 수 있도록
+                    반복 납품합니다.
+                  </p>
+                  <p className="mt-4 text-sm text-white/54">설교 핵심을 짧고 선명하게 다시 전하는 패키지</p>
+                </div>
+                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
+                  월 4개 5만 원
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <p className="font-display text-xs tracking-[0.2em] text-white/45">EXPANSION</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+              작은 납품 이후,
+              <br />
+              운영 구조로 이어집니다
+            </h2>
+            <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                <div className="max-w-2xl">
+                  <h3 className="text-2xl font-semibold text-white sm:text-3xl">간편 명단 관리 웹</h3>
+                  <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
+                    작은 조직이나 부서가
+                    명단, 신청, 상태, 담당 내용을
+                    헷갈리지 않게 정리하고 공유할 수 있는
+                    가벼운 운영용 웹입니다.
+                  </p>
+                  <p className="mt-4 text-sm text-white/54">작은 조직이 바로 쓸 수 있는 운영 도구</p>
+                </div>
+                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
+                  MVP 15만 원
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <p className="font-display text-xs tracking-[0.2em] text-white/45">OPTION</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">함께 붙일 수 있는 옵션</h2>
+            <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                <div className="max-w-2xl">
+                  <h3 className="text-2xl font-semibold text-white sm:text-3xl">AI 영상 제작</h3>
+                  <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
+                    행사 홍보, 설교 하이라이트, 사역 소개용
+                    짧은 영상을 목적에 맞게 제작합니다.
+                  </p>
+                  <p className="mt-4 text-sm text-white/54">대표 상품과 함께 붙이기 좋은 추가 옵션</p>
+                </div>
+                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
+                  15초 5만 원부터
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -317,12 +377,18 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
-              <p className="font-display text-xs tracking-[0.2em] text-[#4d5a7a]">EXPANSION</p>
+              <p className="font-display text-xs tracking-[0.2em] text-[#4d5a7a]">PROCESS</p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-                작은 납품에서 시작해,
+                작게 맡기고,
                 <br />
-                교회별 운용 구조로 확장합니다.
+                필요하면 운영 구조까지 이어집니다.
               </h2>
+              <p className="mt-6 max-w-xl text-sm leading-7 text-[#44506d] sm:text-base">
+                처음에는 행사 페이지나 설교 콘텐츠처럼
+                작고 분명한 결과물부터 시작합니다.
+                이후 교회 상황에 따라 신청 구조, 명단 관리,
+                반복 제작 흐름까지 확장할 수 있습니다.
+              </p>
             </div>
             <div className="grid gap-3">
               {principles.map((item) => (
@@ -339,21 +405,23 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <div className="grid gap-8 rounded-[38px] border border-white/10 bg-[#0b1327]/92 p-6 shadow-[0_24px_80px_rgba(2,6,23,0.42)] lg:grid-cols-[1.1fr_0.9fr] lg:p-10">
             <div>
-              <p className="font-display text-xs tracking-[0.2em] text-white/45">CONSULTING</p>
+              <p className="font-display text-xs tracking-[0.2em] text-white/45">CONTACT</p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl">
                 필요한 작업이 있다면
                 <br />
-                짧고 분명하게 남겨주세요.
+                길게 설명하지 않아도 됩니다
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
-                필요한 결과물과 일정만 알려주면 가장 가볍고 빠른 방식으로 제안합니다.
+                행사인지, 설교 콘텐츠인지, 운영 정리인지
+                필요한 작업과 일정만 남겨주세요.
+                교회가 가장 가볍게 시작할 수 있는 방식으로 제안합니다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">
-                  문의 남기기
+                  작업 문의 남기기
                 </Link>
                 <a href="#outputs" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">
-                  대표 결과물 보기
+                  대표 상품 먼저 보기
                 </a>
               </div>
             </div>
