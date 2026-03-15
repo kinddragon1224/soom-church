@@ -144,7 +144,7 @@ export default function HomePage() {
       </section>
 
       <section id="solutions" className="bg-[#050b16]">
-        <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-5 py-16 sm:px-8 lg:px-12">
+        <div className="mx-auto flex min-h-screen max-w-[1540px] items-center px-4 py-16 sm:px-8 lg:px-12">
           <div className="w-full">
             <div className="max-w-[1240px]">
               <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">SOLUTIONS</p>
@@ -165,15 +165,105 @@ export default function HomePage() {
             </div>
 
             <div className="mt-10 grid gap-4 lg:mt-12 lg:grid-cols-3">
-              {solutions.map((item) => (
-                <article key={item.label} className="group rounded-[30px] border border-white/8 bg-[#0a1122] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.28)] transition hover:border-white/14 hover:bg-[#0c152a] sm:p-7">
-                  <p className="text-[11px] font-medium tracking-[0.18em] text-indigo-100/55">{item.label}</p>
-                  <h3 className="mt-4 max-w-[14ch] text-[1.9rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[2.1rem]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-5 max-w-[28ch] text-sm leading-6 text-white/62 sm:text-[15px] sm:leading-7">
-                    {item.desc}
-                  </p>
+              {solutions.map((item, index) => (
+                <article
+                  key={item.label}
+                  className="group overflow-hidden rounded-[30px] border border-white/8 bg-[#0a1122] shadow-[0_24px_80px_rgba(2,6,23,0.28)] transition hover:-translate-y-1 hover:border-white/14 hover:bg-[#0c152a]"
+                >
+                  <div
+                    className={
+                      index === 0
+                        ? "relative aspect-[0.95/1] overflow-hidden bg-[radial-gradient(circle_at_18%_18%,rgba(129,140,248,0.28),transparent_24%),linear-gradient(180deg,#16203a_0%,#0b1327_100%)]"
+                        : index === 1
+                          ? "relative aspect-[0.95/1] overflow-hidden bg-[radial-gradient(circle_at_82%_16%,rgba(96,165,250,0.22),transparent_22%),linear-gradient(180deg,#111827_0%,#09111f_100%)]"
+                          : "relative aspect-[0.95/1] overflow-hidden bg-[radial-gradient(circle_at_80%_18%,rgba(236,72,153,0.18),transparent_22%),radial-gradient(circle_at_16%_78%,rgba(129,140,248,0.2),transparent_20%),linear-gradient(180deg,#18122b_0%,#0d1324_100%)]"
+                    }
+                  >
+                    {index === 0 ? (
+                      <>
+                        <div className="absolute left-6 top-6 h-[72%] w-[58%] rounded-[24px] border border-white/10 bg-[#f8fbff] shadow-[0_18px_50px_rgba(15,23,42,0.24)]" />
+                        <div className="absolute left-10 top-12 h-2 w-24 rounded-full bg-[#d9e3f2]" />
+                        <div className="absolute left-10 top-18 h-3 w-40 rounded-full bg-[#0f172a]" />
+                        <div className="absolute left-10 top-26 h-24 w-[46%] rounded-[18px] bg-[linear-gradient(135deg,#c7d2fe_0%,#e9d5ff_100%)]" />
+                        <div className="absolute right-6 top-14 w-[34%] rounded-[20px] border border-white/10 bg-[#10192d] p-3 shadow-[0_18px_40px_rgba(2,6,23,0.3)]">
+                          <div className="h-20 rounded-[14px] bg-[linear-gradient(135deg,#4338ca_0%,#ec4899_100%)]" />
+                          <div className="mt-3 h-2 w-16 rounded-full bg-white/25" />
+                          <div className="mt-2 h-2 w-10 rounded-full bg-white/15" />
+                        </div>
+                        <div className="absolute bottom-6 left-8 flex gap-2 text-[10px] text-[#51607e]">
+                          <span className="rounded-full bg-white px-2 py-1">PAGE</span>
+                          <span className="rounded-full bg-white px-2 py-1">SHORTS</span>
+                          <span className="rounded-full bg-white px-2 py-1">FORM</span>
+                        </div>
+                      </>
+                    ) : index === 1 ? (
+                      <>
+                        <div className="absolute inset-x-6 top-6 rounded-[24px] border border-white/10 bg-[#0d172b] p-4 shadow-[0_20px_60px_rgba(2,6,23,0.32)]">
+                          <div className="flex items-center justify-between">
+                            <div className="h-3 w-24 rounded-full bg-white/12" />
+                            <div className="rounded-full border border-cyan-400/25 px-2 py-1 text-[10px] text-cyan-200/80">AI BOT</div>
+                          </div>
+                          <div className="mt-4 grid grid-cols-[1.1fr_0.9fr] gap-3">
+                            <div className="rounded-[18px] bg-[#121f38] p-3">
+                              <div className="h-2 w-12 rounded-full bg-white/20" />
+                              <div className="mt-3 space-y-2">
+                                <div className="h-8 rounded-xl bg-white/6" />
+                                <div className="h-8 rounded-xl bg-white/6" />
+                                <div className="h-8 rounded-xl bg-white/6" />
+                              </div>
+                            </div>
+                            <div className="rounded-[18px] bg-[#121f38] p-3">
+                              <div className="h-2 w-14 rounded-full bg-white/20" />
+                              <div className="mt-3 h-24 rounded-2xl bg-[linear-gradient(180deg,#1d4ed8_0%,#0f766e_100%)] opacity-80" />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="absolute bottom-6 left-6 right-6 rounded-[22px] border border-white/10 bg-[#0d172b] p-4">
+                          <div className="flex items-center justify-between text-[10px] text-white/52">
+                            <span>교적 관리</span>
+                            <span>운영 자동화</span>
+                            <span>교회 전용 AI</span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="absolute left-7 top-8 h-40 w-32 rounded-[26px] border border-white/10 bg-[#f7f1e8] shadow-[0_16px_40px_rgba(15,23,42,0.24)]" />
+                        <div className="absolute left-12 top-14 space-y-2 text-[10px] text-[#8c6a3d]">
+                          <div className="h-2 w-12 rounded-full bg-[#dbc29a]" />
+                          <div className="h-2 w-16 rounded-full bg-[#e6d3b6]" />
+                          <div className="h-2 w-10 rounded-full bg-[#dbc29a]" />
+                          <div className="mt-4 h-2 w-16 rounded-full bg-[#e6d3b6]" />
+                          <div className="h-2 w-12 rounded-full bg-[#dbc29a]" />
+                        </div>
+                        <div className="absolute right-8 top-10 w-[42%] rounded-[22px] border border-white/10 bg-[#12182b] p-4 shadow-[0_20px_45px_rgba(2,6,23,0.32)]">
+                          <div className="flex items-end gap-1.5">
+                            <div className="h-8 w-2 rounded-full bg-indigo-300/80" />
+                            <div className="h-12 w-2 rounded-full bg-pink-300/80" />
+                            <div className="h-6 w-2 rounded-full bg-indigo-200/80" />
+                            <div className="h-10 w-2 rounded-full bg-pink-200/80" />
+                          </div>
+                          <div className="mt-4 h-2 w-16 rounded-full bg-white/20" />
+                          <div className="mt-2 h-2 w-10 rounded-full bg-white/12" />
+                        </div>
+                        <div className="absolute bottom-8 right-8 w-[44%] rounded-[24px] border border-white/10 bg-[#eef4ff] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.2)]">
+                          <div className="h-20 rounded-[18px] bg-[linear-gradient(135deg,#c7d2fe_0%,#fbcfe8_100%)]" />
+                          <div className="mt-3 h-2 w-14 rounded-full bg-[#8ea1bf]" />
+                          <div className="mt-2 h-2 w-10 rounded-full bg-[#c2cede]" />
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="p-6 sm:p-7">
+                    <p className="text-[11px] font-medium tracking-[0.18em] text-indigo-100/55">{item.label}</p>
+                    <h3 className="mt-4 max-w-[14ch] text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[2rem]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-5 max-w-[30ch] text-sm leading-6 text-white/62 sm:text-[15px] sm:leading-7">
+                      {item.desc}
+                    </p>
+                  </div>
                 </article>
               ))}
             </div>
