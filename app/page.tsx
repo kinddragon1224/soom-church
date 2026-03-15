@@ -54,7 +54,22 @@ export default function HomePage() {
               soom
             </Link>
             <div className="justify-self-end">
-              <Link href="/login" className="inline-flex min-h-9 items-center justify-center rounded-full border border-white/60 px-3.5 py-2 text-[11px] font-medium text-white backdrop-blur-sm transition hover:bg-white/10 sm:min-h-11 sm:px-5 sm:text-sm">
+              <details className="group relative lg:hidden">
+                <summary className="flex min-h-9 min-w-9 cursor-pointer list-none items-center justify-center rounded-full border border-white/60 bg-black/10 px-3 text-white backdrop-blur-sm transition hover:bg-white/10 [&::-webkit-details-marker]:hidden">
+                  <span className="text-lg leading-none">☰</span>
+                </summary>
+                <div className="absolute right-0 top-full z-30 mt-2 w-44 overflow-hidden rounded-2xl border border-white/12 bg-[#0a1122]/96 p-2 text-sm text-white shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                  <a href="#solutions" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Solutions</a>
+                  <a href="#message" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Message</a>
+                  <a href="#outputs" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Outputs</a>
+                  <a href="#contact" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">Consulting</a>
+                  <div className="my-1 h-px bg-white/10" />
+                  <Link href="/login" className="block rounded-xl px-3 py-2.5 transition hover:bg-white/8">
+                    로그인
+                  </Link>
+                </div>
+              </details>
+              <Link href="/login" className="hidden min-h-11 items-center justify-center rounded-full border border-white/60 px-5 py-2 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10 lg:inline-flex">
                 로그인
               </Link>
             </div>
