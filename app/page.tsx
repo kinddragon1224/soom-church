@@ -148,14 +148,9 @@ export default function HomePage() {
           <div className="w-full">
             <div className="max-w-[1240px]">
               <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">SOLUTIONS</p>
-              <h2 className="mt-5 text-[3rem] font-light leading-[0.92] tracking-[-0.06em] text-white sm:text-[4.2rem] lg:text-[5.3rem] xl:text-[6rem]">
-                제작만 하지 않습니다.
-                <br />
-                교회 운영과 사역 구조까지 함께 만듭니다
-              </h2>
             </div>
 
-            <div className="mt-8 flex flex-col gap-4 lg:mt-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="mt-6 flex flex-col gap-4 lg:mt-8 lg:flex-row lg:items-end lg:justify-between">
               <p className="text-[1.75rem] font-light tracking-[-0.04em] text-white/92 sm:text-[2.2rem] lg:text-[2.6rem]">
                 제작부터 시스템, 사역 프로젝트까지.
               </p>
