@@ -3,18 +3,18 @@ import Link from "next/link";
 const solutions = [
   {
     label: "처음 맡기기 쉬운 상품",
-    title: "교회가 바로 써야 하는 대표 결과물부터 시작합니다",
-    desc: "행사 안내, 부서 소개, 신청 페이지처럼 설명하기 쉽고 바로 전달할 수 있는 결과물을 짧고 분명하게 제작합니다.",
+    title: "교회가 가장 쉽게 시작할 수 있는 결과물부터 제안합니다",
+    desc: "행사 안내, 부서 소개, 신청 페이지처럼 링크 하나로 바로 전달할 수 있는 결과물을 짧고 분명하게 제작합니다.",
   },
   {
     label: "계속 맡길 수 있는 상품",
-    title: "반복해서 필요한 콘텐츠를 꾸준히 납품합니다",
-    desc: "설교 핵심 요약, 짧은 전달용 콘텐츠처럼 한 번으로 끝나지 않는 작업을 가볍게 이어갈 수 있도록 구성합니다.",
+    title: "반복해서 필요한 콘텐츠를 꾸준히 이어갑니다",
+    desc: "설교 쇼츠, 요약, 전달용 콘텐츠처럼 한 번으로 끝나지 않는 작업을 가볍게 반복 납품할 수 있도록 구성합니다.",
   },
   {
     label: "운영으로 이어지는 상품",
-    title: "작은 납품 이후 교회 운영 구조로 확장합니다",
-    desc: "명단, 신청, 상태 관리처럼 교회 안에서 반복되는 흐름을 더 단순하게 정리할 수 있는 구조로 이어갑니다.",
+    title: "작은 납품 이후 교회 운영 구조까지 연결합니다",
+    desc: "명단, 신청, 상태 관리처럼 교회 안에서 반복되는 흐름을 더 단순하게 정리할 수 있는 운영 구조로 확장합니다.",
   },
 ];
 
@@ -165,12 +165,12 @@ export default function HomePage() {
 
             <div className="mt-6 flex flex-col gap-4 lg:mt-8 lg:flex-row lg:items-end lg:justify-between">
               <p className="text-[1.75rem] font-light tracking-[-0.04em] text-white/92 sm:text-[2.2rem] lg:text-[2.6rem]">
-                교회가 바로 시작할 수 있는 작업부터,
-                운영으로 이어지는 구조까지.
+                작게 맡기기 쉽고,
+                필요하면 운영 구조까지 이어집니다.
               </p>
-              <p className="max-w-[420px] text-sm leading-6 text-white/58 sm:text-[15px] sm:leading-7">
-                처음에는 바로 써야 하는 결과물부터 시작하고,
-                필요에 따라 반복 납품과 운영 구조까지 교회 상황에 맞게 차근차근 이어갑니다.
+              <p className="max-w-[460px] text-sm leading-6 text-white/58 sm:text-[15px] sm:leading-7">
+                처음에는 행사 페이지나 설교 콘텐츠처럼 바로 써야 하는 결과물부터 시작하고,
+                이후 반복 납품과 운영 구조까지 교회 상황에 맞게 확장합니다.
               </p>
             </div>
 
@@ -267,10 +267,10 @@ export default function HomePage() {
 
                   <div className="p-6 sm:p-7">
                     <p className="text-[11px] font-medium tracking-[0.18em] text-indigo-100/55">{item.label}</p>
-                    <h3 className="mt-4 max-w-[14ch] text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[2rem]">
+                    <h3 className="mt-4 max-w-[15ch] text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-[2rem]">
                       {item.title}
                     </h3>
-                    <p className="mt-5 max-w-[30ch] text-sm leading-6 text-white/62 sm:text-[15px] sm:leading-7">
+                    <p className="mt-5 max-w-[32ch] text-sm leading-6 text-white/62 sm:text-[15px] sm:leading-7">
                       {item.desc}
                     </p>
                   </div>
@@ -285,7 +285,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <div>
             <p className="font-display text-xs tracking-[0.2em] text-white/45">REPRESENTATIVE</p>
-            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">처음 맡기기 쉬운 대표 상품</h2>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">처음 맡기기 가장 쉬운 대표 상품</h2>
           </div>
 
           <div className="mt-12 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
