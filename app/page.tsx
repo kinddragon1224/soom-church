@@ -76,6 +76,10 @@ export default function HomePage() {
               </h1>
             </div>
 
+            <p className="mx-auto mt-5 text-center text-sm tracking-[0.18em] text-white/62 sm:mt-6 sm:text-[13px]">
+              -모두의 집사-
+            </p>
+
             <div className="mx-auto mt-6 max-w-[320px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
               <div className="sm:hidden">
                 <p>행사 페이지, 설교 콘텐츠, 신청 웹을</p>
