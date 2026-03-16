@@ -66,21 +66,22 @@ export default function HomePage() {
             </div>
           </header>
 
-          <div className="relative flex flex-1 flex-col justify-center pb-16 pt-20 sm:pt-28 lg:pb-16 lg:pt-24">
+          <div className="relative flex flex-1 flex-col justify-center pb-16 pt-16 sm:pt-28 lg:pb-16 lg:pt-24">
             <div className="mx-auto w-full max-w-[1180px] text-center">
-              <h1 className="font-display text-[2.15rem] font-light leading-[1.02] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
+              <h1 className="font-display text-[1.95rem] font-light leading-[1.08] tracking-[-0.05em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
                 <span className="block sm:hidden">목회에 집중하세요.</span>
-                <span className="block sm:hidden">나머지는 저희가 맡겠습니다.</span>
+                <span className="block sm:hidden">나머지는 저희가</span>
+                <span className="block sm:hidden">맡겠습니다.</span>
                 <span className="hidden whitespace-nowrap sm:block">목회에 집중하세요.</span>
                 <span className="hidden whitespace-nowrap sm:block lg:translate-x-[0.32em]">나머지는 저희가 맡겠습니다.</span>
               </h1>
             </div>
 
-            <p className="mx-auto mt-5 text-center text-sm tracking-[0.18em] text-white/62 sm:mt-6 sm:text-[13px]">
+            <p className="mx-auto mt-4 text-center text-[12px] tracking-[0.16em] text-white/62 sm:mt-6 sm:text-[13px]">
               -모두의 집사-
             </p>
 
-            <div className="mx-auto mt-6 max-w-[320px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
+            <div className="mx-auto mt-5 max-w-[300px] text-center text-[13px] leading-6 text-white/82 sm:mt-8 sm:max-w-[680px] sm:text-[15px] sm:leading-7">
               <div className="sm:hidden">
                 <p>행사 페이지, 설교 콘텐츠, 신청 웹을</p>
                 <p>짧고 분명하게 제작합니다.</p>
@@ -94,7 +95,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="mx-auto mt-7 flex w-full max-w-[320px] flex-col items-center justify-center gap-2.5 sm:mt-9 sm:max-w-none sm:flex-row sm:gap-4">
+            <div className="mx-auto mt-6 flex w-full max-w-[320px] flex-col items-center justify-center gap-2.5 sm:mt-9 sm:max-w-none sm:flex-row sm:gap-4">
               <a href="#outputs" className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-white/55 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:min-w-[168px] sm:w-auto sm:px-6">
                 대표 상품 보기
               </a>
