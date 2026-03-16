@@ -288,23 +288,45 @@ export default function HomePage() {
             <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">처음 맡기기 가장 쉬운 대표 상품</h2>
           </div>
 
-          <div className="mt-12 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-              <div className="max-w-2xl">
-                <h3 className="text-2xl font-semibold text-white sm:text-3xl">행사·부서 랜딩페이지</h3>
-                <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
+          <div className="mt-12 overflow-hidden rounded-[34px] border border-white/10 bg-[#0b1327]/92 shadow-[0_26px_80px_rgba(2,6,23,0.34)]">
+            <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
+              <div className="relative min-h-[320px] overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_18%_18%,rgba(129,140,248,0.22),transparent_26%),linear-gradient(180deg,#111a33_0%,#0b1327_100%)] p-6 sm:min-h-[420px] sm:p-8 lg:min-h-full lg:border-b-0 lg:border-r">
+                <div className="absolute left-8 top-8 h-[72%] w-[58%] rounded-[28px] border border-white/10 bg-[#f8fbff] shadow-[0_18px_50px_rgba(15,23,42,0.24)]" />
+                <div className="absolute left-12 top-14 h-2 w-24 rounded-full bg-[#d9e3f2]" />
+                <div className="absolute left-12 top-20 h-3 w-44 rounded-full bg-[#0f172a]" />
+                <div className="absolute left-12 top-28 h-28 w-[46%] rounded-[20px] bg-[linear-gradient(135deg,#c7d2fe_0%,#e9d5ff_100%)]" />
+                <div className="absolute right-8 top-16 w-[34%] rounded-[22px] border border-white/10 bg-[#10192d] p-3 shadow-[0_18px_40px_rgba(2,6,23,0.3)]">
+                  <div className="h-24 rounded-[16px] bg-[linear-gradient(135deg,#4338ca_0%,#ec4899_100%)]" />
+                  <div className="mt-3 h-2 w-16 rounded-full bg-white/25" />
+                  <div className="mt-2 h-2 w-10 rounded-full bg-white/15" />
+                </div>
+                <div className="absolute bottom-8 left-8 flex flex-wrap gap-2 text-[10px] text-[#51607e]">
+                  <span className="rounded-full bg-white px-2 py-1">EVENT</span>
+                  <span className="rounded-full bg-white px-2 py-1">DEPARTMENT</span>
+                  <span className="rounded-full bg-white px-2 py-1">SIGNUP</span>
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-8 lg:p-10">
+                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
+                  19만 원부터
+                </div>
+                <h3 className="mt-5 text-2xl font-semibold text-white sm:text-3xl lg:text-[2.2rem]">행사·부서 랜딩페이지</h3>
+                <p className="mt-5 text-sm leading-7 text-white/66 sm:text-base">
                   교회 행사, 부서, 집회, 수련회, 모집 안내를
                   한 페이지에 깔끔하게 정리해
                   링크 하나로 바로 전달할 수 있게 만듭니다.
                 </p>
-                <p className="mt-4 text-sm text-white/54">교회가 가장 빠르게 결정할 수 있는 입구 상품</p>
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <p className="mt-5 text-sm text-white/54">교회가 가장 빠르게 결정할 수 있는 입구 상품</p>
+                <div className="mt-6 flex flex-wrap gap-2 text-[11px] text-white/58">
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">행사 안내</span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">부서 소개</span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">신청 연결</span>
+                </div>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">샘플 보기</a>
                   <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">문의하기</a>
                 </div>
-              </div>
-              <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                19만 원부터
               </div>
             </div>
           </div>
