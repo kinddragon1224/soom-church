@@ -304,7 +304,7 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                6.9만 원부터
+                19만 원부터
               </div>
             </div>
           </div>
@@ -324,7 +324,7 @@ export default function HomePage() {
                   <p className="mt-4 text-sm text-white/54">설교 핵심을 짧고 선명하게 다시 전하는 패키지</p>
                 </div>
                 <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  월 4개 5만 원
+                  월 4개 19만 원부터
                 </div>
               </div>
             </div>
@@ -350,7 +350,7 @@ export default function HomePage() {
                   <p className="mt-4 text-sm text-white/54">작은 조직이 바로 쓸 수 있는 운영 도구</p>
                 </div>
                 <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  MVP 15만 원
+                  MVP 49만 원부터
                 </div>
               </div>
             </div>
@@ -370,7 +370,7 @@ export default function HomePage() {
                   <p className="mt-4 text-sm text-white/54">대표 상품과 함께 붙이기 좋은 추가 옵션</p>
                 </div>
                 <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  15초 5만 원부터
+                  15초 9만 원부터
                 </div>
               </div>
             </div>
