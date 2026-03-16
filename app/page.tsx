@@ -69,10 +69,10 @@ export default function HomePage() {
           <div className="relative flex flex-1 flex-col justify-center pb-16 pt-20 sm:pt-28 lg:pb-16 lg:pt-24">
             <div className="mx-auto w-full max-w-[1180px] text-center">
               <h1 className="font-display text-[2.15rem] font-light leading-[1.02] tracking-[-0.055em] text-white sm:text-[3.9rem] md:text-[4.9rem] lg:text-[5.9rem] xl:text-[6.5rem]">
-                <span className="block sm:hidden">교회가 바로 맡길 수 있는</span>
-                <span className="block sm:hidden">디지털 결과물부터 만듭니다</span>
-                <span className="hidden whitespace-nowrap sm:block">교회가 가장 빨리 맡길 수 있는</span>
-                <span className="hidden whitespace-nowrap sm:block lg:translate-x-[0.32em]">디지털 결과물부터 만듭니다</span>
+                <span className="block sm:hidden">목회에 집중하세요.</span>
+                <span className="block sm:hidden">나머지는 저희가 맡겠습니다.</span>
+                <span className="hidden whitespace-nowrap sm:block">목회에 집중하세요.</span>
+                <span className="hidden whitespace-nowrap sm:block lg:translate-x-[0.32em]">나머지는 저희가 맡겠습니다.</span>
               </h1>
             </div>
 
