@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { signIn } from "@/auth";
 import { NextResponse } from "next/server";
+import { hashPassword } from "@/lib/password";
 
 export async function POST(request: Request) {
   const formData = await request.formData();
@@ -11,6 +12,12 @@ export async function POST(request: Request) {
   if (!name || !email || !password) {
     const signupUrl = new URL("/signup", request.url);
     signupUrl.searchParams.set("error", "required");
+    return NextResponse.redirect(signupUrl);
+  }
+
+  if (password.length < 8) {
+    const signupUrl = new URL("/signup", request.url);
+    signupUrl.searchParams.set("error", "weak_password");
     return NextResponse.redirect(signupUrl);
   }
 
@@ -25,7 +32,7 @@ export async function POST(request: Request) {
     data: {
       name,
       email,
-      passwordHash: password,
+      passwordHash: await hashPassword(password),
       isActive: true,
     },
   });

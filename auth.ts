@@ -5,6 +5,7 @@ import Kakao from "next-auth/providers/kakao";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { getFirstChurchByUserId } from "@/lib/church-context";
+import { hashPassword, isHashedPassword, verifyPassword } from "@/lib/password";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -25,7 +26,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!email || !password) return null;
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || user.passwordHash !== password || !user.isActive) return null;
+        if (!user || !user.isActive) return null;
+
+        const isValid = await verifyPassword(password, user.passwordHash);
+        if (!isValid) return null;
+
+        if (!isHashedPassword(user.passwordHash)) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash: await hashPassword(password) },
+          });
+        }
 
         return {
           id: user.id,

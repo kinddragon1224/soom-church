@@ -29,6 +29,11 @@ export default async function SignupPage({
             이미 가입된 이메일이야. 로그인하거나 다른 이메일을 사용해줘.
           </div>
         ) : null}
+        {error === "weak_password" ? (
+          <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            비밀번호는 8자 이상으로 입력해줘.
+          </div>
+        ) : null}
 
         <form action="/api/signup" method="post" className="mt-5 grid gap-3 sm:grid-cols-2">
           <input name="name" required placeholder="이름" className="rounded-md border border-border px-3 py-2 text-sm" />
