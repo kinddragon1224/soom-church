@@ -1,7 +1,5 @@
-import { clearLoginCookie } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { signOut } from "@/auth";
 
-export async function POST(request: Request) {
-  clearLoginCookie();
-  return NextResponse.redirect(new URL("/", request.url));
+export async function POST() {
+  return signOut({ redirectTo: "/" });
 }

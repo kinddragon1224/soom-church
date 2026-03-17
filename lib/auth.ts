@@ -1,45 +1,20 @@
-import { cookies } from "next/headers";
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
-const SESSION_COOKIE = "soom_admin_session";
-const USER_COOKIE = "soom_user_id";
-
-export function getCurrentUserId() {
-  return cookies().get(USER_COOKIE)?.value ?? null;
+export async function getCurrentUserId() {
+  const session = await auth();
+  return session?.user?.id ?? null;
 }
 
-export function isLoggedIn() {
-  const session = cookies().get(SESSION_COOKIE)?.value === "1";
-  const userId = getCurrentUserId();
-  return session && Boolean(userId);
+export async function isLoggedIn() {
+  const userId = await getCurrentUserId();
+  return Boolean(userId);
 }
 
-export function requireAuth(next?: string) {
-  if (!isLoggedIn()) {
+export async function requireAuth(next?: string) {
+  const userId = await getCurrentUserId();
+  if (!userId) {
     const loginPath = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
     redirect(loginPath);
   }
-}
-
-export function setLoginCookie(userId: string) {
-  cookies().set(SESSION_COOKIE, "1", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 12,
-  });
-
-  cookies().set(USER_COOKIE, userId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 12,
-  });
-}
-
-export function clearLoginCookie() {
-  cookies().delete(SESSION_COOKIE);
-  cookies().delete(USER_COOKIE);
 }

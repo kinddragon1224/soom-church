@@ -22,9 +22,9 @@ export async function getFirstChurchByUserId(userId: string) {
   return membership?.church ?? null;
 }
 
-export function getCurrentUserOrRedirect(next?: string) {
-  requireAuth(next);
-  const userId = getCurrentUserId();
+export async function getCurrentUserOrRedirect(next?: string) {
+  await requireAuth(next);
+  const userId = await getCurrentUserId();
   if (!userId) {
     const loginPath = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
     redirect(loginPath);
@@ -53,7 +53,7 @@ export async function getAccessibleChurchBySlug(userId: string, churchSlug: stri
 }
 
 export async function requireWorkspaceMembership(churchSlug: string) {
-  const userId = getCurrentUserOrRedirect(`/app/${churchSlug}/dashboard`);
+  const userId = await getCurrentUserOrRedirect(`/app/${churchSlug}/dashboard`);
   const membership = await getAccessibleChurchBySlug(userId, churchSlug);
   return { userId, membership };
 }
