@@ -1,18 +1,5 @@
 import Link from "next/link";
 
-const solutions = [
-  {
-    label: "계속 맡길 수 있는 상품",
-    title: "반복해서 필요한 콘텐츠를 꾸준히 이어갑니다",
-    desc: "설교 쇼츠, 요약, 전달용 콘텐츠처럼 한 번으로 끝나지 않는 작업을 가볍게 반복 납품할 수 있도록 구성합니다.",
-  },
-  {
-    label: "운영으로 이어지는 상품",
-    title: "작은 납품 이후 교회 운영 구조까지 연결합니다",
-    desc: "명단, 신청, 상태 관리처럼 교회 안에서 반복되는 흐름을 더 단순하게 정리할 수 있는 운영 구조로 확장합니다.",
-  },
-];
-
 const principles = [
   "교회가 지금 바로 써야 하는 결과물부터 시작",
   "짧은 납기와 분명한 범위로 제안",
@@ -276,76 +263,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="outputs" className="bg-[linear-gradient(180deg,#0b1327_0%,#050b16_100%)]">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <div className="mt-16">
-            <p className="font-display text-xs tracking-[0.2em] text-white/45">REPEAT</p>
-            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">계속 맡길 수 있는 상품</h2>
-            <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div className="max-w-2xl">
-                  <h3 className="text-2xl font-semibold text-white sm:text-3xl">설교 쇼츠 패키지</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
-                    주일 설교 핵심 구간을 짧게 정리해
-                    교회 채널과 성도에게 다시 전달할 수 있도록
-                    반복 납품합니다.
-                  </p>
-                  <p className="mt-4 text-sm text-white/54">설교 핵심을 짧고 선명하게 다시 전하는 패키지</p>
-                </div>
-                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  월 4개 19만 원부터
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-16">
-            <p className="font-display text-xs tracking-[0.2em] text-white/45">EXPANSION</p>
-            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-              작은 납품 이후,
-              <br />
-              운영 구조로 이어집니다
-            </h2>
-            <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div className="max-w-2xl">
-                  <h3 className="text-2xl font-semibold text-white sm:text-3xl">간편 명단 관리 웹</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
-                    작은 조직이나 부서가
-                    명단, 신청, 상태, 담당 내용을
-                    헷갈리지 않게 정리하고 공유할 수 있는
-                    가벼운 운영용 웹입니다.
-                  </p>
-                  <p className="mt-4 text-sm text-white/54">작은 조직이 바로 쓸 수 있는 운영 도구</p>
-                </div>
-                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  MVP 49만 원부터
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-16">
-            <p className="font-display text-xs tracking-[0.2em] text-white/45">OPTION</p>
-            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">함께 붙일 수 있는 옵션</h2>
-            <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0b1327]/88 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.34)] sm:p-7">
-              <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                <div className="max-w-2xl">
-                  <h3 className="text-2xl font-semibold text-white sm:text-3xl">AI 영상 제작</h3>
-                  <p className="mt-4 text-sm leading-7 text-white/66 sm:text-base">
-                    행사 홍보, 설교 하이라이트, 사역 소개용
-                    짧은 영상을 목적에 맞게 제작합니다.
-                  </p>
-                  <p className="mt-4 text-sm text-white/54">고퀄리티 AI 영상 / 기획 포함, 촬영은 별도 견적</p>
-                </div>
-                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  15초 50만 원부터
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="bg-[#f4f5f7] text-[#0a1020]">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
