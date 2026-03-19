@@ -140,7 +140,7 @@ export default function AboutPage() {
                       src={member.image}
                       alt={member.imageAlt}
                       fill
-                      className="object-cover object-center scale-[0.92]"
+                      className="object-cover object-center scale-[0.78]"
                       sizes="(min-width: 1024px) 40vw, 100vw"
                     />
                   ) : (
