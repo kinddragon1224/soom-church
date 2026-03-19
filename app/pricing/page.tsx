@@ -1,6 +1,40 @@
 import Link from "next/link";
 
-const serviceGroups = [
+type ServiceItem = {
+  title: string;
+  price: string;
+  desc: string;
+  note?: string;
+};
+
+type ServiceGroup = {
+  category: string;
+  items: ServiceItem[];
+};
+
+const workspaceFeatures = [
+  "교적 관리",
+  "심방 관리",
+  "웹 + 모바일 반응형 지원",
+  "직접 개발한 구독형 교회 운영 서비스",
+];
+
+const subServiceGroups: ServiceGroup[] = [
+  {
+    category: "콘텐츠",
+    items: [
+      {
+        title: "설교 쇼츠 패키지",
+        price: "월 4개 19만 원부터",
+        desc: "설교 핵심 구간을 짧게 재가공해 교회 채널과 SNS에 반복 업로드할 수 있도록 제작합니다.",
+      },
+      {
+        title: "사역 콘텐츠 제작",
+        price: "별도 협의",
+        desc: "사역 소개, 카드뉴스, 반복 안내 콘텐츠처럼 계속 전달되어야 하는 작업을 정리합니다.",
+      },
+    ],
+  },
   {
     category: "웹",
     items: [
@@ -8,13 +42,7 @@ const serviceGroups = [
         title: "랜딩페이지",
         price: "30만 원부터",
         desc: "행사, 부서, 집회, 모집, 사역 소개를 한 페이지에 명확하게 정리하는 서비스입니다.",
-        details: [
-          "반응형 기본 제작",
-          "정보 구조 정리",
-          "핵심 섹션 구성",
-          "기본 안내형 페이지",
-        ],
-        note: "신청 기능 / 설문 기능 / DB 저장 / 관리자 기능은 별도 견적",
+        note: "반응형 기본 제작 / 신청·설문·DB 기능은 별도 견적",
       },
     ],
   },
@@ -45,23 +73,7 @@ const serviceGroups = [
         title: "고퀄리티 AI 영상",
         price: "15초 50만 원부터",
         desc: "브랜드 소개, 행사 오프닝, 메시지 예고편처럼 짧은 시간 안에 인상을 남기는 영상을 제작합니다.",
-        details: ["15초 — 50만 원부터", "30초 — 70만 원", "1분 — 100만 원"],
-        note: "촬영이 필요한 경우 별도 협의",
-      },
-      {
-        title: "설교 쇼츠 패키지",
-        price: "월 4개 19만 원부터",
-        desc: "설교 핵심 구간을 짧게 재가공해 교회 채널과 SNS에 반복 업로드할 수 있도록 제작합니다.",
-      },
-    ],
-  },
-  {
-    category: "운영 도구",
-    items: [
-      {
-        title: "간편 명단 관리 웹",
-        price: "MVP 49만 원부터",
-        desc: "작은 조직이나 부서가 명단, 상태, 담당, 신청 정보를 헷갈리지 않게 정리하고 공유할 수 있는 운영용 웹입니다.",
+        note: "15초 / 30초 / 1분 단위 제작 가능 · 촬영은 별도 협의",
       },
     ],
   },
@@ -91,31 +103,89 @@ export default function PricingPage() {
 
       <section>
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">SERVICES</p>
+          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">MAIN PRODUCT</p>
           <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-            교회와 사역을 위한
+            숨의 주력 상품은
             <br />
-            숨의 서비스
+            교회 운영 워크스페이스입니다
           </h1>
-          <p className="mt-6 max-w-2xl text-sm leading-7 text-[#5d667d] sm:text-base">
-            홈페이지, 디자인, 영상, 운영용 웹까지 필요한 작업을 목적에 맞게 선택할 수 있습니다.
-          </p>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#7b8498] sm:text-base">
-            정확한 금액은 범위에 따라 달라질 수 있지만, 아래 시작가를 기준으로 빠르게 판단하실 수 있습니다.
+          <p className="mt-6 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
+            숨(soom) 워크스페이스는 교적 관리와 심방 관리를 더 쉽게 운영할 수 있도록 만든,
+            직접 개발한 구독형 교회 운영 서비스입니다.
           </p>
         </div>
       </section>
 
       <section>
         <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
+          <section className="rounded-[36px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-10">
+            <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+              <div>
+                <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">SOOM WORKSPACE</p>
+                <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3.3rem]">
+                  교적과 심방을
+                  <br />
+                  더 쉽게 운영하는 워크스페이스
+                </h2>
+                <p className="mt-6 text-sm leading-8 text-[#44506d] sm:text-base">
+                  교회의 운영은 반복되고, 정보는 계속 쌓입니다. 숨 워크스페이스는 교적과 심방 관리를 중심으로,
+                  교회 안에서 반복되는 운영 흐름을 더 단순하고 일관되게 만들기 위해 설계되었습니다.
+                </p>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                  {workspaceFeatures.map((feature) => (
+                    <div key={feature} className="rounded-[22px] border border-[#ece5db] bg-[#fcfbf8] px-4 py-4 text-sm font-medium text-[#334155]">
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[30px] border border-[#ece5db] bg-[#111827] p-6 text-white sm:p-8">
+                <p className="text-xs tracking-[0.22em] text-white/40">SUBSCRIPTION</p>
+                <p className="mt-4 text-[2.6rem] font-semibold tracking-[-0.05em]">월 7,700원</p>
+                <p className="mt-2 text-sm text-white/56">계정당</p>
+                <div className="mt-6 rounded-[22px] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-white/74">
+                  연간 결제 시 15% 할인 적용
+                </div>
+                <div className="mt-6 text-sm leading-7 text-white/66">
+                  필요한 계정 수만큼 구독하고, 웹과 모바일 반응형으로 바로 사용할 수 있습니다.
+                </div>
+                <div className="mt-8 flex flex-col gap-3">
+                  <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#111827]">
+                    도입 문의하기
+                  </Link>
+                  <Link href="/about" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 text-sm font-medium text-white">
+                    숨 소개 보기
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
+          <div className="rounded-[34px] border border-[#e6dfd5] bg-[#111827] px-6 py-10 text-white sm:px-10">
+            <p className="text-xs tracking-[0.24em] text-white/40">SUB SERVICES</p>
+            <h2 className="mt-5 font-display text-[2rem] leading-[1.1] tracking-[-0.05em] sm:text-[3rem]">
+              워크스페이스 위에 필요한 제작 서비스를 더합니다
+            </h2>
+            <p className="mt-6 max-w-3xl text-sm leading-7 text-white/62 sm:text-base">
+              숨의 중심은 워크스페이스입니다. 그리고 필요한 경우 콘텐츠, 웹, 디자인, 영상 서비스를 연결해 전달과 운영을 함께 정리합니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-10 lg:pb-28">
           <div className="grid gap-8">
-            {serviceGroups.map((group) => (
+            {subServiceGroups.map((group) => (
               <section key={group.category} className="rounded-[34px] border border-[#e6dfd5] bg-white p-6 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
-                <div className="mb-6 flex flex-col gap-2 border-b border-[#eee7dd] pb-6 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">CATEGORY</p>
-                    <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">{group.category}</h2>
-                  </div>
+                <div className="mb-6 border-b border-[#eee7dd] pb-6">
+                  <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">CATEGORY</p>
+                  <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">{group.category}</h2>
                 </div>
                 <div className="grid gap-5 lg:grid-cols-2">
                   {group.items.map((item) => (
@@ -124,13 +194,6 @@ export default function PricingPage() {
                       <p className="mt-3 text-[1.6rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.price}</p>
                       <h3 className="mt-5 text-[1.5rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.title}</h3>
                       <p className="mt-4 text-sm leading-7 text-[#475069]">{item.desc}</p>
-                      {item.details && (
-                        <ul className="mt-5 grid gap-2 text-sm leading-7 text-[#334155]">
-                          {item.details.map((detail) => (
-                            <li key={detail}>• {detail}</li>
-                          ))}
-                        </ul>
-                      )}
                       {item.note && <p className="mt-5 text-sm leading-6 text-[#7b8498]">{item.note}</p>}
                       <div className="mt-6">
                         <Link href="/contact" className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#111827] px-5 text-sm font-semibold text-white">
@@ -142,30 +205,6 @@ export default function PricingPage() {
                 </div>
               </section>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <div className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-10 lg:pb-28">
-          <div className="rounded-[34px] border border-[#e6dfd5] bg-[#111827] px-6 py-10 text-white sm:px-10">
-            <p className="text-xs tracking-[0.24em] text-white/40">GUIDE</p>
-            <h2 className="mt-5 font-display text-[2rem] leading-[1.1] tracking-[-0.05em] sm:text-[3rem]">
-              정확한 상품명이 없어도 괜찮습니다
-            </h2>
-            <div className="mt-6 grid gap-2 text-sm leading-7 text-white/72 sm:text-base">
-              <p>“행사 페이지가 필요해요”</p>
-              <p>“소개 자료가 정리 안 돼 있어요”</p>
-              <p>“설교 콘텐츠를 계속 올리고 싶어요”</p>
-            </div>
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/58 sm:text-base">
-              이 정도만 알려주셔도 숨이 맞는 방식으로 제안해드립니다.
-            </p>
-            <div className="mt-8">
-              <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#111827]">
-                문의하러 가기
-              </Link>
-            </div>
           </div>
         </div>
       </section>
