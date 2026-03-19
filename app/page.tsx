@@ -2,11 +2,6 @@ import Link from "next/link";
 
 const solutions = [
   {
-    label: "처음 맡기기 쉬운 상품",
-    title: "교회가 가장 쉽게 시작할 수 있는 결과물부터 제안합니다",
-    desc: "행사 안내, 부서 소개, 신청 페이지처럼 링크 하나로 바로 전달할 수 있는 결과물을 짧고 분명하게 제작합니다.",
-  },
-  {
     label: "계속 맡길 수 있는 상품",
     title: "반복해서 필요한 콘텐츠를 꾸준히 이어갑니다",
     desc: "설교 쇼츠, 요약, 전달용 콘텐츠처럼 한 번으로 끝나지 않는 작업을 가볍게 반복 납품할 수 있도록 구성합니다.",
@@ -283,54 +278,6 @@ export default function HomePage() {
 
       <section id="outputs" className="bg-[linear-gradient(180deg,#0b1327_0%,#050b16_100%)]">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <div>
-            <p className="font-display text-xs tracking-[0.2em] text-white/45">REPRESENTATIVE</p>
-            <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">처음 맡기기 가장 쉬운 대표 상품</h2>
-          </div>
-
-          <div className="mt-12 overflow-hidden rounded-[34px] border border-white/10 bg-[#0b1327]/92 shadow-[0_26px_80px_rgba(2,6,23,0.34)]">
-            <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-              <div className="relative min-h-[320px] overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_18%_18%,rgba(129,140,248,0.22),transparent_26%),linear-gradient(180deg,#111a33_0%,#0b1327_100%)] p-6 sm:min-h-[420px] sm:p-8 lg:min-h-full lg:border-b-0 lg:border-r">
-                <div className="absolute left-8 top-8 h-[72%] w-[58%] rounded-[28px] border border-white/10 bg-[#f8fbff] shadow-[0_18px_50px_rgba(15,23,42,0.24)]" />
-                <div className="absolute left-12 top-14 h-2 w-24 rounded-full bg-[#d9e3f2]" />
-                <div className="absolute left-12 top-20 h-3 w-44 rounded-full bg-[#0f172a]" />
-                <div className="absolute left-12 top-28 h-28 w-[46%] rounded-[20px] bg-[linear-gradient(135deg,#c7d2fe_0%,#e9d5ff_100%)]" />
-                <div className="absolute right-8 top-16 w-[34%] rounded-[22px] border border-white/10 bg-[#10192d] p-3 shadow-[0_18px_40px_rgba(2,6,23,0.3)]">
-                  <div className="h-24 rounded-[16px] bg-[linear-gradient(135deg,#4338ca_0%,#ec4899_100%)]" />
-                  <div className="mt-3 h-2 w-16 rounded-full bg-white/25" />
-                  <div className="mt-2 h-2 w-10 rounded-full bg-white/15" />
-                </div>
-                <div className="absolute bottom-8 left-8 flex flex-wrap gap-2 text-[10px] text-[#51607e]">
-                  <span className="rounded-full bg-white px-2 py-1">EVENT</span>
-                  <span className="rounded-full bg-white px-2 py-1">DEPARTMENT</span>
-                  <span className="rounded-full bg-white px-2 py-1">SIGNUP</span>
-                </div>
-              </div>
-
-              <div className="p-6 sm:p-8 lg:p-10">
-                <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  30만 원부터
-                </div>
-                <h3 className="mt-5 text-2xl font-semibold text-white sm:text-3xl lg:text-[2.2rem]">행사·부서 랜딩페이지</h3>
-                <p className="mt-5 text-sm leading-7 text-white/66 sm:text-base">
-                  교회 행사, 부서, 집회, 수련회, 모집 안내를
-                  한 페이지에 깔끔하게 정리해
-                  링크 하나로 바로 전달할 수 있게 만듭니다.
-                </p>
-                <p className="mt-5 text-sm text-white/54">기본 반응형 페이지 기준 / 신청·설문·데이터 기능은 추가 견적</p>
-                <div className="mt-6 flex flex-wrap gap-2 text-[11px] text-white/58">
-                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">행사 안내</span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">부서 소개</span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">신청 연결</span>
-                </div>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 py-3 text-sm font-medium text-white">샘플 보기</a>
-                  <a href="#contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(79,70,229,0.28)]">문의하기</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <div className="mt-16">
             <p className="font-display text-xs tracking-[0.2em] text-white/45">REPEAT</p>
             <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">계속 맡길 수 있는 상품</h2>
