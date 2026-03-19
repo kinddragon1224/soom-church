@@ -309,7 +309,7 @@ export default function HomePage() {
 
               <div className="p-6 sm:p-8 lg:p-10">
                 <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  19만 원부터
+                  30만 원부터
                 </div>
                 <h3 className="mt-5 text-2xl font-semibold text-white sm:text-3xl lg:text-[2.2rem]">행사·부서 랜딩페이지</h3>
                 <p className="mt-5 text-sm leading-7 text-white/66 sm:text-base">
@@ -317,7 +317,7 @@ export default function HomePage() {
                   한 페이지에 깔끔하게 정리해
                   링크 하나로 바로 전달할 수 있게 만듭니다.
                 </p>
-                <p className="mt-5 text-sm text-white/54">교회가 가장 빠르게 결정할 수 있는 입구 상품</p>
+                <p className="mt-5 text-sm text-white/54">기본 반응형 페이지 기준 / 신청·설문·데이터 기능은 추가 견적</p>
                 <div className="mt-6 flex flex-wrap gap-2 text-[11px] text-white/58">
                   <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">행사 안내</span>
                   <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5">부서 소개</span>
@@ -389,10 +389,10 @@ export default function HomePage() {
                     행사 홍보, 설교 하이라이트, 사역 소개용
                     짧은 영상을 목적에 맞게 제작합니다.
                   </p>
-                  <p className="mt-4 text-sm text-white/54">대표 상품과 함께 붙이기 좋은 추가 옵션</p>
+                  <p className="mt-4 text-sm text-white/54">고퀄리티 AI 영상 / 기획 포함, 촬영은 별도 견적</p>
                 </div>
                 <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                  15초 9만 원부터
+                  15초 50만 원부터
                 </div>
               </div>
             </div>
