@@ -218,9 +218,6 @@ export default function HomePage() {
                 서비스와 단가를 먼저 확인하세요
               </h2>
             </div>
-            <p className="max-w-[440px] text-sm leading-7 text-white/58 sm:text-[15px]">
-              미팅에서 바로 설명할 수 있도록 주요 서비스와 시작 단가를 먼저 보여줍니다. 세부 기능, 촬영, 데이터 구조는 추가 견적으로 안내합니다.
-            </p>
           </div>
 
           <div className="mt-12 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
