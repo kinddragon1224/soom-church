@@ -138,7 +138,7 @@ export default function HomePage() {
               </div>
               <div className="hidden sm:block">
                 <p>교회에 필요한 웹, 디자인, 영상, 운영 도구를</p>
-                <p>가장 이해하기 쉬운 방식으로 제작합니다.</p>
+                <p>짧고 분명하게 제작합니다.</p>
               </div>
             </div>
 
@@ -184,11 +184,11 @@ export default function HomePage() {
             <div>
               <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">SERVICES</p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-                교회가 바로 맡길 수 있는 서비스
+                숨이 지금 도울 수 있는 일
               </h2>
             </div>
             <p className="max-w-[420px] text-sm leading-7 text-white/58 sm:text-[15px]">
-              필요한 작업을 제작, 영상, 운영으로 나눠서 가장 이해하기 쉽게 정리했습니다.
+              교회가 바로 맡길 수 있는 작업을 제작, 영상, 운영 기준으로 나눠 한눈에 정리했습니다.
             </p>
           </div>
 
@@ -215,11 +215,11 @@ export default function HomePage() {
             <div>
               <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">PRICING</p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-                주요 서비스 단가
+                서비스와 단가를 먼저 확인하세요
               </h2>
             </div>
             <p className="max-w-[440px] text-sm leading-7 text-white/58 sm:text-[15px]">
-              가격이 먼저 보이고, 설명은 그다음에 읽히도록 정리했습니다. 부가세, 촬영, 추가 기능은 별도 조건으로 안내합니다.
+              미팅에서 바로 설명할 수 있도록 주요 서비스와 시작 단가를 먼저 보여줍니다. 세부 기능, 촬영, 데이터 구조는 추가 견적으로 안내합니다.
             </p>
           </div>
 
@@ -245,7 +245,7 @@ export default function HomePage() {
               <h2 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
                 필요한 기능은
                 <br />
-                추가할 수 있습니다
+                추가로 붙일 수 있습니다
               </h2>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -265,7 +265,7 @@ export default function HomePage() {
             <div>
               <p className="text-[11px] font-medium tracking-[0.24em] text-white/42">PROCESS</p>
               <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-                작업은 이렇게
+                의뢰는 이렇게
                 <br />
                 진행됩니다
               </h2>
@@ -306,10 +306,10 @@ export default function HomePage() {
             <div className="rounded-[30px] border border-white/8 bg-[#091122] p-5">
               <p className="text-xs tracking-[0.16em] text-white/42">CHECKLIST</p>
               <div className="mt-4 space-y-3 text-sm text-white/78">
-                <p>· 필요한 작업 종류</p>
-                <p>· 원하는 일정</p>
-                <p>· 참고할 기존 자료</p>
-                <p>· 예산 범위(있다면)</p>
+                <p>· 어떤 작업이 필요한지</p>
+                <p>· 언제까지 필요한지</p>
+                <p>· 참고할 기존 자료가 있는지</p>
+                <p>· 예산 범위가 있다면 함께</p>
               </div>
             </div>
           </div>
