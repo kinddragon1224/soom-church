@@ -276,8 +276,9 @@ export default function HomePage() {
                 </p>
                 <p className="mt-4 text-sm text-white/54">설교 핵심을 짧고 선명하게 다시 전하는 패키지</p>
               </div>
-              <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                월 4개 19만 원부터
+              <div className="inline-flex w-fit flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+                <span className="text-[11px] tracking-[0.18em] text-white/45">PRICE</span>
+                <span className="mt-1 text-xl font-semibold leading-none">월 4개 19만 원부터</span>
               </div>
             </div>
           </div>
@@ -294,8 +295,9 @@ export default function HomePage() {
                 </p>
                 <p className="mt-4 text-sm text-white/54">작은 조직이 바로 쓸 수 있는 운영 도구</p>
               </div>
-              <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                MVP 49만 원부터
+              <div className="inline-flex w-fit flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+                <span className="text-[11px] tracking-[0.18em] text-white/45">PRICE</span>
+                <span className="mt-1 text-xl font-semibold leading-none">MVP 49만 원부터</span>
               </div>
             </div>
           </div>
@@ -310,8 +312,9 @@ export default function HomePage() {
                 </p>
                 <p className="mt-4 text-sm text-white/54">고퀄리티 AI 영상 / 기획 포함, 촬영은 별도 견적</p>
               </div>
-              <div className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs tracking-[0.12em] text-white/55">
-                15초 50만 원부터
+              <div className="inline-flex w-fit flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+                <span className="text-[11px] tracking-[0.18em] text-white/45">PRICE</span>
+                <span className="mt-1 text-xl font-semibold leading-none">15초 50만 원부터</span>
               </div>
             </div>
           </div>
