@@ -30,9 +30,9 @@ const plans: Plan[] = [
     name: "Pro",
     badge: "확장",
     price: "문의하기",
-    note: "고급 운영 플랜",
+    note: "운영 규모와 기능 범위에 따라 맞춤 제안",
     desc: "더 큰 운영 규모와 정교한 관리가 필요한 교회를 위한 확장 플랜입니다.",
-    features: ["Standard 포함", "확장 운영 대응", "고급 기능 협의"],
+    features: ["Standard의 기능 포함", "확장 운영 대응", "고급 기능 협의"],
   },
 ];
 
