@@ -1,5 +1,15 @@
 import Link from "next/link";
 
+type Plan = {
+  name: string;
+  badge?: string;
+  price: string;
+  note: string;
+  desc: string;
+  features: string[];
+  cta: string;
+};
+
 type ServiceItem = {
   title: string;
   price: string;
@@ -12,11 +22,42 @@ type ServiceGroup = {
   items: ServiceItem[];
 };
 
-const workspaceFeatures = [
-  "교적 관리",
-  "심방 관리",
-  "웹 + 모바일 반응형 지원",
-  "직접 개발한 구독형 교회 운영 서비스",
+const plans: Plan[] = [
+  {
+    name: "Free",
+    badge: "진입",
+    price: "무료",
+    note: "가볍게 시작",
+    desc: "처음 숨 워크스페이스를 경험해보고 싶은 교회를 위한 무료 플랜입니다.",
+    features: ["무료 시작", "워크스페이스 체험", "소규모 교회 / 테스트용"],
+    cta: "무료로 시작하기",
+  },
+  {
+    name: "Standard",
+    badge: "추천",
+    price: "계정당 월 7,700원",
+    note: "연간 결제 시 15% 할인",
+    desc: "대부분의 교회가 실제 운영에 사용할 수 있는 숨의 메인 플랜입니다.",
+    features: ["교적 관리", "심방 관리", "웹 + 모바일 반응형"],
+    cta: "Standard 문의하기",
+  },
+  {
+    name: "Pro",
+    badge: "확장",
+    price: "문의하기",
+    note: "고급 운영 플랜",
+    desc: "운영 규모가 크거나 더 정교한 관리가 필요한 교회를 위한 상위 플랜입니다.",
+    features: ["Standard 포함", "확장 운영 대응", "고급 기능 협의"],
+    cta: "Pro 문의하기",
+  },
+];
+
+const compareRows = [
+  { label: "가격", values: ["무료", "계정당 월 7,700원", "문의"] },
+  { label: "교적 관리", values: ["체험", "포함", "포함"] },
+  { label: "심방 관리", values: ["체험", "포함", "포함"] },
+  { label: "웹 + 모바일 반응형", values: ["포함", "포함", "포함"] },
+  { label: "추천 대상", values: ["테스트 / 진입", "대부분의 교회", "확장 운영 교회"] },
 ];
 
 const subServiceGroups: ServiceGroup[] = [
@@ -103,64 +144,96 @@ export default function PricingPage() {
 
       <section>
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">MAIN PRODUCT</p>
+          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">PLANS</p>
           <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-            숨의 주력 상품은
+            Free, Standard, Pro로
             <br />
-            교회 운영 워크스페이스입니다
+            단계별로 시작하는 숨 워크스페이스
           </h1>
           <p className="mt-6 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-            숨(soom) 워크스페이스는 교적 관리와 심방 관리를 더 쉽게 운영할 수 있도록 만든,
-            직접 개발한 구독형 교회 운영 서비스입니다.
+            무료 진입부터 실제 운영용 메인 플랜, 더 큰 규모를 위한 확장 플랜까지 교회 상황에 맞게 시작할 수 있습니다.
           </p>
         </div>
       </section>
 
       <section>
         <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
-          <section className="rounded-[36px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-10">
-            <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-              <div>
-                <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">SOOM WORKSPACE</p>
-                <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3.3rem]">
-                  교적과 심방을
-                  <br />
-                  더 쉽게 운영하는 워크스페이스
-                </h2>
-                <p className="mt-6 text-sm leading-8 text-[#44506d] sm:text-base">
-                  교회의 운영은 반복되고, 정보는 계속 쌓입니다. 숨 워크스페이스는 교적과 심방 관리를 중심으로,
-                  교회 안에서 반복되는 운영 흐름을 더 단순하고 일관되게 만들기 위해 설계되었습니다.
-                </p>
-                <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                  {workspaceFeatures.map((feature) => (
-                    <div key={feature} className="rounded-[22px] border border-[#ece5db] bg-[#fcfbf8] px-4 py-4 text-sm font-medium text-[#334155]">
-                      {feature}
-                    </div>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <article
+                key={plan.name}
+                className={`rounded-[34px] border p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8 ${
+                  plan.name === "Standard"
+                    ? "border-[#111827] bg-[#111827] text-white"
+                    : "border-[#e6dfd5] bg-white text-[#0c1220]"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="font-display text-[2rem] tracking-[-0.04em]">{plan.name}</h2>
+                  {plan.badge && (
+                    <span className={`rounded-full px-3 py-1 text-xs ${plan.name === "Standard" ? "bg-white/12 text-white" : "bg-[#f3ede3] text-[#7a6f67]"}`}>
+                      {plan.badge}
+                    </span>
+                  )}
+                </div>
+                <p className="mt-5 text-[2rem] font-semibold tracking-[-0.04em]">{plan.price}</p>
+                <p className={`mt-2 text-sm ${plan.name === "Standard" ? "text-white/56" : "text-[#7a6f67]"}`}>{plan.note}</p>
+                <p className={`mt-5 text-sm leading-7 ${plan.name === "Standard" ? "text-white/72" : "text-[#475069]"}`}>{plan.desc}</p>
+                <ul className={`mt-6 grid gap-2 text-sm leading-7 ${plan.name === "Standard" ? "text-white/84" : "text-[#334155]"}`}>
+                  {plan.features.map((feature) => (
+                    <li key={feature}>• {feature}</li>
                   ))}
+                </ul>
+                <div className="mt-8">
+                  <Link
+                    href="/contact"
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full px-6 text-sm font-semibold ${
+                      plan.name === "Standard"
+                        ? "bg-white text-[#111827]"
+                        : "bg-[#111827] text-white"
+                    }`}
+                  >
+                    {plan.cta}
+                  </Link>
                 </div>
-              </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              <div className="rounded-[30px] border border-[#ece5db] bg-[#111827] p-6 text-white sm:p-8">
-                <p className="text-xs tracking-[0.22em] text-white/40">SUBSCRIPTION</p>
-                <p className="mt-4 text-[2.6rem] font-semibold tracking-[-0.05em]">월 7,700원</p>
-                <p className="mt-2 text-sm text-white/56">계정당</p>
-                <div className="mt-6 rounded-[22px] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-white/74">
-                  연간 결제 시 15% 할인 적용
-                </div>
-                <div className="mt-6 text-sm leading-7 text-white/66">
-                  필요한 계정 수만큼 구독하고, 웹과 모바일 반응형으로 바로 사용할 수 있습니다.
-                </div>
-                <div className="mt-8 flex flex-col gap-3">
-                  <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#111827]">
-                    도입 문의하기
-                  </Link>
-                  <Link href="/about" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 text-sm font-medium text-white">
-                    숨 소개 보기
-                  </Link>
-                </div>
-              </div>
+      <section>
+        <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
+          <div className="overflow-hidden rounded-[34px] border border-[#e6dfd5] bg-white shadow-[0_16px_40px_rgba(16,24,40,0.05)]">
+            <div className="border-b border-[#eee7dd] px-6 py-6 sm:px-8">
+              <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">COMPARE</p>
+              <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">플랜 비교</h2>
             </div>
-          </section>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">항목</th>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">Free</th>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">Standard</th>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">Pro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {compareRows.map((row) => (
+                    <tr key={row.label} className="border-t border-[#eee7dd]">
+                      <td className="px-6 py-4 font-medium text-[#0c1220]">{row.label}</td>
+                      {row.values.map((value, index) => (
+                        <td key={`${row.label}-${index}`} className="px-6 py-4 text-[#475069]">
+                          {value}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 

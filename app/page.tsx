@@ -1,6 +1,40 @@
 import Link from "next/link";
 
-const workspaceFeatures = ["교적 관리", "심방 관리", "웹 + 모바일 반응형"];
+type Plan = {
+  name: string;
+  badge?: string;
+  price: string;
+  note: string;
+  desc: string;
+  features: string[];
+};
+
+const plans: Plan[] = [
+  {
+    name: "Free",
+    badge: "시장 진입",
+    price: "무료",
+    note: "가볍게 시작",
+    desc: "처음 숨 워크스페이스를 경험해보고 싶은 교회를 위한 진입 플랜입니다.",
+    features: ["무료 시작", "워크스페이스 체험", "소규모 테스트용"],
+  },
+  {
+    name: "Standard",
+    badge: "추천",
+    price: "계정당 월 7,700원",
+    note: "연간 결제 시 15% 할인",
+    desc: "대부분의 교회가 기본으로 운영할 수 있는 숨의 메인 플랜입니다.",
+    features: ["교적 관리", "심방 관리", "웹 + 모바일 반응형"],
+  },
+  {
+    name: "Pro",
+    badge: "확장",
+    price: "문의하기",
+    note: "고급 운영 플랜",
+    desc: "더 큰 운영 규모와 정교한 관리가 필요한 교회를 위한 확장 플랜입니다.",
+    features: ["Standard 포함", "확장 운영 대응", "고급 기능 협의"],
+  },
+];
 
 const workspaceBenefits = [
   "엑셀, 카톡, 메모에 흩어진 교인 정보를 한곳에서 정리할 수 있습니다.",
@@ -29,7 +63,7 @@ const subServices = [
 
 const processSteps = [
   "현재 운영 방식과 필요한 기능을 함께 정리합니다",
-  "교적 관리와 심방 관리 흐름에 맞게 제안합니다",
+  "Free / Standard / Pro 중 맞는 시작점을 제안합니다",
   "도입 범위와 계정 수를 기준으로 시작합니다",
   "필요하면 콘텐츠·웹·디자인까지 이어서 확장합니다",
 ];
@@ -65,26 +99,27 @@ export default function HomePage() {
             <div className="max-w-5xl">
               <p className="text-xs tracking-[0.24em] text-white/54">CHURCH WORKSPACE · WEB · CONTENT · DESIGN</p>
               <h1 className="mt-5 font-display text-[2.8rem] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[4.5rem] lg:text-[5.9rem]">
-                교회를 위한 운영 워크스페이스,
+                무료로 시작하는
                 <br />
-                숨(soom)
+                교회 운영 워크스페이스
               </h1>
               <p className="mt-6 max-w-3xl text-base leading-7 text-white/82 sm:text-lg sm:leading-8">
                 숨(soom)은 교적 관리와 심방 관리를 더 쉽게 운영할 수 있도록 만든,
                 직접 개발한 교회 운영 워크스페이스입니다.
               </p>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-white/62 sm:text-base">
-                웹과 모바일에서 바로 사용할 수 있고, 필요하면 콘텐츠·웹·디자인·영상까지 함께 확장할 수 있습니다.
+                Free로 가볍게 시작하고, Standard로 운영하고, Pro로 확장할 수 있습니다.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3 text-sm text-white/86">
-                <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">계정당 월 7,700원</span>
+                <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">Free 무료 시작</span>
+                <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">Standard 계정당 월 7,700원</span>
                 <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">연간 결제 시 15% 할인</span>
               </div>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f] transition hover:bg-white/90">
-                  워크스페이스 자세히 보기
+                  플랜 자세히 보기
                 </Link>
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 text-sm font-medium text-white transition hover:bg-white/10">
                   도입 문의하기
@@ -97,28 +132,54 @@ export default function HomePage() {
 
       <section className="bg-[#f3f1ec] text-[#0c1220]">
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr]">
-            <div>
-              <p className="text-xs tracking-[0.24em] text-[#7a6f67]">MAIN PRODUCT</p>
-              <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3.5rem]">
-                숨의 주력 상품은
-                <br />
-                교회 운영 워크스페이스입니다
-              </h2>
-            </div>
-            <div>
-              <p className="text-sm leading-7 text-[#5d667d] sm:text-base">
-                숨은 단순 제작 서비스만 하는 팀이 아닙니다. 교회의 운영 흐름을 더 잘 정리할 수 있도록,
-                교적 관리와 심방 관리를 중심으로 한 워크스페이스를 직접 개발하고 제공합니다.
-              </p>
-              <div className="mt-8 grid gap-3 sm:grid-cols-3">
-                {workspaceFeatures.map((feature) => (
-                  <div key={feature} className="rounded-[24px] border border-[#e3ddd4] bg-white px-5 py-5 text-sm font-medium text-[#334155] shadow-[0_16px_40px_rgba(16,24,40,0.06)] sm:text-base">
-                    {feature}
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="flex flex-col gap-4">
+            <p className="text-xs tracking-[0.24em] text-[#7a6f67]">PLANS</p>
+            <h2 className="font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3.5rem]">
+              Free로 진입하고,
+              <br />
+              Standard로 운영하고, Pro로 확장합니다
+            </h2>
+            <p className="max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
+              숨의 워크스페이스는 무료 진입부터 실제 운영용 메인 플랜, 더 큰 규모를 위한 확장 플랜까지 단계별로 시작할 수 있습니다.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {plans.map((plan) => (
+              <article
+                key={plan.name}
+                className={`rounded-[30px] border p-7 shadow-[0_16px_40px_rgba(16,24,40,0.06)] ${
+                  plan.name === "Standard"
+                    ? "border-[#111827] bg-[#111827] text-white"
+                    : "border-[#e3ddd4] bg-white text-[#0c1220]"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-[1.7rem] font-semibold tracking-[-0.03em]">{plan.name}</h3>
+                  {plan.badge && (
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs ${
+                        plan.name === "Standard"
+                          ? "bg-white/12 text-white"
+                          : "bg-[#f3ede3] text-[#7a6f67]"
+                      }`}
+                    >
+                      {plan.badge}
+                    </span>
+                  )}
+                </div>
+                <p className={`mt-5 text-[1.8rem] font-semibold tracking-[-0.03em] ${plan.name === "Standard" ? "text-white" : "text-[#0c1220]"}`}>
+                  {plan.price}
+                </p>
+                <p className={`mt-2 text-sm ${plan.name === "Standard" ? "text-white/58" : "text-[#7a6f67]"}`}>{plan.note}</p>
+                <p className={`mt-5 text-sm leading-7 ${plan.name === "Standard" ? "text-white/72" : "text-[#475069]"}`}>{plan.desc}</p>
+                <ul className={`mt-6 grid gap-2 text-sm leading-7 ${plan.name === "Standard" ? "text-white/84" : "text-[#334155]"}`}>
+                  {plan.features.map((feature) => (
+                    <li key={feature}>• {feature}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -143,38 +204,6 @@ export default function HomePage() {
                 <p className="text-sm leading-8 text-white/68">{item}</p>
               </article>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[linear-gradient(180deg,#070d18_0%,#111827_100%)]">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
-          <div className="grid gap-8 rounded-[34px] border border-white/10 bg-[#0b1327]/92 p-7 shadow-[0_24px_80px_rgba(2,6,23,0.36)] lg:grid-cols-[1.1fr_0.9fr] lg:p-10">
-            <div>
-              <p className="text-xs tracking-[0.24em] text-white/38">PRICING</p>
-              <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] text-white sm:text-[3.2rem]">
-                구독형으로 시작하는
-                <br />
-                교회 운영 워크스페이스
-              </h2>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-white/62 sm:text-base">
-                필요한 계정 수만큼 도입하고, 웹과 모바일에서 바로 운영할 수 있습니다.
-              </p>
-            </div>
-            <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
-              <p className="text-xs tracking-[0.22em] text-white/38">STARTING PLAN</p>
-              <p className="mt-4 text-[2.4rem] font-semibold tracking-[-0.04em] text-white">월 7,700원</p>
-              <p className="mt-2 text-sm text-white/54">계정당</p>
-              <p className="mt-6 text-sm leading-7 text-white/68">연간 결제 시 15% 할인 적용</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
-                <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
-                  가격 자세히 보기
-                </Link>
-                <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 text-sm font-medium text-white">
-                  도입 문의하기
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -214,14 +243,14 @@ export default function HomePage() {
                 복잡하게 시작하지 않아도 됩니다
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-7 text-white/62 sm:text-base">
-                정리가 안 된 상태로 문의해도 괜찮습니다. 워크스페이스 도입이 맞는지, 어떤 범위로 시작할지부터 함께 정리해드립니다.
+                정리가 안 된 상태로 문의해도 괜찮습니다. 워크스페이스 도입이 맞는지, 어떤 플랜으로 시작할지부터 함께 정리해드립니다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
                   문의하기
                 </Link>
-                <Link href="/about" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 text-sm font-medium text-white">
-                  About 보기
+                <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 text-sm font-medium text-white">
+                  플랜 보기
                 </Link>
               </div>
             </div>
