@@ -40,8 +40,8 @@ const plans: Plan[] = [
     name: "Standard",
     badge: "가장 많이 선택",
     tagline: "대부분의 교회를 위한 메인 플랜",
-    price: "계정당 월 7,700원",
-    note: "연간 결제 시 15% 할인",
+    price: "월 7,700원",
+    note: "계정당 · 연간 결제 시 15% 할인",
     desc: "실제 운영에 필요한 교적 관리와 심방 관리 기능을 안정적으로 사용할 수 있는 숨의 핵심 플랜입니다.",
     features: ["Free의 기능 포함", "교적 관리", "심방 관리", "웹 + 모바일 반응형"],
     cta: "Standard 문의하기",
@@ -61,7 +61,7 @@ const plans: Plan[] = [
 ];
 
 const compareRows = [
-  { label: "가격", values: ["무료", "계정당 월 7,700원", "문의"] },
+  { label: "가격", values: ["무료", "월 7,700원", "문의"] },
   { label: "구성", values: ["무료 진입", "메인 운영 플랜", "확장 운영 플랜"] },
   { label: "교적 관리", values: ["체험", "포함", "포함"] },
   { label: "심방 관리", values: ["체험", "포함", "포함"] },
