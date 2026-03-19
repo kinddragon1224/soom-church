@@ -2,8 +2,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "숨 | 교회 운영 워크스페이스 플랫폼",
-  description: "숨은 교회별 워크스페이스에서 교적·신청·공지·후속관리를 운영하는 SaaS 플랫폼입니다.",
+  title: "숨 | 교회와 사역자를 위한 콘텐츠·디자인·웹팀",
+  description:
+    "숨(soom)은 교회와 사역의 메시지가 더 선명하게 전달되도록 홈페이지, 디자인, 영상, 운영용 웹을 만듭니다.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
