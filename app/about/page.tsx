@@ -134,13 +134,13 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-5 lg:grid-cols-2">
             {team.map((member) => (
               <article key={member.name} className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
-                <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#201c21_0%,#4a2530_45%,#131b2b_100%)]">
+                <div className="relative mb-6 aspect-[5/4] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#201c21_0%,#4a2530_45%,#131b2b_100%)]">
                   {member.image ? (
                     <Image
                       src={member.image}
                       alt={member.imageAlt}
                       fill
-                      className="object-cover"
+                      className="object-cover object-center scale-[0.92]"
                       sizes="(min-width: 1024px) 40vw, 100vw"
                     />
                   ) : (
