@@ -99,27 +99,18 @@ export default function HomePage() {
             <div className="max-w-5xl">
               <p className="text-xs tracking-[0.24em] text-white/54">CHURCH WORKSPACE · WEB · CONTENT · DESIGN</p>
               <h1 className="mt-5 font-display text-[2.8rem] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[4.5rem] lg:text-[5.9rem]">
-                무료로 시작하는
+                교회를 위한
                 <br />
-                교회 운영 워크스페이스
+                운영 워크스페이스
               </h1>
               <p className="mt-6 max-w-3xl text-base leading-7 text-white/82 sm:text-lg sm:leading-8">
-                숨(soom)은 교적 관리와 심방 관리를 더 쉽게 운영할 수 있도록 만든,
-                직접 개발한 교회 운영 워크스페이스입니다.
+                교적과 심방, 그리고 반복되는 운영 흐름을
+                숨(soom) 워크스페이스로 정리하세요.
               </p>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/62 sm:text-base">
-                Free로 가볍게 시작하고, Standard로 운영하고, Pro로 확장할 수 있습니다.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3 text-sm text-white/86">
-                <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">Free 무료 시작</span>
-                <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">Standard 계정당 월 7,700원</span>
-                <span className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2">연간 결제 시 15% 할인</span>
-              </div>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f] transition hover:bg-white/90">
-                  플랜 자세히 보기
+                  워크스페이스 보기
                 </Link>
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 text-sm font-medium text-white transition hover:bg-white/10">
                   도입 문의하기
