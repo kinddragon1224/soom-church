@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const values = [
@@ -20,11 +21,15 @@ const team = [
     name: "김선용",
     role: "브랜드 디렉션 · 기획 · 제품 설계",
     desc: "선용은 숨의 방향을 설계합니다. 무엇을 먼저 보여줘야 하는지, 어떤 메시지가 브랜드의 중심이 되어야 하는지, 그리고 그것이 실제 서비스와 결과물로 어떻게 이어져야 하는지를 다룹니다.",
+    image: "/team/kim-sunyong.png",
+    imageAlt: "김선용 프로필 이미지",
   },
   {
-    name: "재성",
+    name: "최재성",
     role: "디자인 · 제작 · 구현",
     desc: "재성은 숨의 결과물을 현실로 완성합니다. 기획된 방향이 흐려지지 않도록, 화면과 디자인, 실제 제작의 완성도를 책임집니다.",
+    image: null,
+    imageAlt: "재성 프로필 이미지 자리",
   },
 ];
 
@@ -129,7 +134,21 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-5 lg:grid-cols-2">
             {team.map((member) => (
               <article key={member.name} className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
-                <div className="mb-6 aspect-[4/3] rounded-[28px] bg-[linear-gradient(135deg,#201c21_0%,#4a2530_45%,#131b2b_100%)]" />
+                <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#201c21_0%,#4a2530_45%,#131b2b_100%)]">
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt={member.imageAlt}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 40vw, 100vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm tracking-[0.18em] text-white/48">
+                      IMAGE PLACEHOLDER
+                    </div>
+                  )}
+                </div>
                 <p className="text-sm tracking-[0.18em] text-[#8a7d72]">{member.role}</p>
                 <h3 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.04em] text-[#0c1220]">{member.name}</h3>
                 <p className="mt-5 text-sm leading-8 text-[#44506d] sm:text-base">{member.desc}</p>
