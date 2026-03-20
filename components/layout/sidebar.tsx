@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Users, Building2, ClipboardList, Megaphone, History } from "lucide-react";
+import { LayoutDashboard, Users, Building2, ClipboardList, Megaphone, History, BookOpen } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ const menuGroups: MenuGroup[] = [
     items: [
       { href: "/applications", label: "신청", icon: ClipboardList },
       { href: "/notices", label: "공지", icon: Megaphone },
+      { href: "/guides", label: "AI 안내서", icon: BookOpen },
       { href: "/activity-logs", label: "활동 로그", icon: History },
     ],
   },
