@@ -1,7 +1,7 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 
-const helpTypes = ["랜딩페이지", "디자인", "영상", "운영용 웹", "아직 잘 모르겠음"];
+const helpTypes = ["쇼츠 · 홍보영상", "유튜브 운영 세팅", "행사 랜딩 · 안내 제작", "아직 잘 모르겠음"];
 const schedules = ["최대한 빨리", "2주 이내", "이번 달 안", "일정 협의"];
 const budgets = ["30만 원 이하", "30~100만 원", "100만 원 이상", "아직 미정"];
 
@@ -19,12 +19,13 @@ export default function ContactPage() {
           <div className="max-w-3xl">
             <p className="text-xs tracking-[0.24em] text-white/40">CONTACT</p>
             <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-              필요한 작업을
+              지금 가장 급한 실행부터
               <br />
-              알려주세요
+              함께 정리해보자
             </h1>
             <p className="mt-6 text-sm leading-7 text-white/68 sm:text-base">
-              정확히 정리되지 않아도 괜찮습니다. 지금 상황을 알려주시면 숨이 맞는 방식으로 함께 정리해드립니다.
+              쇼츠가 필요한지, 유튜브 운영이 먼저인지, 행사 안내가 급한지 아직 정확히 정리되지 않아도 괜찮아.
+              지금 상황을 알려주면 가장 현실적인 시작점을 함께 잡아줄게.
             </p>
           </div>
         </div>
@@ -35,7 +36,7 @@ export default function ContactPage() {
           <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
             <form className="grid gap-8">
               <div>
-                <label className="text-sm font-semibold text-white">어떤 도움이 필요한가요?</label>
+                <label className="text-sm font-semibold text-white">지금 어떤 도움이 가장 필요해?</label>
                 <div className="mt-4 flex flex-wrap gap-3">
                   {helpTypes.map((item) => (
                     <button key={item} type="button" className="rounded-full border border-white/12 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
@@ -57,10 +58,10 @@ export default function ContactPage() {
               </div>
 
               <label className="grid gap-2 text-sm text-white/78">
-                <span className="font-semibold text-white">어떤 작업을 생각하고 있나요?</span>
+                <span className="font-semibold text-white">지금 상황을 자유롭게 알려줘</span>
                 <textarea
                   className="min-h-[180px] rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-4 text-white outline-none placeholder:text-white/32"
-                  placeholder={"예: 행사 안내 페이지가 필요합니다\n설교 쇼츠를 매주 올리고 싶습니다\n소개 자료가 정리가 안 되어 있습니다"}
+                  placeholder={"예: 수련회 랜딩페이지가 급합니다\n설교 쇼츠를 매주 올리고 싶은데 사람이 없습니다\n유튜브는 있는데 운영이 거의 멈춰 있습니다"}
                 />
               </label>
 
@@ -89,7 +90,7 @@ export default function ContactPage() {
 
               <label className="grid gap-2 text-sm text-white/78">
                 <span className="font-semibold text-white">참고 링크 / 자료</span>
-                <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="링크나 간단한 참고 설명을 남겨주세요" />
+                <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="기존 유튜브, 행사 안내 링크, 참고 자료를 남겨줘" />
               </label>
 
               <button type="submit" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
@@ -100,15 +101,17 @@ export default function ContactPage() {
 
           <div className="grid gap-5 self-start">
             <div className="rounded-[34px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <p className="text-xs tracking-[0.24em] text-white/38">REASSURANCE</p>
+              <p className="text-xs tracking-[0.24em] text-white/38">HOW WE HELP</p>
               <h2 className="mt-5 font-display text-[2rem] leading-[1.08] tracking-[-0.05em] text-white sm:text-[2.6rem]">
-                작업 범위가 아직 흐릿해도 괜찮습니다
+                아직 뭐부터 해야 할지
+                <br />
+                흐릿해도 괜찮아
               </h2>
               <p className="mt-5 text-sm leading-7 text-white/62 sm:text-base">
-                홈페이지가 필요한지, 디자인이 먼저인지, 반복 콘텐츠로 가야 하는지 함께 판단해드릴 수 있습니다.
+                지금 필요한 게 쇼츠인지, 유튜브 세팅인지, 행사 안내 제작인지 먼저 함께 구분해볼 수 있어.
               </p>
               <p className="mt-4 text-sm leading-7 text-white/48 sm:text-base">
-                작게 시작하고, 필요하면 다음 단계로 확장하면 됩니다.
+                숨은 복잡한 제안보다, 지금 바로 실행할 수 있는 시작점을 먼저 제안하려고 해.
               </p>
             </div>
 
@@ -116,10 +119,10 @@ export default function ContactPage() {
               <p className="text-xs tracking-[0.24em] text-white/38">QUICK LINKS</p>
               <div className="mt-5 grid gap-3">
                 <Link href="/pricing" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
-                  상품 먼저 보기
+                  핵심 상품 보기
                 </Link>
-                <Link href="/about" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
-                  About 보기
+                <Link href="/ai-guides" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
+                  AI 안내서 보기
                 </Link>
               </div>
             </div>

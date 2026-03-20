@@ -4,18 +4,18 @@ import SiteHeader from "@/components/site-header";
 const serviceCards = [
   {
     title: "쇼츠 · 홍보영상",
-    desc: "설교 쇼츠, 행사 홍보영상, 짧은 소개 영상을 빠르게 제작해 바로 활용할 수 있게 정리합니다.",
+    desc: "설교와 행사를 바로 쓰는 영상으로 정리합니다.",
     points: ["설교 쇼츠", "행사 홍보영상", "짧은 소개 영상"],
   },
   {
     title: "유튜브 운영 세팅",
-    desc: "채널이 실제로 굴러가도록 제목, 썸네일, 플레이리스트, 업로드 흐름까지 함께 정리합니다.",
-    points: ["채널 구조 정리", "썸네일·제목 가이드", "업로드 운영 세팅"],
+    desc: "채널이 실제로 굴러가게 시작 구조를 잡아줍니다.",
+    points: ["채널 구조", "썸네일·제목", "업로드 흐름"],
   },
   {
     title: "행사 랜딩 · 안내 제작",
-    desc: "집회, 수련회, 등록, 신청, 안내 흐름을 한 페이지와 한 세트의 홍보물로 정리합니다.",
-    points: ["행사 랜딩페이지", "신청·안내 흐름", "리플렛·홍보물 연계"],
+    desc: "등록과 안내 흐름을 한 번에 정리합니다.",
+    points: ["행사 랜딩", "신청·안내", "리플렛·홍보물"],
   },
 ];
 
@@ -47,15 +47,12 @@ export default function HomePage() {
 
           <div className="flex flex-1 items-end py-16 sm:py-24 lg:py-28">
             <div className="max-w-5xl">
-              <p className="text-xs tracking-[0.24em] text-white/52">EXECUTION SERVICES FOR CHURCHES</p>
+              <p className="text-xs tracking-[0.24em] text-white/52">SOOM FOR CHURCHES</p>
               <h1 className="mt-5 font-display text-[2.8rem] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[4.5rem] lg:text-[5.9rem]">
-                교회의 실행 공백을
-                <br />
-                빠르게 메우는 팀
+                교회를 돕다
               </h1>
               <p className="mt-6 max-w-3xl text-base leading-7 text-white/82 sm:text-lg sm:leading-8">
-                쇼츠, 유튜브 운영, 행사 랜딩과 안내 제작까지.
-                숨은 교회가 지금 바로 필요한 실행형 작업을 정리해주는 팀입니다.
+                쇼츠, 유튜브 운영, 행사 안내 제작까지
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
