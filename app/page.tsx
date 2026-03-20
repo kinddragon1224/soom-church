@@ -90,8 +90,8 @@ export default function HomePage() {
               <Link href="/about">About</Link>
               <Link href="/contact">문의</Link>
             </nav>
-            <Link href="/contact" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/45 bg-white/5 px-5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10">
-              문의하기
+            <Link href="/login" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/45 bg-white/5 px-5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10">
+              로그인
             </Link>
           </header>
 
