@@ -1,61 +1,47 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 
-type Plan = {
-  name: string;
+type Service = {
+  title: string;
   badge?: string;
-  tagline: string;
-  price: string;
-  note: string;
+  summary: string;
   desc: string;
-  features: string[];
+  points: string[];
   cta: string;
-  secondary?: string;
 };
 
-const plans: Plan[] = [
+const services: Service[] = [
   {
-    name: "Free",
-    badge: "체험",
-    tagline: "가볍게 확인하는 무료 플랜",
-    price: "무료",
-    note: "처음 숨을 경험하는 교회를 위한 시작점",
-    desc: "기본 흐름을 먼저 확인해보고 싶은 교회를 위한 체험용 플랜입니다.",
-    features: ["무료 시작", "워크스페이스 체험", "소규모 교회 / 테스트용"],
-    cta: "무료로 시작하기",
-    secondary: "체험 후 Standard로 운영 시작",
+    title: "쇼츠 · 홍보영상",
+    badge: "빠른 실행",
+    summary: "설교와 행사를 바로 활용 가능한 영상으로 정리합니다",
+    desc: "설교 쇼츠, 행사 홍보영상, 짧은 소개 영상을 빠르게 제작해 교회 채널과 현장에서 바로 사용할 수 있게 돕습니다.",
+    points: ["설교 쇼츠 제작", "행사 홍보영상", "짧은 소개 영상"],
+    cta: "영상 문의하기",
   },
   {
-    name: "Standard",
-    badge: "가장 많이 선택",
-    tagline: "대부분의 교회를 위한 메인 플랜",
-    price: "월 7,700원",
-    note: "계정당 · 연간 결제 시 15% 할인",
-    desc: "실제 운영에 필요한 교적 관리와 심방 관리 기능을 안정적으로 사용할 수 있는 숨의 핵심 플랜입니다.",
-    features: ["Free의 기능 포함", "교적 관리", "심방 관리", "웹 + 모바일 반응형"],
-    cta: "구독 시작하기",
-    secondary: "메인 플랜으로 시작하기",
+    title: "유튜브 운영 세팅",
+    badge: "운영 구조",
+    summary: "채널이 실제로 굴러가게 만드는 시작 세팅",
+    desc: "촬영 장비보다 먼저 채널 구조, 썸네일, 제목, 플레이리스트, 업로드 흐름을 정리해 실제 운영이 가능하게 만듭니다.",
+    points: ["채널 진단", "썸네일·제목 구조", "업로드 운영 세팅"],
+    cta: "유튜브 세팅 문의",
   },
   {
-    name: "Pro",
-    badge: "확장",
-    tagline: "더 큰 운영과 확장을 위한 플랜",
-    price: "문의하기",
-    note: "운영 규모와 기능 범위에 따라 맞춤 제안",
-    desc: "여러 사역자가 함께 운영하거나 더 큰 규모의 관리가 필요한 교회를 위한 확장 플랜입니다.",
-    features: ["Standard의 기능 포함", "여러 사역자 운영 대응", "교회별 확장 협의"],
-    cta: "상담하기",
-    secondary: "운영 규모에 맞춘 맞춤 확장",
+    title: "행사 랜딩 · 안내 제작",
+    badge: "행사 대응",
+    summary: "등록과 안내 흐름을 한 번에 정리합니다",
+    desc: "집회, 수련회, 등록, 신청, 안내를 한 페이지와 한 세트의 홍보물로 정리해 행사 준비 공백을 줄입니다.",
+    points: ["행사 랜딩페이지", "신청·안내 흐름", "리플렛·홍보물 연계"],
+    cta: "행사 문의하기",
   },
 ];
 
 const compareRows = [
-  { label: "가격", values: ["무료", "월 7,700원", "문의"] },
-  { label: "교적 관리", values: ["체험", "포함", "포함"] },
-  { label: "심방 관리", values: ["체험", "포함", "포함"] },
-  { label: "웹 + 모바일 반응형", values: ["포함", "포함", "포함"] },
-  { label: "추천 대상", values: ["처음 시작 / 테스트", "대부분의 교회", "여러 사역자 / 더 큰 운영 규모"] },
-  { label: "지원 방식", values: ["가볍게 시작", "기본 운영", "상담 후 확장"] },
+  { label: "가장 잘 맞는 상황", values: ["콘텐츠가 급할 때", "채널이 안 굴러갈 때", "행사 준비가 몰릴 때"] },
+  { label: "핵심 결과물", values: ["쇼츠·홍보영상", "운영 가능한 유튜브 구조", "행사 페이지·안내 흐름"] },
+  { label: "구매 이유", values: ["빠르게 결과물이 필요함", "담당자 없이도 시작해야 함", "등록·안내를 한 번에 정리해야 함"] },
+  { label: "다음 단계", values: ["월 콘텐츠 운영", "업로드·리포트 운영형", "후속 콘텐츠·행사 패키지"] },
 ];
 
 export default function PricingPage() {
@@ -69,15 +55,15 @@ export default function PricingPage() {
 
       <section>
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">PLANS</p>
+          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">SERVICES</p>
           <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-            교회 운영에 맞는 플랜으로
+            지금 교회가 바로 맡기기 쉬운
             <br />
-            숨 워크스페이스를 시작하세요
+            핵심 상품만 남겼습니다
           </h1>
           <p className="mt-6 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-            무료로 시작하고, Standard로 운영하고, 필요하면 Pro로 확장할 수 있습니다.
-            어떤 플랜이 맞을지 아직 확실하지 않아도 괜찮습니다.
+            숨은 복잡한 플랫폼 설명보다, 교회가 당장 필요를 느끼는 실행형 서비스를 먼저 제공합니다.
+            쇼츠, 유튜브 운영, 행사 안내 제작처럼 바로 결과물이 나오는 상품부터 시작합니다.
           </p>
         </div>
       </section>
@@ -85,56 +71,26 @@ export default function PricingPage() {
       <section>
         <div className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 lg:px-10 lg:pb-16">
           <div className="grid gap-5 lg:grid-cols-3">
-            {plans.map((plan) => {
-              const isStandard = plan.name === "Standard";
-              return (
-                <article
-                  key={plan.name}
-                  className={`relative rounded-[34px] border p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8 ${
-                    isStandard
-                      ? "-translate-y-1 border-[#111827] bg-[#111827] text-white shadow-[0_24px_60px_rgba(17,24,39,0.22)]"
-                      : "border-[#e6dfd5] bg-white text-[#0c1220]"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h2 className="font-display text-[2rem] tracking-[-0.04em]">{plan.name}</h2>
-                      <p className={`mt-2 text-sm ${isStandard ? "text-white/70" : "text-[#7a6f67]"}`}>{plan.tagline}</p>
-                    </div>
-                    {plan.badge && (
-                      <span className={`rounded-full px-3 py-1 text-xs ${isStandard ? "bg-white text-[#111827]" : "bg-[#f3ede3] text-[#7a6f67]"}`}>
-                        {plan.badge}
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="mt-8 text-[2rem] font-semibold tracking-[-0.04em]">{plan.price}</p>
-                  <p className={`mt-2 text-sm ${isStandard ? "text-white/56" : "text-[#7a6f67]"}`}>{plan.note}</p>
-                  <p className={`mt-5 text-sm leading-7 ${isStandard ? "text-white/74" : "text-[#475069]"}`}>{plan.desc}</p>
-
-                  <ul className={`mt-6 grid gap-2 text-sm leading-7 ${isStandard ? "text-white/84" : "text-[#334155]"}`}>
-                    {plan.features.map((feature) => (
-                      <li key={feature}>• {feature}</li>
-                    ))}
-                  </ul>
-
-                  {plan.secondary && (
-                    <p className={`mt-6 text-sm ${isStandard ? "text-white/60" : "text-[#7b8498]"}`}>{plan.secondary}</p>
-                  )}
-
-                  <div className="mt-8">
-                    <Link
-                      href="/contact"
-                      className={`inline-flex min-h-12 w-full items-center justify-center rounded-full px-6 text-sm font-semibold ${
-                        isStandard ? "bg-white text-[#111827]" : "bg-[#111827] text-white"
-                      }`}
-                    >
-                      {plan.cta}
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
+            {services.map((service) => (
+              <article key={service.title} className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="font-display text-[1.9rem] tracking-[-0.04em]">{service.title}</h2>
+                  {service.badge ? <span className="rounded-full bg-[#f3ede3] px-3 py-1 text-xs text-[#7a6f67]">{service.badge}</span> : null}
+                </div>
+                <p className="mt-4 text-sm text-[#7a6f67]">{service.summary}</p>
+                <p className="mt-6 text-sm leading-7 text-[#475069]">{service.desc}</p>
+                <ul className="mt-6 grid gap-2 text-sm leading-7 text-[#334155]">
+                  {service.points.map((point) => (
+                    <li key={point}>• {point}</li>
+                  ))}
+                </ul>
+                <div className="mt-8">
+                  <Link href="/contact" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
+                    {service.cta}
+                  </Link>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -144,9 +100,9 @@ export default function PricingPage() {
           <div className="overflow-hidden rounded-[34px] border border-[#e6dfd5] bg-white shadow-[0_16px_40px_rgba(16,24,40,0.05)]">
             <div className="border-b border-[#eee7dd] px-6 py-6 sm:px-8">
               <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">COMPARE</p>
-              <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">어떤 플랜이 맞을까요?</h2>
+              <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">어떤 상품이 더 맞을까?</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5d667d]">
-                Free로 먼저 경험하고, 대부분의 교회는 Standard로 운영하고, 더 큰 운영 규모나 고급 기능이 필요하면 Pro로 확장하면 됩니다.
+                교회마다 먼저 필요한 것이 다릅니다. 지금 가장 급한 실행 과제를 기준으로 시작 상품을 정하면 됩니다.
               </p>
             </div>
             <div className="overflow-x-auto">
@@ -154,9 +110,9 @@ export default function PricingPage() {
                 <thead>
                   <tr>
                     <th className="px-6 py-4 text-left text-[#7a6f67]">항목</th>
-                    <th className="px-6 py-4 text-left text-[#7a6f67]">Free</th>
-                    <th className="px-6 py-4 text-left text-[#111827]">Standard</th>
-                    <th className="px-6 py-4 text-left text-[#7a6f67]">Pro</th>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">쇼츠 · 홍보영상</th>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">유튜브 운영 세팅</th>
+                    <th className="px-6 py-4 text-left text-[#7a6f67]">행사 랜딩 · 안내 제작</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -164,10 +120,7 @@ export default function PricingPage() {
                     <tr key={row.label} className="border-t border-[#eee7dd]">
                       <td className="px-6 py-4 font-medium text-[#0c1220]">{row.label}</td>
                       {row.values.map((value, index) => (
-                        <td
-                          key={`${row.label}-${index}`}
-                          className={`px-6 py-4 ${index === 1 ? "font-medium text-[#111827]" : "text-[#475069]"}`}
-                        >
+                        <td key={`${row.label}-${index}`} className="px-6 py-4 text-[#475069]">
                           {value}
                         </td>
                       ))}
@@ -187,18 +140,21 @@ export default function PricingPage() {
               <div>
                 <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">NEXT STEP</p>
                 <h2 className="mt-4 font-display text-[2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3rem]">
-                  어떤 플랜이 맞을지 아직 애매해도 괜찮습니다
+                  지금 가장 급한 실행부터
+                  <br />
+                  함께 정리하면 됩니다
                 </h2>
                 <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-                  먼저 워크스페이스 도입부터 함께 정리해드리고, 필요하면 콘텐츠나 제작 작업은 그 다음 단계에서 이어서 안내합니다.
+                  쇼츠가 필요한지, 유튜브 운영이 막혀 있는지, 행사 안내가 급한지 아직 애매해도 괜찮습니다.
+                  교회 상황을 기준으로 가장 현실적인 시작 상품부터 제안해드릴게요.
                 </p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
-                  도입 문의하기
+                  문의하기
                 </Link>
-                <Link href="/login" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#ddd2c3] px-6 text-sm font-medium text-[#0c1220]">
-                  로그인
+                <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#ddd2c3] px-6 text-sm font-medium text-[#0c1220]">
+                  AI 안내서 보기
                 </Link>
               </div>
             </div>
