@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { isLoggedIn } from "@/lib/auth";
@@ -16,7 +17,17 @@ export default async function LoginPage({
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md p-6">
+      <div className="w-full max-w-md">
+        <div className="mb-4 flex items-center justify-between gap-3 px-1">
+          <Link href="/" className="font-display text-2xl font-semibold tracking-[-0.06em] text-white">
+            soom
+          </Link>
+          <Link href="/" className="text-sm text-muted-foreground hover:text-white">
+            홈으로 돌아가기
+          </Link>
+        </div>
+
+        <Card className="w-full p-6">
         <h1 className="text-2xl font-bold">숨 로그인</h1>
         <p className="mt-1 text-sm text-muted-foreground">숨 플랫폼에 로그인하고 교회 워크스페이스로 진입하세요.</p>
         {error ? (
@@ -59,7 +70,8 @@ export default async function LoginPage({
         </div>
 
         <p className="mt-4 text-xs text-muted-foreground">소셜 로그인은 앱 키 설정 후 사용할 수 있어. 기존 계정 이메일과 같으면 같은 사용자로 연결돼.</p>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
