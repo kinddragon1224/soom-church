@@ -148,6 +148,42 @@ export default async function GuidesAdminPage() {
             </li>
           ))}
         </ul>
+
+        {posts.length === 0 ? (
+          <form action={createGuidePost} className="mt-6 rounded-lg border border-dashed border-border bg-slate-50 p-4">
+            <input type="hidden" name="title" value="목회자는 AI를 어디까지 사용해도 될까" />
+            <input type="hidden" name="excerpt" value="AI가 목회를 대신하는 것이 아니라, 반복 업무를 덜어주고 더 본질적인 준비와 돌봄에 집중하도록 돕는 도구라는 관점에서 정리한 첫 안내서입니다." />
+            <input
+              type="hidden"
+              name="content"
+              value={`AI를 처음 접하는 목회자에게 가장 먼저 생기는 질문은 이것입니다. AI를 사용해도 괜찮을까, 그리고 어디까지 사용해야 할까.
+
+이 질문은 단순히 기술을 쓸지 말지의 문제가 아닙니다. 설교와 양육, 심방과 돌봄처럼 사람의 영혼과 삶을 다루는 사역 안에서 AI가 어떤 자리에 있어야 하는지를 묻는 질문입니다.
+
+먼저 분명히 해야 할 것은, AI는 목회를 대신할 수 없다는 점입니다. 말씀을 묵상하고 해석하고 기도하며 공동체를 사랑으로 돌보는 일은 결국 목회자의 몫입니다. AI는 그 중심을 대신하는 존재가 아니라, 그 중심을 더 잘 감당하도록 주변의 반복 업무를 덜어주는 보조 도구에 가깝습니다.
+
+예를 들어 목회자는 AI를 통해 설교 개요를 여러 방식으로 정리해볼 수 있습니다. 같은 본문을 청년부 대상, 장년 대상, 새가족 대상 언어로 다시 풀어보게 할 수도 있습니다. 주보 문구 초안을 만들거나, 행사 안내문 첫 문장을 정리하거나, 심방 기록을 일정한 형식으로 요약하는 데에도 도움을 받을 수 있습니다.
+
+하지만 그대로 복사해 사용하는 것은 조심해야 합니다. 특히 신학적으로 민감한 표현, 본문 해석, 공동체 상황에 직접 연결되는 조언은 반드시 목회자의 검토와 판단을 거쳐야 합니다. AI는 빠르게 문장을 만들 수 있지만, 공동체의 맥락과 영적 책임까지 이해하지는 못합니다.
+
+건강한 기준은 이것입니다. 본질은 직접 붙들고, 반복은 도움받는다. 설교의 중심 메시지와 해석, 성도에 대한 책임 있는 돌봄, 교회의 방향을 세우는 일은 직접 감당해야 합니다. 반면 반복 정리, 초안 작성, 문장 다듬기, 아이디어 확장은 AI의 도움을 받아도 됩니다.
+
+작은 교회일수록 이 기준은 더 유용합니다. 사람이 적고 해야 할 일은 많은 상황에서 AI는 시간을 벌어주는 도구가 될 수 있습니다. 주보 문구, 광고 요약, 교육 자료 초안, 새가족 안내문, 쇼츠 제목 후보 같은 작업을 줄여주면 목회자는 더 중요한 준비에 시간을 쓸 수 있습니다.
+
+결국 중요한 것은 사용 여부보다 사용 방식입니다. AI를 의존의 대상이 아니라 정리 도구로 바라볼 때, 그것은 목회를 가볍게 만드는 기술이 아니라 사역의 부담을 덜어주는 보조 도구가 될 수 있습니다.
+
+목회자가 AI를 사용할 때 가장 좋은 출발점은 거창한 자동화가 아닙니다. 지금 반복해서 쓰는 문서 하나, 자주 작성하는 문구 하나부터 AI로 정리해보는 것입니다. 작은 반복 하나가 줄어들면, 생각보다 더 많은 여유가 생깁니다.`}
+            />
+            <input type="hidden" name="coverImageUrl" value="" />
+            <input type="hidden" name="imageUrls" value="" />
+            <input type="hidden" name="published" value="on" />
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-900">첫 AI 안내서 초안 바로 만들기</p>
+              <p className="text-sm text-muted-foreground">아직 글이 없다면, 첫 글로 바로 쓸 수 있는 실전형 초안을 한 번에 생성할 수 있어.</p>
+              <button className="rounded bg-primary px-3 py-2 text-sm text-white">첫 안내서 자동 생성</button>
+            </div>
+          </form>
+        ) : null}
       </section>
     </div>
   );
