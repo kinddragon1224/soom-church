@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SiteHeader from "@/components/site-header";
 
 const values = [
   {
@@ -38,20 +39,7 @@ export default function AboutPage() {
     <main className="min-h-screen bg-[#f7f4ee] text-[#0c1220]">
       <section className="border-b border-[#e6dfd5] bg-white">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
-          <header className="flex items-center justify-between gap-4">
-            <Link href="/" className="font-display text-[1.85rem] font-semibold tracking-[-0.08em] text-[#0c1220] sm:text-[2.3rem]">
-              soom
-            </Link>
-            <nav className="hidden items-center gap-6 text-sm text-[#43506b] md:flex">
-              <Link href="/">홈</Link>
-              <Link href="/pricing">상품</Link>
-              <Link href="/about" className="text-[#0c1220]">About</Link>
-              <Link href="/contact">문의</Link>
-            </nav>
-            <Link href="/contact" className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#111827] px-5 text-sm font-semibold text-white">
-              문의하기
-            </Link>
-          </header>
+          <SiteHeader current="about" />
         </div>
       </section>
 

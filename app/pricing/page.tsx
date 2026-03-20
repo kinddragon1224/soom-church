@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteHeader from "@/components/site-header";
 
 type Plan = {
   name: string;
@@ -12,29 +13,17 @@ type Plan = {
   secondary?: string;
 };
 
-type ServiceItem = {
-  title: string;
-  price: string;
-  desc: string;
-  note?: string;
-};
-
-type ServiceGroup = {
-  category: string;
-  items: ServiceItem[];
-};
-
 const plans: Plan[] = [
   {
     name: "Free",
-    badge: "진입",
-    tagline: "가볍게 시작하는 무료 플랜",
+    badge: "체험",
+    tagline: "가볍게 확인하는 무료 플랜",
     price: "무료",
     note: "처음 숨을 경험하는 교회를 위한 시작점",
-    desc: "처음 숨 워크스페이스를 경험해보고 싶은 교회를 위한 무료 플랜입니다.",
+    desc: "기본 흐름을 먼저 확인해보고 싶은 교회를 위한 체험용 플랜입니다.",
     features: ["무료 시작", "워크스페이스 체험", "소규모 교회 / 테스트용"],
     cta: "무료로 시작하기",
-    secondary: "기본 흐름 먼저 보기",
+    secondary: "체험 후 Standard로 운영 시작",
   },
   {
     name: "Standard",
@@ -53,81 +42,20 @@ const plans: Plan[] = [
     tagline: "더 큰 운영과 확장을 위한 플랜",
     price: "문의하기",
     note: "운영 규모와 기능 범위에 따라 맞춤 제안",
-    desc: "운영 규모가 크거나 더 정교한 관리가 필요한 교회를 위한 상위 플랜입니다.",
-    features: ["Standard의 기능 포함", "확장 운영 대응", "고급 기능 협의"],
+    desc: "여러 사역자가 함께 운영하거나 더 큰 규모의 관리가 필요한 교회를 위한 확장 플랜입니다.",
+    features: ["Standard의 기능 포함", "여러 사역자 운영 대응", "교회별 확장 협의"],
     cta: "상담하기",
-    secondary: "맞춤 확장 상담",
+    secondary: "운영 규모에 맞춘 맞춤 확장",
   },
 ];
 
 const compareRows = [
   { label: "가격", values: ["무료", "월 7,700원", "문의"] },
-  { label: "구성", values: ["무료 진입", "메인 운영 플랜", "확장 운영 플랜"] },
   { label: "교적 관리", values: ["체험", "포함", "포함"] },
   { label: "심방 관리", values: ["체험", "포함", "포함"] },
   { label: "웹 + 모바일 반응형", values: ["포함", "포함", "포함"] },
-  { label: "추천 대상", values: ["처음 시작 / 테스트", "대부분의 교회", "큰 규모 / 고급 운영"] },
-  { label: "도입 방식", values: ["가볍게 시작", "바로 운영", "상담 후 제안"] },
-];
-
-const subServiceGroups: ServiceGroup[] = [
-  {
-    category: "콘텐츠",
-    items: [
-      {
-        title: "설교 쇼츠 패키지",
-        price: "월 4개 19만 원부터",
-        desc: "설교 핵심 구간을 짧게 재가공해 교회 채널과 SNS에 반복 업로드할 수 있도록 제작합니다.",
-      },
-      {
-        title: "사역 콘텐츠 제작",
-        price: "별도 협의",
-        desc: "사역 소개, 카드뉴스, 반복 안내 콘텐츠처럼 계속 전달되어야 하는 작업을 정리합니다.",
-      },
-    ],
-  },
-  {
-    category: "웹",
-    items: [
-      {
-        title: "랜딩페이지",
-        price: "30만 원부터",
-        desc: "행사, 부서, 집회, 모집, 사역 소개를 한 페이지에 명확하게 정리하는 서비스입니다.",
-        note: "반응형 기본 제작 / 신청·설문·DB 기능은 별도 견적",
-      },
-    ],
-  },
-  {
-    category: "디자인",
-    items: [
-      {
-        title: "PPT 기획·제작",
-        price: "장당 3만 원부터",
-        desc: "설교, 강의, 세미나, 행사 발표 자료를 더 잘 읽히고 더 잘 전달되게 정리합니다.",
-      },
-      {
-        title: "유인물 디자인",
-        price: "15만 원부터",
-        desc: "행사 안내, 프로그램 소개, 배포용 안내자료 등 현장에서 바로 쓰는 디자인 작업입니다.",
-      },
-      {
-        title: "3단 리플렛",
-        price: "30만 원부터",
-        desc: "교회 소개, 부서 안내, 사역 소개를 짧고 명확하게 정리한 접지형 인쇄물입니다.",
-      },
-    ],
-  },
-  {
-    category: "영상",
-    items: [
-      {
-        title: "고퀄리티 AI 영상",
-        price: "15초 50만 원부터",
-        desc: "브랜드 소개, 행사 오프닝, 메시지 예고편처럼 짧은 시간 안에 인상을 남기는 영상을 제작합니다.",
-        note: "15초 / 30초 / 1분 단위 제작 가능 · 촬영은 별도 협의",
-      },
-    ],
-  },
+  { label: "추천 대상", values: ["처음 시작 / 테스트", "대부분의 교회", "여러 사역자 / 더 큰 운영 규모"] },
+  { label: "지원 방식", values: ["가볍게 시작", "기본 운영", "상담 후 확장"] },
 ];
 
 export default function PricingPage() {
@@ -135,20 +63,7 @@ export default function PricingPage() {
     <main className="min-h-screen bg-[#f3f1ec] text-[#0c1220]">
       <section className="border-b border-[#e6dfd5] bg-white">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
-          <header className="flex items-center justify-between gap-4">
-            <Link href="/" className="font-display text-[1.85rem] font-semibold tracking-[-0.08em] text-[#0c1220] sm:text-[2.3rem]">
-              soom
-            </Link>
-            <nav className="hidden items-center gap-6 text-sm text-[#43506b] md:flex">
-              <Link href="/">홈</Link>
-              <Link href="/pricing" className="text-[#0c1220]">상품</Link>
-              <Link href="/about">About</Link>
-              <Link href="/contact">문의</Link>
-            </nav>
-            <Link href="/contact" className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#111827] px-5 text-sm font-semibold text-white">
-              문의하기
-            </Link>
-          </header>
+          <SiteHeader current="pricing" />
         </div>
       </section>
 
@@ -266,50 +181,30 @@ export default function PricingPage() {
       </section>
 
       <section>
-        <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
-          <div className="rounded-[34px] border border-[#e6dfd5] bg-[#111827] px-6 py-10 text-white sm:px-10">
-            <p className="text-xs tracking-[0.24em] text-white/40">SUB SERVICES</p>
-            <h2 className="mt-5 font-display text-[2rem] leading-[1.1] tracking-[-0.05em] sm:text-[3rem]">
-              워크스페이스 위에 필요한 제작 서비스를 더합니다
-            </h2>
-            <p className="mt-6 max-w-3xl text-sm leading-7 text-white/62 sm:text-base">
-              숨의 중심은 워크스페이스입니다. 그리고 필요한 경우 콘텐츠, 웹, 디자인, 영상 서비스를 연결해 전달과 운영을 함께 정리합니다.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section>
         <div className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-10 lg:pb-28">
-          <div className="grid gap-8">
-            {subServiceGroups.map((group) => (
-              <section key={group.category} className="rounded-[34px] border border-[#e6dfd5] bg-white p-6 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
-                <div className="mb-6 border-b border-[#eee7dd] pb-6">
-                  <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">CATEGORY</p>
-                  <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">{group.category}</h2>
-                </div>
-                <div className="grid gap-5 lg:grid-cols-2">
-                  {group.items.map((item) => (
-                    <article key={item.title} className="rounded-[28px] border border-[#eee7dd] bg-[#fcfbf8] p-6">
-                      <p className="text-xs tracking-[0.22em] text-[#9a8b7a]">STARTING AT</p>
-                      <p className="mt-3 text-[1.6rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.price}</p>
-                      <h3 className="mt-5 text-[1.5rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.title}</h3>
-                      <p className="mt-4 text-sm leading-7 text-[#475069]">{item.desc}</p>
-                      {item.note && <p className="mt-5 text-sm leading-6 text-[#7b8498]">{item.note}</p>}
-                      <div className="mt-6">
-                        <Link href="/contact" className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#111827] px-5 text-sm font-semibold text-white">
-                          문의하기
-                        </Link>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))}
+          <div className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-10">
+            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div>
+                <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">NEXT STEP</p>
+                <h2 className="mt-4 font-display text-[2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3rem]">
+                  어떤 플랜이 맞을지 아직 애매해도 괜찮습니다
+                </h2>
+                <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
+                  먼저 워크스페이스 도입부터 함께 정리해드리고, 필요하면 콘텐츠나 제작 작업은 그 다음 단계에서 이어서 안내합니다.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+                <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
+                  도입 문의하기
+                </Link>
+                <Link href="/login" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#ddd2c3] px-6 text-sm font-medium text-[#0c1220]">
+                  로그인
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
     </main>
   );
-}
 }

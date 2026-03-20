@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteHeader from "@/components/site-header";
 
 const helpTypes = ["랜딩페이지", "디자인", "영상", "운영용 웹", "아직 잘 모르겠음"];
 const schedules = ["최대한 빨리", "2주 이내", "이번 달 안", "일정 협의"];
@@ -9,20 +10,7 @@ export default function ContactPage() {
     <main className="min-h-screen bg-[#050b16] text-white">
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
-          <header className="flex items-center justify-between gap-4">
-            <Link href="/" className="font-display text-[1.85rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.3rem]">
-              soom
-            </Link>
-            <nav className="hidden items-center gap-6 text-sm text-white/72 md:flex">
-              <Link href="/">홈</Link>
-              <Link href="/pricing">상품</Link>
-              <Link href="/about">About</Link>
-              <Link href="/contact" className="text-white">문의</Link>
-            </nav>
-            <Link href="/pricing" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 text-sm font-medium text-white">
-              상품 보기
-            </Link>
-          </header>
+          <SiteHeader theme="dark" current="contact" ctaHref="/pricing" ctaLabel="상품 보기" />
         </div>
       </section>
 

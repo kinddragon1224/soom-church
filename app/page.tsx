@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteHeader from "@/components/site-header";
 
 type Plan = {
   name: string;
@@ -80,20 +81,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.24)_0%,rgba(5,11,22,0.2)_30%,rgba(5,11,22,0.82)_100%)]" />
 
         <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 pb-10 pt-5 sm:px-8 lg:px-10">
-          <header className="flex items-center justify-between gap-4">
-            <Link href="/" className="font-display text-[1.85rem] font-semibold tracking-[-0.08em] text-white sm:text-[2.3rem]">
-              soom
-            </Link>
-            <nav className="hidden items-center gap-6 text-sm text-white/80 md:flex">
-              <Link href="/">홈</Link>
-              <Link href="/pricing">상품</Link>
-              <Link href="/about">About</Link>
-              <Link href="/contact">문의</Link>
-            </nav>
-            <Link href="/login" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/45 bg-white/5 px-5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10">
-              로그인
-            </Link>
-          </header>
+          <SiteHeader theme="dark" current="home" ctaHref="/login" ctaLabel="로그인" />
 
           <div className="flex flex-1 items-end py-16 sm:py-24 lg:py-28">
             <div className="max-w-5xl">
