@@ -73,6 +73,15 @@
    - `교회를 돕다`
    - `쇼츠, 유튜브 운영, 행사 안내 제작까지`
 
+## 4-1) 빌드 경고 해결 기록
+- 문제: `npm run build` 시 `DATABASE_URL` 관련 Prisma 경고가 반복 발생
+- 원인: DB 의존 라우트가 빌드 중 page data collection 과정에서 미리 평가됨
+- 해결: DB-backed 레이아웃을 강제 dynamic 처리
+  - `app/(admin)/layout.tsx`
+  - `app/app/[churchSlug]/layout.tsx`
+  - `app/platform-admin/layout.tsx`
+- 관련 커밋: `d277b87` `fix(build): force dynamic rendering for db-backed routes`
+
 2. 상품 3개 구조
    - 쇼츠 · 홍보영상
    - 유튜브 운영 세팅

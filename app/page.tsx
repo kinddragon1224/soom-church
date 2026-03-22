@@ -20,9 +20,9 @@ const serviceCards = [
 ];
 
 const audiencePoints = [
-  "목회자에게는 메시지가 더 잘 전달되도록 돕습니다.",
-  "사무국장에게는 반복되는 운영 공백을 빠르게 메워줍니다.",
-  "담당자에게는 바로 실행할 수 있는 구조와 결과물을 제공합니다.",
+  "목회자는 메시지 전달에 더 집중할 수 있습니다.",
+  "사무국장은 반복되는 운영 공백을 빠르게 줄일 수 있습니다.",
+  "담당자는 바로 실행 가능한 결과물을 받을 수 있습니다.",
 ];
 
 const guideTopics = [
@@ -70,7 +70,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-[#f3f1ec] text-[#0c1220]">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
           <div className="max-w-4xl">
             <p className="text-xs tracking-[0.24em] text-[#7a6f67]">CORE SERVICES</p>
             <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem]">
@@ -83,9 +83,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-3">
             {serviceCards.map((item) => (
-              <article key={item.title} className="rounded-[30px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.06)]">
+              <article key={item.title} className="rounded-[26px] border border-[#e6dfd5] bg-white p-6 shadow-[0_16px_40px_rgba(16,24,40,0.06)] sm:rounded-[30px] sm:p-7">
                 <h3 className="text-[1.55rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-[#475069]">{item.desc}</p>
                 <ul className="mt-6 grid gap-2 text-sm leading-7 text-[#334155]">
@@ -100,24 +100,24 @@ export default function HomePage() {
       </section>
 
       <section className="bg-[#070d18]">
-        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
           <div className="max-w-4xl">
             <p className="text-xs tracking-[0.24em] text-white/38">WHY SOOM</p>
-            <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] text-white sm:text-[3.5rem]">
+            <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] text-white sm:text-[3.5rem]">
               우리는 도구보다
               <br />
-              결과물과 실행을 다룹니다
+              결과물과 실행을 먼저 봅니다
             </h2>
-            <p className="mt-5 max-w-3xl text-sm leading-7 text-white/60 sm:text-base">
-              목회와 사역 현장에는 늘 해야 할 일이 많습니다. 숨은 교회가 지금 바로 겪는 운영 공백을 줄이고,
-              내부 인력이 없어도 실제 결과물이 나오게 돕는 팀이 되려 합니다.
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-white/60 sm:mt-5 sm:text-base">
+              숨은 교회가 지금 겪는 운영 공백을 실제 작업으로 메우는 팀입니다.
+              내부 인력이 없어도 결과물이 나오게 돕습니다.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-3">
             {audiencePoints.map((item) => (
-              <article key={item} className="rounded-[30px] border border-white/10 bg-white/[0.03] p-7 shadow-[0_24px_80px_rgba(2,6,23,0.28)]">
-                <p className="text-sm leading-8 text-white/72">{item}</p>
+              <article key={item} className="rounded-[26px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.28)] sm:rounded-[30px] sm:p-7">
+                <p className="text-sm leading-7 text-white/72 sm:leading-8">{item}</p>
               </article>
             ))}
           </div>

@@ -42,6 +42,14 @@
 - 버튼형 선택 UI의 선택 상태 강화
 - AI 안내서 DB migration 후 재오픈 검토
 
+## 최근 해결한 이슈
+- 빌드 시 `DATABASE_URL` 경고 원인 해결 완료
+- 원인: DB 의존 라우트를 Next가 빌드 중 미리 평가하면서 Prisma가 실행됨
+- 조치: 아래 레이아웃에 `export const dynamic = "force-dynamic"` 적용
+  - `app/(admin)/layout.tsx`
+  - `app/app/[churchSlug]/layout.tsx`
+  - `app/platform-admin/layout.tsx`
+
 ## 참고 파일
 - 메인 복구 문서: `soom-church/docs/SESSION_SUMMARY_2026-03-23.md`
 - 이전 맥락: `soom-church/docs/SESSION_SUMMARY_2026-03-08.md`
