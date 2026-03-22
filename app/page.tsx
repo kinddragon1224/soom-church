@@ -36,30 +36,30 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#050b16] text-white">
       <section className="relative overflow-hidden border-b border-white/10 bg-[#050b16]">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-[position:72%_22%] sm:bg-center"
           style={{ backgroundImage: "url('/hero-church-main.png')" }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.9)_0%,rgba(5,11,22,0.6)_44%,rgba(5,11,22,0.38)_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.94)_0%,rgba(5,11,22,0.7)_46%,rgba(5,11,22,0.42)_100%)] sm:bg-[linear-gradient(90deg,rgba(5,11,22,0.9)_0%,rgba(5,11,22,0.6)_44%,rgba(5,11,22,0.38)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.14)_28%,rgba(5,11,22,0.86)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
 
-        <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 pb-10 pt-5 sm:px-8 lg:px-10">
+        <div className="relative mx-auto flex min-h-[78svh] w-full max-w-7xl flex-col px-5 pb-7 pt-5 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/contact" ctaLabel="문의하기" />
 
-          <div className="flex flex-1 items-end py-16 sm:py-24 lg:py-28">
+          <div className="flex flex-1 items-center py-7 sm:items-end sm:py-24 lg:py-28">
             <div className="max-w-5xl">
-              <p className="text-xs tracking-[0.24em] text-white/52">SOOM FOR CHURCHES</p>
-              <h1 className="mt-5 font-display text-[2.8rem] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[4.5rem] lg:text-[5.9rem]">
+              <p className="text-[10px] tracking-[0.2em] text-white/52 sm:text-xs sm:tracking-[0.24em]">SOOM FOR CHURCHES</p>
+              <h1 className="mt-3 font-display text-[2.35rem] font-semibold leading-[0.96] tracking-[-0.065em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
                 교회를 돕다
               </h1>
-              <p className="mt-6 max-w-3xl text-base leading-7 text-white/82 sm:text-lg sm:leading-8">
+              <p className="mt-3 max-w-3xl text-[0.95rem] leading-6 text-white/82 sm:mt-6 sm:text-lg sm:leading-8">
                 쇼츠, 유튜브 운영, 행사 안내 제작까지
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/pricing" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f] transition hover:bg-white/90">
+              <div className="mt-5 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3">
+                <Link href="/pricing" className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12">
                   핵심 상품 보기
                 </Link>
-                <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 text-sm font-medium text-white transition hover:bg-white/10">
+                <Link href="/ai-guides" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 text-sm font-medium text-white transition hover:bg-white/10 sm:min-h-12">
                   AI 안내서 보기
                 </Link>
               </div>
