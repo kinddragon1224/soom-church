@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { requirePlatformAdmin } from "@/lib/platform-admin";
 
+export const dynamic = "force-dynamic";
+
 export default async function PlatformAdminLayout({ children }: { children: React.ReactNode }) {
   const user = await requirePlatformAdmin();
 

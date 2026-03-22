@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 
+export const dynamic = "force-dynamic";
 export const preferredRegion = "sin1";
 
 export default async function ChurchWorkspaceLayout({
