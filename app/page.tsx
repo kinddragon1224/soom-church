@@ -42,10 +42,10 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.94)_0%,rgba(5,11,22,0.7)_46%,rgba(5,11,22,0.42)_100%)] sm:bg-[linear-gradient(90deg,rgba(5,11,22,0.9)_0%,rgba(5,11,22,0.6)_44%,rgba(5,11,22,0.38)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.14)_28%,rgba(5,11,22,0.86)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
 
-        <div className="relative mx-auto flex min-h-[72svh] w-full max-w-7xl flex-col px-5 pb-6 pt-5 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
+        <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-8 pt-5 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/contact" ctaLabel="문의하기" />
 
-          <div className="flex flex-1 items-start pt-14 pb-8 sm:items-end sm:py-24 lg:py-28">
+          <div className="flex flex-1 items-center pt-8 pb-12 sm:items-end sm:py-24 lg:py-28">
             <div className="max-w-4xl">
               <p className="text-[10px] tracking-[0.18em] text-white/48 sm:text-xs sm:tracking-[0.24em]">SOOM FOR CHURCHES</p>
               <h1 className="mt-2.5 font-display text-[2.7rem] font-semibold leading-[0.92] tracking-[-0.075em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
