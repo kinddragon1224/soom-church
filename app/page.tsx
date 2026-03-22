@@ -42,24 +42,25 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.94)_0%,rgba(5,11,22,0.7)_46%,rgba(5,11,22,0.42)_100%)] sm:bg-[linear-gradient(90deg,rgba(5,11,22,0.9)_0%,rgba(5,11,22,0.6)_44%,rgba(5,11,22,0.38)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.14)_28%,rgba(5,11,22,0.86)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
 
-        <div className="relative mx-auto flex min-h-[78svh] w-full max-w-7xl flex-col px-5 pb-7 pt-5 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
+        <div className="relative mx-auto flex min-h-[72svh] w-full max-w-7xl flex-col px-5 pb-6 pt-5 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/contact" ctaLabel="문의하기" />
 
-          <div className="flex flex-1 items-center py-7 sm:items-end sm:py-24 lg:py-28">
-            <div className="max-w-5xl">
-              <p className="text-[10px] tracking-[0.2em] text-white/52 sm:text-xs sm:tracking-[0.24em]">SOOM FOR CHURCHES</p>
-              <h1 className="mt-3 font-display text-[2.35rem] font-semibold leading-[0.96] tracking-[-0.065em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
+          <div className="flex flex-1 items-start pt-14 pb-8 sm:items-end sm:py-24 lg:py-28">
+            <div className="max-w-4xl">
+              <p className="text-[10px] tracking-[0.18em] text-white/48 sm:text-xs sm:tracking-[0.24em]">SOOM FOR CHURCHES</p>
+              <h1 className="mt-2.5 font-display text-[2.7rem] font-semibold leading-[0.92] tracking-[-0.075em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
                 교회를 돕다
               </h1>
-              <p className="mt-3 max-w-3xl text-[0.95rem] leading-6 text-white/82 sm:mt-6 sm:text-lg sm:leading-8">
-                쇼츠, 유튜브 운영, 행사 안내 제작까지
+              <p className="mt-3 max-w-[18rem] text-[0.94rem] leading-5 text-white/78 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
+                쇼츠, 유튜브 운영,
+                <br className="sm:hidden" /> 행사 안내 제작까지
               </p>
 
-              <div className="mt-5 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3">
-                <Link href="/pricing" className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12">
+              <div className="mt-5 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">
+                <Link href="/pricing" className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-[13px] font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12 sm:px-6 sm:text-sm">
                   핵심 상품 보기
                 </Link>
-                <Link href="/ai-guides" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 text-sm font-medium text-white transition hover:bg-white/10 sm:min-h-12">
+                <Link href="/ai-guides" className="inline-flex h-10 items-center justify-center rounded-full border border-white/30 bg-white/5 px-5 text-[13px] font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:px-6 sm:text-sm">
                   AI 안내서 보기
                 </Link>
               </div>
@@ -72,10 +73,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <div className="max-w-4xl">
             <p className="text-xs tracking-[0.24em] text-[#7a6f67]">CORE SERVICES</p>
-            <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3.5rem]">
-              지금 교회가 바로 필요로 하는
+            <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem]">
+              지금 바로 맡길 수 있는
               <br />
-              핵심 상품만 남겼습니다
+              핵심 상품
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
               숨은 플랫폼 설명보다 먼저, 교회가 당장 맡기고 싶은 실행형 서비스를 분명하게 제공합니다.
