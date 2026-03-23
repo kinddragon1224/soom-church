@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 const navItems = [
-  { href: "/workspace", label: "home" },
-  { href: "/workspace/people", label: "people" },
-  { href: "/workspace/notices", label: "communications" },
-  { href: "/workspace/tasks", label: "tasks" },
-  { href: "/workspace/content", label: "content studio" },
-  { href: "/workspace/settings", label: "settings" },
+  { href: "/workspace", label: "홈" },
+  { href: "/workspace/people", label: "사람" },
+  { href: "/workspace/notices", label: "공지" },
+  { href: "/workspace/tasks", label: "작업" },
+  { href: "/workspace/content", label: "콘텐츠" },
+  { href: "/workspace/settings", label: "설정" },
 ];
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
@@ -16,7 +16,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
         <aside className="flex min-h-full flex-col border-r border-white/6 bg-[#0b0b0c] px-4 py-5 text-white">
           <div className="flex items-center justify-between gap-3 px-2">
             <Link href="/workspace" className="font-display text-[1.65rem] font-semibold tracking-[-0.08em] text-white">
-              gloo workspace
+              SOOM workspace
             </Link>
             <span className="text-xs text-white/34">demo</span>
           </div>
@@ -41,7 +41,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </div>
             <div className="rounded-[18px] border border-emerald-400/12 bg-emerald-400/[0.06] p-4">
               <p className="text-xs tracking-[0.18em] text-emerald-200/70">UPGRADE</p>
-              <p className="mt-2 text-sm font-medium text-white">무료로 시작하고, 필요할 때 확장</p>
+              <p className="mt-2 text-sm font-medium text-white">무료로 시작하고, 필요할 때 확장하세요</p>
             </div>
           </div>
         </aside>
