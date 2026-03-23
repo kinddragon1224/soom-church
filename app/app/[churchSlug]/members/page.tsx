@@ -29,14 +29,21 @@ export default async function ChurchMembersPage({
 
   const counts = {
     all: members.length,
+    new: members.filter((member) => new Date(member.registeredAt) >= startOfMonth(new Date())).length,
     followup: members.filter((member) => member.requiresFollowUp).length,
     unassigned: members.filter((member) => !member.districtId || !member.groupId).length,
   };
 
   const filters = [
     { key: "all", label: "전체", value: counts.all },
-    { key: "new", label: "이번 달 신규", value: members.length },
+    { key: "new", label: "이번 달 신규", value: counts.new },
     { key: "followup", label: "후속관리", value: counts.followup },
+  ] as const;
+
+  const primaryActions = [
+    { label: "교인 등록", href: "/members/new", tone: "solid" },
+    { label: "후속관리만", href: `?filter=followup`, tone: filter === "followup" ? "active" : "ghost" },
+    { label: "미배정 점검", href: `?filter=all`, tone: "ghost" },
   ] as const;
 
   const actionRail = [
@@ -94,6 +101,23 @@ export default async function ChurchMembersPage({
               <p className="mt-2 text-2xl font-semibold">{counts.unassigned}</p>
               <p className="mt-2 text-xs text-white/60">교구·목장 연결 필요</p>
             </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {primaryActions.map((action) => (
+              <Link
+                key={action.label}
+                href={action.href}
+                className={`inline-flex min-h-10 items-center justify-center rounded-full px-4 text-sm transition ${
+                  action.tone === "solid"
+                    ? "bg-white text-[#09111f]"
+                    : action.tone === "active"
+                      ? "border border-[#d4af37]/40 bg-[#d4af37]/14 text-[#f5e7be]"
+                      : "border border-white/14 bg-white/5 text-white/84 hover:bg-white/10"
+                }`}
+              >
+                {action.label}
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -156,11 +180,12 @@ export default async function ChurchMembersPage({
           </div>
 
           <div className="mt-4 grid gap-2">
-            <div className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_120px_120px] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] md:grid">
+            <div className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_120px_120px_auto] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] md:grid">
               <span>이름 / 상태</span>
               <span>연락처 / 소속</span>
               <span>직분</span>
               <span>등록일</span>
+              <span className="text-right">액션</span>
             </div>
 
             {members.length === 0 ? (
@@ -168,40 +193,57 @@ export default async function ChurchMembersPage({
                 아직 표시할 사람이 없어. 회원가입 이후 사람 데이터를 추가하면 여기서 바로 관리할 수 있어.
               </div>
             ) : (
-              members.map((member) => (
-                <div
-                  key={member.id}
-                  className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-3 py-3 transition hover:border-[#dfd3bf] hover:bg-white"
-                >
-                  <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_120px_120px] md:items-center md:gap-3">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-semibold text-[#111111]">{member.name}</p>
-                        <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{member.statusTag}</span>
-                        {member.requiresFollowUp ? (
-                          <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속관리</span>
-                        ) : null}
+              members.map((member) => {
+                const memberAction = member.requiresFollowUp
+                  ? { label: "후속 확인", href: `?filter=followup` }
+                  : !member.districtId || !member.groupId
+                    ? { label: "배정 정리", href: `?filter=all` }
+                    : { label: "상세 보기", href: `/members/${member.id}` };
+
+                return (
+                  <div
+                    key={member.id}
+                    className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-3 py-3 transition hover:border-[#dfd3bf] hover:bg-white"
+                  >
+                    <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_120px_120px_auto] md:items-center md:gap-3">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-sm font-semibold text-[#111111]">{member.name}</p>
+                          <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{member.statusTag}</span>
+                          {member.requiresFollowUp ? (
+                            <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속관리</span>
+                          ) : null}
+                        </div>
+                        <p className="mt-1 text-xs text-[#7a6d5c]">{member.email ?? "이메일 없음"}</p>
                       </div>
-                      <p className="mt-1 text-xs text-[#7a6d5c]">{member.email ?? "이메일 없음"}</p>
-                    </div>
 
-                    <div className="min-w-0">
-                      <p className="truncate text-sm text-[#3f382f]">{member.phone}</p>
-                      <p className="mt-1 truncate text-xs text-[#8c7a5b]">
-                        {member.district?.name ?? "교구 미정"} / {member.group?.name ?? "목장 미정"}
-                      </p>
-                    </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm text-[#3f382f]">{member.phone}</p>
+                        <p className="mt-1 truncate text-xs text-[#8c7a5b]">
+                          {member.district?.name ?? "교구 미정"} / {member.group?.name ?? "목장 미정"}
+                        </p>
+                      </div>
 
-                    <div>
-                      <span className="inline-flex rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51]">
-                        {member.position ?? "직분 미정"}
-                      </span>
-                    </div>
+                      <div>
+                        <span className="inline-flex rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51]">
+                          {member.position ?? "직분 미정"}
+                        </span>
+                      </div>
 
-                    <p className="text-xs text-[#8c7a5b] md:text-right">{formatDate(member.registeredAt)}</p>
+                      <p className="text-xs text-[#8c7a5b] md:text-right">{formatDate(member.registeredAt)}</p>
+
+                      <div className="flex items-center md:justify-end">
+                        <Link
+                          href={memberAction.href}
+                          className="inline-flex min-h-9 items-center justify-center rounded-full border border-[#e2d8c9] bg-white px-3 text-xs font-medium text-[#5f564b] transition hover:border-[#cbb594] hover:text-[#111111]"
+                        >
+                          {memberAction.label}
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </section>
