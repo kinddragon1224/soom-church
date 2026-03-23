@@ -31,6 +31,18 @@ const reviewItems = [
   { title: "주보 공지 정리", note: "예배 순서 변경 반영 필요", status: "대기" },
 ];
 
+const handoffBoards = [
+  { title: "사람 흐름에서 들어온 후속 연락", desc: "새가족 등록 뒤 첫 연락과 소그룹 연결은 작업 보드에서 마감까지 추적합니다.", target: "사람" },
+  { title: "검토 완료 후 공지 예약", desc: "행사·예배 준비 태스크가 끝나면 바로 커뮤니케이션 모듈로 넘겨 발송을 붙입니다.", target: "커뮤니케이션" },
+  { title: "콘텐츠 요청과 체크리스트 연결", desc: "영상·랜딩 제작 요청은 현장 일정 태스크와 같이 묶여야 누락이 없습니다.", target: "콘텐츠" },
+];
+
+const workflowRules = [
+  { title: "마감 없는 작업 금지", note: "예배 전, 행사 전처럼 실제 운영 시점을 붙여야 우선순위가 살아납니다.", state: "rule" },
+  { title: "검토는 담당자와 분리", note: "실행한 사람과 최종 확인하는 사람을 나눠야 막판 실수가 줄어듭니다.", state: "review" },
+  { title: "막힌 일 즉시 공유", note: "대기 상태가 길어지는 작업은 보드 상단으로 끌어올려 바로 드러냅니다.", state: "signal" },
+];
+
 export default function WorkspaceTasksPage() {
   return (
     <div className="flex flex-col gap-6 text-[#121212]">
@@ -167,6 +179,38 @@ export default function WorkspaceTasksPage() {
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
                     <span className="text-[11px] text-[#8C7A5B]">{item.status}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">NEXT HANDOFF</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">다른 모듈과 연결되는 일</h2>
+            <div className="mt-4 grid gap-3">
+              {handoffBoards.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.target}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">WORKFLOW RULES</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">보드 운영 기준</h2>
+            <div className="mt-4 grid gap-3">
+              {workflowRules.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[#8C7A5B]">{item.state}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
                 </div>

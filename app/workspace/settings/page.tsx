@@ -18,6 +18,18 @@ const planChecks = [
   { title: "다음 확장 포인트", desc: "예약 공지와 콘텐츠 요청 흐름 연결", status: "검토중" },
 ];
 
+const moduleReadiness = [
+  { title: "사람 흐름", desc: "새가족 상태 체계와 담당자 기준이 먼저 정리돼야 합니다.", state: "기본값 준비" },
+  { title: "커뮤니케이션", desc: "부서별 채널, 예약 기준, 메시지 톤을 같은 구조로 맞춥니다.", state: "연결 준비" },
+  { title: "콘텐츠 스튜디오", desc: "브리프 입력과 배포 handoff 규칙이 잡히면 확장할 수 있습니다.", state: "다음 단계" },
+];
+
+const rolloutRules = [
+  { title: "기본값부터 먼저", note: "도입 초기에 모든 기능을 여는 대신 실제 운영 루틴에 필요한 것부터 시작합니다.", state: "rule" },
+  { title: "팀 역할 명확화", note: "누가 입력하고 누가 검토하는지 정해져야 워크스페이스가 살아납니다.", state: "owner" },
+  { title: "확장은 handoff 이후", note: "사람·공지·작업 흐름이 붙은 뒤 콘텐츠와 자동화를 넓히는 순서가 안전합니다.", state: "sequence" },
+];
+
 export default function WorkspaceSettingsPage() {
   return (
     <div className="flex flex-col gap-6 text-[#121212]">
@@ -108,6 +120,38 @@ export default function WorkspaceSettingsPage() {
                     <span className="text-[11px] text-[#8C7A5B]">{item.status}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">MODULE READINESS</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">모듈별 도입 준비</h2>
+            <div className="mt-4 grid gap-3">
+              {moduleReadiness.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.state}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">ROLLOUT RULES</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">확장 순서 기준</h2>
+            <div className="mt-4 grid gap-3">
+              {rolloutRules.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[#8C7A5B]">{item.state}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
                 </div>
               ))}
             </div>

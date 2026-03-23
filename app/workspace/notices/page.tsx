@@ -31,6 +31,18 @@ const reviewQueue = [
   { title: "청년부 모임 공지", note: "푸시 제목 길이 조정 필요", due: "검토" },
 ];
 
+const handoffRoutes = [
+  { title: "신청자 목록 → 사람 흐름", desc: "행사 신청 공지가 나간 뒤 반응한 사람은 후속 연락 대상에 바로 이어집니다.", target: "사람" },
+  { title: "검토 완료 → 작업 흐름", desc: "문구와 링크 검토가 끝나면 담당자 확인 태스크로 넘겨 누락을 줄입니다.", target: "작업 흐름" },
+  { title: "공지 배포 → 콘텐츠 재사용", desc: "행사 공지 문구는 썸네일 문구와 영상 캡션으로 다시 이어질 수 있습니다.", target: "콘텐츠" },
+];
+
+const automationRules = [
+  { title: "예약 24시간 전 재확인", note: "발송 전날 링크와 일정이 바뀌었는지 마지막으로 점검합니다.", state: "ready" },
+  { title: "채널별 길이 가이드", note: "문자, 카카오톡, 푸시마다 제목·본문 길이 기준을 붙입니다.", state: "draft" },
+  { title: "미열람 후속 알림", note: "중요 공지를 읽지 않은 대상만 다시 묶어 후속 안내를 준비합니다.", state: "review" },
+];
+
 export default function WorkspaceNoticesPage() {
   return (
     <div className="flex flex-col gap-6 text-[#121212]">
@@ -166,6 +178,38 @@ export default function WorkspaceNoticesPage() {
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
                     <span className="text-[11px] text-[#8C7A5B]">{item.due}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">NEXT HANDOFF</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">다음 모듈로 넘길 흐름</h2>
+            <div className="mt-4 grid gap-3">
+              {handoffRoutes.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.target}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">AUTOMATION READY</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">자동화로 붙일 수 있는 규칙</h2>
+            <div className="mt-4 grid gap-3">
+              {automationRules.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[#8C7A5B]">{item.state}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
                 </div>
