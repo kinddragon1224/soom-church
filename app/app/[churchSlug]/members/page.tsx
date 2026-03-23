@@ -49,17 +49,17 @@ export default async function ChurchMembersPage({
   const actionRail = [
     {
       title: `후속관리 ${counts.followup}명`,
-      desc: "예배 이후 바로 챙겨야 하는 사람부터 먼저 정리합니다.",
+      note: "바로 연락",
       href: `?filter=followup`,
     },
     {
       title: `미배정 ${counts.unassigned}명`,
-      desc: "교구나 목장이 비어 있는 사람을 우선 연결합니다.",
+      note: "교구·목장 연결",
       href: `?filter=all`,
     },
     {
-      title: "신규 등록 확인",
-      desc: "이번 달 새로 들어온 사람을 빠르게 확인합니다.",
+      title: `이번 달 신규 ${counts.new}명`,
+      note: "첫 인사 점검",
       href: `?filter=new`,
     },
   ] as const;
@@ -70,14 +70,14 @@ export default async function ChurchMembersPage({
         <div className="rounded-[28px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
-              <p className="text-[11px] tracking-[0.2em] text-white/46">PEOPLE WORKSPACE</p>
+              <p className="text-[11px] tracking-[0.2em] text-white/46">PEOPLE</p>
               <h1 className="mt-3 text-[2.1rem] font-semibold leading-[0.98] tracking-[-0.06em] text-white sm:text-[2.7rem]">
-                사람 흐름을
+                사람 운영을
                 <br />
-                운영 기준으로 정리합니다
+                바로 정리해
               </h1>
-              <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
-                교인 목록, 후속관리, 미배정 상태를 한 화면에서 확인하고 바로 정리하는 실사용 화면입니다.
+              <p className="mt-4 max-w-xl text-sm leading-6 text-white/66 sm:text-base">
+                목록·후속·미배정을 한 화면에서 본다.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 lg:max-w-[240px] lg:justify-end">
@@ -124,7 +124,7 @@ export default async function ChurchMembersPage({
         <section className="rounded-[28px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">QUICK FILTERS</p>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FILTERS</p>
               <h2 className="mt-2 text-xl font-semibold text-[#111111]">바로 보기</h2>
             </div>
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">people</span>
@@ -152,15 +152,19 @@ export default async function ChurchMembersPage({
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTION RAIL</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 먼저 할 일</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">먼저 할 일</h2>
               </div>
-              <span className="text-xs text-[#8C7A5B]">운영 우선순위</span>
+              <span className="text-xs text-[#8C7A5B]">우선순위</span>
             </div>
-            <div className="mt-4 grid gap-3">
+            <div className="mt-4 grid gap-2">
               {actionRail.map((item) => (
-                <Link key={item.title} href={item.href} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="flex items-center justify-between gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3 transition hover:bg-white"
+                >
                   <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                  <span className="text-xs text-[#8c7a5b]">{item.note}</span>
                 </Link>
               ))}
             </div>
@@ -171,7 +175,7 @@ export default async function ChurchMembersPage({
           <div className="flex flex-col gap-3 border-b border-[#efe7da] pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PEOPLE LIST</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">사람 목록</h2>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">사람</h2>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-[#8C7A5B]">
               <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[#8C6A2E]">{members.length}명 표시</span>

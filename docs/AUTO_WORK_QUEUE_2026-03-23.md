@@ -22,9 +22,10 @@
 3. `/app/[churchSlug]/members`
    - [done] 리스트 밀도 조정
    - [done] 액션 버튼 더 직관적으로 정리
-   - 카드 텍스트 추가 축소
+   - [done] 카드 텍스트 추가 축소
    - 2026-03-24 00:33 KST: 사람 목록을 카드 나열에서 gloo식 dense row 리스트로 압축
    - 2026-03-24 01:02 KST: 상단 빠른 액션과 행별 CTA 버튼을 추가해 등록/후속/배정 정리 흐름을 바로 누르게 정리
+   - 2026-03-24 06:34 KST: members hero/action rail/리스트 헤더 문구를 더 짧게 줄이고 action rail을 dense row 구조로 압축
 
 4. `/app/[churchSlug]/applications`
    - [done] 신청 상태 표현 한국형으로 정리
