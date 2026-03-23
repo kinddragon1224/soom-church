@@ -4,7 +4,7 @@ const overviewStats = [
   { label: "등록 인원", value: "128", delta: "+12 이번 주", tone: "slate" },
   { label: "후속관리 필요", value: "9", delta: "오늘 3건", tone: "amber" },
   { label: "예약 공지", value: "4", delta: "이번 주 발송", tone: "slate" },
-  { label: "콘텐츠 요청", value: "8", delta: "3건 검토중", tone: "slate" },
+  { label: "완료율", value: "76%", delta: "이번 주 기준", tone: "slate" },
 ];
 
 const setupItems = [
@@ -132,7 +132,7 @@ export default function WorkspacePage() {
             <div className="max-w-2xl">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-[11px] tracking-[0.2em] text-white/46">CHURCH OPERATIONS HUB</p>
-                <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">gloo-style workspace flow</span>
+                <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">운영 우선순위 중심</span>
               </div>
               <h1 className="mt-3 text-[2.25rem] font-semibold leading-[0.96] tracking-[-0.06em] text-white sm:text-[3rem]">
                 오늘 처리해야 할 운영 흐름을
@@ -140,7 +140,7 @@ export default function WorkspacePage() {
                 한 화면에서 정리합니다
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
-                사람, 공지, 작업, 콘텐츠 요청이 따로 놀지 않도록 지금 필요한 우선순위부터 모아 보여주는 워크스페이스입니다.
+                사람, 공지, 작업, 콘텐츠 요청이 흩어지지 않도록 지금 먼저 처리할 흐름부터 한 화면에 모아 보여주는 워크스페이스입니다.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 lg:max-w-[250px] lg:justify-end">
@@ -166,9 +166,9 @@ export default function WorkspacePage() {
               </div>
             </div>
             <div className="grid gap-3">
-              <button type="button" className="inline-flex min-h-11 items-center justify-center rounded-[14px] bg-white px-5 text-sm font-semibold text-[#09111f]">
+              <Link href="/workspace/tasks" className="inline-flex min-h-11 items-center justify-center rounded-[14px] bg-white px-5 text-sm font-semibold text-[#09111f]">
                 오늘 할 일 보기
-              </button>
+              </Link>
               <Link href="/workspace/people" className="inline-flex min-h-11 items-center justify-center rounded-[14px] border border-white/14 bg-white/5 px-5 text-sm font-medium text-white">
                 사람 흐름 열기
               </Link>
@@ -330,7 +330,7 @@ export default function WorkspacePage() {
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRODUCT STRUCTURE</p>
                 <h2 className="mt-2 text-lg font-semibold text-[#111111]">교회 운영 흐름 구조</h2>
               </div>
-              <span className="text-xs text-[#8C7A5B]">제품 fidelity</span>
+              <span className="text-xs text-[#8C7A5B]">운영 흐름 기준</span>
             </div>
             <div className="mt-4 grid gap-3">
               {pipelineSteps.map((step, index) => (
@@ -391,7 +391,7 @@ export default function WorkspacePage() {
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRODUCT AREAS</p>
                 <h2 className="mt-2 text-lg font-semibold text-[#111111]">핵심 영역</h2>
               </div>
-              <span className="text-xs text-[#8C7A5B]">gloo benchmark</span>
+              <span className="text-xs text-[#8C7A5B]">핵심 모듈</span>
             </div>
             <div className="mt-4 grid gap-3">
               {productAreas.map((item) => (
