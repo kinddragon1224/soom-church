@@ -82,33 +82,39 @@ export default function HomePage() {
           style={{ backgroundImage: "url('/hero-church-main.png')" }}
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.94)_0%,rgba(5,11,22,0.7)_46%,rgba(5,11,22,0.42)_100%)] sm:bg-[linear-gradient(90deg,rgba(5,11,22,0.9)_0%,rgba(5,11,22,0.6)_44%,rgba(5,11,22,0.38)_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.14)_28%,rgba(5,11,22,0.86)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.18)_0%,rgba(5,11,22,0.12)_24%,rgba(5,11,22,0.88)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
 
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-4 pt-3 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="무료로 시작하기" />
 
-          <div className="flex flex-1 items-center pt-0 pb-3 sm:items-end sm:py-24 lg:py-28">
+          <div className="flex flex-1 items-start pt-8 pb-5 sm:items-end sm:py-24 lg:py-28">
             <div className="max-w-5xl">
               <p className="text-[10px] tracking-[0.15em] text-white/48 sm:text-xs sm:tracking-[0.24em]">SOOM WORKSPACE FOR CHURCHES</p>
-              <h1 className="mt-1 font-display text-[2.22rem] font-semibold leading-[0.9] tracking-[-0.085em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
+              <h1 className="mt-2 font-display text-[2.06rem] font-semibold leading-[0.88] tracking-[-0.09em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
                 교회를 돕다
               </h1>
-              <p className="mt-1.5 max-w-[18.5rem] text-[0.88rem] leading-[1.42] text-white/78 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
+              <p className="mt-2 max-w-[17rem] text-[0.86rem] leading-[1.34] text-white/80 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
                 쇼츠, 유튜브 운영,
                 <br className="sm:hidden" /> 행사 안내 제작까지
               </p>
-              <p className="mt-1.5 max-w-[20.5rem] text-[0.84rem] leading-[1.48] text-white/62 sm:mt-4 sm:max-w-3xl sm:text-base sm:leading-7">
+              <p className="mt-2 max-w-[19rem] text-[0.82rem] leading-[1.42] text-white/62 sm:mt-4 sm:max-w-3xl sm:text-base sm:leading-7">
                 교회와 사역을 위한 워크스페이스를 만들고,
                 <br className="sm:hidden" /> 필요하면 실행까지 함께합니다.
               </p>
 
-              <div className="mt-3.5 flex flex-col gap-2 sm:mt-8 sm:flex-row sm:gap-3">
+              <div className="mt-4 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">
                 <Link href="/signup" className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-[13px] font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12 sm:px-6 sm:text-sm">
                   무료로 시작하기
                 </Link>
                 <Link href="/workspace" className="inline-flex h-10 items-center justify-center rounded-full border border-white/30 bg-white/5 px-5 text-[13px] font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:px-6 sm:text-sm">
                   워크스페이스 보기
                 </Link>
+              </div>
+
+              <div className="mt-5 grid max-w-[20rem] gap-2 text-[11px] text-white/70 sm:mt-6 sm:max-w-none sm:flex sm:flex-wrap sm:gap-2.5 sm:text-xs">
+                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">무료로 먼저 시작</span>
+                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">필요할 때 실행 서비스 연결</span>
+                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">교회 운영 흐름 기준</span>
               </div>
             </div>
           </div>
@@ -120,7 +126,7 @@ export default function HomePage() {
           <div className="max-w-4xl">
             <p className="text-xs tracking-[0.24em] text-[#7a6f67]">DISCERNMENT</p>
             <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem]">
-              먼저 정리합니다
+              먼저 봅니다
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
               해야 할 일은 많은데 우선순위는 흐려질 수 있습니다. 숨은 먼저 해야 할 일부터 정리하고 바로 움직일 시작점을 함께 찾습니다.
@@ -238,8 +244,8 @@ export default function HomePage() {
               왜 숨이어야 할까요
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-              숨은 보기 좋은 결과보다 먼저 전달 구조와 실행 순서를 봅니다.
-              교회와 사역의 메시지가 실제 움직임으로 이어지도록 함께 정리합니다.
+              숨은 보기 좋은 결과보다 먼저 전달 구조를 봅니다.
+              교회와 사역의 메시지가 실제 움직임으로 이어지게 함께 정리합니다.
             </p>
           </div>
 

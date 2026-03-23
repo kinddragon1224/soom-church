@@ -23,6 +23,21 @@ const processSteps = [
   },
 ];
 
+const responseCards = [
+  {
+    title: "보내면 바로 계약이 되나요?",
+    desc: "아닙니다. 먼저 가능한지, 무엇부터 시작하는 게 맞는지부터 짧게 안내드립니다.",
+  },
+  {
+    title: "어떤 답변을 받게 되나요?",
+    desc: "가능 여부, 추천 시작점, 대략적인 범위를 먼저 정리해서 드립니다.",
+  },
+  {
+    title: "급한 일정도 가능한가요?",
+    desc: "가능한 경우 빠른 대응 여부를 먼저 확인드리고, 어렵다면 현실적인 대안을 함께 제안드립니다.",
+  },
+];
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#050b16] text-white">
@@ -133,6 +148,15 @@ export default function ContactPage() {
                 <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="기존 유튜브, 행사 안내 링크, 참고 자료를 남겨주세요" />
               </label>
 
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/70">
+                <p className="font-semibold text-white">보내기 전에 이것만 알면 됩니다</p>
+                <ul className="mt-3 grid gap-2 leading-6">
+                  <li>• 문의를 보내면 먼저 가능한지부터 짧게 안내드립니다.</li>
+                  <li>• 예산과 일정이 아직 불명확해도 괜찮습니다.</li>
+                  <li>• 맞지 않는 요청이면 무리하게 진행을 권하지 않습니다.</li>
+                </ul>
+              </div>
+
               <div className="grid gap-3">
                 <button type="submit" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
                   상담 요청 보내기
@@ -164,18 +188,12 @@ export default function ContactPage() {
             <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
               <p className="text-xs tracking-[0.24em] text-white/38">RESPONSE GUIDE</p>
               <div className="mt-5 grid gap-3 text-sm leading-7 text-white/70">
-                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                  <p className="font-semibold text-white">어떤 답변을 받게 되나요?</p>
-                  <p className="mt-2">가능 여부, 추천 시작점, 대략적인 범위를 먼저 안내드립니다.</p>
-                </div>
-                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                  <p className="font-semibold text-white">급한 일정도 가능한가요?</p>
-                  <p className="mt-2">가능한 경우 빠른 대응 여부를 먼저 확인해드리고, 어려우면 현실적인 대안을 같이 제안드립니다.</p>
-                </div>
-                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                  <p className="font-semibold text-white">바로 계약해야 하나요?</p>
-                  <p className="mt-2">아닙니다. 먼저 상황을 보고, 지금 당장 필요한 범위만 가볍게 정리해드립니다.</p>
-                </div>
+                {responseCards.map((item) => (
+                  <div key={item.title} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                    <p className="font-semibold text-white">{item.title}</p>
+                    <p className="mt-2">{item.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
