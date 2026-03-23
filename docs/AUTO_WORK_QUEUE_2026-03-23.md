@@ -12,7 +12,9 @@
    - [done] 홈 텍스트 추가 압축
    - [done] Get Started / Feed / 최근 항목 밀도 정리
    - [done] gloo 홈처럼 더 단순하게 재배치
+   - [done] 카드 중심 구성을 dense row 운영 화면으로 재정리
    - 2026-03-23 23:31 KST: 홈 hero/queue/recent/areas 1차 재배치 완료
+   - 2026-03-24 07:03 KST: dashboard hero 보조 정보와 queue/modules/recent를 gloo식 dense row 운영 보드로 다시 압축
 
 2. `/app/[churchSlug]/layout`
    - [done] 좌측 네비 밀도/활성 상태 개선
