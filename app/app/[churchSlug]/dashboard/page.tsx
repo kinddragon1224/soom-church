@@ -101,6 +101,37 @@ export default async function ChurchDashboardPage({ params }: { params: { church
     },
   ] as const;
 
+  const onboardingSteps = [
+    { step: 1, title: "기본 워크스페이스 확인", desc: "교회명, 역할, 기본 운영 기준을 먼저 점검해요.", href: `${base}/settings`, cta: "설정 열기" },
+    { step: 2, title: "팀원 초대 준비", desc: "함께 운영할 팀원과 역할 구조를 정리해요.", href: `${base}/settings`, cta: "구성 보기" },
+    { step: 3, title: "사람 데이터 정리", desc: "후속관리와 미배정 인원부터 먼저 정리해요.", href: `${base}/members`, cta: "사람 열기" },
+    { step: 4, title: "공지 흐름 연결", desc: "주간 공지와 전달 리듬을 한곳에 모아요.", href: `${base}/notices`, cta: "공지 열기" },
+  ] as const;
+
+  const feedItems = [
+    {
+      title: "가입 온보딩이 연결됐어요",
+      body: "새 사용자는 가입하면서 교회 이름과 역할을 입력하고 바로 워크스페이스를 만들 수 있어요.",
+      cta: "회원가입 보기",
+      href: "/signup",
+      time: "방금 반영",
+    },
+    {
+      title: "후속관리 흐름을 먼저 정리해보세요",
+      body: `현재 후속관리 대상은 ${data.followUpMembers}명이고, 미배정 인원은 ${data.unassignedMembers}명이에요.`,
+      cta: "사람 보기",
+      href: `${base}/members?filter=followup`,
+      time: "운영 제안",
+    },
+    {
+      title: "공지와 신청 흐름을 함께 보세요",
+      body: `미처리 신청 ${data.pendingApplications}건, 최근 공지 ${data.recentNotices.length}건 기준으로 운영 허브를 계속 다듬는 중이에요.`,
+      cta: "신청 보기",
+      href: `${base}/applications?status=PENDING`,
+      time: "실사용 개선중",
+    },
+  ] as const;
+
   const operatingSignals = [
     { label: "follow-up", title: "후속관리 상태", value: `${data.followUpMembers}명`, note: "먼저 연락해야 할 흐름" },
     { label: "applications", title: "신청 처리", value: `${data.pendingApplications}건`, note: "미처리 신청 현황" },
@@ -213,18 +244,51 @@ export default async function ChurchDashboardPage({ params }: { params: { church
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">COMMAND CENTER</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 먼저 풀 일</h2>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">GET STARTED</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">워크스페이스 시작 단계</h2>
               </div>
-              <span className="text-xs text-[#8C7A5B]">우선순위 기준</span>
+              <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[11px] text-[#8C6A2E]">0% complete</span>
             </div>
-            <div className="mt-4 grid gap-3 lg:grid-cols-3">
-              {commandCenter.map((item) => (
-                <Link key={item.title} href={item.href} className="rounded-[20px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
-                  <p className="text-[11px] tracking-[0.16em] text-[#8C7A5B]">{item.label}</p>
-                  <p className="mt-3 text-base font-semibold text-[#111111]">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
-                </Link>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#efe7da]">
+              <div className="h-full w-[18%] rounded-full bg-[#C8A96B]" />
+            </div>
+            <div className="mt-4 grid gap-3">
+              {onboardingSteps.map((item) => (
+                <div key={item.step} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] tracking-[0.16em] text-[#8C7A5B]">STEP {item.step}</p>
+                      <p className="mt-2 text-sm font-semibold text-[#111111]">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                    </div>
+                    <Link href={item.href} className="rounded-[12px] border border-[#e1d7c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">{item.cta}</Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FEED</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">제품 피드</h2>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="rounded-full bg-[#0F172A] px-3 py-1 text-white">Feed</span>
+                <span className="rounded-full border border-[#e6dfd5] bg-white px-3 py-1 text-[#8C7A5B]">Notifications</span>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {feedItems.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.body}</p>
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <Link href={item.href} className="text-xs font-medium text-[#8C6A2E]">{item.cta}</Link>
+                    <span className="text-[11px] text-[#9a8b7a]">{item.time}</span>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
