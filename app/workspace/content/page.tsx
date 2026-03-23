@@ -27,7 +27,7 @@ export default function WorkspaceContentPage() {
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.04em] text-[#121212] sm:text-[2.4rem]">콘텐츠</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5F564B] sm:text-base">쇼츠, 영상, 행사 페이지 같은 콘텐츠 요청과 진행 상태를 모아보는 화면입니다.</p>
         </div>
-        <button type="button" className="rounded-full bg-[#176B4D] px-4 py-2 text-sm font-semibold text-white">콘텐츠 요청</button>
+        <button type="button" className="rounded-full bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">콘텐츠 요청</button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

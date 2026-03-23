@@ -83,7 +83,7 @@ export default function WorkspacePage() {
               <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#176B4D] text-xs font-semibold text-white">so</div>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F172A] text-xs font-semibold text-white">so</div>
                     <div>
                       <p className="text-sm font-medium text-[#111111]">{item.title}</p>
                       <p className="mt-1 text-xs text-[#6b7280]">{item.channel}</p>

@@ -24,7 +24,7 @@ export default function WorkspacePeoplePage() {
         </div>
         <div className="flex gap-2">
           <button type="button" className="rounded-full border border-[#D8D0C2] bg-[#FCFBF8] px-4 py-2 text-sm text-[#5F564B]">상태 필터</button>
-          <button type="button" className="rounded-full bg-[#176B4D] px-4 py-2 text-sm font-semibold text-white">사람 추가</button>
+          <button type="button" className="rounded-full bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">사람 추가</button>
         </div>
       </div>
 

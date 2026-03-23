@@ -61,7 +61,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
               <p className="mt-1 text-sm text-[#5F564B]">교회와 사역팀을 위한 운영 대시보드</p>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/signup" className="inline-flex min-h-10 items-center justify-center rounded-[12px] bg-[#176B4D] px-4 text-sm font-semibold text-white">
+              <Link href="/signup" className="inline-flex min-h-10 items-center justify-center rounded-[12px] bg-[#0F172A] px-4 text-sm font-semibold text-white">
                 무료로 시작하기
               </Link>
             </div>

@@ -27,7 +27,7 @@ export default function WorkspaceTasksPage() {
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.04em] text-[#121212] sm:text-[2.4rem]">작업</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5F564B] sm:text-base">해야 할 일, 담당자, 상태를 한눈에 보는 작업 보드입니다.</p>
         </div>
-        <button type="button" className="rounded-full bg-[#176B4D] px-4 py-2 text-sm font-semibold text-white">작업 생성</button>
+        <button type="button" className="rounded-full bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">작업 생성</button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

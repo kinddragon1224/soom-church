@@ -21,7 +21,7 @@ export default function WorkspaceNoticesPage() {
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.04em] text-[#121212] sm:text-[2.4rem]">공지</h1>
           <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5F564B] sm:text-base">주요 공지를 작성하고, 발행 상태를 관리하는 화면입니다.</p>
         </div>
-        <button type="button" className="rounded-full bg-[#176B4D] px-4 py-2 text-sm font-semibold text-white">공지 작성</button>
+        <button type="button" className="rounded-full bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">공지 작성</button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
