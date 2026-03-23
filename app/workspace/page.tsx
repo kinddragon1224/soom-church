@@ -1,187 +1,256 @@
 import Link from "next/link";
 
-const stats = [
-  { label: "people", value: "128", delta: "+12 this week" },
-  { label: "pending", value: "6", delta: "2 due today" },
-  { label: "broadcasts", value: "4", delta: "1 scheduled" },
-  { label: "content", value: "8", delta: "3 in review" },
+const overviewStats = [
+  { label: "등록 인원", value: "128", delta: "+12 이번 주", tone: "slate" },
+  { label: "후속관리 필요", value: "9", delta: "오늘 3건", tone: "amber" },
+  { label: "예약 공지", value: "4", delta: "이번 주 발송", tone: "slate" },
+  { label: "콘텐츠 요청", value: "8", delta: "3건 검토중", tone: "slate" },
 ];
 
-const onboardingSteps = [
-  { step: "step 1", title: "워크스페이스 기본 정보 정리", action: "시작", muted: false },
-  { step: "step 2", title: "사람 상태 체계 만들기", action: "설정", muted: false },
-  { step: "step 3", title: "팀원 초대", action: "초대", muted: false },
-  { step: "step 4", title: "사람 연락처 추가", action: "추가", muted: true },
+const setupItems = [
+  { step: "01", title: "워크스페이스 기본 정보 정리", desc: "이름, 부서 구조, 담당자만 먼저 맞추면 됩니다.", action: "시작하기", done: true },
+  { step: "02", title: "사람 상태 체계 만들기", desc: "새가족, 정착, 봉사연결 같은 상태를 먼저 정합니다.", action: "설정", done: false },
+  { step: "03", title: "팀원 초대", desc: "사무국, 목회자, 콘텐츠 담당자를 초대해 함께 운영합니다.", action: "초대", done: false },
+  { step: "04", title: "연락 흐름 연결", desc: "공지 발송과 후속 연락 흐름을 이어서 운영 준비를 마칩니다.", action: "준비중", done: false },
+];
+
+const inboxItems = [
+  { title: "새가족 3명 후속 연락 필요", desc: "예배 방문 이후 48시간 안에 첫 연락 권장", meta: "사람", priority: "오늘" },
+  { title: "수련회 공지 예약 확인", desc: "카카오톡/문자 이중 발송 전 최종 문구 점검", meta: "커뮤니케이션", priority: "이번 주" },
+  { title: "부활절 홍보영상 검토", desc: "썸네일과 자막 톤만 결정하면 바로 배포 가능", meta: "콘텐츠", priority: "대기" },
+];
+
+const workflowLanes = [
+  {
+    title: "이번 주 우선순위",
+    accent: "bg-[#fff7e8] border-[#efdfb8]",
+    items: ["새가족 후속 연락 배정", "부활절 행사 체크리스트 정리", "수련회 안내 페이지 검수"],
+  },
+  {
+    title: "운영 루틴",
+    accent: "bg-white border-[#e8e3d7]",
+    items: ["주보 공지 문구 업데이트", "유튜브 업로드 캘린더 정리", "다음 주 봉사자 리마인드"],
+  },
+];
+
+const productAreas = [
+  {
+    title: "사람 흐름",
+    desc: "새가족부터 봉사 연결까지 한 상태 체계로 관리합니다.",
+    href: "/workspace/people",
+    cta: "사람 보러가기",
+  },
+  {
+    title: "커뮤니케이션",
+    desc: "주요 공지, 예약 발송, 채널별 메시지 흐름을 정리합니다.",
+    href: "/workspace/notices",
+    cta: "공지 보러가기",
+  },
+  {
+    title: "작업 흐름",
+    desc: "사역팀이 해야 할 일을 상태와 담당자 기준으로 공유합니다.",
+    href: "/workspace/tasks",
+    cta: "보드 보러가기",
+  },
+  {
+    title: "콘텐츠 스튜디오",
+    desc: "쇼츠, 행사 페이지, 유튜브 운영 요청을 한 파이프라인으로 모읍니다.",
+    href: "/workspace/content",
+    cta: "콘텐츠 보기",
+  },
 ];
 
 const feedItems = [
-  { title: "온보딩에서 자동 연락처 수집", body: "새가족 등록 흐름에 연락처 수집 단계를 추가해 사람 기록을 더 빠르게 쌓을 수 있습니다.", cta: "워크플로우 보기", meta: "5분 전" },
-  { title: "SOOM+ 콘텐츠 스튜디오 미리 보기", body: "설교를 쇼츠, 안내 콘텐츠, 행사 페이지 흐름으로 연결하는 기능을 준비하고 있습니다.", cta: "자세히 보기", meta: "오늘" },
-  { title: "그룹별 공지 발송 준비", body: "부서·사역팀별로 다른 공지를 보내는 흐름을 곧 연결할 수 있도록 구조를 정리하고 있습니다.", cta: "공지 보기", meta: "이번 주" },
-];
-
-const quickLinks = [
-  { title: "문의함 보기", desc: "들어온 문의와 요청 확인", href: "/contact" },
-  { title: "공지 보내기", desc: "주요 공지 초안/예약", href: "/workspace/notices" },
-  { title: "사람 상태 보기", desc: "새가족·후속관리 흐름", href: "/workspace/people" },
-  { title: "그룹 관리", desc: "팀/부서 구조 준비", href: "/workspace/people" },
-  { title: "콘텐츠 요청 보기", desc: "쇼츠·영상·페이지 진행", href: "/workspace/content" },
-  { title: "블로그 보기", desc: "운영과 AI 글 아카이브", href: "/ai-guides" },
-];
-
-const supportLinks = [
-  { title: "블로그", desc: "운영과 AI 관련 글을 계속 쌓습니다.", href: "/ai-guides" },
-  { title: "도움말 센터", desc: "기능 설명과 사용 흐름을 정리합니다.", href: "/workspace/settings" },
-  { title: "문의하기", desc: "직접 도움을 받고 싶다면 바로 연결하세요.", href: "/contact" },
-];
-
-const tasks = [
-  { title: "새가족 후속관리 배정", owner: "김선용", priority: "높음", status: "진행중" },
-  { title: "수련회 신청 페이지 수정", owner: "최재성", priority: "중간", status: "검토" },
-  { title: "주보 공지 문구 정리", owner: "사무국", priority: "중간", status: "대기" },
+  {
+    title: "설교를 쇼츠로 연결하는 구조 정리 중",
+    body: "콘텐츠 요청이 들어오면 예배 후 짧은 영상, 안내 문구, 행사 홍보 흐름으로 바로 이어질 수 있게 구조를 다듬고 있습니다.",
+    meta: "SOOM+ · 오늘",
+  },
+  {
+    title: "부서별 공지 구조 준비",
+    body: "청년부, 교구, 봉사팀처럼 그룹별로 다른 메시지를 보낼 수 있는 흐름을 기준으로 설계하고 있습니다.",
+    meta: "커뮤니케이션 · 이번 주",
+  },
 ];
 
 export default function WorkspacePage() {
   return (
     <div className="flex flex-col gap-6 text-[#111111]">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div>
-          <h1 className="text-[2.15rem] font-semibold tracking-[-0.05em] text-[#111111] sm:text-[2.5rem]">돌아오셨네요, 선용</h1>
-          <p className="mt-2 text-sm text-[#6b7280]">오늘 처리해야 할 운영 흐름과 진행 상태를 한 번에 봅니다.</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-2 text-xs text-[#8C7A5B]">무료 플랜</span>
-          <button type="button" className="rounded-[10px] bg-[#0F172A] px-4 py-2 text-sm font-medium text-white">팀 관리</button>
-        </div>
-      </div>
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="overflow-hidden rounded-[28px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[11px] tracking-[0.2em] text-white/46">CHURCH OPERATIONS HUB</p>
+              <h1 className="mt-3 text-[2.2rem] font-semibold leading-[0.96] tracking-[-0.06em] text-white sm:text-[2.8rem]">
+                오늘 처리해야 할 운영 흐름을
+                <br />
+                한눈에 정리합니다
+              </h1>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
+                사람, 공지, 작업, 콘텐츠 요청이 따로 놀지 않도록 지금 필요한 우선순위부터 모아 보여주는 워크스페이스입니다.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 lg:max-w-[220px] lg:justify-end">
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">대흥교회 청년부</span>
+              <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">무료 플랜</span>
+            </div>
+          </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr_0.65fr]">
-        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button type="button" className="inline-flex min-h-11 items-center justify-center rounded-[14px] bg-white px-5 text-sm font-semibold text-[#09111f]">
+              오늘 할 일 보기
+            </button>
+            <Link href="/workspace/people" className="inline-flex min-h-11 items-center justify-center rounded-[14px] border border-white/14 bg-white/5 px-5 text-sm font-medium text-white">
+              사람 흐름 열기
+            </Link>
+          </div>
+        </div>
+
+        <section className="rounded-[28px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9aa0a6]">GET STARTED WITH MESSAGING</p>
-              <h2 className="mt-2 text-xl font-semibold text-[#111111]">메시징 시작하기</h2>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SETUP</p>
+              <h2 className="mt-2 text-xl font-semibold text-[#111111]">도입 체크리스트</h2>
             </div>
-            <span className="text-xs text-[#8C7A5B]">0% 완료</span>
-          </div>
-          <div className="mt-5 grid gap-3">
-            {onboardingSteps.map((item) => (
-              <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] px-4 py-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#9aa0a6]">{item.step}</p>
-                    <p className="mt-1 text-sm font-medium text-[#111111]">{item.title}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button type="button" className="rounded-[10px] bg-[#0F172A] px-4 py-2 text-xs font-medium text-white">{item.action}</button>
-                    {item.muted ? <button type="button" className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-2 text-xs text-[#6b7280]">건너뛰기</button> : null}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center gap-2">
-            <button type="button" className="rounded-[10px] bg-[#f3f4f6] px-3 py-2 text-xs font-medium text-[#111111]">피드</button>
-            <button type="button" className="rounded-[10px] px-3 py-2 text-xs text-[#9aa0a6]">알림</button>
+            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">1 / 4 완료</span>
           </div>
           <div className="mt-4 grid gap-3">
-            {feedItems.map((item) => (
-              <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
+            {setupItems.map((item) => (
+              <div key={item.title} className="rounded-[18px] border border-[#ece6dc] bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F172A] text-xs font-semibold text-white">so</div>
-                    <div>
-                      <p className="text-sm font-medium text-[#111111]">{item.title}</p>
-                      <p className="mt-2 text-sm leading-6 text-[#6b7280]">{item.body}</p>
-                    </div>
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">STEP {item.step}</p>
+                    <p className="mt-1 text-sm font-semibold text-[#111111]">{item.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
                   </div>
-                  <span className="text-[11px] text-[#9aa0a6]">{item.meta}</span>
-                </div>
-                <div className="mt-3 flex items-center justify-between gap-3">
-                  <button type="button" className="rounded-[10px] border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-medium text-[#111111]">{item.cta}</button>
-                  <button type="button" className="text-[11px] text-[#8C7A5B]">자세히</button>
+                  <button
+                    type="button"
+                    className={`rounded-[12px] px-3 py-2 text-xs font-medium ${item.done ? "border border-[#d9e7d7] bg-[#edf7eb] text-[#3d6f36]" : "bg-[#0F172A] text-white"}`}
+                  >
+                    {item.done ? "완료" : item.action}
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </section>
+      </section>
 
-        <section className="overflow-hidden rounded-[22px] bg-[linear-gradient(180deg,#D8BD86_0%,#A67C36_100%)] p-5 text-white shadow-[0_12px_32px_rgba(140,106,46,0.18)]">
-          <p className="text-xs tracking-[0.16em] text-white/76">SOOM+</p>
-          <h2 className="mt-16 text-[1.85rem] font-semibold leading-[1.04] tracking-[-0.05em]">콘텐츠 스튜디오
-            <br />미리 보기</h2>
-          <p className="mt-3 max-w-[16rem] text-sm leading-6 text-white/82">설교를 쇼츠, 안내 콘텐츠, 행사 페이지 흐름으로 연결하세요.</p>
-          <button type="button" className="mt-5 rounded-[12px] bg-[#0F172A] px-4 py-3 text-sm font-medium text-white">자세히 보기</button>
-        </section>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((item) => (
-          <div key={item.label} className="rounded-[20px] border border-[#e6e7ea] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-            <p className="text-xs uppercase tracking-[0.16em] text-[#9aa0a6]">{item.label}</p>
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {overviewStats.map((item) => (
+          <div key={item.label} className="rounded-[22px] border border-[#e6dfd5] bg-white p-4 shadow-[0_10px_26px_rgba(15,23,42,0.05)]">
+            <p className="text-xs tracking-[0.16em] text-[#8C7A5B]">{item.label}</p>
             <div className="mt-2 flex items-end justify-between gap-3">
-              <p className="text-2xl font-semibold text-[#111111]">{item.value}</p>
-              <span className="text-xs text-[#6b7280]">{item.delta}</span>
+              <p className="text-[1.9rem] font-semibold tracking-[-0.04em] text-[#111111]">{item.value}</p>
+              <span className={`rounded-full px-2.5 py-1 text-[11px] ${item.tone === "amber" ? "bg-[#fff4df] text-[#8C6A2E]" : "bg-[#f3f4f6] text-[#5f564b]"}`}>{item.delta}</span>
             </div>
           </div>
         ))}
-      </div>
+      </section>
 
-      <div className="grid gap-4 xl:grid-cols-[1fr_1fr_1fr]">
-        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#111111]">빠른 이동</h2>
-            <span className="text-xs text-[#8C7A5B]">핵심 액션</span>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {quickLinks.map((item) => (
-              <Link key={item.title} href={item.href} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4 transition hover:bg-white">
-                <p className="text-sm font-medium text-[#111111]">{item.title}</p>
-                <p className="mt-2 text-sm text-[#6b7280]">{item.desc}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#111111]">진행 중인 작업</h2>
-            <Link href="/workspace/tasks" className="text-xs text-[#6b7280] hover:text-[#111111]">보드 보기</Link>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {tasks.map((task) => (
-              <div key={task.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-[#111111]">{task.title}</p>
-                    <p className="mt-1 text-xs text-[#6b7280]">{task.owner}</p>
-                  </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-[11px] text-[#6b7280] border border-[#e5e7eb]">{task.priority}</span>
-                </div>
-                <p className="mt-3 text-[11px] uppercase tracking-[0.16em] text-[#9aa0a6]">{task.status}</p>
+      <section className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="grid gap-4">
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY INBOX</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 확인할 것</h2>
               </div>
-            ))}
-          </div>
-        </section>
+              <span className="text-xs text-[#8C7A5B]">운영 허브</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {inboxItems.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B] border border-[#e6dfd5]">{item.meta}</span>
+                        <span className="text-[11px] text-[#9a8b7a]">{item.priority}</span>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold text-[#111111]">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                    </div>
+                    <button type="button" className="rounded-[12px] border border-[#e1d7c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">
+                      보기
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
 
-        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#111111]">지원과 리소스</h2>
-            <span className="text-xs text-[#8C7A5B]">support</span>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {supportLinks.map((item) => (
-              <Link key={item.title} href={item.href} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4 transition hover:bg-white">
-                <p className="text-sm font-medium text-[#111111]">{item.title}</p>
-                <p className="mt-2 text-sm text-[#6b7280]">{item.desc}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </div>
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">WORKFLOWS</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">운영 흐름 보드</h2>
+              </div>
+              <Link href="/workspace/tasks" className="text-xs text-[#6b7280] hover:text-[#111111]">전체 보드</Link>
+            </div>
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              {workflowLanes.map((lane) => (
+                <div key={lane.title} className={`rounded-[18px] border p-4 ${lane.accent}`}>
+                  <p className="text-sm font-semibold text-[#111111]">{lane.title}</p>
+                  <div className="mt-3 grid gap-2">
+                    {lane.items.map((item) => (
+                      <div key={item} className="rounded-[14px] border border-[#e7dfd1] bg-white px-3 py-3 text-sm text-[#5f564b]">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <div className="grid gap-4">
+          <section className="overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,#D8BD86_0%,#A67C36_100%)] p-5 text-white shadow-[0_14px_36px_rgba(140,106,46,0.18)]">
+            <p className="text-xs tracking-[0.18em] text-white/74">SOOM+ CONTENT FLOW</p>
+            <h2 className="mt-10 text-[1.9rem] font-semibold leading-[1.02] tracking-[-0.05em]">설교부터 안내까지
+              <br />한 흐름으로 연결</h2>
+            <p className="mt-4 max-w-[18rem] text-sm leading-6 text-white/84">콘텐츠 스튜디오가 붙으면 쇼츠, 행사 페이지, 공지 문구까지 같은 파이프라인으로 이어집니다.</p>
+            <Link href="/workspace/content" className="mt-6 inline-flex rounded-[12px] bg-[#0F172A] px-4 py-3 text-sm font-medium text-white">
+              콘텐츠 흐름 보기
+            </Link>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRODUCT AREAS</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">핵심 영역</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">gloo benchmark</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {productAreas.map((item) => (
+                <Link key={item.title} href={item.href} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
+                  <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                  <p className="mt-3 text-xs font-medium text-[#8C6A2E]">{item.cta}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-[#111111]">제품 업데이트</h2>
+              <span className="text-xs text-[#8C7A5B]">최근</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {feedItems.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.body}</p>
+                  <p className="mt-3 text-[11px] text-[#9a8b7a]">{item.meta}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </section>
     </div>
   );
 }
