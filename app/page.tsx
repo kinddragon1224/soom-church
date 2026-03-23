@@ -4,31 +4,31 @@ import SiteHeader from "@/components/site-header";
 const serviceCards = [
   {
     title: "쇼츠 · 홍보영상",
-    desc: "설교와 행사를 바로 쓰는 영상으로 정리합니다.",
-    points: ["설교 쇼츠", "행사 홍보영상", "짧은 소개 영상"],
+    desc: "설교와 행사를 짧고 선명한 영상으로 만듭니다.",
+    points: ["설교 쇼츠", "행사 홍보영상", "소개 영상"],
   },
   {
     title: "유튜브 운영 세팅",
-    desc: "채널이 실제로 굴러가게 시작 구조를 잡아줍니다.",
+    desc: "채널이 꾸준히 운영될 수 있게 기본 흐름을 잡아드립니다.",
     points: ["채널 구조", "썸네일·제목", "업로드 흐름"],
   },
   {
     title: "행사 랜딩 · 안내 제작",
-    desc: "등록과 안내 흐름을 한 번에 정리합니다.",
-    points: ["행사 랜딩", "신청·안내", "리플렛·홍보물"],
+    desc: "행사 소개부터 신청과 안내까지 한 번에 정리합니다.",
+    points: ["행사 랜딩", "신청 안내", "홍보물"],
   },
 ];
 
 const audiencePoints = [
   "목회자는 메시지 전달에 더 집중할 수 있습니다.",
-  "사무국장은 반복되는 운영 공백을 빠르게 줄일 수 있습니다.",
-  "담당자는 바로 실행 가능한 결과물을 받을 수 있습니다.",
+  "사무국장은 반복되는 운영 부담을 줄일 수 있습니다.",
+  "담당자는 바로 쓸 수 있는 결과물을 받을 수 있습니다.",
 ];
 
 const guideTopics = [
-  "목회자는 AI를 어디까지 사용해도 될까",
+  "목회자는 AI를 어디까지 써도 괜찮을까",
   "설교 준비에 AI를 어떻게 보조 도구로 쓸 수 있을까",
-  "주보, 공지, 안내 문구를 AI로 더 빠르게 정리하는 법",
+  "주보와 공지 문구를 AI로 더 빠르게 정리하는 법",
 ];
 
 export default function HomePage() {
@@ -79,7 +79,7 @@ export default function HomePage() {
               핵심 상품
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-              숨은 플랫폼 설명보다 먼저, 교회가 당장 맡기고 싶은 실행형 서비스를 분명하게 제공합니다.
+              숨은 설명보다 실행을 먼저 보여줍니다. 지금 교회에 바로 필요한 일을 먼저 맡길 수 있게 돕습니다.
             </p>
           </div>
 
@@ -109,8 +109,8 @@ export default function HomePage() {
               결과물과 실행을 먼저 봅니다
             </h2>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-white/60 sm:mt-5 sm:text-base">
-              숨은 교회가 지금 겪는 운영 공백을 실제 작업으로 메우는 팀입니다.
-              내부 인력이 없어도 결과물이 나오게 돕습니다.
+              숨은 교회가 지금 비어 있는 일을 실제 작업으로 메웁니다.
+              사람이 부족해도 일이 앞으로 나가게 돕습니다.
             </p>
           </div>
 
@@ -135,8 +135,8 @@ export default function HomePage() {
                 매출보다 신뢰를 위한 공간입니다
               </h2>
               <p className="mt-5 max-w-md text-sm leading-7 text-[#5d667d] sm:text-base">
-                목회와 AI를 집중적으로 다루는 콘텐츠 허브를 만들고 있습니다. 이곳에서 목회자와 사역자가
-                실제로 적용할 수 있는 글과 사례를 꾸준히 쌓아갈 예정입니다.
+                목회와 AI를 함께 다루는 글을 차근차근 쌓고 있습니다.
+                목회자와 사역자가 바로 참고할 수 있는 내용부터 먼저 정리할 예정입니다.
               </p>
               <div className="mt-8">
                 <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
@@ -167,8 +167,8 @@ export default function HomePage() {
                 함께 정리해보자
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-7 text-white/62 sm:text-base">
-                쇼츠가 필요한지, 유튜브 운영이 먼저인지, 행사 랜딩이 급한지 아직 정리되지 않아도 괜찮아.
-                지금 상황을 기준으로 가장 현실적인 시작점을 함께 잡아줄게.
+                쇼츠가 먼저인지, 유튜브 운영이 먼저인지, 행사 페이지가 급한지 아직 정리되지 않아도 괜찮습니다.
+                지금 상황에 맞는 가장 현실적인 시작점을 함께 잡아드립니다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
@@ -182,15 +182,15 @@ export default function HomePage() {
             <div className="grid gap-3">
               <div className="rounded-[24px] border border-white/8 bg-[#091122] px-5 py-5">
                 <p className="text-xs tracking-[0.16em] text-white/38">01</p>
-                <p className="mt-2 text-sm leading-7 text-white/82">교회 상황과 가장 급한 실행 과제를 먼저 정리합니다.</p>
+                <p className="mt-2 text-sm leading-7 text-white/82">지금 가장 급한 일부터 먼저 정리합니다.</p>
               </div>
               <div className="rounded-[24px] border border-white/8 bg-[#091122] px-5 py-5">
                 <p className="text-xs tracking-[0.16em] text-white/38">02</p>
-                <p className="mt-2 text-sm leading-7 text-white/82">핵심 상품 3개 안에서 가장 현실적인 시작 상품을 제안합니다.</p>
+                <p className="mt-2 text-sm leading-7 text-white/82">세 가지 상품 안에서 가장 맞는 시작점을 제안합니다.</p>
               </div>
               <div className="rounded-[24px] border border-white/8 bg-[#091122] px-5 py-5">
                 <p className="text-xs tracking-[0.16em] text-white/38">03</p>
-                <p className="mt-2 text-sm leading-7 text-white/82">필요하면 이후에 운영형 계약이나 콘텐츠 자산화로 이어갑니다.</p>
+                <p className="mt-2 text-sm leading-7 text-white/82">필요하면 이후 운영과 콘텐츠 자산화까지 이어갈 수 있습니다.</p>
               </div>
             </div>
           </div>
