@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { WorkspaceShell } from "./workspace-shell";
 
 export const dynamic = "force-dynamic";
@@ -29,5 +30,19 @@ export default async function ChurchWorkspaceLayout({
     );
   }
 
-  return <WorkspaceShell church={membership.church}>{children}</WorkspaceShell>;
+  const summary = await getWorkspaceDashboardData(membership.church.id);
+
+  return (
+    <WorkspaceShell
+      church={membership.church}
+      role={membership.role}
+      summary={{
+        followUpMembers: summary.followUpMembers,
+        pendingApplications: summary.pendingApplications,
+        unassignedMembers: summary.unassignedMembers,
+      }}
+    >
+      {children}
+    </WorkspaceShell>
+  );
 }
