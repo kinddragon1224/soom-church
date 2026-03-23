@@ -1,28 +1,52 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 
+const painPoints = [
+  "메시지는 있는데 전달이 약할 때",
+  "채널은 있는데 운영이 멈춰 있을 때",
+  "행사는 준비하는데 안내가 자꾸 엉킬 때",
+];
+
+const principles = [
+  {
+    title: "분별",
+    desc: "지금 가장 급한 일이 무엇인지 먼저 가려냅니다. 많이 만드는 것보다 먼저 해야 할 일을 정리합니다.",
+  },
+  {
+    title: "구별",
+    desc: "교회와 사역의 메시지가 섞이지 않도록 결을 세웁니다. 비슷한 문구 대신, 이 공동체다운 방향을 찾습니다.",
+  },
+  {
+    title: "차이",
+    desc: "결과물이 실제 전달의 차이로 이어지게 돕습니다. 보기 좋기만 한 것이 아니라 더 잘 이해되고 더 오래 남게 만듭니다.",
+  },
+];
+
 const serviceCards = [
   {
+    label: "전달이 필요한 메시지",
     title: "쇼츠 · 홍보영상",
     desc: "설교와 행사를 짧고 선명한 영상으로 만듭니다.",
     points: ["설교 쇼츠", "행사 홍보영상", "소개 영상"],
   },
   {
+    label: "구조가 필요한 채널",
     title: "유튜브 운영 세팅",
     desc: "채널이 꾸준히 운영될 수 있게 기본 흐름을 잡아드립니다.",
     points: ["채널 구조", "썸네일·제목", "업로드 흐름"],
   },
   {
+    label: "정리가 필요한 행사",
     title: "행사 랜딩 · 안내 제작",
     desc: "행사 소개부터 신청과 안내까지 한 번에 정리합니다.",
     points: ["행사 랜딩", "신청 안내", "홍보물"],
   },
 ];
 
-const audiencePoints = [
-  "목회자는 메시지 전달에 더 집중할 수 있습니다.",
-  "사무국장은 반복되는 운영 부담을 줄일 수 있습니다.",
-  "담당자는 바로 쓸 수 있는 결과물을 받을 수 있습니다.",
+const trustPoints = [
+  "목회자는 메시지에 더 집중할 수 있습니다.",
+  "사역자는 반복되는 운영 부담을 줄일 수 있습니다.",
+  "공동체는 더 선명한 전달 구조를 갖게 됩니다.",
 ];
 
 const guideTopics = [
@@ -46,25 +70,75 @@ export default function HomePage() {
           <SiteHeader theme="dark" current="home" ctaHref="/contact" ctaLabel="문의하기" />
 
           <div className="flex flex-1 items-center pt-8 pb-12 sm:items-end sm:py-24 lg:py-28">
-            <div className="max-w-4xl">
+            <div className="max-w-5xl">
               <p className="text-[10px] tracking-[0.18em] text-white/48 sm:text-xs sm:tracking-[0.24em]">SOOM FOR CHURCHES</p>
               <h1 className="mt-2.5 font-display text-[2.7rem] font-semibold leading-[0.92] tracking-[-0.075em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
                 교회를 돕다
               </h1>
-              <p className="mt-3 max-w-[18rem] text-[0.94rem] leading-5 text-white/78 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
-                쇼츠, 유튜브 운영,
-                <br className="sm:hidden" /> 행사 안내 제작까지
+              <p className="mt-4 max-w-[22rem] text-[0.98rem] leading-6 text-white/78 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
+                분별이 필요한 시대,
+                <br className="sm:hidden" /> 교회와 사역자의 거룩한 구별이 더 선명해지도록
               </p>
 
-              <div className="mt-5 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">
-                <Link href="/pricing" className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-[13px] font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12 sm:px-6 sm:text-sm">
-                  핵심 상품 보기
+              <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">
+                <Link href="/contact" className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-[13px] font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12 sm:px-6 sm:text-sm">
+                  문의하기
                 </Link>
-                <Link href="/ai-guides" className="inline-flex h-10 items-center justify-center rounded-full border border-white/30 bg-white/5 px-5 text-[13px] font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:px-6 sm:text-sm">
-                  AI 안내서 보기
+                <Link href="/pricing" className="inline-flex h-10 items-center justify-center rounded-full border border-white/30 bg-white/5 px-5 text-[13px] font-medium text-white transition hover:bg-white/10 sm:min-h-12 sm:px-6 sm:text-sm">
+                  핵심 상품 보기
                 </Link>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f7f4ee] text-[#0c1220]">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
+          <div className="max-w-4xl">
+            <p className="text-xs tracking-[0.24em] text-[#7a6f67]">DISCERNMENT</p>
+            <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem]">
+              지금 교회와 사역에는
+              <br />
+              더 많은 일이 아니라 먼저 분별이 필요합니다
+            </h2>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
+              해야 할 일은 많아졌는데 무엇을 먼저 해야 하는지는 더 흐려졌습니다. 메시지는 있는데 전달이 약하고,
+              채널은 있는데 운영이 멈춰 있고, 행사는 준비하는데 안내는 자주 엉킵니다. 숨은 그 흐린 지점을 먼저 정리합니다.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-3">
+            {painPoints.map((item) => (
+              <article key={item} className="rounded-[26px] border border-[#e6dfd5] bg-white p-6 shadow-[0_16px_40px_rgba(16,24,40,0.06)] sm:rounded-[30px] sm:p-7">
+                <p className="text-[1.2rem] font-semibold leading-8 tracking-[-0.03em] text-[#0c1220]">{item}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#070d18]">
+        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
+          <div className="max-w-4xl">
+            <p className="text-xs tracking-[0.24em] text-white/38">PRINCIPLES</p>
+            <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] text-white sm:text-[3.5rem]">
+              우리는 먼저 분별하고,
+              <br />
+              분명하게 구별하고,
+              <br />
+              결국 차이를 만듭니다
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-3">
+            {principles.map((item) => (
+              <article key={item.title} className="rounded-[26px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.28)] sm:rounded-[30px] sm:p-7">
+                <p className="text-xs tracking-[0.2em] text-white/38">{item.title}</p>
+                <h3 className="mt-3 text-[1.5rem] font-semibold tracking-[-0.03em] text-white">{item.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-white/68">{item.desc}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -76,17 +150,18 @@ export default function HomePage() {
             <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem]">
               지금 바로 맡길 수 있는
               <br />
-              핵심 상품
+              핵심 실행 3가지
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-              숨은 설명보다 실행을 먼저 보여줍니다. 지금 교회에 바로 필요한 일을 먼저 맡길 수 있게 돕습니다.
+              숨은 설명보다 실행을 먼저 보여줍니다. 지금 교회에 바로 필요한 일부터 맡길 수 있게 돕습니다.
             </p>
           </div>
 
           <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-3">
             {serviceCards.map((item) => (
               <article key={item.title} className="rounded-[26px] border border-[#e6dfd5] bg-white p-6 shadow-[0_16px_40px_rgba(16,24,40,0.06)] sm:rounded-[30px] sm:p-7">
-                <h3 className="text-[1.55rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.title}</h3>
+                <p className="text-xs tracking-[0.18em] text-[#9a8b7a]">{item.label}</p>
+                <h3 className="mt-3 text-[1.55rem] font-semibold tracking-[-0.03em] text-[#0c1220]">{item.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-[#475069]">{item.desc}</p>
                 <ul className="mt-6 grid gap-2 text-sm leading-7 text-[#334155]">
                   {item.points.map((point) => (
@@ -99,23 +174,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#070d18]">
+      <section className="bg-[#050b16]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
           <div className="max-w-4xl">
             <p className="text-xs tracking-[0.24em] text-white/38">WHY SOOM</p>
             <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] text-white sm:text-[3.5rem]">
               우리는 도구보다
               <br />
-              결과물과 실행을 먼저 봅니다
+              전달과 실행의 결과를 먼저 봅니다
             </h2>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-white/60 sm:mt-5 sm:text-base">
-              숨은 교회가 지금 비어 있는 일을 실제 작업으로 메웁니다.
-              사람이 부족해도 일이 앞으로 나가게 돕습니다.
+              숨은 예쁜 결과물만 만드는 팀이 아닙니다. 교회와 사역의 메시지가 더 잘 전달되도록 필요한 구조와 실행을 함께 정리합니다.
             </p>
           </div>
 
           <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 lg:grid-cols-3">
-            {audiencePoints.map((item) => (
+            {trustPoints.map((item) => (
               <article key={item} className="rounded-[26px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.28)] sm:rounded-[30px] sm:p-7">
                 <p className="text-sm leading-7 text-white/72 sm:leading-8">{item}</p>
               </article>
@@ -135,8 +209,7 @@ export default function HomePage() {
                 매출보다 신뢰를 위한 공간입니다
               </h2>
               <p className="mt-5 max-w-md text-sm leading-7 text-[#5d667d] sm:text-base">
-                목회와 AI를 함께 다루는 글을 차근차근 쌓고 있습니다.
-                목회자와 사역자가 바로 참고할 수 있는 내용부터 먼저 정리할 예정입니다.
+                목회와 AI를 함께 다루는 글을 차근차근 쌓고 있습니다. 목회자와 사역자가 실제로 참고할 수 있는 내용부터 먼저 정리합니다.
               </p>
               <div className="mt-8">
                 <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
@@ -162,13 +235,14 @@ export default function HomePage() {
             <div>
               <p className="text-xs tracking-[0.24em] text-white/38">CONTACT</p>
               <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] text-white sm:text-[3.2rem]">
-                지금 필요한 실행부터
+                지금 필요한 것이
                 <br />
-                함께 정리해보자
+                분별인지, 정리인지, 실행인지
+                <br />
+                함께 확인해보세요
               </h2>
               <p className="mt-5 max-w-xl text-sm leading-7 text-white/62 sm:text-base">
-                쇼츠가 먼저인지, 유튜브 운영이 먼저인지, 행사 페이지가 급한지 아직 정리되지 않아도 괜찮습니다.
-                지금 상황에 맞는 가장 현실적인 시작점을 함께 잡아드립니다.
+                쇼츠가 먼저인지, 유튜브 운영이 먼저인지, 행사 안내가 급한지 아직 선명하지 않아도 괜찮습니다. 지금 상황에 맞는 가장 현실적인 시작점을 함께 잡아드립니다.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
@@ -186,7 +260,7 @@ export default function HomePage() {
               </div>
               <div className="rounded-[24px] border border-white/8 bg-[#091122] px-5 py-5">
                 <p className="text-xs tracking-[0.16em] text-white/38">02</p>
-                <p className="mt-2 text-sm leading-7 text-white/82">세 가지 상품 안에서 가장 맞는 시작점을 제안합니다.</p>
+                <p className="mt-2 text-sm leading-7 text-white/82">세 가지 핵심 실행 안에서 가장 맞는 시작점을 제안합니다.</p>
               </div>
               <div className="rounded-[24px] border border-white/8 bg-[#091122] px-5 py-5">
                 <p className="text-xs tracking-[0.16em] text-white/38">03</p>
