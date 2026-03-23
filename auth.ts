@@ -7,8 +7,11 @@ import { prisma } from "@/lib/prisma";
 import { getFirstChurchByUserId } from "@/lib/church-context";
 import { hashPassword, isHashedPassword, verifyPassword } from "@/lib/password";
 
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  secret: authSecret,
   session: {
     strategy: "jwt",
     maxAge: 60 * 60 * 12,
