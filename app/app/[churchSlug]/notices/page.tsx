@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceNotices } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
@@ -17,24 +16,22 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
   const church = membership.church;
   const notices = await getWorkspaceNotices(church.id);
 
-  const pinnedCount = notices.filter((notice) => notice.pinned).length;
-  const recentCount = notices.length;
+  const pinnedNotices = notices.filter((notice) => notice.pinned);
+  const normalNotices = notices.filter((notice) => !notice.pinned);
+  const recentNotice = notices[0];
 
   const actionRail = [
     {
-      title: `상단 고정 ${pinnedCount}건`,
-      desc: "가장 중요한 공지가 위에 잘 보이는지 먼저 확인합니다.",
-      href: `#`,
+      title: `상단 고정 ${pinnedNotices.length}건`,
+      desc: pinnedNotices.length > 0 ? "예배 전 꼭 보여야 하는 공지가 위에 남아 있는지 확인합니다." : "지금 주간 핵심 공지를 하나 상단에 고정해두면 전달 누락을 줄일 수 있습니다.",
     },
     {
-      title: `최근 공지 ${recentCount}건`,
-      desc: "이번 주 전달 흐름을 한 번에 점검합니다.",
-      href: `#`,
+      title: `오늘 확인 ${Math.min(notices.length, 3)}건`,
+      desc: recentNotice ? `가장 최근 공지는 ${formatDate(recentNotice.createdAt)} 등록분입니다.` : "아직 등록된 공지가 없어 새 공지 작성부터 시작하면 됩니다.",
     },
     {
-      title: "공지 리듬 정리",
-      desc: "주간 공지와 행사 공지를 나눠서 관리할 준비를 합니다.",
-      href: `#`,
+      title: "이번 주 전달 리듬",
+      desc: "주간 안내, 행사 공지, 리마인드를 분리해 올리는 흐름으로 맞춰둡니다.",
     },
   ] as const;
 
@@ -56,24 +53,24 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
             </div>
             <div className="flex flex-wrap gap-2 lg:max-w-[240px] lg:justify-end">
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{church.name}</span>
-              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">notices</span>
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">공지 {notices.length}건</span>
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
               <p className="text-[11px] tracking-[0.16em] text-white/48">TOTAL</p>
-              <p className="mt-2 text-2xl font-semibold">{recentCount}</p>
+              <p className="mt-2 text-2xl font-semibold">{notices.length}</p>
               <p className="mt-2 text-xs text-white/60">현재 등록된 공지</p>
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
               <p className="text-[11px] tracking-[0.16em] text-white/48">PINNED</p>
-              <p className="mt-2 text-2xl font-semibold">{pinnedCount}</p>
+              <p className="mt-2 text-2xl font-semibold">{pinnedNotices.length}</p>
               <p className="mt-2 text-xs text-white/60">상단 고정 공지</p>
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
-              <p className="text-[11px] tracking-[0.16em] text-white/48">FLOW</p>
-              <p className="mt-2 text-2xl font-semibold">1</p>
-              <p className="mt-2 text-xs text-white/60">공지 운영 리듬</p>
+              <p className="text-[11px] tracking-[0.16em] text-white/48">LATEST</p>
+              <p className="mt-2 text-base font-semibold">{recentNotice ? formatDate(recentNotice.createdAt) : "없음"}</p>
+              <p className="mt-2 text-xs text-white/60">가장 최근 등록일</p>
             </div>
           </div>
         </div>
@@ -84,82 +81,97 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">QUICK VIEW</p>
               <h2 className="mt-2 text-xl font-semibold text-[#111111]">바로 보기</h2>
             </div>
-            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">notices</span>
+            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">dense list</span>
           </div>
           <div className="mt-4 grid gap-3">
             <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-[#111111]">상단 고정 공지</p>
-                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{pinnedCount}</span>
+                <p className="text-sm font-semibold text-[#111111]">상단 고정</p>
+                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{pinnedNotices.length}</span>
               </div>
+              <p className="mt-2 text-xs text-[#8c7a5b]">꼭 보여야 하는 공지만 위에 남겨둡니다.</p>
             </div>
             <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-[#111111]">최근 공지</p>
-                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{recentCount}</span>
+                <p className="text-sm font-semibold text-[#111111]">일반 공지</p>
+                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{normalNotices.length}</span>
               </div>
+              <p className="mt-2 text-xs text-[#8c7a5b]">일정 순으로 빠르게 훑는 기본 리스트입니다.</p>
             </div>
           </div>
         </section>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[0.86fr_1.14fr]">
-        <div className="grid gap-4">
-          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTION RAIL</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 먼저 할 일</h2>
-              </div>
-              <span className="text-xs text-[#8C7A5B]">운영 우선순위</span>
-            </div>
-            <div className="mt-4 grid gap-3">
-              {actionRail.map((item) => (
-                <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-                  <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
+      <section className="grid gap-4 xl:grid-cols-[0.84fr_1.16fr]">
         <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTION RAIL</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 먼저 할 일</h2>
+            </div>
+            <span className="text-xs text-[#8C7A5B]">운영 우선순위</span>
+          </div>
+          <div className="mt-4 grid gap-3">
+            {actionRail.map((item) => (
+              <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+          <div className="flex flex-col gap-3 border-b border-[#efe7da] pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">NOTICE LIST</p>
               <h2 className="mt-2 text-lg font-semibold text-[#111111]">공지 목록</h2>
             </div>
-            <span className="text-xs text-[#8C7A5B]">최근 공지 순</span>
+            <div className="flex flex-wrap gap-2 text-[11px] text-[#8C7A5B]">
+              <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">전체 {notices.length}</span>
+              <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">고정 {pinnedNotices.length}</span>
+              <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">일반 {normalNotices.length}</span>
+            </div>
           </div>
-          <div className="mt-4 grid gap-3">
-            {notices.length === 0 ? (
-              <div className="rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] p-6 text-sm text-[#5f564b]">
-                아직 표시할 공지가 없어. 공지를 만들기 시작하면 여기서 바로 운영할 수 있어.
-              </div>
-            ) : (
-              notices.map((notice) => (
-                <div key={notice.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-semibold text-[#111111]">{notice.title}</p>
-                        <span className={`rounded-full px-2.5 py-1 text-[11px] ${notice.pinned ? "bg-[#fff4df] text-[#8C6A2E]" : "border border-[#e6dfd5] bg-white text-[#8C7A5B]"}`}>
-                          {notice.pinned ? "상단고정" : "일반"}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-6 text-[#5f564b] line-clamp-2">{notice.content}</p>
-                      <p className="mt-1 text-[11px] text-[#9a8b7a]">등록일 {formatDate(notice.createdAt)}</p>
+
+          {notices.length === 0 ? (
+            <div className="mt-4 rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] p-6 text-sm text-[#5f564b]">
+              아직 표시할 공지가 없어. 공지를 만들기 시작하면 여기서 바로 운영할 수 있어.
+            </div>
+          ) : (
+            <div className="mt-2 divide-y divide-[#f0e8dc]">
+              {notices.map((notice, index) => (
+                <div key={notice.id} className="grid gap-3 py-3 lg:grid-cols-[minmax(0,1fr)_124px_116px] lg:items-center lg:gap-4">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate text-sm font-semibold text-[#111111]">{notice.title}</p>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[11px] ${
+                          notice.pinned ? "bg-[#fff4df] text-[#8C6A2E]" : "border border-[#e6dfd5] bg-white text-[#8C7A5B]"
+                        }`}
+                      >
+                        {notice.pinned ? "상단고정" : "일반"}
+                      </span>
                     </div>
-                    <div className="grid gap-2 text-[11px] text-[#7a6d5c] sm:min-w-[180px]">
-                      <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">다음 단계: 전달 확인</div>
-                      <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">상태: {notice.pinned ? "고정됨" : "일반"}</div>
-                    </div>
+                    <p className="mt-1 line-clamp-1 text-sm text-[#5f564b]">{notice.content}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] text-[#7a6d5c] lg:grid-cols-1">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">등록일 {formatDate(notice.createdAt)}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">순서 {index + 1}</div>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 lg:justify-end">
+                    <p className="text-[11px] text-[#8c7a5b]">{notice.pinned ? "계속 상단 노출 중" : "일반 리스트 노출"}</p>
+                    <button
+                      type="button"
+                      className="inline-flex h-9 items-center justify-center rounded-[12px] border border-[#e6dfd5] bg-white px-3 text-xs font-medium text-[#111111]"
+                    >
+                      내용 보기
+                    </button>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
       </section>
     </div>

@@ -32,8 +32,9 @@
    - 2026-03-24 01:36 KST: 신청 상태를 접수됨/확인중/승인됨으로 현지화하고 dense row + 상태별 quick filter 구조로 단순화
 
 5. `/app/[churchSlug]/notices`
-   - 공지 리스트 밀도 압축
+   - [done] 공지 리스트 밀도 압축
    - 고정/일반/전달 상태 표현 정리
+   - 2026-03-24 02:00 KST: 공지 목록을 카드 나열에서 gloo식 dense row 리스트로 압축하고 요약 카운트/행 액션으로 재배치
 
 6. `/app/[churchSlug]/settings`
    - 실제 설정 편집 흐름 준비
