@@ -33,14 +33,14 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
       title: "팀 운영 규칙 준비",
       desc: "역할별 권한과 초대 흐름을 정리할 순서를 먼저 맞춥니다.",
       tone: "review",
-      status: "운영 기준 필요",
-      href: `${basePath}/members`,
+      status: "입력 초안 완료",
+      href: "#team-fields",
     },
     {
       title: "기본 동작값 정의",
       desc: "신청, 공지, 후속관리의 기본 리듬을 설정할 준비를 합니다.",
       tone: "next",
-      status: "다음 청크",
+      status: "입력 초안 완료",
       href: "#default-rules",
     },
   ] as const;
@@ -63,7 +63,7 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
       id: "team-fields",
       eyebrow: "TEAM ACCESS",
       title: "팀과 역할",
-      desc: "실제 초대 화면을 붙이기 전에 역할 기준을 먼저 고정할 수 있게 준비합니다.",
+      desc: "실제 초대 화면을 붙이기 전에 역할 기준과 입력 구조를 먼저 고정할 수 있게 준비합니다.",
       tone: "review",
       status: "역할 기준 정리",
       rows: [
@@ -74,21 +74,63 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
     },
   ] as const;
 
-  const defaultRules = [
+  const roleTemplates = [
     {
-      label: "신규 신청 기본 처리",
-      value: "접수 → 확인중 → 안내 연결",
-      desc: "신청 화면 상태 구조와 같은 리듬으로 맞춥니다.",
+      name: "담당 사역자",
+      badge: "core",
+      summary: "전체 흐름 확인과 승인 담당",
+      defaults: ["멤버 보기", "신청 승인", "공지 발행"],
     },
     {
-      label: "공지 전달 기준",
-      value: "고정 / 이번 주 전달 / 지난 공지",
-      desc: "공지 목록에서 바로 쓰는 3단 구조를 기본값으로 둡니다.",
+      name: "행정",
+      badge: "ops",
+      summary: "명단 정리와 후속관리 운영",
+      defaults: ["멤버 편집", "배정 정리", "신청 처리"],
     },
     {
-      label: "후속관리 리듬",
-      value: "당일 확인 → 담당자 배정 → 후속 완료",
-      desc: "사람 목록과 연결되는 운영 기준을 짧게 고정합니다.",
+      name: "콘텐츠",
+      badge: "studio",
+      summary: "공지/전달 자료 준비 담당",
+      defaults: ["공지 작성", "전달 상태 확인", "게시 일정 관리"],
+    },
+  ] as const;
+
+  const inviteFlowFields = [
+    { label: "초대 방식", value: "이메일 또는 링크", hint: "처음엔 두 방식 중 하나만 선택해도 됩니다." },
+    { label: "기본 역할", value: "행정", hint: "초대 시 가장 많이 쓰는 역할을 기본값으로 둡니다." },
+    { label: "승인 단계", value: "관리자 확인 후 활성화", hint: "실수 초대를 줄이기 위한 최소 승인 단계입니다." },
+  ] as const;
+
+  const defaultRuleSections = [
+    {
+      title: "신청 기본값",
+      tone: "review",
+      status: "운영 초안",
+      fields: [
+        { label: "기본 상태", value: "접수됨", hint: "새 신청은 모두 같은 시작점에서 들어옵니다." },
+        { label: "담당 배정 시점", value: "확인중으로 바꿀 때", hint: "상태 변경과 담당 배정을 같이 묶습니다." },
+        { label: "마감 기준", value: "안내 연결 완료", hint: "완료 대신 실제 사역 행동 기준으로 표시합니다." },
+      ],
+    },
+    {
+      title: "공지 전달 기본값",
+      tone: "next",
+      status: "전달 초안",
+      fields: [
+        { label: "기본 분류", value: "일반 공지", hint: "필요할 때만 고정 공지로 올립니다." },
+        { label: "전달 리듬", value: "이번 주 전달", hint: "최근 공지를 중심으로 보게 만드는 기본 리듬입니다." },
+        { label: "확인 기준", value: "담당자 전달 완료", hint: "읽음보다 전달 책임을 먼저 잡습니다." },
+      ],
+    },
+    {
+      title: "후속관리 기본값",
+      tone: "ready",
+      status: "실행 초안",
+      fields: [
+        { label: "첫 확인 시점", value: "등록 당일", hint: "가장 빠른 접촉 기준입니다." },
+        { label: "기본 담당", value: "교구 또는 목장 리더", hint: "미배정이면 행정이 먼저 챙기도록 둡니다." },
+        { label: "완료 조건", value: "배정 + 첫 연락 완료", hint: "실제 후속관리 종료 시점을 짧게 정의합니다." },
+      ],
     },
   ] as const;
 
@@ -128,12 +170,12 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
               <p className="text-[11px] tracking-[0.16em] text-white/48">TEAM</p>
-              <p className="mt-2 text-2xl font-semibold">역할 기준</p>
-              <p className="mt-2 text-xs text-white/60">다음 단계 초대 흐름 준비</p>
+              <p className="mt-2 text-2xl font-semibold">3역할</p>
+              <p className="mt-2 text-xs text-white/60">초대 기본 역할 초안</p>
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
               <p className="text-[11px] tracking-[0.16em] text-white/48">DEFAULTS</p>
-              <p className="mt-2 text-2xl font-semibold">3단 규칙</p>
+              <p className="mt-2 text-2xl font-semibold">3영역</p>
               <p className="mt-2 text-xs text-white/60">신청 · 공지 · 후속관리 기준</p>
             </div>
           </div>
@@ -197,6 +239,55 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
               </div>
             </section>
           ))}
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex flex-col gap-3 border-b border-[#efe7da] pb-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ROLE TEMPLATES</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">기본 역할 입력 초안</h2>
+                <p className="mt-2 text-sm leading-6 text-[#5f564b]">실제 권한 관리 화면을 붙이기 전, 가장 자주 쓰는 팀 역할을 먼저 고정해둡니다.</p>
+              </div>
+              <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[11px] text-[#8C6A2E]">gloo-first 초안</span>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {roleTemplates.map((role) => (
+                <div key={role.name} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#111111]">{role.name}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{role.badge}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-[#5f564b]">{role.summary}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {role.defaults.map((item) => (
+                      <span key={item} className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51]">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-[#111111]">초대 기본값</p>
+                <span className="rounded-full border border-[#d9e3f5] bg-[#eff4ff] px-2.5 py-1 text-[11px] text-[#365b96]">invite flow</span>
+              </div>
+              <div className="mt-3 grid gap-2">
+                {inviteFlowFields.map((field) => (
+                  <div key={field.label} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-3">
+                    <div className="flex flex-col gap-1 md:grid md:grid-cols-[140px_minmax(0,1fr)] md:items-center md:gap-3">
+                      <p className="text-xs font-semibold tracking-[0.04em] text-[#7a6d5c]">{field.label}</p>
+                      <div>
+                        <p className="text-sm text-[#111111]">{field.value}</p>
+                        <p className="mt-1 text-xs leading-5 text-[#8c7a5b]">{field.hint}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         </div>
 
         <div className="grid gap-4">
@@ -204,19 +295,30 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">DEFAULT RULES</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">기본 동작값 초안</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">기본 동작값 입력 초안</h2>
               </div>
               <span className="rounded-full border border-[#d9e3f5] bg-[#eff4ff] px-3 py-1 text-[11px] text-[#365b96]">다음 단계 연결</span>
             </div>
             <div className="mt-4 grid gap-3">
-              {defaultRules.map((rule) => (
-                <div key={rule.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+              {defaultRuleSections.map((section) => (
+                <div key={section.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-[#111111]">{rule.label}</p>
-                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">초안</span>
+                    <p className="text-sm font-semibold text-[#111111]">{section.title}</p>
+                    <span className={`rounded-full border px-2.5 py-1 text-[11px] ${statusTone[section.tone]}`}>{section.status}</span>
                   </div>
-                  <p className="mt-2 text-sm text-[#3f382f]">{rule.value}</p>
-                  <p className="mt-2 text-xs leading-5 text-[#7a6d5c]">{rule.desc}</p>
+                  <div className="mt-3 grid gap-2">
+                    {section.fields.map((field) => (
+                      <div key={field.label} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-3">
+                        <div className="flex flex-col gap-1 md:grid md:grid-cols-[132px_minmax(0,1fr)] md:items-center md:gap-3">
+                          <p className="text-xs font-semibold tracking-[0.04em] text-[#7a6d5c]">{field.label}</p>
+                          <div>
+                            <p className="text-sm text-[#111111]">{field.value}</p>
+                            <p className="mt-1 text-xs leading-5 text-[#8c7a5b]">{field.hint}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
