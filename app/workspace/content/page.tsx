@@ -31,6 +31,18 @@ const outputBoards = [
   { title: "채널 → 운영 세팅", desc: "썸네일, 제목 규칙, 업로드 루틴을 구조화합니다.", status: "완료" },
 ];
 
+const deliveryTracks = [
+  { title: "설교 → 쇼츠 → 공지", desc: "짧은 영상과 안내 문구를 한 묶음으로 배포합니다.", meta: "반복형" },
+  { title: "행사 → 랜딩 → 리마인드", desc: "행사 소개 페이지와 신청 안내를 같은 흐름으로 맞춥니다.", meta: "캠페인" },
+  { title: "채널 운영 → 썸네일 → 업로드", desc: "유튜브 운영 세팅과 결과물 규칙을 같이 관리합니다.", meta: "루틴" },
+];
+
+const productionRules = [
+  { title: "브리프 없이 제작 시작 금지", note: "설교 맥락, 행사 일정, 공지 목적이 먼저 정리돼야 합니다.", state: "rule" },
+  { title: "검토 단계 1회 집중", note: "자막, 썸네일, 문구를 한 번에 모아 검토해 왕복을 줄입니다.", state: "review" },
+  { title: "배포 링크 handoff", note: "완료된 결과물은 공지 모듈에서 바로 쓸 수 있게 링크를 넘깁니다.", state: "handoff" },
+];
+
 export default function WorkspaceContentPage() {
   return (
     <div className="flex flex-col gap-6 text-[#121212]">
@@ -164,6 +176,38 @@ export default function WorkspaceContentPage() {
                     <span className="text-[11px] text-[#8C7A5B]">{item.status}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">DELIVERY TRACKS</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">배포까지 이어지는 트랙</h2>
+            <div className="mt-4 grid gap-3">
+              {deliveryTracks.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.meta}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">PRODUCTION RULES</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">제작 품질 기준</h2>
+            <div className="mt-4 grid gap-3">
+              {productionRules.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[#8C7A5B]">{item.state}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
                 </div>
               ))}
             </div>

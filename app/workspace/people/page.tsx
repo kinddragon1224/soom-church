@@ -32,6 +32,18 @@ const teamNotes = [
   { team: "미디어팀", focus: "봉사 연결 상담 1건", status: "이번 주" },
 ];
 
+const handoffSignals = [
+  { title: "첫 연락 후 작업 생성", desc: "연락이 시작되면 소그룹 연결과 후속 체크를 작업 흐름으로 넘깁니다.", target: "작업 흐름" },
+  { title: "정착 상태별 안내 발송", desc: "정착중, 봉사연결 같은 상태에 따라 다음 안내 메시지를 붙입니다.", target: "커뮤니케이션" },
+  { title: "간증·봉사 스토리 후보", desc: "관계가 깊어진 사람은 콘텐츠 스토리 후보로 이어질 수 있습니다.", target: "콘텐츠" },
+];
+
+const automationReady = [
+  { title: "48시간 미응답 알림", note: "첫 방문 후 연락이 늦어지면 담당자에게 다시 알립니다.", state: "ready" },
+  { title: "상태 변경 체크포인트", note: "새가족 → 정착중 전환 시 다음 액션을 자동으로 보여줍니다.", state: "draft" },
+  { title: "교구 미배정 감지", note: "배정 없이 오래 머문 인원을 따로 모아 점검합니다.", state: "review" },
+];
+
 export default function WorkspacePeoplePage() {
   return (
     <div className="flex flex-col gap-6 text-[#121212]">
@@ -170,6 +182,38 @@ export default function WorkspacePeoplePage() {
                     <span className="text-[11px] text-[#8C7A5B]">{item.status}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.focus}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">NEXT HANDOFF</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">다음 모듈로 넘길 흐름</h2>
+            <div className="mt-4 grid gap-3">
+              {handoffSignals.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.target}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+            <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">AUTOMATION READY</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#121212]">자동화로 붙일 수 있는 루틴</h2>
+            <div className="mt-4 grid gap-3">
+              {automationReady.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <span className="text-[11px] uppercase tracking-[0.14em] text-[#8C7A5B]">{item.state}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
                 </div>
               ))}
             </div>
