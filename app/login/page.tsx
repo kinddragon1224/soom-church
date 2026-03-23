@@ -32,7 +32,9 @@ export default async function LoginPage({
         <p className="mt-1 text-sm text-muted-foreground">로그인하고 교회와 사역팀을 위한 워크스페이스로 들어가세요. 무료로 시작한 뒤 필요할 때 확장할 수 있습니다.</p>
         {error ? (
           <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            로그인에 실패했습니다. 계정 상태나 연동 설정을 확인해 주세요.
+            {error === "credentials"
+              ? "이메일이나 비밀번호가 맞지 않습니다. 다시 확인해 주세요."
+              : "로그인에 실패했습니다. 계정 상태나 연동 설정을 확인해 주세요."}
           </div>
         ) : null}
         <form action="/api/login" method="post" className="mt-5 space-y-3">
