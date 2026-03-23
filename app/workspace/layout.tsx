@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/workspace", label: "홈" },
@@ -10,6 +13,8 @@ const navItems = [
 ];
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
     <main className="min-h-screen bg-[#F7F4EE] text-[#121212]">
       <div className="grid min-h-screen lg:grid-cols-[250px_1fr]">
@@ -22,15 +27,18 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="mt-7 grid gap-1.5">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`rounded-[14px] px-3 py-2.5 text-sm transition ${index === 0 ? "bg-[#C8A96B] text-[#121212] font-semibold" : "text-white/70 hover:bg-white/6 hover:text-white"}`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-[14px] px-3 py-2.5 text-sm transition ${active ? "bg-[#C8A96B] text-[#121212] font-semibold" : "text-white/70 hover:bg-white/6 hover:text-white"}`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="mt-auto space-y-3 px-2">
