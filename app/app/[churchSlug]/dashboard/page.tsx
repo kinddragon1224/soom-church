@@ -29,19 +29,19 @@ export default async function ChurchDashboardPage({ params }: { params: { church
     {
       label: "가장 먼저",
       title: `후속 연락 ${data.followUpMembers}건`,
-      desc: "등록 이후 바로 챙겨야 하는 사람부터 먼저 정리합니다.",
+      desc: "먼저 연락할 사람부터 정리합니다.",
       href: `${base}/members?filter=followup`,
     },
     {
       label: "지금 확인",
       title: `미처리 신청 ${data.pendingApplications}건`,
-      desc: "새 신청이 밀리지 않게 바로 열어서 처리합니다.",
+      desc: "미처리 신청을 바로 정리합니다.",
       href: `${base}/applications?status=PENDING`,
     },
     {
       label: "연결 필요",
       title: `미배정 인원 ${data.unassignedMembers}명`,
-      desc: "교구·목장 연결이 비어 있는 사람을 먼저 붙입니다.",
+      desc: "배정이 비어 있는 사람을 연결합니다.",
       href: `${base}/members?filter=unassigned`,
     },
   ] as const;
@@ -49,21 +49,21 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const inboxItems = [
     {
       title: `후속관리 교인 ${data.followUpMembers}명`,
-      desc: "예배 방문 이후 48시간 안에 먼저 연락해야 하는 흐름입니다.",
+      desc: "지금 먼저 연락해야 하는 사람입니다.",
       meta: "사람",
       priority: "오늘",
       href: `${base}/members?filter=followup`,
     },
     {
       title: `미처리 신청 ${data.pendingApplications}건`,
-      desc: "새 신청은 늦지 않게 바로 열어 상태를 바꿔야 합니다.",
+      desc: "지금 상태를 바꿔야 하는 신청입니다.",
       meta: "신청",
       priority: "지금",
       href: `${base}/applications?status=PENDING`,
     },
     {
       title: `최근 공지 ${data.recentNotices.length}건`,
-      desc: "중요 공지와 상단 고정 여부를 확인합니다.",
+      desc: "중요 공지와 고정 상태를 봅니다.",
       meta: "공지",
       priority: "확인",
       href: `${base}/notices`,
@@ -111,21 +111,21 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const feedItems = [
     {
       title: "가입 온보딩이 연결됐어요",
-      body: "새 사용자는 가입하면서 교회 이름과 역할을 입력하고 바로 워크스페이스를 만들 수 있어요.",
+      body: "가입과 동시에 워크스페이스를 만들 수 있어요.",
       cta: "회원가입 보기",
       href: "/signup",
       time: "방금 반영",
     },
     {
       title: "후속관리 흐름을 먼저 정리해보세요",
-      body: `현재 후속관리 대상은 ${data.followUpMembers}명이고, 미배정 인원은 ${data.unassignedMembers}명이에요.`,
+      body: `후속관리 ${data.followUpMembers}명 · 미배정 ${data.unassignedMembers}명`,
       cta: "사람 보기",
       href: `${base}/members?filter=followup`,
       time: "운영 제안",
     },
     {
       title: "공지와 신청 흐름을 함께 보세요",
-      body: `미처리 신청 ${data.pendingApplications}건, 최근 공지 ${data.recentNotices.length}건 기준으로 운영 허브를 계속 다듬는 중이에요.`,
+      body: `미처리 신청 ${data.pendingApplications}건 · 최근 공지 ${data.recentNotices.length}건`,
       cta: "신청 보기",
       href: `${base}/applications?status=PENDING`,
       time: "실사용 개선중",
@@ -155,7 +155,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
                 한 화면에서 정리합니다
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
-                사람, 신청, 공지 흐름이 흩어지지 않도록 지금 먼저 처리할 항목부터 한 화면에 모아 보여주는 실사용 홈입니다.
+                오늘 처리할 흐름과 다음 액션만 먼저 보여주는 홈입니다.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 lg:max-w-[250px] lg:justify-end">
@@ -170,7 +170,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-[11px] tracking-[0.18em] text-white/42">TODAY'S FOCUS</p>
-                  <p className="mt-2 text-sm text-white/68">가장 급한 일 3개만 먼저 정리했습니다.</p>
+                  <p className="mt-2 text-sm text-white/68">지금 볼 일 3개</p>
                 </div>
                 <span className="rounded-full border border-white/10 bg-[#0f1a30] px-3 py-1 text-[11px] text-white/70">운영 체크</span>
               </div>
@@ -198,7 +198,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SETUP</p>
-              <h2 className="mt-2 text-xl font-semibold text-[#111111]">지금 바로 할 일</h2>
+              <h2 className="mt-2 text-xl font-semibold text-[#111111]">바로 할 일</h2>
             </div>
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">실행 중심</span>
           </div>
@@ -245,7 +245,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">GET STARTED</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">워크스페이스 시작 단계</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">시작 단계</h2>
               </div>
               <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[11px] text-[#8C6A2E]">0% complete</span>
             </div>
@@ -272,7 +272,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FEED</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">제품 피드</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">피드</h2>
               </div>
               <div className="flex items-center gap-2 text-xs">
                 <span className="rounded-full bg-[#0F172A] px-3 py-1 text-white">Feed</span>
@@ -297,7 +297,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY INBOX</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 확인할 것</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">우선 확인</h2>
               </div>
               <span className="text-xs text-[#8C7A5B]">운영 허브</span>
             </div>
@@ -326,7 +326,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">RECENT APPLICATIONS</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">최근 신청</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">신청</h2>
               </div>
               <Link href={`${base}/applications`} className="text-xs text-[#8C7A5B] hover:text-[#121212]">전체 보기</Link>
             </div>
@@ -345,7 +345,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">RECENT NOTICES</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">최근 공지</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">공지</h2>
               </div>
               <Link href={`${base}/notices`} className="text-xs text-[#8C7A5B] hover:text-[#121212]">전체 보기</Link>
             </div>
@@ -363,7 +363,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRODUCT AREAS</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">핵심 영역</h2>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">영역</h2>
               </div>
               <span className="text-xs text-[#8C7A5B]">핵심 모듈</span>
             </div>
