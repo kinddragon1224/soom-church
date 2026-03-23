@@ -123,6 +123,43 @@ const pipelineSteps = [
   { title: "콘텐츠 확장", desc: "필요하면 쇼츠와 행사 페이지 제작까지 연결합니다." },
 ];
 
+const operatingSignals = [
+  { label: "follow-up", title: "48시간 이내 응답률", value: "92%", note: "이번 주 새가족 기준" },
+  { label: "notices", title: "예약 공지 정확도", value: "4 / 4", note: "이번 주 예약 누락 없음" },
+  { label: "tasks", title: "오늘 마감 완료", value: "2 / 3", note: "부활절 체크리스트 진행중" },
+  { label: "content", title: "콘텐츠 검토 대기", value: "1건", note: "썸네일 톤만 확정하면 배포" },
+];
+
+const handoffQueue = [
+  {
+    from: "사람",
+    to: "작업 흐름",
+    title: "새가족 첫 연락 배정",
+    desc: "등록이 들어오면 담당자와 첫 연락 마감을 바로 태스크로 넘깁니다.",
+    status: "오늘 3건",
+  },
+  {
+    from: "작업 흐름",
+    to: "커뮤니케이션",
+    title: "수련회 안내 발송 승인",
+    desc: "검토가 끝난 작업은 예약 공지로 바로 이어져야 누락이 없습니다.",
+    status: "수요일 예약",
+  },
+  {
+    from: "커뮤니케이션",
+    to: "콘텐츠",
+    title: "부활절 홍보영상 배포 연결",
+    desc: "공지 문구와 영상 링크를 같은 타이밍에 정렬해 도달률을 높입니다.",
+    status: "승인 대기",
+  },
+];
+
+const ownerBoard = [
+  { owner: "김선용", area: "사람", focus: "새가족 첫 연락 2건", eta: "오늘 오후", state: "실행중" },
+  { owner: "사무국", area: "작업 흐름", focus: "부활절 체크리스트 마감", eta: "오늘 저녁", state: "정리중" },
+  { owner: "콘텐츠팀", area: "콘텐츠", focus: "홍보영상 썸네일 확정", eta: "1시간 내", state: "검토" },
+];
+
 export default function WorkspacePage() {
   return (
     <div className="flex flex-col gap-6 text-[#111111]">
@@ -221,6 +258,19 @@ export default function WorkspacePage() {
         ))}
       </section>
 
+      <section className="grid gap-3 xl:grid-cols-4">
+        {operatingSignals.map((item) => (
+          <div key={item.title} className="rounded-[22px] border border-[#e6dfd5] bg-[#fcfbf8] p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[#9a8b7a]">{item.label}</p>
+            <div className="mt-3 flex items-end justify-between gap-3">
+              <p className="text-lg font-semibold text-[#111111]">{item.title}</p>
+              <span className="rounded-full border border-[#eadfcd] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.value}</span>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.note}</p>
+          </div>
+        ))}
+      </section>
+
       <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
         <div className="grid gap-4">
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
@@ -238,6 +288,30 @@ export default function WorkspacePage() {
                   <p className="mt-3 text-base font-semibold text-[#111111]">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
                 </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">HANDOFF QUEUE</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">모듈 사이 넘겨야 할 일</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">연결 상태</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {handoffQueue.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#8C7A5B]">
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1">{item.from}</span>
+                    <span>→</span>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1">{item.to}</span>
+                    <span className="ml-auto rounded-full border border-[#eadfcd] bg-[#fff7e8] px-2.5 py-1 text-[#8C6A2E]">{item.status}</span>
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                </div>
               ))}
             </div>
           </section>
@@ -342,6 +416,35 @@ export default function WorkspacePage() {
                     <div>
                       <p className="text-sm font-semibold text-[#111111]">{step.title}</p>
                       <p className="mt-2 text-sm leading-6 text-[#5f564b]">{step.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">OWNER BOARD</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">누가 다음 공을 받는지</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">handoff</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {ownerBoard.map((item) => (
+                <div key={item.owner + item.focus} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-semibold text-[#111111]">{item.owner}</p>
+                        <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.area}</span>
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.focus}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[11px] text-[#9a8b7a]">{item.eta}</p>
+                      <p className="mt-1 rounded-full border border-[#eadfcd] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.state}</p>
                     </div>
                   </div>
                 </div>
