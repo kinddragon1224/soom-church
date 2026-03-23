@@ -50,6 +50,11 @@ export default function ContactPage() {
               <p>보통 1영업일 안에 1차 답변을 드립니다.</p>
               <p>진행이 어렵거나 맞지 않는 경우에도 먼저 가능 여부를 솔직하게 안내드립니다.</p>
             </div>
+            <div className="mt-6 flex flex-wrap gap-2.5 text-xs text-white/70">
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">1차 답변: 가능 여부 + 추천 시작점</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">보통 1영업일 내 회신</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">필요할 때만 일정·범위 상세 조율</span>
+            </div>
           </div>
         </div>
       </section>
