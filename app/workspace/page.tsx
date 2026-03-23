@@ -14,6 +14,18 @@ const setupItems = [
   { step: "04", title: "연락 흐름 연결", desc: "공지 발송과 후속 연락 흐름을 이어서 운영 준비를 마칩니다.", action: "준비중", done: false },
 ];
 
+const quickActions = [
+  { title: "새가족 후속 연락", desc: "48시간 안에 연락이 필요한 3명을 먼저 확인합니다.", href: "/workspace/people", cta: "사람 흐름 열기" },
+  { title: "수련회 안내 발송", desc: "예약 공지 1건이 이번 주 발송 대기 중입니다.", href: "/workspace/notices", cta: "공지 확인" },
+  { title: "부활절 영상 검토", desc: "콘텐츠팀 검토 대기 1건을 오늘 안에 마무리합니다.", href: "/workspace/content", cta: "콘텐츠 보기" },
+];
+
+const weeklyRhythm = [
+  { day: "월", title: "운영 정리", desc: "후속 연락, 담당 배정, 이번 주 우선순위를 정리합니다." },
+  { day: "수", title: "공지 점검", desc: "주중 공지와 예약 발송 문구를 확정합니다." },
+  { day: "금", title: "예배·행사 준비", desc: "주말 안내, 영상, 현장 체크리스트를 마감합니다." },
+];
+
 const inboxItems = [
   { title: "새가족 3명 후속 연락 필요", desc: "예배 방문 이후 48시간 안에 첫 연락 권장", meta: "사람", priority: "오늘" },
   { title: "수련회 공지 예약 확인", desc: "카카오톡/문자 이중 발송 전 최종 문구 점검", meta: "커뮤니케이션", priority: "이번 주" },
@@ -60,6 +72,12 @@ const productAreas = [
   },
 ];
 
+const teamBoard = [
+  { team: "사무국", focus: "새가족 후속 연락", status: "오늘 2건 남음" },
+  { team: "미디어팀", focus: "부활절 홍보영상 검토", status: "검토 대기" },
+  { team: "청년부 리더", focus: "수련회 신청 안내 확정", status: "문구 확인중" },
+];
+
 const feedItems = [
   {
     title: "설교를 쇼츠로 연결하는 구조 정리 중",
@@ -76,12 +94,15 @@ const feedItems = [
 export default function WorkspacePage() {
   return (
     <div className="flex flex-col gap-6 text-[#111111]">
-      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="overflow-hidden rounded-[28px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
+      <section className="grid gap-4 xl:grid-cols-[1.18fr_0.82fr]">
+        <div className="overflow-hidden rounded-[30px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
-              <p className="text-[11px] tracking-[0.2em] text-white/46">CHURCH OPERATIONS HUB</p>
-              <h1 className="mt-3 text-[2.2rem] font-semibold leading-[0.96] tracking-[-0.06em] text-white sm:text-[2.8rem]">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-[11px] tracking-[0.2em] text-white/46">CHURCH OPERATIONS HUB</p>
+                <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">이번 주 핵심 3개</span>
+              </div>
+              <h1 className="mt-3 text-[2.2rem] font-semibold leading-[0.96] tracking-[-0.06em] text-white sm:text-[2.9rem]">
                 오늘 처리해야 할 운영 흐름을
                 <br />
                 한눈에 정리합니다
@@ -90,23 +111,34 @@ export default function WorkspacePage() {
                 사람, 공지, 작업, 콘텐츠 요청이 따로 놀지 않도록 지금 필요한 우선순위부터 모아 보여주는 워크스페이스입니다.
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 lg:max-w-[220px] lg:justify-end">
+            <div className="flex flex-wrap gap-2 lg:max-w-[240px] lg:justify-end">
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">대흥교회 청년부</span>
               <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">무료 플랜</span>
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">팀원 4명 온라인</span>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <button type="button" className="inline-flex min-h-11 items-center justify-center rounded-[14px] bg-white px-5 text-sm font-semibold text-[#09111f]">
-              오늘 할 일 보기
-            </button>
-            <Link href="/workspace/people" className="inline-flex min-h-11 items-center justify-center rounded-[14px] border border-white/14 bg-white/5 px-5 text-sm font-medium text-white">
-              사람 흐름 열기
-            </Link>
+          <div className="mt-6 grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div className="rounded-[22px] border border-white/10 bg-white/8 p-4 sm:p-5">
+              <p className="text-[11px] tracking-[0.18em] text-white/42">TODAY'S FOCUS</p>
+              <div className="mt-3 grid gap-2 text-sm text-white/82 sm:grid-cols-3">
+                <div className="rounded-[16px] border border-white/10 bg-[#0f1a30] px-3 py-3">새가족 후속 연락 3건</div>
+                <div className="rounded-[16px] border border-white/10 bg-[#0f1a30] px-3 py-3">수련회 안내 예약 점검</div>
+                <div className="rounded-[16px] border border-white/10 bg-[#0f1a30] px-3 py-3">부활절 영상 최종 검토</div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+              <button type="button" className="inline-flex min-h-11 items-center justify-center rounded-[14px] bg-white px-5 text-sm font-semibold text-[#09111f]">
+                오늘 할 일 보기
+              </button>
+              <Link href="/workspace/people" className="inline-flex min-h-11 items-center justify-center rounded-[14px] border border-white/14 bg-white/5 px-5 text-sm font-medium text-white">
+                사람 흐름 열기
+              </Link>
+            </div>
           </div>
         </div>
 
-        <section className="rounded-[28px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
+        <section className="rounded-[30px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SETUP</p>
@@ -148,8 +180,32 @@ export default function WorkspacePage() {
         ))}
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
         <div className="grid gap-4">
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTION CENTER</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 움직일 일</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">오늘 기준</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {quickActions.map((item) => (
+                <Link key={item.title} href={item.href} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                    </div>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-3 py-1 text-[11px] text-[#8C6A2E]">바로가기</span>
+                  </div>
+                  <p className="mt-3 text-xs font-medium text-[#8C6A2E]">{item.cta}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -164,7 +220,7 @@ export default function WorkspacePage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B] border border-[#e6dfd5]">{item.meta}</span>
+                        <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.meta}</span>
                         <span className="text-[11px] text-[#9a8b7a]">{item.priority}</span>
                       </div>
                       <p className="mt-3 text-sm font-semibold text-[#111111]">{item.title}</p>
@@ -207,12 +263,38 @@ export default function WorkspacePage() {
         <div className="grid gap-4">
           <section className="overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,#D8BD86_0%,#A67C36_100%)] p-5 text-white shadow-[0_14px_36px_rgba(140,106,46,0.18)]">
             <p className="text-xs tracking-[0.18em] text-white/74">SOOM+ CONTENT FLOW</p>
-            <h2 className="mt-10 text-[1.9rem] font-semibold leading-[1.02] tracking-[-0.05em]">설교부터 안내까지
-              <br />한 흐름으로 연결</h2>
+            <h2 className="mt-10 text-[1.9rem] font-semibold leading-[1.02] tracking-[-0.05em]">
+              설교부터 안내까지
+              <br />
+              한 흐름으로 연결
+            </h2>
             <p className="mt-4 max-w-[18rem] text-sm leading-6 text-white/84">콘텐츠 스튜디오가 붙으면 쇼츠, 행사 페이지, 공지 문구까지 같은 파이프라인으로 이어집니다.</p>
             <Link href="/workspace/content" className="mt-6 inline-flex rounded-[12px] bg-[#0F172A] px-4 py-3 text-sm font-medium text-white">
               콘텐츠 흐름 보기
             </Link>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">WEEKLY RHYTHM</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">주간 운영 리듬</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">교회 운영 기준</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {weeklyRhythm.map((item) => (
+                <div key={item.day} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-start gap-3">
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-sm font-semibold text-[#8C6A2E] border border-[#e6dfd5]">{item.day}</span>
+                    <div>
+                      <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
 
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
@@ -230,6 +312,24 @@ export default function WorkspacePage() {
                   <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
                   <p className="mt-3 text-xs font-medium text-[#8C6A2E]">{item.cta}</p>
                 </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-lg font-semibold text-[#111111]">팀 포커스</h2>
+              <span className="text-xs text-[#8C7A5B]">오늘</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {teamBoard.map((item) => (
+                <div key={item.team} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#111111]">{item.team}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">{item.status}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.focus}</p>
+                </div>
               ))}
             </div>
           </section>
