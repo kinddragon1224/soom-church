@@ -6,6 +6,8 @@ type Service = {
   badge?: string;
   summary: string;
   desc: string;
+  price: string;
+  note: string;
   points: string[];
   cta: string;
 };
@@ -16,6 +18,8 @@ const services: Service[] = [
     badge: "빠른 실행",
     summary: "설교와 행사를 바로 쓰는 영상으로 정리합니다",
     desc: "설교 쇼츠, 행사 홍보영상, 짧은 소개 영상을 빠르게 제작해 현장에서 바로 활용할 수 있게 돕습니다.",
+    price: "건당 30만 원부터",
+    note: "분량, 촬영 유무, 편집 난이도에 따라 달라질 수 있습니다.",
     points: ["설교 쇼츠", "행사 홍보영상", "짧은 소개 영상"],
     cta: "영상 문의하기",
   },
@@ -24,6 +28,8 @@ const services: Service[] = [
     badge: "운영 구조",
     summary: "채널이 실제로 굴러가게 시작 구조를 잡아줍니다",
     desc: "채널 구조, 썸네일, 제목, 플레이리스트, 업로드 흐름을 먼저 정리해 실제 운영이 가능하게 만듭니다.",
+    price: "프로젝트 80만 원부터",
+    note: "초기 진단 범위와 세팅 항목에 따라 조정됩니다.",
     points: ["채널 구조", "썸네일·제목", "업로드 흐름"],
     cta: "유튜브 세팅 문의",
   },
@@ -32,12 +38,15 @@ const services: Service[] = [
     badge: "행사 대응",
     summary: "등록과 안내 흐름을 한 번에 정리합니다",
     desc: "집회, 수련회, 등록, 신청, 안내를 한 페이지와 한 세트의 홍보물로 묶어 행사 준비 공백을 줄입니다.",
+    price: "프로젝트 120만 원부터",
+    note: "행사 규모와 필요한 산출물 범위에 따라 달라집니다.",
     points: ["행사 랜딩", "신청·안내", "리플렛·홍보물"],
     cta: "행사 문의하기",
   },
 ];
 
 const compareRows = [
+  { label: "시작가", values: ["30만 원부터", "80만 원부터", "120만 원부터"] },
   { label: "가장 잘 맞는 상황", values: ["콘텐츠가 급할 때", "채널이 안 굴러갈 때", "행사 준비가 몰릴 때"] },
   { label: "핵심 결과물", values: ["쇼츠·홍보영상", "운영 가능한 유튜브 구조", "행사 페이지·안내 흐름"] },
   { label: "구매 이유", values: ["빠르게 결과물이 필요함", "담당자 없이도 시작해야 함", "등록·안내를 한 번에 정리해야 함"] },
@@ -78,6 +87,11 @@ export default function PricingPage() {
                   {service.badge ? <span className="rounded-full bg-[#f3ede3] px-3 py-1 text-xs text-[#7a6f67]">{service.badge}</span> : null}
                 </div>
                 <p className="mt-4 text-sm text-[#7a6f67]">{service.summary}</p>
+                <div className="mt-6 rounded-[22px] border border-[#efe5d3] bg-[#fcf8f1] px-5 py-5">
+                  <p className="text-xs tracking-[0.18em] text-[#9a8b7a]">STARTING PRICE</p>
+                  <p className="mt-2 text-[1.9rem] font-semibold tracking-[-0.04em] text-[#111827]">{service.price}</p>
+                  <p className="mt-2 text-xs leading-6 text-[#7a6f67]">{service.note}</p>
+                </div>
                 <p className="mt-6 text-sm leading-7 text-[#475069]">{service.desc}</p>
                 <ul className="mt-6 grid gap-2 text-sm leading-7 text-[#334155]">
                   {service.points.map((point) => (

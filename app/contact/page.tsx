@@ -5,6 +5,24 @@ const helpTypes = ["쇼츠 · 홍보영상", "유튜브 운영 세팅", "행사 
 const schedules = ["최대한 빨리", "2주 이내", "이번 달 안", "일정 협의"];
 const budgets = ["30만 원 이하", "30~100만 원", "100만 원 이상", "아직 미정"];
 
+const processSteps = [
+  {
+    step: "01",
+    title: "상황을 남겨주세요",
+    desc: "지금 급한 일, 일정, 참고 자료를 편하게 적어주시면 됩니다.",
+  },
+  {
+    step: "02",
+    title: "1영업일 안에 1차 답변",
+    desc: "내용을 보고 가장 현실적인 시작점과 필요한 범위를 먼저 정리해드립니다.",
+  },
+  {
+    step: "03",
+    title: "일정과 범위를 맞춥니다",
+    desc: "진행이 맞으면 일정, 산출물, 예산 범위를 함께 확정합니다.",
+  },
+];
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#050b16] text-white">
@@ -29,7 +47,7 @@ export default function ContactPage() {
             </p>
             <div className="mt-6 flex flex-col gap-2 text-sm text-white/60 sm:flex-row sm:flex-wrap sm:gap-4">
               <p>보내주신 내용은 확인 후 순서대로 답변드립니다.</p>
-              <p>급한 일정이 있다면 폼에 함께 남겨주세요.</p>
+              <p>보통 1영업일 안에 1차 답변을 드립니다.</p>
             </div>
           </div>
         </div>
@@ -40,10 +58,14 @@ export default function ContactPage() {
           <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
             <div className="mb-5 rounded-[24px] border border-emerald-400/15 bg-emerald-400/[0.06] px-4 py-4 text-sm text-white/72">
               <p className="font-semibold text-white">문의는 이렇게 진행됩니다</p>
-              <div className="mt-2 grid gap-1 text-white/62">
-                <p>1. 지금 필요한 일을 남겨주세요</p>
-                <p>2. 내용을 보고 가장 맞는 시작점을 정리해드립니다</p>
-                <p>3. 필요하면 일정과 범위를 함께 맞춰드립니다</p>
+              <div className="mt-3 grid gap-3">
+                {processSteps.map((item) => (
+                  <div key={item.step} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                    <p className="text-[11px] tracking-[0.18em] text-emerald-200/70">STEP {item.step}</p>
+                    <p className="mt-2 font-semibold text-white">{item.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-white/62">{item.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
             <form className="grid gap-8">
@@ -109,9 +131,9 @@ export default function ContactPage() {
                 <button type="submit" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
                   상담 요청 보내기
                 </button>
-                <p className="text-xs leading-6 text-white/44">
-                  아직 자동 접수 연동 전이라, 현재는 상담 요청 화면과 문구를 먼저 다듬는 단계입니다.
-                  실제 운영 연결 전까지는 빠른 문의 채널을 함께 정리할 예정입니다.
+                <p className="text-xs leading-6 text-white/52">
+                  문의 내용이 접수되면 먼저 가능 여부와 추천 시작점을 짧게 안내드리고,
+                  이후 필요할 때만 상세 일정과 범위를 함께 맞춥니다.
                 </p>
               </div>
             </form>
@@ -131,6 +153,20 @@ export default function ContactPage() {
               <p className="mt-4 text-sm leading-7 text-white/48 sm:text-base">
                 복잡한 제안보다 먼저, 지금 바로 시작할 수 있는 일부터 정리해드립니다.
               </p>
+            </div>
+
+            <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
+              <p className="text-xs tracking-[0.24em] text-white/38">RESPONSE GUIDE</p>
+              <div className="mt-5 grid gap-3 text-sm leading-7 text-white/70">
+                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                  <p className="font-semibold text-white">어떤 답변을 받게 되나요?</p>
+                  <p className="mt-2">가능 여부, 추천 시작점, 대략적인 범위를 먼저 안내드립니다.</p>
+                </div>
+                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                  <p className="font-semibold text-white">급한 일정도 가능한가요?</p>
+                  <p className="mt-2">가능한 경우 빠른 대응 여부를 먼저 확인해드리고, 어려우면 현실적인 대안을 같이 제안드립니다.</p>
+                </div>
+              </div>
             </div>
 
             <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
