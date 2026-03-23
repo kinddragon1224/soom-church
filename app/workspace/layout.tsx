@@ -41,6 +41,13 @@ const activeRoute = {
   "/workspace/settings": { title: "워크스페이스 설정", desc: "도입 상태와 팀 기본값을 정리합니다." },
 } as const;
 
+const moduleCards = [
+  { href: "/workspace/people", label: "사람", value: "후속관리 9건", note: "48시간 안에 연락이 필요한 흐름", tone: "slate" },
+  { href: "/workspace/notices", label: "공지", value: "예약 4건", note: "수요일·주말 발송 점검 필요", tone: "gold" },
+  { href: "/workspace/tasks", label: "작업", value: "오늘 마감 2건", note: "체크리스트와 검토가 연결된 상태", tone: "slate" },
+  { href: "/workspace/content", label: "콘텐츠", value: "검토 1건", note: "썸네일 승인 후 바로 배포 가능", tone: "slate" },
+] as const;
+
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const current = activeRoute[pathname as keyof typeof activeRoute] ?? activeRoute["/workspace"];
@@ -158,6 +165,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                   <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">대흥교회 청년부</span>
                   <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">무료 플랜</span>
                   <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">팀원 4명</span>
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">월요일 운영 모드</span>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -171,6 +179,42 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                   무료로 시작하기
                 </Link>
               </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 xl:grid-cols-4">
+              {moduleCards.map((item) => {
+                const active = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`rounded-[20px] border p-4 transition ${
+                      active
+                        ? "border-[#C8A96B] bg-[#fff8ea] shadow-[0_12px_30px_rgba(200,169,107,0.16)]"
+                        : "border-[#E7E0D4] bg-white hover:border-[#d8ccb8] hover:bg-[#fffdf8]"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] tracking-[0.18em] text-[#8C7A5B]">{item.label}</p>
+                        <p className="mt-2 text-sm font-semibold text-[#121212]">{item.value}</p>
+                      </div>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-[10px] ${
+                          active
+                            ? "bg-[#C8A96B] text-[#2f2513]"
+                            : item.tone === "gold"
+                              ? "bg-[#fff4df] text-[#8C6A2E]"
+                              : "bg-[#f3f4f6] text-[#5f564b]"
+                        }`}
+                      >
+                        {active ? "현재" : "live"}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
