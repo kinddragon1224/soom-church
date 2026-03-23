@@ -111,11 +111,20 @@ export default async function ChurchDashboardPage({ params }: { params: { church
     meta: `${log.targetType} · ${formatDate(log.createdAt)}`,
   }));
 
+  const todayLine =
+    data.followUpMembers > 0
+      ? `후속 연락 ${data.followUpMembers}건부터 정리하면 돼.`
+      : data.pendingApplications > 0
+        ? `새 신청 ${data.pendingApplications}건 먼저 확인하면 돼.`
+        : data.unassignedMembers > 0
+          ? `미배정 ${data.unassignedMembers}명 연결만 마무리하면 돼.`
+          : "오늘 급한 운영 항목은 비어 있어.";
+
   return (
     <div className="flex flex-col gap-5 text-[#111111]">
-      <section className="rounded-[30px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_58%,#243252_100%)] p-5 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-6">
-        <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
-          <div className="max-w-2xl">
+      <section className="overflow-hidden rounded-[30px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_58%,#243252_100%)] text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)]">
+        <div className="grid gap-px bg-white/10 xl:grid-cols-[minmax(0,1.2fr)_420px]">
+          <div className="p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-[11px] tracking-[0.2em] text-white/46">WORKSPACE HOME</p>
               <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">운영 모드</span>
@@ -125,24 +134,59 @@ export default async function ChurchDashboardPage({ params }: { params: { church
               <br />
               바로 정리한다
             </h1>
-            <p className="mt-3 max-w-lg text-sm leading-6 text-white/66">사람, 신청, 공지, 설정을 dense row 구조로 바로 연다.</p>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-white/66">{todayLine}</p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
+                <p className="text-[11px] tracking-[0.16em] text-white/42">WORKSPACE</p>
+                <p className="mt-2 text-sm font-semibold text-white">{church.name}</p>
+              </div>
+              <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
+                <p className="text-[11px] tracking-[0.16em] text-white/42">PLAN</p>
+                <p className="mt-2 text-sm font-semibold text-[#f1dfb2]">무료 플랜</p>
+              </div>
+              <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
+                <p className="text-[11px] tracking-[0.16em] text-white/42">QUICK OPEN</p>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <Link href={`${base}/members`} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">사람</Link>
+                  <Link href={`${base}/applications`} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">신청</Link>
+                  <Link href={`${base}/notices`} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">공지</Link>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-3 xl:min-w-[360px] xl:grid-cols-1">
-            <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-              <p className="text-[11px] tracking-[0.16em] text-white/42">WORKSPACE</p>
-              <p className="mt-2 text-sm font-semibold text-white">{church.name}</p>
+          <div className="grid gap-px bg-white/10">
+            <div className="bg-white/6 px-5 py-4 sm:px-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[11px] tracking-[0.18em] text-white/46">TODAY BOARD</p>
+                  <h2 className="mt-2 text-lg font-semibold text-white">지금 바로 볼 항목</h2>
+                </div>
+                <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1 text-[11px] text-white/72">우선 2개</span>
+              </div>
             </div>
-            <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-              <p className="text-[11px] tracking-[0.16em] text-white/42">PLAN</p>
-              <p className="mt-2 text-sm font-semibold text-[#f1dfb2]">무료 플랜</p>
+
+            <div className="divide-y divide-white/10 bg-white/4">
+              {queueRows.slice(0, 2).map((item) => (
+                <Link key={item.title} href={item.href} className="grid gap-2 px-5 py-4 transition hover:bg-white/6 sm:grid-cols-[58px_minmax(0,1fr)_84px] sm:items-center sm:px-6">
+                  <p className="text-[11px] tracking-[0.18em] text-white/46">{item.lane}</p>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white">{item.title}</p>
+                    <p className="mt-1 text-sm text-white/64">{item.desc}</p>
+                  </div>
+                  <p className="text-xs font-medium text-[#f1dfb2] sm:text-right">{item.cta}</p>
+                </Link>
+              ))}
             </div>
-            <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-              <p className="text-[11px] tracking-[0.16em] text-white/42">QUICK OPEN</p>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                <Link href={`${base}/members`} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">사람</Link>
-                <Link href={`${base}/applications`} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">신청</Link>
-                <Link href={`${base}/notices`} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">공지</Link>
+
+            <div className="bg-white/6 px-5 py-4 sm:px-6">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[11px] tracking-[0.18em] text-white/46">LAST CHANGE</p>
+                  <p className="mt-2 text-sm font-semibold text-white">{activityRows[0]?.title ?? "아직 최근 활동이 없어"}</p>
+                </div>
+                <p className="text-xs text-white/60">{activityRows[0]?.meta ?? "기록 대기"}</p>
               </div>
             </div>
           </div>
