@@ -15,7 +15,7 @@ const navItems = [
   { href: "/", label: "홈", key: "home" },
   { href: "/workspace", label: "워크스페이스", key: "workspace" },
   { href: "/pricing", label: "콘텐츠 제작", key: "pricing" },
-  { href: "/ai-guides", label: "AI 안내서", key: "guides" },
+  { href: "/ai-guides", label: "블로그", key: "guides" },
   { href: "/about", label: "About", key: "about" },
   { href: "/contact", label: "문의", key: "contact" },
 ] as const;

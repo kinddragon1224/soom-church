@@ -254,9 +254,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-28">
           <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
             <div>
-              <p className="text-xs tracking-[0.24em] text-[#7a6f67]">AI GUIDE</p>
+              <p className="text-xs tracking-[0.24em] text-[#7a6f67]">BLOG</p>
               <h2 className="mt-5 font-display text-[2.2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3.4rem]">
-                AI 안내서는
+                블로그는
                 <br />
                 매출보다 신뢰를 위한 공간입니다
               </h2>
@@ -265,7 +265,7 @@ export default function HomePage() {
               </p>
               <div className="mt-8">
                 <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
-                  AI 안내서 보기
+                  블로그 보기
                 </Link>
               </div>
             </div>

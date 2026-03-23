@@ -154,7 +154,7 @@ export default function PricingPage() {
                   문의하기
                 </Link>
                 <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#ddd2c3] px-6 text-sm font-medium text-[#0c1220]">
-                  AI 안내서 보기
+                  블로그 보기
                 </Link>
               </div>
             </div>
