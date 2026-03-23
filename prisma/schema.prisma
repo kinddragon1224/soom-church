@@ -42,25 +42,93 @@ enum SubscriptionStatus {
   CANCELED
 }
 
+enum OrganizationUnitType {
+  CONGREGATION
+  DISTRICT
+  GROUP
+  DEPARTMENT
+  MINISTRY
+  FELLOWSHIP
+  WORSHIP_COMMUNITY
+  SPECIAL_COMMUNITY
+  FAMILY_UNIT
+  CUSTOM
+}
+
+enum MemberOrgRole {
+  MEMBER
+  LEAD
+  ASSISTANT_LEAD
+  PASTOR
+  STAFF
+  VOLUNTEER
+  TEACHER
+  CUSTOM
+}
+
+enum RelationshipType {
+  SPOUSE
+  PARENT
+  CHILD
+  SIBLING
+  GRANDPARENT
+  GRANDCHILD
+  GUARDIAN
+  RELATIVE
+  CAREGIVER
+  CUSTOM
+}
+
+enum CareCategory {
+  VISIT
+  ATTENDANCE
+  COUNSEL
+  HEALTH
+  FINANCE
+  JOB
+  MARRIAGE
+  DIVORCE
+  FUNERAL
+  FAMILY
+  MINISTRY
+  NOTE
+  CUSTOM
+}
+
+enum SacramentType {
+  BAPTISM
+  INFANT_BAPTISM
+  CONFIRMATION
+  COMMUNION
+  MEMBERSHIP_TRANSFER
+  CUSTOM
+}
+
 model Church {
-  id               String             @id @default(cuid())
-  slug             String             @unique
-  name             String
-  timezone         String             @default("Asia/Seoul")
-  isActive         Boolean            @default(true)
-  memberships      ChurchMembership[]
-  subscriptions    Subscription[]
-  roles            Role[]
-  households       Household[]
-  districts        District[]
-  groups           Group[]
-  members          Member[]
-  applicationForms ApplicationForm[]
-  applications     Application[]
-  notices          Notice[]
-  activityLogs     ActivityLog[]
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id                      String                  @id @default(cuid())
+  slug                    String                  @unique
+  name                    String
+  timezone                String                  @default("Asia/Seoul")
+  isActive                Boolean                 @default(true)
+  memberships             ChurchMembership[]
+  subscriptions           Subscription[]
+  roles                   Role[]
+  households              Household[]
+  districts               District[]
+  groups                  Group[]
+  members                 Member[]
+  organizationUnits       OrganizationUnit[]
+  organizationUnitLabels  OrganizationUnitLabel[]
+  memberOrganizationLinks MemberOrganization[]
+  memberRelationships     MemberRelationship[]    @relation("RelationshipChurch")
+  careRecords             MemberCareRecord[]
+  faithMilestones         MemberFaithMilestone[]
+  applicationForms        ApplicationForm[]
+  applications            Application[]
+  notices                 Notice[]
+  activityLogs            ActivityLog[]
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
 }
 
 model User {
@@ -168,30 +236,39 @@ model Group {
 }
 
 model Member {
-  id               String        @id @default(cuid())
-  churchId         String?
-  name             String
-  gender           Gender
-  birthDate        DateTime
-  phone            String
-  email            String?
-  address          String?
-  householdId      String?
-  districtId       String?
-  groupId          String?
-  church           Church?       @relation(fields: [churchId], references: [id])
-  household        Household?    @relation(fields: [householdId], references: [id])
-  district         District?     @relation(fields: [districtId], references: [id])
-  group            Group?        @relation(fields: [groupId], references: [id])
-  registeredAt     DateTime      @default(now())
-  position         String?
-  statusTag        String
-  requiresFollowUp Boolean       @default(false)
-  notes            String?
-  isDeleted        Boolean       @default(false)
-  activityLogs     ActivityLog[]
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id                    String                 @id @default(cuid())
+  churchId              String?
+  name                  String
+  gender                Gender
+  birthDate             DateTime
+  phone                 String
+  email                 String?
+  address               String?
+  householdId           String?
+  districtId            String?
+  groupId               String?
+  currentJob            String?
+  previousChurch        String?
+  previousFaith         String?
+  baptismStatus         String?
+  church                Church?                @relation(fields: [churchId], references: [id])
+  household             Household?             @relation(fields: [householdId], references: [id])
+  district              District?              @relation(fields: [districtId], references: [id])
+  group                 Group?                 @relation(fields: [groupId], references: [id])
+  organizations         MemberOrganization[]
+  relationshipsFrom     MemberRelationship[]   @relation("MemberRelationshipFrom")
+  relationshipsTo       MemberRelationship[]   @relation("MemberRelationshipTo")
+  careRecords           MemberCareRecord[]
+  faithMilestones       MemberFaithMilestone[]
+  registeredAt          DateTime               @default(now())
+  position              String?
+  statusTag             String
+  requiresFollowUp      Boolean                @default(false)
+  notes                 String?
+  isDeleted             Boolean                @default(false)
+  activityLogs          ActivityLog[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
   @@index([churchId, statusTag])
   @@index([churchId, requiresFollowUp])
@@ -275,6 +352,119 @@ model GuidePostImage {
   createdAt  DateTime  @default(now())
 
   @@index([postId, sortOrder])
+}
+
+model OrganizationUnit {
+  id             String                 @id @default(cuid())
+  churchId       String
+  name           String
+  slug           String
+  type           OrganizationUnitType
+  parentId       String?
+  parent         OrganizationUnit?      @relation("OrganizationTree", fields: [parentId], references: [id])
+  children       OrganizationUnit[]     @relation("OrganizationTree")
+  church         Church                 @relation(fields: [churchId], references: [id])
+  memberLinks    MemberOrganization[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@unique([churchId, slug])
+  @@index([churchId, type])
+  @@index([parentId])
+}
+
+model OrganizationUnitLabel {
+  id        String               @id @default(cuid())
+  churchId   String
+  type      OrganizationUnitType
+  singular  String
+  plural    String?
+  church    Church               @relation(fields: [churchId], references: [id])
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@unique([churchId, type])
+}
+
+model MemberOrganization {
+  id              String           @id @default(cuid())
+  churchId        String
+  memberId        String
+  organizationId  String
+  role            MemberOrgRole    @default(MEMBER)
+  customRoleLabel String?
+  isPrimary       Boolean          @default(false)
+  startedAt       DateTime?
+  endedAt         DateTime?
+  notes           String?
+  church          Church           @relation(fields: [churchId], references: [id])
+  member          Member           @relation(fields: [memberId], references: [id])
+  organization    OrganizationUnit @relation(fields: [organizationId], references: [id])
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([churchId, memberId])
+  @@index([churchId, organizationId])
+  @@index([churchId, role])
+}
+
+model MemberRelationship {
+  id                   String           @id @default(cuid())
+  churchId             String
+  fromMemberId         String
+  toMemberId           String
+  relationshipType     RelationshipType
+  customRelationship   String?
+  isPrimaryFamilyLink  Boolean          @default(false)
+  notes                String?
+  church               Church           @relation("RelationshipChurch", fields: [churchId], references: [id])
+  fromMember           Member           @relation("MemberRelationshipFrom", fields: [fromMemberId], references: [id])
+  toMember             Member           @relation("MemberRelationshipTo", fields: [toMemberId], references: [id])
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  @@index([churchId, fromMemberId])
+  @@index([churchId, toMemberId])
+  @@unique([fromMemberId, toMemberId, relationshipType])
+}
+
+model MemberCareRecord {
+  id            String        @id @default(cuid())
+  churchId      String
+  memberId      String
+  category      CareCategory
+  customCategory String?
+  title         String
+  summary       String?
+  details       String?
+  happenedAt    DateTime      @default(now())
+  recordedBy    String?
+  church        Church        @relation(fields: [churchId], references: [id])
+  member        Member        @relation(fields: [memberId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([churchId, memberId, happenedAt])
+  @@index([churchId, category])
+}
+
+model MemberFaithMilestone {
+  id              String         @id @default(cuid())
+  churchId        String
+  memberId        String
+  type            SacramentType
+  customType      String?
+  happenedAt      DateTime?
+  churchName      String?
+  officiant       String?
+  notes           String?
+  church          Church         @relation(fields: [churchId], references: [id])
+  member          Member         @relation(fields: [memberId], references: [id])
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([churchId, memberId])
+  @@index([churchId, type])
 }
 
 model ActivityLog {
