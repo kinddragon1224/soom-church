@@ -83,7 +83,7 @@ export default function WorkspacePage() {
               <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3ddc84] text-xs font-semibold text-white">so</div>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#176B4D] text-xs font-semibold text-white">so</div>
                     <div>
                       <p className="text-sm font-medium text-[#111111]">{item.title}</p>
                       <p className="mt-1 text-xs text-[#6b7280]">{item.channel}</p>
@@ -100,12 +100,12 @@ export default function WorkspacePage() {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-[22px] bg-[linear-gradient(180deg,#1cc58a_0%,#0b8f62_100%)] p-5 text-white shadow-[0_12px_32px_rgba(16,185,129,0.22)]">
-          <p className="text-xs tracking-[0.16em] text-white/70">SOOM+</p>
+        <section className="overflow-hidden rounded-[22px] bg-[linear-gradient(180deg,#C8A96B_0%,#8C6A2E_100%)] p-5 text-white shadow-[0_12px_32px_rgba(140,106,46,0.22)]">
+          <p className="text-xs tracking-[0.16em] text-white/76">SOOM+</p>
           <h2 className="mt-24 text-[2rem] font-semibold leading-[1.02] tracking-[-0.05em]">Introducing
             <br />Content Studio</h2>
           <p className="mt-4 text-sm leading-7 text-white/78">설교를 쇼츠, 안내 콘텐츠, 행사 페이지 흐름으로 연결하세요.</p>
-          <button type="button" className="mt-6 rounded-[12px] bg-[#111111] px-4 py-3 text-sm font-medium text-white">Start Free Trial</button>
+          <button type="button" className="mt-6 rounded-[12px] bg-[#0F172A] px-4 py-3 text-sm font-medium text-white">무료 체험 시작</button>
         </section>
       </div>
 

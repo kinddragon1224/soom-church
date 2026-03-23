@@ -11,9 +11,9 @@ const navItems = [
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen bg-[#f4f5f7] text-[#111111]">
+    <main className="min-h-screen bg-[#F7F4EE] text-[#121212]">
       <div className="grid min-h-screen lg:grid-cols-[250px_1fr]">
-        <aside className="flex min-h-full flex-col border-r border-white/6 bg-[#0b0b0c] px-4 py-5 text-white">
+        <aside className="flex min-h-full flex-col border-r border-[#1a243a] bg-[#0F172A] px-4 py-5 text-white">
           <div className="flex items-center justify-between gap-3 px-2">
             <Link href="/workspace" className="font-display text-[1.65rem] font-semibold tracking-[-0.08em] text-white">
               SOOM workspace
@@ -26,7 +26,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-[14px] px-3 py-2.5 text-sm capitalize transition ${index === 0 ? "bg-white text-[#111111] font-semibold" : "text-white/70 hover:bg-white/6 hover:text-white"}`}
+                className={`rounded-[14px] px-3 py-2.5 text-sm transition ${index === 0 ? "bg-[#C8A96B] text-[#121212] font-semibold" : "text-white/70 hover:bg-white/6 hover:text-white"}`}
               >
                 {item.label}
               </Link>
@@ -39,21 +39,21 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
               <p className="mt-2 text-sm font-semibold text-white">SOOM</p>
               <p className="mt-1 text-xs text-white/42">무료 플랜 · team 4</p>
             </div>
-            <div className="rounded-[18px] border border-emerald-400/12 bg-emerald-400/[0.06] p-4">
-              <p className="text-xs tracking-[0.18em] text-emerald-200/70">UPGRADE</p>
+            <div className="rounded-[18px] border border-[#C8A96B]/20 bg-[#C8A96B]/10 p-4">
+              <p className="text-xs tracking-[0.18em] text-[#E7D7B1]">UPGRADE</p>
               <p className="mt-2 text-sm font-medium text-white">무료로 시작하고, 필요할 때 확장하세요</p>
             </div>
           </div>
         </aside>
 
-        <section className="min-w-0 bg-[#f4f5f7]">
-          <div className="flex items-center justify-between gap-4 border-b border-[#e7e8eb] bg-white px-5 py-4 sm:px-7">
+        <section className="min-w-0 bg-[#F7F4EE]">
+          <div className="flex items-center justify-between gap-4 border-b border-[#E7E0D4] bg-[#FCFBF8] px-5 py-4 sm:px-7">
             <div>
-              <p className="text-xs tracking-[0.18em] text-[#9aa0a6]">SOOM WORKSPACE</p>
-              <p className="mt-1 text-sm text-[#5f6368]">교회와 사역팀을 위한 운영 대시보드</p>
+              <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">SOOM WORKSPACE</p>
+              <p className="mt-1 text-sm text-[#5F564B]">교회와 사역팀을 위한 운영 대시보드</p>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/signup" className="inline-flex min-h-10 items-center justify-center rounded-[12px] bg-[#111111] px-4 text-sm font-semibold text-white">
+              <Link href="/signup" className="inline-flex min-h-10 items-center justify-center rounded-[12px] bg-[#176B4D] px-4 text-sm font-semibold text-white">
                 무료로 시작하기
               </Link>
             </div>
