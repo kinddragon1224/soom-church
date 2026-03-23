@@ -44,9 +44,9 @@ export async function POST(request: Request) {
     slug = `${baseSlug}-${suffix++}`;
   }
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
-      name: ministry ? `${name} · ${ministry}` : name,
+      name,
       email,
       passwordHash: await hashPassword(password),
       isActive: true,
@@ -67,11 +67,26 @@ export async function POST(request: Request) {
                   trialEndsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
                 },
               },
+              activityLogs: {
+                create: {
+                  action: "WORKSPACE_ONBOARDED",
+                  targetType: "CHURCH",
+                  metadata: JSON.stringify({
+                    ownerName: name,
+                    ownerEmail: email,
+                    role,
+                    ministry,
+                    churchName,
+                    slug,
+                  }),
+                },
+              },
             },
           },
         },
       },
     },
+    select: { id: true },
   });
 
   return signIn("credentials", {
