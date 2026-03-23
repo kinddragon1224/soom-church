@@ -12,14 +12,27 @@ export async function getChurchBySlug(churchSlug: string) {
   return church;
 }
 
-export async function getFirstChurchByUserId(userId: string) {
-  const membership = await prisma.churchMembership.findFirst({
+export async function getAccessibleChurchesByUserId(userId: string) {
+  const memberships = await prisma.churchMembership.findMany({
     where: { userId, isActive: true, church: { isActive: true } },
-    include: { church: { select: { id: true, slug: true, name: true } } },
-    orderBy: { createdAt: "asc" },
+    select: {
+      role: true,
+      createdAt: true,
+      church: { select: { id: true, slug: true, name: true } },
+    },
+    orderBy: [{ createdAt: "desc" }],
   });
 
-  return membership?.church ?? null;
+  return memberships.map((membership) => ({
+    role: membership.role,
+    joinedAt: membership.createdAt,
+    church: membership.church,
+  }));
+}
+
+export async function getFirstChurchByUserId(userId: string) {
+  const memberships = await getAccessibleChurchesByUserId(userId);
+  return memberships[0]?.church ?? null;
 }
 
 export async function getCurrentUserOrRedirect(next?: string) {

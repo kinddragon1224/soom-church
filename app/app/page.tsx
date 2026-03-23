@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getCurrentUserOrRedirect, getFirstChurchByUserId, getChurchBySlug } from "@/lib/church-context";
+import { getAccessibleChurchesByUserId, getCurrentUserOrRedirect, getChurchBySlug } from "@/lib/church-context";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
@@ -18,6 +18,14 @@ const onboardingChecklist = [
   "출석 규모를 남겨두면 관리자 화면에서 교회 상태를 더 빨리 파악할 수 있습니다.",
 ] as const;
 
+const roleLabels: Record<string, string> = {
+  OWNER: "총괄",
+  PASTOR: "목회자",
+  ADMIN: "행정",
+  LEADER: "리더",
+  VIEWER: "협력",
+};
+
 export default async function AppEntryPage({
   searchParams,
 }: {
@@ -30,9 +38,9 @@ export default async function AppEntryPage({
     redirect("/platform-admin");
   }
 
-  const church = await getFirstChurchByUserId(userId);
-  if (church) {
-    redirect(`/app/${church.slug}/dashboard`);
+  const memberships = await getAccessibleChurchesByUserId(userId);
+  if (memberships.length === 1) {
+    redirect(`/app/${memberships[0].church.slug}/dashboard`);
   }
 
   const demoChurch = await getChurchBySlug("daehung-ieum-dubit");
@@ -166,14 +174,41 @@ export default async function AppEntryPage({
         <div className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">INVITE FLOW</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">초대받은 교회에 참여하기</h2>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">WORKSPACES</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">열 수 있는 교회</h2>
             </div>
-            <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[11px] text-[#8C6A2E]">다음 단계</span>
+            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">{memberships.length}곳</span>
           </div>
-          <p className="mt-2 text-sm text-[#5f564b]">초대 코드 기반 참여는 아직 붙이는 중이야. 지금은 새 워크스페이스 생성 흐름을 먼저 정리해 둔 상태다.</p>
-          <div className="mt-4 rounded-[18px] border border-dashed border-[#d9cfbe] bg-[#fcfbf8] px-4 py-6 text-sm text-[#7b6f61]">
-            초대 코드 입력, 소속 승인, 기존 교회 합류 화면은 다음 청크에서 이어서 붙인다.
+          <p className="mt-2 text-sm text-[#5f564b]">
+            {memberships.length > 1
+              ? "여러 워크스페이스에 연결돼 있으면 가장 최근에 합류한 교회부터 바로 고를 수 있게 둔다."
+              : "아직 연결된 워크스페이스가 없으면 아래에서 새 교회를 바로 만들면 된다."}
+          </p>
+          <div className="mt-4 grid gap-3">
+            {memberships.length > 0 ? (
+              memberships.map((membership) => (
+                <Link
+                  key={membership.church.id}
+                  href={`/app/${membership.church.slug}/dashboard`}
+                  className="rounded-[18px] border border-[#e7dece] bg-[#fcfbf8] px-4 py-4 transition hover:border-[#d7c4a3] hover:bg-white"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111111]">{membership.church.name}</p>
+                      <p className="mt-1 text-xs text-[#7b6f61]">/{membership.church.slug}</p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#8C7A5B]">
+                      <span className="rounded-full border border-[#eadfcd] bg-white px-2.5 py-1">{roleLabels[membership.role] ?? membership.role}</span>
+                      <span className="rounded-full border border-[#eadfcd] bg-white px-2.5 py-1">바로 열기</span>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="rounded-[18px] border border-dashed border-[#d9cfbe] bg-[#fcfbf8] px-4 py-6 text-sm text-[#7b6f61]">
+                아직 연결된 교회가 없어. 위 입력으로 첫 워크스페이스를 만들면 바로 대시보드로 들어간다.
+              </div>
+            )}
           </div>
         </div>
 
