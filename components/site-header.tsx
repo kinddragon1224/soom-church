@@ -6,14 +6,15 @@ import { useEffect, useState } from "react";
 
 type SiteHeaderProps = {
   theme?: "light" | "dark";
-  current?: "home" | "pricing" | "about" | "guides" | "contact";
+  current?: "home" | "workspace" | "pricing" | "about" | "guides" | "contact";
   ctaHref?: string;
   ctaLabel?: string;
 };
 
 const navItems = [
   { href: "/", label: "홈", key: "home" },
-  { href: "/pricing", label: "상품", key: "pricing" },
+  { href: "/workspace", label: "워크스페이스", key: "workspace" },
+  { href: "/pricing", label: "콘텐츠 제작", key: "pricing" },
   { href: "/ai-guides", label: "AI 안내서", key: "guides" },
   { href: "/about", label: "About", key: "about" },
   { href: "/contact", label: "문의", key: "contact" },
