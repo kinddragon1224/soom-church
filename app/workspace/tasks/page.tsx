@@ -23,9 +23,9 @@ export default function WorkspaceTasksPage() {
     <div className="flex flex-col gap-6 text-[#121212]">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs tracking-[0.24em] text-[#8C7A5B]">TASKS</p>
-          <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.04em] text-[#121212] sm:text-[2.4rem]">작업</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5F564B] sm:text-base">해야 할 일, 담당자, 상태를 한눈에 보는 작업 보드입니다.</p>
+          <p className="text-xs tracking-[0.24em] text-[#8C7A5B]">WORKFLOWS</p>
+          <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.04em] text-[#121212] sm:text-[2.4rem]">작업 흐름</h1>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-[#5F564B] sm:text-base">해야 할 일, 담당자, 상태를 한눈에 보는 작업 흐름 보드입니다.</p>
         </div>
         <button type="button" className="rounded-full bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">작업 생성</button>
       </div>
@@ -42,7 +42,7 @@ export default function WorkspaceTasksPage() {
       <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
         <section className="rounded-[24px] border border-[#E7E0D4] bg-[#FCFBF8] p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#121212]">작업 리스트</h2>
+            <h2 className="text-lg font-semibold text-[#121212]">작업 흐름 리스트</h2>
             <span className="text-xs text-[#8C7A5B]">우선순위 포함</span>
           </div>
           <div className="mt-4 grid gap-3">
