@@ -34,6 +34,12 @@ export default async function ChurchDashboardPage({ params }: { params: { church
     { title: "숨 모임", desc: "목장/소모임 확장 기능", href: "#", state: "곧 연결" },
   ];
 
+  const actionQueue = [
+    { title: "후속관리 교인 확인", count: data.followUpMembers, href: `/app/${church.slug}/members?filter=followup`, note: "오늘 먼저 챙겨야 할 사람" },
+    { title: "미처리 신청 정리", count: data.pendingApplications, href: `/app/${church.slug}/applications?status=PENDING`, note: "새 신청 응답이 밀리지 않게" },
+    { title: "미배정 교인 배치", count: data.unassignedMembers, href: `/app/${church.slug}/members?filter=unassigned`, note: "교구·목장 연결이 필요한 인원" },
+  ];
+
   return (
     <div className="space-y-4 sm:space-y-5">
       <section className="rounded-xl border border-slate-700 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 p-4 text-slate-100 sm:p-5">
@@ -56,27 +62,35 @@ export default async function ChurchDashboardPage({ params }: { params: { church
         ))}
       </section>
 
-      <section className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-3 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-xl border border-border bg-card p-3">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">후속관리 필요 교인</h3>
-            <Link href={`/app/${church.slug}/members`} className="text-xs text-primary hover:underline">전체 보기</Link>
+            <h3 className="text-sm font-semibold">오늘 먼저 처리할 일</h3>
+            <span className="text-xs text-muted-foreground">운영 기준</span>
           </div>
-          <ul className="space-y-2">
-            {data.recentMembers.slice(0, 3).map((m) => (
-              <li key={m.id} className="rounded-md border border-border p-2">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium">{m.name}</p>
-                  <StatusBadge>{m.statusTag}</StatusBadge>
+          <div className="space-y-2">
+            {actionQueue.map((item) => (
+              <Link key={item.title} href={item.href} className="block rounded-md border border-border p-3 transition hover:bg-muted/40">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium">{item.title}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{item.note}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xl font-bold leading-none">{item.count}</p>
+                    <p className="mt-1 text-[11px] text-primary">바로 열기</p>
+                  </div>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">등록일 {formatDate(m.registeredAt)}</p>
-              </li>
+              </Link>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className="rounded-xl border border-border bg-card p-3">
-          <h3 className="mb-2 text-sm font-semibold">빠른 작업</h3>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold">빠른 작업</h3>
+            <span className="text-xs text-muted-foreground">즉시 이동</span>
+          </div>
           <div className="grid grid-cols-2 gap-2 max-[360px]:grid-cols-1">
             <QuickAction href={`/app/${church.slug}/members`} title="교인 확인" desc="명단과 상태 점검" />
             <QuickAction href={`/app/${church.slug}/applications`} title="신청 확인" desc="미처리 항목 점검" />
@@ -118,15 +132,35 @@ export default async function ChurchDashboardPage({ params }: { params: { church
         </div>
       </section>
 
-      <section className="space-y-2">
-        <div>
-          <h3 className="text-sm font-semibold">숨 모듈 허브</h3>
-          <p className="text-xs text-muted-foreground">숨 플랫폼 기능을 {church.name} 워크스페이스에서 연결해 사용합니다.</p>
+      <section className="grid grid-cols-1 gap-3 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="space-y-2 rounded-xl border border-border bg-card p-3">
+          <div>
+            <h3 className="text-sm font-semibold">숨 모듈 허브</h3>
+            <p className="text-xs text-muted-foreground">숨 플랫폼 기능을 {church.name} 워크스페이스에서 연결해 사용합니다.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {modules.map((module) => (
+              <ModuleCard key={module.title} {...module} />
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
-          {modules.map((module) => (
-            <ModuleCard key={module.title} {...module} />
-          ))}
+
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-semibold">최근 활동</h3>
+            <span className="text-xs text-muted-foreground">시스템 로그</span>
+          </div>
+          <div className="space-y-2">
+            {data.recentLogs.map((log) => (
+              <div key={log.id} className="rounded-md border border-border p-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium">{log.action}</p>
+                  <span className="text-[11px] text-muted-foreground">{formatDate(log.createdAt)}</span>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">대상: {log.targetType}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>
