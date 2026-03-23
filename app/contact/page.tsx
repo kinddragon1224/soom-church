@@ -19,14 +19,18 @@ export default function ContactPage() {
           <div className="max-w-3xl">
             <p className="text-xs tracking-[0.24em] text-white/40">CONTACT</p>
             <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-              지금 가장 급한 실행부터
+              지금 가장 급한 일부터
               <br />
               함께 정리해보자
             </h1>
             <p className="mt-6 text-sm leading-7 text-white/68 sm:text-base">
-              쇼츠가 필요한지, 유튜브 운영이 먼저인지, 행사 안내가 급한지 아직 정확히 정리되지 않아도 괜찮아.
-              지금 상황을 알려주면 가장 현실적인 시작점을 함께 잡아줄게.
+              쇼츠가 먼저인지, 유튜브 운영이 먼저인지, 행사 안내가 급한지 아직 정확히 정리되지 않아도 괜찮습니다.
+              지금 상황을 알려주시면 가장 현실적인 시작점을 함께 정리해드립니다.
             </p>
+            <div className="mt-6 flex flex-col gap-2 text-sm text-white/60 sm:flex-row sm:flex-wrap sm:gap-4">
+              <p>보내주신 내용은 확인 후 순서대로 답변드립니다.</p>
+              <p>급한 일정이 있다면 폼에 함께 남겨주세요.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -34,12 +38,20 @@ export default function ContactPage() {
       <section>
         <div className="mx-auto grid max-w-7xl gap-8 px-5 pb-20 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:pb-28">
           <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
+            <div className="mb-5 rounded-[24px] border border-emerald-400/15 bg-emerald-400/[0.06] px-4 py-4 text-sm text-white/72">
+              <p className="font-semibold text-white">문의는 이렇게 진행돼</p>
+              <div className="mt-2 grid gap-1 text-white/62">
+                <p>1. 지금 필요한 일을 남겨줘</p>
+                <p>2. 내용을 보고 가장 맞는 시작점을 정리해줘</p>
+                <p>3. 필요하면 일정과 범위를 이어서 맞춰</p>
+              </div>
+            </div>
             <form className="grid gap-8">
               <div>
                 <label className="text-sm font-semibold text-white">지금 어떤 도움이 가장 필요해?</label>
                 <div className="mt-4 flex flex-wrap gap-3">
                   {helpTypes.map((item) => (
-                    <button key={item} type="button" className="rounded-full border border-white/12 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78">
+                    <button key={item} type="button" className="rounded-full border border-white/12 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78 transition hover:border-white/28 hover:bg-white/[0.08]">
                       {item}
                     </button>
                   ))}
@@ -70,7 +82,7 @@ export default function ContactPage() {
                   <p className="text-sm font-semibold text-white">예상 일정</p>
                   <div className="mt-4 grid gap-3">
                     {schedules.map((item) => (
-                      <button key={item} type="button" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/78">
+                      <button key={item} type="button" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/78 transition hover:border-white/24 hover:bg-white/[0.08]">
                         {item}
                       </button>
                     ))}
@@ -80,7 +92,7 @@ export default function ContactPage() {
                   <p className="text-sm font-semibold text-white">예산 범위</p>
                   <div className="mt-4 grid gap-3">
                     {budgets.map((item) => (
-                      <button key={item} type="button" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/78">
+                      <button key={item} type="button" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/78 transition hover:border-white/24 hover:bg-white/[0.08]">
                         {item}
                       </button>
                     ))}
@@ -93,9 +105,15 @@ export default function ContactPage() {
                 <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="기존 유튜브, 행사 안내 링크, 참고 자료를 남겨줘" />
               </label>
 
-              <button type="submit" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
-                상담 요청 보내기
-              </button>
+              <div className="grid gap-3">
+                <button type="submit" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
+                  상담 요청 보내기
+                </button>
+                <p className="text-xs leading-6 text-white/44">
+                  아직 자동 접수 연동 전이라, 현재는 상담 요청 화면과 문구를 먼저 다듬는 단계입니다.
+                  실제 운영 연결 전까지는 빠른 문의 채널을 함께 정리할 예정입니다.
+                </p>
+              </div>
             </form>
           </div>
 
@@ -108,10 +126,10 @@ export default function ContactPage() {
                 흐릿해도 괜찮아
               </h2>
               <p className="mt-5 text-sm leading-7 text-white/62 sm:text-base">
-                지금 필요한 게 쇼츠인지, 유튜브 세팅인지, 행사 안내 제작인지 먼저 함께 구분해볼 수 있어.
+                지금 필요한 게 쇼츠인지, 유튜브 세팅인지, 행사 안내 제작인지 먼저 함께 구분할 수 있습니다.
               </p>
               <p className="mt-4 text-sm leading-7 text-white/48 sm:text-base">
-                숨은 복잡한 제안보다, 지금 바로 실행할 수 있는 시작점을 먼저 제안하려고 해.
+                복잡한 제안보다 먼저, 지금 바로 시작할 수 있는 일부터 정리해드립니다.
               </p>
             </div>
 
