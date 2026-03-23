@@ -38,19 +38,21 @@ export default async function SignupPage({
         <form action="/api/signup" method="post" className="mt-5 grid gap-3 sm:grid-cols-2">
           <input name="name" required placeholder="이름" className="rounded-md border border-border px-3 py-2 text-sm" />
           <input name="email" type="email" required placeholder="이메일" className="rounded-md border border-border px-3 py-2 text-sm" />
+          <input name="churchName" required placeholder="교회 이름" className="rounded-md border border-border px-3 py-2 text-sm sm:col-span-2" />
+          <select name="role" defaultValue="" className="rounded-md border border-border px-3 py-2 text-sm">
+            <option value="" disabled>직분 / 역할</option>
+            <option value="PASTOR">목회자</option>
+            <option value="ADMIN">행정 / 사무국</option>
+            <option value="LEADER">리더 / 사역자</option>
+            <option value="VIEWER">기타</option>
+          </select>
+          <input name="ministry" placeholder="부서 또는 팀 (선택)" className="rounded-md border border-border px-3 py-2 text-sm" />
           <input name="password" type="password" required placeholder="비밀번호" className="rounded-md border border-border px-3 py-2 text-sm sm:col-span-2" />
-          <Button type="submit" className="sm:col-span-2">회원가입하고 시작하기</Button>
+          <Button type="submit" className="sm:col-span-2">회원가입하고 워크스페이스 만들기</Button>
         </form>
 
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <button type="button" className="rounded-md border border-border bg-muted px-3 py-2 text-left" disabled aria-disabled>
-            <p className="text-sm font-medium">새 워크스페이스 만들기</p>
-            <p className="text-xs text-muted-foreground">무료 시작 흐름과 함께 연결 예정</p>
-          </button>
-          <button type="button" className="rounded-md border border-border bg-muted px-3 py-2 text-left" disabled aria-disabled>
-            <p className="text-sm font-medium">초대받은 워크스페이스 참여</p>
-            <p className="text-xs text-muted-foreground">초대 코드 기반 참여 기능 준비 중</p>
-          </button>
+        <div className="mt-4 rounded-md border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+          가입하면 바로 기본 워크스페이스가 만들어지고, 사람·신청·공지 흐름부터 시작할 수 있어요.
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
