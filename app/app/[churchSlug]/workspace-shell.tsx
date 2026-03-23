@@ -48,7 +48,7 @@ export function WorkspaceShell({
 
   return (
     <main className="min-h-screen bg-[#EDE6D8] text-[#121212] lg:h-dvh lg:min-h-0 lg:overflow-hidden">
-      <div className="grid min-h-screen lg:h-full lg:min-h-0 lg:grid-cols-[272px_minmax(0,1fr)] lg:gap-3 lg:p-3">
+      <div className="grid min-h-screen lg:h-full lg:min-h-0 lg:grid-cols-[248px_minmax(0,1fr)] lg:gap-3 lg:p-3">
         <aside className="border-b border-[#1b2740] bg-[#0F172A] px-4 py-5 text-white lg:h-full lg:min-h-0 lg:overflow-y-auto lg:rounded-[28px] lg:border lg:border-[#16233b] lg:shadow-[0_24px_60px_rgba(15,23,42,0.28)]">
           <div className="lg:flex lg:min-h-full lg:flex-col lg:py-1">
             <div className="flex items-start justify-between gap-3 px-1">
@@ -61,12 +61,12 @@ export function WorkspaceShell({
               <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] tracking-[0.16em] text-white/50">LIVE</span>
             </div>
 
-            <div className="mt-5 rounded-[22px] border border-white/8 bg-white/[0.04] p-4">
-              <p className="text-[11px] tracking-[0.18em] text-white/38">CURRENT WORKSPACE</p>
+            <div className="mt-5 rounded-[20px] border border-white/8 bg-white/[0.04] p-3.5">
+              <p className="text-[10px] tracking-[0.2em] text-white/34">WORKSPACE</p>
               <p className="mt-2 text-sm font-semibold text-white">{church.name}</p>
-              <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-white/58">
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">무료 플랜</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">실사용</span>
+              <div className="mt-3 flex flex-wrap gap-2 text-[10px] text-white/58">
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">무료</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">LIVE</span>
               </div>
             </div>
 
@@ -92,14 +92,14 @@ export function WorkspaceShell({
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <p className={`font-medium ${active ? "font-semibold" : ""}`}>{item.label}</p>
-                              <p className={`mt-1 text-[11px] ${active ? "text-[#47391d]" : "text-white/36"}`}>{item.hint}</p>
+                              <p className={`mt-1 text-[10px] ${active ? "text-[#47391d]" : "text-white/36"}`}>{item.hint}</p>
                             </div>
                             <span
-                              className={`rounded-full px-2 py-1 text-[10px] uppercase tracking-[0.16em] ${
-                                active ? "bg-black/10 text-[#3d3118]" : "bg-white/6 text-white/28"
+                              className={`rounded-full px-2 py-1 text-[9px] uppercase tracking-[0.16em] ${
+                                active ? "bg-black/10 text-[#3d3118]" : "bg-white/6 text-white/24"
                               }`}
                             >
-                              {active ? "now" : item.key}
+                              {active ? "on" : ""}
                             </span>
                           </div>
                         </Link>
@@ -110,16 +110,11 @@ export function WorkspaceShell({
               ))}
             </div>
 
-            <div className="mt-5 rounded-[20px] border border-white/8 bg-white/[0.04] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-[11px] tracking-[0.18em] text-white/38">SHORTCUTS</p>
-                  <p className="mt-1 text-xs text-white/52">빠르게 이동</p>
-                </div>
-              </div>
+            <div className="mt-5 rounded-[20px] border border-white/8 bg-white/[0.04] p-3.5">
+              <p className="text-[10px] tracking-[0.2em] text-white/34">SHORTCUTS</p>
               <div className="mt-3 grid gap-2">
-                <Link href="/" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2.5 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">홈으로</Link>
-                <Link href="/app" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2.5 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">워크스페이스 선택</Link>
+                <Link href="/" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">홈</Link>
+                <Link href="/app" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">워크스페이스</Link>
               </div>
             </div>
           </div>
@@ -134,8 +129,8 @@ export function WorkspaceShell({
                   <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">{church.name}</span>
                 </div>
                 <div className="mt-3 flex items-end gap-3">
-                  <h1 className="text-[1.8rem] font-semibold tracking-[-0.05em] text-[#121212]">{currentItem.label}</h1>
-                  <p className="pb-1 text-sm text-[#7B6F60]">{currentItem.hint}</p>
+                  <h1 className="text-[1.65rem] font-semibold tracking-[-0.05em] text-[#121212]">{currentItem.label}</h1>
+                  <p className="pb-1 text-xs text-[#7B6F60]">{currentItem.hint}</p>
                 </div>
               </div>
 
