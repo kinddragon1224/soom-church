@@ -49,6 +49,9 @@
   - `app/(admin)/layout.tsx`
   - `app/app/[churchSlug]/layout.tsx`
   - `app/platform-admin/layout.tsx`
+- 커스텀 도메인 연결 완료
+  - 프로덕션 도메인: `soom.io.kr`
+  - 상태: Vercel `Valid Configuration`
 
 ## 참고 파일
 - 메인 복구 문서: `soom-church/docs/SESSION_SUMMARY_2026-03-23.md`
@@ -67,3 +70,8 @@
 3. 내가 대신 수정할 수 있는 것
 4. 확인만 필요한 것
 순서로 짧게 안내한다.
+
+## 톤 구분 메모
+- 대화 톤: 선용과의 채팅은 반말 유지
+- 홈페이지/마케팅 문구 톤: 사용자 대상 문구는 기본적으로 존댓말 유지
+- 작업 중 헷갈리면 대화 톤과 사이트 문구 톤을 분리해서 판단한다
