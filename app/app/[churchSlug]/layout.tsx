@@ -1,9 +1,24 @@
-import Image from "next/image";
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 
 export const dynamic = "force-dynamic";
 export const preferredRegion = "sin1";
+
+const navSections = [
+  {
+    title: "workspace",
+    items: [
+      { key: "dashboard", label: "홈", href: "dashboard", hint: "운영 요약" },
+      { key: "members", label: "사람", href: "members", hint: "교인과 상태" },
+      { key: "applications", label: "신청", href: "applications", hint: "접수와 처리" },
+      { key: "notices", label: "공지", href: "notices", hint: "전달 흐름" },
+    ],
+  },
+  {
+    title: "system",
+    items: [{ key: "settings", label: "설정", href: "settings", hint: "워크스페이스 기본값" }],
+  },
+] as const;
 
 export default async function ChurchWorkspaceLayout({
   children,
@@ -16,13 +31,13 @@ export default async function ChurchWorkspaceLayout({
 
   if (!membership) {
     return (
-      <div className="min-h-screen bg-background p-4 sm:p-6">
-        <div className="mx-auto w-full max-w-2xl rounded-xl border border-border bg-card p-5">
-          <h1 className="text-xl font-semibold">이 워크스페이스에 접근할 권한이 없습니다</h1>
-          <p className="mt-2 text-sm text-muted-foreground">다른 워크스페이스를 선택하거나 관리자에게 문의하세요.</p>
+      <div className="min-h-screen bg-[#EDE6D8] p-4 sm:p-6">
+        <div className="mx-auto w-full max-w-2xl rounded-[28px] border border-[#DDD1BE] bg-[#FBF9F4] p-6 text-[#121212] shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+          <h1 className="text-xl font-semibold">이 워크스페이스에 접근할 권한이 없어</h1>
+          <p className="mt-2 text-sm text-[#5F564B]">다른 워크스페이스를 선택하거나 관리자에게 문의해줘.</p>
           <div className="mt-4 flex flex-wrap gap-2 text-sm">
-            <Link href="/app" className="rounded-md bg-primary px-3 py-2 text-primary-foreground">워크스페이스 선택</Link>
-            <Link href="/signup" className="rounded-md border border-border px-3 py-2">온보딩 안내</Link>
+            <Link href="/app" className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-white">워크스페이스 선택</Link>
+            <Link href="/signup" className="rounded-[12px] border border-[#DDD1BE] px-4 py-2 text-[#121212]">회원가입</Link>
           </div>
         </div>
       </div>
@@ -33,91 +48,99 @@ export default async function ChurchWorkspaceLayout({
   const base = `/app/${church.slug}`;
 
   return (
-    <div className="min-h-screen bg-background lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="hidden border-r border-border bg-card p-4 lg:block">
-        <WorkspaceSidebar base={base} churchName={church.name} />
-      </aside>
+    <main className="min-h-screen bg-[#EDE6D8] text-[#121212] lg:h-dvh lg:min-h-0 lg:overflow-hidden">
+      <div className="grid min-h-screen lg:h-full lg:min-h-0 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-3 lg:p-3">
+        <aside className="border-b border-[#1b2740] bg-[#0F172A] px-4 py-5 text-white lg:h-full lg:min-h-0 lg:overflow-y-auto lg:rounded-[28px] lg:border lg:border-[#16233b] lg:shadow-[0_24px_60px_rgba(15,23,42,0.28)]">
+          <div className="lg:flex lg:min-h-full lg:flex-col lg:py-1">
+            <div className="flex items-start justify-between gap-3 px-1">
+              <div>
+                <Link href={`${base}/dashboard`} className="font-display text-[1.6rem] font-semibold tracking-[-0.08em] text-white">
+                  SOOM workspace
+                </Link>
+                <p className="mt-2 text-xs text-white/52">교회 운영과 실행을 한곳에서 정리하는 허브</p>
+              </div>
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] tracking-[0.16em] text-white/50">LIVE</span>
+            </div>
 
-      <div className="min-w-0">
-        <header className="border-b border-border bg-card px-4 py-3 sm:px-6">
-          <div className="inline-flex items-center">
-            <Image src="/soom-logo-main.svg" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
-          </div>
-          <div className="mt-1 flex items-center justify-between gap-3">
-            <h1 className="text-lg font-semibold">{church.name}</h1>
-            <div className="flex items-center gap-3 text-xs">
-              <Link href="/" className="text-primary hover:underline">홈</Link>
-              <Link href="/app" className="text-primary hover:underline">워크스페이스 변경</Link>
+            <div className="mt-6 rounded-[22px] border border-white/8 bg-white/[0.04] p-4">
+              <p className="text-[11px] tracking-[0.18em] text-white/38">CURRENT WORKSPACE</p>
+              <p className="mt-2 text-sm font-semibold text-white">{church.name}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-white/58">
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">무료 플랜</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">실사용 워크스페이스</span>
+              </div>
+              <div className="mt-4 rounded-[18px] border border-[#C8A96B]/20 bg-[#C8A96B]/10 px-3 py-3">
+                <p className="text-[11px] tracking-[0.16em] text-[#E7D7B1]">WORKSPACE HEALTH</p>
+                <p className="mt-2 text-sm font-medium text-white">운영 시작선 정리중</p>
+                <p className="mt-2 text-xs leading-5 text-white/54">사람, 신청, 공지 흐름을 먼저 실사용 기준으로 맞추는 단계야.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-5">
+              {navSections.map((section) => (
+                <div key={section.title}>
+                  <p className="px-2 text-[11px] uppercase tracking-[0.18em] text-white/28">{section.title}</p>
+                  <div className="mt-2 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-1">
+                    {section.items.map((item) => (
+                      <Link
+                        key={item.key}
+                        href={`${base}/${item.href}`}
+                        className="rounded-[16px] px-3 py-3 text-sm text-white/72 transition hover:bg-white/6 hover:text-white"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="font-medium">{item.label}</p>
+                            <p className="mt-1 text-[11px] text-white/36">{item.hint}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-[20px] border border-white/8 bg-white/[0.04] p-4">
+              <p className="text-[11px] tracking-[0.18em] text-white/38">SHORTCUTS</p>
+              <div className="mt-3 grid gap-2">
+                <Link href="/" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2.5 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">홈으로</Link>
+                <Link href="/app" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2.5 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">워크스페이스 선택</Link>
+              </div>
             </div>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">숨 / {church.name} 워크스페이스</p>
-          <nav className="mt-3 flex gap-2 overflow-x-auto pb-1 text-xs lg:hidden">
-            <MobileTab href={`${base}/dashboard`} label="운영 현황" />
-            <MobileTab href={`${base}/members`} label="교인" />
-            <MobileTab href={`${base}/applications`} label="신청" />
-            <MobileTab href={`${base}/notices`} label="공지" />
-            <MobileTab href={`${base}/settings`} label="설정" />
-          </nav>
-        </header>
+        </aside>
 
-        <main className="p-4 sm:p-6">{children}</main>
-      </div>
-    </div>
-  );
-}
-
-function WorkspaceSidebar({ base, churchName }: { base: string; churchName: string }) {
-  return (
-    <div>
-      <div className="inline-flex items-center">
-        <Image src="/soom-logo-main.svg" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
-      </div>
-      <h2 className="mt-1 text-lg font-semibold">{churchName}</h2>
-      <p className="text-xs text-muted-foreground">교회 워크스페이스</p>
-
-      <div className="mt-5 space-y-4 text-sm">
-        <SidebarGroup title="대시보드" items={[{ href: `${base}/dashboard`, label: "운영 현황" }]} />
-        <SidebarGroup title="교회 관리" items={[{ href: `${base}/members`, label: "교인" }, { href: `${base}/members`, label: "교구/목장" }]} />
-        <SidebarGroup title="운영" items={[{ href: `${base}/applications`, label: "신청" }, { href: `${base}/notices`, label: "공지" }, { href: `${base}/dashboard`, label: "활동 로그" }]} />
-        <SidebarGroup title="확장 서비스" items={[{ label: "숨 기록", disabled: true, badge: "준비 중" }, { label: "숨 모임", disabled: true, badge: "곧 연결" }]} />
-        <SidebarGroup title="설정" items={[{ href: `${base}/settings`, label: "워크스페이스 설정" }, { label: "구독/플랜", disabled: true, badge: "준비 중" }]} />
-      </div>
-    </div>
-  );
-}
-
-function SidebarGroup({
-  title,
-  items,
-}: {
-  title: string;
-  items: { href?: string; label: string; disabled?: boolean; badge?: string }[];
-}) {
-  return (
-    <section>
-      <p className="mb-1 px-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
-      <div className="space-y-1">
-        {items.map((item) =>
-          item.href && !item.disabled ? (
-            <Link key={item.label} href={item.href} className="block rounded-md px-3 py-2 hover:bg-muted">
-              {item.label}
-            </Link>
-          ) : (
-            <div key={item.label} className="flex items-center justify-between rounded-md px-3 py-2 text-muted-foreground">
-              <span>{item.label}</span>
-              {item.badge ? <span className="rounded-full bg-muted px-2 py-0.5 text-[11px]">{item.badge}</span> : null}
+        <section className="min-w-0 bg-[#F4F0E8] lg:h-full lg:min-h-0 lg:overflow-y-auto lg:rounded-[30px] lg:border lg:border-[#DDD1BE] lg:bg-[#F4F0E8] lg:shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+          <div className="border-b border-[#E3D9C9] bg-[#FBF9F4] px-5 py-4 sm:px-7 lg:sticky lg:top-0 lg:z-20 lg:rounded-t-[30px]">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="flex flex-col gap-3">
+                <div>
+                  <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">SOOM WORKSPACE</p>
+                  <h1 className="mt-2 text-[1.9rem] font-semibold tracking-[-0.05em] text-[#121212]">{church.name}</h1>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5F564B]">실제 교회 운영을 위해 사람, 신청, 공지 흐름을 한곳에서 관리하는 워크스페이스</p>
+                </div>
+                <div className="flex flex-wrap gap-2 text-xs text-[#8C7A5B]">
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">Asia/Seoul</span>
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">교회 운영 모드</span>
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">실사용 기준 개발중</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-stretch gap-3 lg:min-w-[380px] lg:items-end">
+                <div className="flex w-full max-w-[420px] items-center gap-2 rounded-[16px] border border-[#E7E0D4] bg-white px-3 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                  <span className="text-sm text-[#8C7A5B]">⌘K</span>
+                  <span className="text-sm text-[#7B6F60]">교인, 신청, 공지, 설정을 빠르게 찾기</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-[#8C7A5B]">
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1.5">실사용 워크스페이스</span>
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1.5">owner</span>
+                </div>
+              </div>
             </div>
-          ),
-        )}
-      </div>
-    </section>
-  );
-}
+          </div>
 
-function MobileTab({ href, label }: { href: string; label: string }) {
-  return (
-    <Link href={href} className="whitespace-nowrap rounded-full border border-border px-2.5 py-1.5 text-muted-foreground hover:bg-muted">
-      {label}
-    </Link>
+          <div className="min-w-0 p-5 sm:p-7">{children}</div>
+        </section>
+      </div>
+    </main>
   );
 }
