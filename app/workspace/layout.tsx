@@ -3,13 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navItems = [
-  { href: "/workspace", label: "홈" },
-  { href: "/workspace/people", label: "사람" },
-  { href: "/workspace/notices", label: "공지" },
-  { href: "/workspace/tasks", label: "작업" },
-  { href: "/workspace/content", label: "콘텐츠" },
-  { href: "/workspace/settings", label: "설정" },
+const navSections = [
+  {
+    title: "workspace",
+    items: [
+      { href: "/workspace", label: "홈" },
+      { href: "/workspace/people", label: "사람" },
+      { href: "/workspace/notices", label: "커뮤니케이션" },
+      { href: "/workspace/tasks", label: "작업 흐름" },
+      { href: "/workspace/content", label: "콘텐츠 스튜디오" },
+    ],
+  },
+  {
+    title: "system",
+    items: [{ href: "/workspace/settings", label: "설정" }],
+  },
 ];
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
@@ -26,19 +34,26 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <span className="text-xs text-white/34">demo</span>
           </div>
 
-          <div className="mt-7 grid gap-1.5">
-            {navItems.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`rounded-[14px] px-3 py-2.5 text-sm transition ${active ? "bg-[#C8A96B] text-[#121212] font-semibold" : "text-white/70 hover:bg-white/6 hover:text-white"}`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+          <div className="mt-7 space-y-5">
+            {navSections.map((section) => (
+              <div key={section.title}>
+                <p className="px-3 text-[11px] uppercase tracking-[0.18em] text-white/28">{section.title}</p>
+                <div className="mt-2 grid gap-1.5">
+                  {section.items.map((item) => {
+                    const active = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`rounded-[14px] px-3 py-2.5 text-sm transition ${active ? "bg-[#C8A96B] text-[#121212] font-semibold" : "text-white/70 hover:bg-white/6 hover:text-white"}`}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div className="mt-auto space-y-3 px-2">
