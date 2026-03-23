@@ -7,34 +7,39 @@ const stats = [
   { label: "content", value: "8", delta: "3 in review" },
 ];
 
-const broadcasts = [
-  { title: "수련회 신청 오픈 안내", channel: "카카오톡 채널", status: "scheduled", when: "today 18:00" },
-  { title: "주일 예배 공지", channel: "문자", status: "sent", when: "yesterday" },
-  { title: "청년부 모임 리마인드", channel: "push", status: "draft", when: "pending" },
+const onboardingSteps = [
+  { step: "step 1", title: "워크스페이스 기본 정보 정리", action: "시작", muted: false },
+  { step: "step 2", title: "사람 상태 체계 만들기", action: "설정", muted: false },
+  { step: "step 3", title: "팀원 초대", action: "초대", muted: false },
+  { step: "step 4", title: "사람 연락처 추가", action: "추가", muted: true },
+];
+
+const feedItems = [
+  { title: "온보딩에서 자동 연락처 수집", body: "새가족 등록 흐름에 연락처 수집 단계를 추가해 사람 기록을 더 빠르게 쌓을 수 있습니다.", cta: "워크플로우 보기", meta: "5분 전" },
+  { title: "SOOM+ 콘텐츠 스튜디오 미리 보기", body: "설교를 쇼츠, 안내 콘텐츠, 행사 페이지 흐름으로 연결하는 기능을 준비하고 있습니다.", cta: "자세히 보기", meta: "오늘" },
+  { title: "그룹별 공지 발송 준비", body: "부서·사역팀별로 다른 공지를 보내는 흐름을 곧 연결할 수 있도록 구조를 정리하고 있습니다.", cta: "공지 보기", meta: "이번 주" },
+];
+
+const quickLinks = [
+  { title: "문의함 보기", desc: "들어온 문의와 요청 확인", href: "/contact" },
+  { title: "공지 보내기", desc: "주요 공지 초안/예약", href: "/workspace/notices" },
+  { title: "사람 상태 보기", desc: "새가족·후속관리 흐름", href: "/workspace/people" },
+  { title: "그룹 관리", desc: "팀/부서 구조 준비", href: "/workspace/people" },
+  { title: "콘텐츠 요청 보기", desc: "쇼츠·영상·페이지 진행", href: "/workspace/content" },
+  { title: "블로그 보기", desc: "운영과 AI 글 아카이브", href: "/ai-guides" },
+];
+
+const supportLinks = [
+  { title: "블로그", desc: "운영과 AI 관련 글을 계속 쌓습니다.", href: "/ai-guides" },
+  { title: "도움말 센터", desc: "기능 설명과 사용 흐름을 정리합니다.", href: "/workspace/settings" },
+  { title: "문의하기", desc: "직접 도움을 받고 싶다면 바로 연결하세요.", href: "/contact" },
 ];
 
 const tasks = [
-  { title: "새가족 후속관리 배정", owner: "김선용", priority: "high", status: "in progress" },
-  { title: "수련회 신청 페이지 수정", owner: "최재성", priority: "medium", status: "review" },
-  { title: "주보 공지 문구 정리", owner: "사무국", priority: "medium", status: "queued" },
-  { title: "쇼츠 업로드 캘린더 확정", owner: "콘텐츠", priority: "high", status: "in progress" },
+  { title: "새가족 후속관리 배정", owner: "김선용", priority: "높음", status: "진행중" },
+  { title: "수련회 신청 페이지 수정", owner: "최재성", priority: "중간", status: "검토" },
+  { title: "주보 공지 문구 정리", owner: "사무국", priority: "중간", status: "대기" },
 ];
-
-const people = [
-  { name: "김은혜", tag: "new", status: "후속 연락 필요" },
-  { name: "박준호", tag: "settling", status: "소그룹 연결 중" },
-  { name: "이수민", tag: "serving", status: "미디어팀 상담" },
-  { name: "최다은", tag: "unassigned", status: "배정 검토 필요" },
-];
-
-const contentPipeline = [
-  { title: "설교 쇼츠 3건", stage: "editing" },
-  { title: "수련회 랜딩 페이지", stage: "planning" },
-  { title: "유튜브 채널 구조 정리", stage: "done" },
-  { title: "부활절 홍보영상", stage: "review" },
-];
-
-const quickActions = ["공지 작성", "멤버 추가", "콘텐츠 요청", "작업 생성"];
 
 export default function WorkspacePage() {
   return (
@@ -52,22 +57,26 @@ export default function WorkspacePage() {
 
       <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr_0.65fr]">
         <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-          <p className="text-[11px] tracking-[0.18em] text-[#9aa0a6]">START</p>
-          <h2 className="mt-2 text-xl font-semibold text-[#111111]">워크스페이스 시작하기</h2>
-          <p className="mt-2 text-sm text-[#6b7280]">무료로 시작하고 필요한 흐름을 차근차근 채워가세요.</p>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] tracking-[0.18em] text-[#9aa0a6]">GET STARTED WITH MESSAGING</p>
+              <h2 className="mt-2 text-xl font-semibold text-[#111111]">메시징 시작하기</h2>
+            </div>
+            <span className="text-xs text-[#8C7A5B]">0% 완료</span>
+          </div>
           <div className="mt-5 grid gap-3">
-            {[
-              ["step 1", "워크스페이스 기본 정보 정리", "시작"],
-              ["step 2", "사람 상태 체계 잡기", "설정"],
-              ["step 3", "팀원 초대", "초대"],
-              ["step 4", "콘텐츠 흐름 연결", "추가"],
-            ].map(([step, label, action]) => (
-              <div key={label} className="flex items-center justify-between gap-3 rounded-[16px] border border-[#eceef1] bg-[#fafafa] px-4 py-3">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-[#9aa0a6]">{step}</p>
-                  <p className="mt-1 text-sm font-medium text-[#111111]">{label}</p>
+            {onboardingSteps.map((item) => (
+              <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] px-4 py-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-[#9aa0a6]">{item.step}</p>
+                    <p className="mt-1 text-sm font-medium text-[#111111]">{item.title}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="button" className="rounded-[10px] bg-[#0F172A] px-4 py-2 text-xs font-medium text-white">{item.action}</button>
+                    {item.muted ? <button type="button" className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-2 text-xs text-[#6b7280]">건너뛰기</button> : null}
+                  </div>
                 </div>
-                <button type="button" className="rounded-[10px] bg-[#111111] px-4 py-2 text-xs font-medium text-white">{action}</button>
               </div>
             ))}
           </div>
@@ -79,21 +88,21 @@ export default function WorkspacePage() {
             <button type="button" className="rounded-[10px] px-3 py-2 text-xs text-[#9aa0a6]">알림</button>
           </div>
           <div className="mt-4 grid gap-3">
-            {broadcasts.map((item) => (
+            {feedItems.map((item) => (
               <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0F172A] text-xs font-semibold text-white">so</div>
                     <div>
                       <p className="text-sm font-medium text-[#111111]">{item.title}</p>
-                      <p className="mt-1 text-xs text-[#6b7280]">{item.channel}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#6b7280]">{item.body}</p>
                     </div>
                   </div>
-                  <span className="text-[11px] text-[#9aa0a6]">{item.when}</span>
+                  <span className="text-[11px] text-[#9aa0a6]">{item.meta}</span>
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-3">
-                  <span className="rounded-full border border-[#e5e7eb] bg-white px-3 py-1 text-[11px] text-[#6b7280]">{item.status}</span>
-                  <button type="button" className="rounded-[10px] border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-medium text-[#111111]">보기</button>
+                  <button type="button" className="rounded-[10px] border border-[#e5e7eb] bg-white px-3 py-2 text-xs font-medium text-[#111111]">{item.cta}</button>
+                  <button type="button" className="text-[11px] text-[#8C7A5B]">자세히</button>
                 </div>
               </div>
             ))}
@@ -124,8 +133,23 @@ export default function WorkspacePage() {
       <div className="grid gap-4 xl:grid-cols-[1fr_1fr_1fr]">
         <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-[#111111]">빠른 이동</h2>
+            <span className="text-xs text-[#8C7A5B]">핵심 액션</span>
+          </div>
+          <div className="mt-4 grid gap-3">
+            {quickLinks.map((item) => (
+              <Link key={item.title} href={item.href} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4 transition hover:bg-white">
+                <p className="text-sm font-medium text-[#111111]">{item.title}</p>
+                <p className="mt-2 text-sm text-[#6b7280]">{item.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+          <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-[#111111]">진행 중인 작업</h2>
-            <Link href="/workspace/tasks" className="text-xs text-[#6b7280] hover:text-[#111111]">View board</Link>
+            <Link href="/workspace/tasks" className="text-xs text-[#6b7280] hover:text-[#111111]">보드 보기</Link>
           </div>
           <div className="mt-4 grid gap-3">
             {tasks.map((task) => (
@@ -145,46 +169,18 @@ export default function WorkspacePage() {
 
         <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#111111]">사람 상태</h2>
-            <Link href="/workspace/people" className="text-xs text-[#6b7280] hover:text-[#111111]">열기</Link>
+            <h2 className="text-lg font-semibold text-[#111111]">지원과 리소스</h2>
+            <span className="text-xs text-[#8C7A5B]">support</span>
           </div>
           <div className="mt-4 grid gap-3">
-            {people.map((person) => (
-              <div key={person.name} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-[#111111]">{person.name}</p>
-                    <p className="mt-1 text-xs text-[#6b7280]">{person.status}</p>
-                  </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-[11px] text-[#6b7280] border border-[#e5e7eb]">{person.tag}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[22px] border border-[#e6e7ea] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#111111]">콘텐츠 파이프라인</h2>
-            <Link href="/workspace/content" className="text-xs text-[#6b7280] hover:text-[#111111]">열기</Link>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {contentPipeline.map((item) => (
-              <div key={item.title} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4">
+            {supportLinks.map((item) => (
+              <Link key={item.title} href={item.href} className="rounded-[16px] border border-[#eceef1] bg-[#fafafa] p-4 transition hover:bg-white">
                 <p className="text-sm font-medium text-[#111111]">{item.title}</p>
-                <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-[#9aa0a6]">{item.stage}</p>
-              </div>
+                <p className="mt-2 text-sm text-[#6b7280]">{item.desc}</p>
+              </Link>
             ))}
           </div>
         </section>
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {quickActions.map((item) => (
-          <button key={item} type="button" className="rounded-[18px] border border-[#e6e7ea] bg-white px-4 py-4 text-left text-sm font-medium text-[#111111] shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition hover:bg-[#fafafa]">
-            {item}
-          </button>
-        ))}
       </div>
     </div>
   );
