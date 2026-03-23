@@ -48,9 +48,43 @@ const moduleCards = [
   { href: "/workspace/content", label: "콘텐츠", value: "검토 1건", note: "썸네일 승인 후 바로 배포 가능", tone: "slate" },
 ] as const;
 
+const nextActionMap = {
+  "/workspace": [
+    { label: "사람", title: "새가족 첫 연락 배정", note: "오늘 안에 담당자와 첫 연락 시점을 붙여야 합니다." },
+    { label: "공지", title: "수련회 안내 예약 점검", note: "발송 채널과 문구를 마지막으로 확인합니다." },
+    { label: "콘텐츠", title: "부활절 영상 승인", note: "썸네일과 자막 톤만 정리하면 바로 배포할 수 있습니다." },
+  ],
+  "/workspace/people": [
+    { label: "오늘", title: "김은혜 첫 연락", note: "주일 첫 방문 이후 48시간 안에 연락을 시작해야 합니다." },
+    { label: "정착", title: "정하늘 소그룹 연결", note: "첫 안내 이후 다음 관계 연결이 끊기지 않게 이어줍니다." },
+    { label: "배정", title: "교구 미배정 2명 검토", note: "리더 회의 전에 담당 교구와 연결 여부를 확인합니다." },
+  ],
+  "/workspace/notices": [
+    { label: "예약", title: "수련회 안내 수요일 발송", note: "신청 링크와 마감일이 최신 버전인지 다시 확인합니다." },
+    { label: "리마인드", title: "봉사자 안내 오늘 발송", note: "예배 시간 변경이 반영됐는지 검토가 필요합니다." },
+    { label: "초안", title: "청년부 모임 공지 문구 조정", note: "푸시 제목 길이와 톤을 채널에 맞게 압축합니다." },
+  ],
+  "/workspace/tasks": [
+    { label: "마감", title: "새가족 후속 연락 완료", note: "오늘 처리 기준 작업부터 먼저 닫아야 합니다." },
+    { label: "검토", title: "수련회 페이지 검수", note: "신청 버튼 문구와 마감 시점을 마지막으로 확인합니다." },
+    { label: "현장", title: "부활절 체크리스트 정리", note: "역할 배정 누락 없이 오늘 마감선까지 끌어옵니다." },
+  ],
+  "/workspace/content": [
+    { label: "쇼츠", title: "설교 클립 3건 편집", note: "자막 톤과 컷 길이를 같은 결로 맞춥니다." },
+    { label: "랜딩", title: "수련회 페이지 시안 정리", note: "안내 문구와 신청 흐름을 한 화면으로 압축합니다." },
+    { label: "배포", title: "부활절 영상 검토 완료", note: "썸네일 승인 후 공지 흐름과 같이 배포합니다." },
+  ],
+  "/workspace/settings": [
+    { label: "기본값", title: "워크스페이스 이름·구조 점검", note: "교회명, 부서, 담당자 구조가 실제 운영과 맞는지 봅니다." },
+    { label: "도입", title: "사람 상태 체계 정리", note: "새가족, 정착, 봉사연결 같은 기본 상태를 먼저 잡습니다." },
+    { label: "확장", title: "공지·콘텐츠 연결 준비", note: "운영 루틴이 잡히면 다음 확장 포인트를 열 수 있습니다." },
+  ],
+} as const;
+
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const current = activeRoute[pathname as keyof typeof activeRoute] ?? activeRoute["/workspace"];
+  const nextActions = nextActionMap[pathname as keyof typeof nextActionMap] ?? nextActionMap["/workspace"];
 
   return (
     <main className="min-h-screen bg-[#F4F0E8] text-[#121212]">
@@ -215,6 +249,28 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                   </Link>
                 );
               })}
+            </div>
+
+            <div className="mt-4 rounded-[24px] border border-[#E7E0D4] bg-white p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)] sm:p-5">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p className="text-[11px] tracking-[0.18em] text-[#8C7A5B]">NEXT ACTIONS</p>
+                  <h2 className="mt-2 text-lg font-semibold text-[#121212]">이 화면에서 바로 이어질 실행 흐름</h2>
+                </div>
+                <p className="text-xs text-[#8C7A5B]">현재 페이지 기준 우선순위 3개</p>
+              </div>
+              <div className="mt-4 grid gap-3 xl:grid-cols-3">
+                {nextActions.map((item) => (
+                  <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-[#FCFBF8] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="rounded-full border border-[#E7E0D4] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.label}</span>
+                      <span className="text-[11px] text-[#9A8B7A]">ready</span>
+                    </div>
+                    <p className="mt-3 text-sm font-semibold text-[#121212]">{item.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
