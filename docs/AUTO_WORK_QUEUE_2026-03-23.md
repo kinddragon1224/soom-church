@@ -15,8 +15,9 @@
    - 2026-03-23 23:31 KST: 홈 hero/queue/recent/areas 1차 재배치 완료
 
 2. `/app/[churchSlug]/layout`
-   - 좌측 네비 밀도/활성 상태 개선
-   - 상단 유틸 더 gloo식으로 압축
+   - [done] 좌측 네비 밀도/활성 상태 개선
+   - [done] 상단 유틸 더 gloo식으로 압축
+   - 2026-03-24 00:07 KST: 좌측 네비 active badge/밀도 정리, 상단 헤더를 현재 섹션 중심으로 압축
 
 3. `/app/[churchSlug]/members`
    - 리스트 밀도 조정
