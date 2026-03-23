@@ -20,9 +20,10 @@
    - 2026-03-24 00:07 KST: 좌측 네비 active badge/밀도 정리, 상단 헤더를 현재 섹션 중심으로 압축
 
 3. `/app/[churchSlug]/members`
-   - 리스트 밀도 조정
+   - [done] 리스트 밀도 조정
    - 액션 버튼 더 직관적으로 정리
    - 카드 텍스트 추가 축소
+   - 2026-03-24 00:33 KST: 사람 목록을 카드 나열에서 gloo식 dense row 리스트로 압축
 
 4. `/app/[churchSlug]/applications`
    - 신청 상태 표현 한국형으로 정리

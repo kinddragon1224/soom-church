@@ -144,37 +144,61 @@ export default async function ChurchMembersPage({
         </div>
 
         <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-3 border-b border-[#efe7da] pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PEOPLE LIST</p>
               <h2 className="mt-2 text-lg font-semibold text-[#111111]">사람 목록</h2>
             </div>
-            <span className="text-xs text-[#8C7A5B]">{filter === "followup" ? "후속관리 보기" : filter === "new" ? "이번 달 신규" : "전체 보기"}</span>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-[#8C7A5B]">
+              <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[#8C6A2E]">{members.length}명 표시</span>
+              <span>{filter === "followup" ? "후속관리 보기" : filter === "new" ? "이번 달 신규" : "전체 보기"}</span>
+            </div>
           </div>
-          <div className="mt-4 grid gap-3">
+
+          <div className="mt-4 grid gap-2">
+            <div className="hidden grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_120px_120px] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] md:grid">
+              <span>이름 / 상태</span>
+              <span>연락처 / 소속</span>
+              <span>직분</span>
+              <span>등록일</span>
+            </div>
+
             {members.length === 0 ? (
               <div className="rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] p-6 text-sm text-[#5f564b]">
                 아직 표시할 사람이 없어. 회원가입 이후 사람 데이터를 추가하면 여기서 바로 관리할 수 있어.
               </div>
             ) : (
               members.map((member) => (
-                <div key={member.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
+                <div
+                  key={member.id}
+                  className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-3 py-3 transition hover:border-[#dfd3bf] hover:bg-white"
+                >
+                  <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)_120px_120px] md:items-center md:gap-3">
+                    <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-sm font-semibold text-[#111111]">{member.name}</p>
                         <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{member.statusTag}</span>
-                        {member.requiresFollowUp ? <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-2.5 py-1 text-[11px] text-[#8C6A2E]">follow-up</span> : null}
+                        {member.requiresFollowUp ? (
+                          <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속관리</span>
+                        ) : null}
                       </div>
-                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">
-                        {member.phone} · {member.district?.name ?? "교구 미정"} / {member.group?.name ?? "목장 미정"}
+                      <p className="mt-1 text-xs text-[#7a6d5c]">{member.email ?? "이메일 없음"}</p>
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="truncate text-sm text-[#3f382f]">{member.phone}</p>
+                      <p className="mt-1 truncate text-xs text-[#8c7a5b]">
+                        {member.district?.name ?? "교구 미정"} / {member.group?.name ?? "목장 미정"}
                       </p>
-                      <p className="mt-1 text-[11px] text-[#9a8b7a]">등록일 {formatDate(member.registeredAt)}</p>
                     </div>
-                    <div className="grid gap-2 text-[11px] text-[#7a6d5c] sm:min-w-[220px]">
-                      <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">직분: {member.position ?? "미정"}</div>
-                      <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">이메일: {member.email ?? "없음"}</div>
+
+                    <div>
+                      <span className="inline-flex rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51]">
+                        {member.position ?? "직분 미정"}
+                      </span>
                     </div>
+
+                    <p className="text-xs text-[#8c7a5b] md:text-right">{formatDate(member.registeredAt)}</p>
                   </div>
                 </div>
               ))
