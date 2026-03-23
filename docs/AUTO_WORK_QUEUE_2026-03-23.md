@@ -51,8 +51,9 @@
    - 2026-03-24 04:38 KST: `platform-admin/churches`를 dense row 기반 운영 화면으로 재구성하고, 온보딩 메타/플랜/운영 메모를 한 줄 흐름으로 바로 보게 정리
 
 8. 플랫폼 관리자
-   - users/churches 시야 개선
+   - [done] users/churches 시야 개선
    - 온보딩 메타 표시 정리
+   - 2026-03-24 05:08 KST: `platform-admin/users`를 dense row 기반 운영 화면으로 재구성해 계정 상태, 소속 워크스페이스, 역할, 다중 소속 여부를 한 줄 흐름으로 바로 보게 정리
 
 ## Done so far
 - `/app` 실사용 진입 복구
