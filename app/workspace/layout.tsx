@@ -48,6 +48,24 @@ const moduleCards = [
   { href: "/workspace/content", label: "콘텐츠", value: "검토 1건", note: "썸네일 승인 후 바로 배포 가능", tone: "slate" },
 ] as const;
 
+const workspaceControlStats = [
+  { label: "team response", value: "2h 10m", note: "첫 연락 평균 응답 시간" },
+  { label: "handoff health", value: "3 / 4", note: "사람→공지→콘텐츠 연결 상태" },
+  { label: "active owners", value: "4명", note: "지금 흐름을 맡은 담당자" },
+] as const;
+
+const automationRail = [
+  { label: "ready", title: "48시간 미응답 감지", note: "첫 연락이 늦어지면 담당자에게 다시 알려줍니다." },
+  { label: "draft", title: "예약 공지 재확인", note: "발송 24시간 전에 링크·일정 변경 여부를 점검합니다." },
+  { label: "review", title: "콘텐츠 승인 handoff", note: "검토 완료 시 공지 흐름으로 바로 넘길 준비 상태입니다." },
+] as const;
+
+const teamRhythm = [
+  { role: "사무국", focus: "새가족 배정 정리", state: "오늘" },
+  { role: "청년부 리더", focus: "수련회 안내 문구 확인", state: "수요일 전" },
+  { role: "콘텐츠팀", focus: "부활절 영상 썸네일 확정", state: "승인 대기" },
+] as const;
+
 const nextActionMap = {
   "/workspace": [
     { label: "사람", title: "새가족 첫 연락 배정", note: "오늘 안에 담당자와 첫 연락 시점을 붙여야 합니다." },
@@ -272,9 +290,97 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                 ))}
               </div>
             </div>
+
+            <div className="mt-4 grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+              <section className="rounded-[24px] border border-[#E7E0D4] bg-[#fffaf0] p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)] sm:p-5">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#8C7A5B]">WORKSPACE CONTROL</p>
+                    <h2 className="mt-2 text-lg font-semibold text-[#121212]">도입과 운영 상태를 같이 보는 컨트롤 레이어</h2>
+                  </div>
+                  <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1 text-[11px] text-[#8C6A2E]">월요일 운영 모드</span>
+                </div>
+                <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                  {workspaceControlStats.map((item) => (
+                    <div key={item.label} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
+                      <p className="text-[11px] uppercase tracking-[0.18em] text-[#8C7A5B]">{item.label}</p>
+                      <div className="mt-3 flex items-end justify-between gap-3">
+                        <p className="text-[1.6rem] font-semibold tracking-[-0.05em] text-[#121212]">{item.value}</p>
+                        <span className="rounded-full bg-[#F6F1E5] px-2.5 py-1 text-[10px] text-[#8C6A2E]">live</span>
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-[24px] border border-[#E7E0D4] bg-white p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)] sm:p-5">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#8C7A5B]">TEAM RHYTHM</p>
+                    <h2 className="mt-2 text-lg font-semibold text-[#121212]">지금 누가 다음 공을 잡고 있는지</h2>
+                  </div>
+                  <p className="text-xs text-[#8C7A5B]">실행 담당</p>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {teamRhythm.map((item) => (
+                    <div key={item.role + item.focus} className="rounded-[18px] border border-[#ECE5D8] bg-[#FCFBF8] p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-semibold text-[#121212]">{item.role}</p>
+                        <span className="rounded-full border border-[#E7E0D4] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.state}</span>
+                      </div>
+                      <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.focus}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
           </div>
 
-          <div className="min-w-0 p-5 sm:p-7">{children}</div>
+          <div className="min-w-0 p-5 sm:p-7">
+            <div className="mb-6 grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+              <section className="rounded-[24px] border border-[#E7E0D4] bg-white p-5 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#8C7A5B]">AUTOMATION RAIL</p>
+                    <h2 className="mt-2 text-lg font-semibold text-[#121212]">반복 운영을 자동화로 넘길 준비</h2>
+                  </div>
+                  <p className="text-xs text-[#8C7A5B]">사람 · 공지 · 콘텐츠 공통</p>
+                </div>
+                <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                  {automationRail.map((item) => (
+                    <div key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-[#FCFBF8] p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="rounded-full border border-[#E7E0D4] bg-white px-2.5 py-1 text-[11px] uppercase text-[#8C6A2E]">{item.label}</span>
+                        <span className="text-[11px] text-[#9A8B7A]">rule</span>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold text-[#121212]">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-5 text-white shadow-[0_18px_50px_rgba(15,23,42,0.14)]">
+                <p className="text-[11px] tracking-[0.18em] text-white/44">PRODUCT PROMISE</p>
+                <h2 className="mt-3 text-[1.8rem] font-semibold leading-[1.02] tracking-[-0.05em]">
+                  단순한 화면이 아니라
+                  <br />
+                  운영 구조가 보이는 데모
+                </h2>
+                <p className="mt-4 max-w-[28rem] text-sm leading-6 text-white/68">
+                  SOOM workspace는 사람, 공지, 작업, 콘텐츠가 따로 노는 도구가 아니라 서로 handoff 되는 제품 구조를 보여주는 방향으로 정리하고 있습니다.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/74">
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">운영 우선순위 중심</span>
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">교회 문맥에 맞는 구조</span>
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">무료 시작 + 실행 확장</span>
+                </div>
+              </section>
+            </div>
+
+            {children}
+          </div>
         </section>
       </div>
     </main>
