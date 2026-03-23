@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { signIn } from "@/auth";
+import { signIn, getPostLoginPath } from "@/auth";
 import { NextResponse } from "next/server";
 import { hashPassword } from "@/lib/password";
 
@@ -28,18 +28,19 @@ export async function POST(request: Request) {
     return NextResponse.redirect(signupUrl);
   }
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name,
       email,
       passwordHash: await hashPassword(password),
       isActive: true,
     },
+    select: { id: true },
   });
 
   return signIn("credentials", {
     email,
     password,
-    redirectTo: "/app",
+    redirectTo: await getPostLoginPath(user.id),
   });
 }
