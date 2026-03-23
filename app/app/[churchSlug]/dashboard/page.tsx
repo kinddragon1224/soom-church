@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { StatusBadge } from "@/components/ui/badge";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
@@ -9,191 +7,317 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) {
     return (
-      <section className="rounded-xl border border-border bg-card p-4">
-        <h2 className="text-lg font-semibold">접근 권한이 없습니다</h2>
-        <p className="mt-2 text-sm text-muted-foreground">워크스페이스 선택 화면으로 돌아가 다시 시도해주세요.</p>
+      <section className="rounded-[24px] border border-[#E7E0D4] bg-white p-5 text-[#121212] shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+        <h2 className="text-lg font-semibold">접근 권한이 없어</h2>
+        <p className="mt-2 text-sm text-[#5F564B]">워크스페이스 선택 화면으로 돌아가 다시 시도해줘.</p>
       </section>
     );
   }
 
   const church = membership.church;
   const data = await getWorkspaceDashboardData(church.id);
+  const base = `/app/${church.slug}`;
 
-  const kpis = [
-    { label: "총 교인 수", value: data.totalMembers, href: `/app/${church.slug}/members?filter=all` },
-    { label: "이번 달 신규", value: data.newThisMonth, href: `/app/${church.slug}/members?filter=new` },
-    { label: "미처리 신청", value: data.pendingApplications, href: `/app/${church.slug}/applications?status=PENDING` },
-    { label: "후속관리", value: data.followUpMembers, href: `/app/${church.slug}/members?filter=followup` },
-  ];
+  const overviewStats = [
+    { label: "등록 인원", value: String(data.totalMembers), delta: `+${data.newThisMonth} 이번 달`, tone: "slate" },
+    { label: "후속관리 필요", value: String(data.followUpMembers), delta: `오늘 ${Math.min(data.followUpMembers, 3)}건`, tone: "amber" },
+    { label: "미처리 신청", value: String(data.pendingApplications), delta: "바로 확인 필요", tone: "slate" },
+    { label: "미배정 인원", value: String(data.unassignedMembers), delta: "교구 연결 필요", tone: "slate" },
+  ] as const;
 
-  const modules = [
-    { title: "숨 교적", desc: `${church.name} 교인·가족·상태를 관리`, href: `/app/${church.slug}/members`, state: "활성" },
-    { title: "숨 신청", desc: `${church.name} 신청과 접수 현황 관리`, href: `/app/${church.slug}/applications`, state: "활성" },
-    { title: "숨 알림", desc: `${church.name} 공지와 전달 흐름 관리`, href: `/app/${church.slug}/notices`, state: "활성" },
-    { title: "숨 기록", desc: "행사/아카이브 기능", href: "#", state: "준비 중" },
-    { title: "숨 모임", desc: "목장/소모임 확장 기능", href: "#", state: "곧 연결" },
-  ];
+  const commandCenter = [
+    {
+      label: "가장 먼저",
+      title: `후속 연락 ${data.followUpMembers}건`,
+      desc: "등록 이후 바로 챙겨야 하는 사람부터 먼저 정리합니다.",
+      href: `${base}/members?filter=followup`,
+    },
+    {
+      label: "지금 확인",
+      title: `미처리 신청 ${data.pendingApplications}건`,
+      desc: "새 신청이 밀리지 않게 바로 열어서 처리합니다.",
+      href: `${base}/applications?status=PENDING`,
+    },
+    {
+      label: "연결 필요",
+      title: `미배정 인원 ${data.unassignedMembers}명`,
+      desc: "교구·목장 연결이 비어 있는 사람을 먼저 붙입니다.",
+      href: `${base}/members?filter=unassigned`,
+    },
+  ] as const;
 
-  const actionQueue = [
-    { title: "후속관리 교인 확인", count: data.followUpMembers, href: `/app/${church.slug}/members?filter=followup`, note: "오늘 먼저 챙겨야 할 사람" },
-    { title: "미처리 신청 정리", count: data.pendingApplications, href: `/app/${church.slug}/applications?status=PENDING`, note: "새 신청 응답이 밀리지 않게" },
-    { title: "미배정 교인 배치", count: data.unassignedMembers, href: `/app/${church.slug}/members?filter=unassigned`, note: "교구·목장 연결이 필요한 인원" },
-  ];
+  const inboxItems = [
+    {
+      title: `후속관리 교인 ${data.followUpMembers}명`,
+      desc: "예배 방문 이후 48시간 안에 먼저 연락해야 하는 흐름입니다.",
+      meta: "사람",
+      priority: "오늘",
+      href: `${base}/members?filter=followup`,
+    },
+    {
+      title: `미처리 신청 ${data.pendingApplications}건`,
+      desc: "새 신청은 늦지 않게 바로 열어 상태를 바꿔야 합니다.",
+      meta: "신청",
+      priority: "지금",
+      href: `${base}/applications?status=PENDING`,
+    },
+    {
+      title: `최근 공지 ${data.recentNotices.length}건`,
+      desc: "중요 공지와 상단 고정 여부를 확인합니다.",
+      meta: "공지",
+      priority: "확인",
+      href: `${base}/notices`,
+    },
+  ] as const;
+
+  const productAreas = [
+    {
+      title: "사람 흐름",
+      desc: "교인과 상태, 후속관리 흐름을 실제 운영 기준으로 정리합니다.",
+      href: `${base}/members`,
+      cta: "사람 보러가기",
+      health: `후속 ${data.followUpMembers}건`,
+    },
+    {
+      title: "신청 흐름",
+      desc: "새가족, 신청, 접수 이후 처리 상태를 한곳에서 봅니다.",
+      href: `${base}/applications`,
+      cta: "신청 보러가기",
+      health: `대기 ${data.pendingApplications}건`,
+    },
+    {
+      title: "공지 흐름",
+      desc: "공지와 전달 흐름을 운영 리듬에 맞게 관리합니다.",
+      href: `${base}/notices`,
+      cta: "공지 보러가기",
+      health: `최근 ${data.recentNotices.length}건`,
+    },
+    {
+      title: "설정",
+      desc: "워크스페이스 기본값과 운영 기준을 정리합니다.",
+      href: `${base}/settings`,
+      cta: "설정 보러가기",
+      health: "기본값 점검",
+    },
+  ] as const;
+
+  const operatingSignals = [
+    { label: "follow-up", title: "후속관리 상태", value: `${data.followUpMembers}명`, note: "먼저 연락해야 할 흐름" },
+    { label: "applications", title: "신청 처리", value: `${data.pendingApplications}건`, note: "미처리 신청 현황" },
+    { label: "members", title: "미배정 인원", value: `${data.unassignedMembers}명`, note: "교구·목장 연결 필요" },
+    { label: "notices", title: "최근 공지", value: `${data.recentNotices.length}건`, note: "최신 공지와 상단고정" },
+  ] as const;
 
   return (
-    <div className="space-y-4 sm:space-y-5">
-      <section className="rounded-xl border border-slate-700 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 p-4 text-slate-100 sm:p-5">
-        <h2 className="text-lg font-semibold sm:text-xl">이번 주 운영 요약</h2>
-        <p className="mt-1 text-xs text-slate-300 sm:text-sm">
-          미배정 교인 {data.unassignedMembers}명, 미처리 신청 {data.pendingApplications}건, 후속관리 {data.followUpMembers}명, 최근 공지 {data.recentNotices.length}건
-        </p>
-        <p className="mt-1 text-[11px] text-slate-400 sm:text-xs">교회 운영에서 지금 바로 확인할 항목을 먼저 보여줍니다.</p>
-      </section>
-
-      <section className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-        {kpis.map((item) => (
-          <Link key={item.label} href={item.href} className="rounded-lg border border-border bg-card p-3 transition active:scale-[0.99] hover:bg-muted/40">
-            <p className="text-xs text-muted-foreground">{item.label}</p>
-            <div className="mt-1 flex items-end justify-between gap-2">
-              <p className="text-2xl font-bold leading-none">{item.value}</p>
-              <ChevronRight size={14} className="text-primary" />
+    <div className="flex flex-col gap-6 text-[#111111]">
+      <section className="grid gap-4 xl:grid-cols-[1.22fr_0.78fr]">
+        <div className="overflow-hidden rounded-[32px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-[11px] tracking-[0.2em] text-white/46">CHURCH OPERATIONS HUB</p>
+                <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">실사용 워크스페이스</span>
+              </div>
+              <h1 className="mt-3 text-[2.25rem] font-semibold leading-[0.96] tracking-[-0.06em] text-white sm:text-[3rem]">
+                오늘 처리해야 할 운영 흐름을
+                <br />
+                한 화면에서 정리합니다
+              </h1>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
+                사람, 신청, 공지 흐름이 흩어지지 않도록 지금 먼저 처리할 항목부터 한 화면에 모아 보여주는 실사용 홈입니다.
+              </p>
             </div>
-          </Link>
-        ))}
-      </section>
-
-      <section className="grid grid-cols-1 gap-3 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-xl border border-border bg-card p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">오늘 먼저 처리할 일</h3>
-            <span className="text-xs text-muted-foreground">운영 기준</span>
+            <div className="flex flex-wrap gap-2 lg:max-w-[250px] lg:justify-end">
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{church.name}</span>
+              <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">무료 플랜</span>
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">실제 운영 모드</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            {actionQueue.map((item) => (
-              <Link key={item.title} href={item.href} className="block rounded-md border border-border p-3 transition hover:bg-muted/40">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-medium">{item.title}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{item.note}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xl font-bold leading-none">{item.count}</p>
-                    <p className="mt-1 text-[11px] text-primary">바로 열기</p>
-                  </div>
+
+          <div className="mt-6 grid gap-3 xl:grid-cols-[1fr_240px]">
+            <div className="rounded-[24px] border border-white/10 bg-white/8 p-4 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-[11px] tracking-[0.18em] text-white/42">TODAY'S FOCUS</p>
+                  <p className="mt-2 text-sm text-white/68">가장 급한 일 3개만 먼저 정리했습니다.</p>
                 </div>
+                <span className="rounded-full border border-white/10 bg-[#0f1a30] px-3 py-1 text-[11px] text-white/70">운영 체크</span>
+              </div>
+              <div className="mt-4 grid gap-2 text-sm text-white/82 sm:grid-cols-3">
+                {commandCenter.map((item) => (
+                  <div key={item.title} className="rounded-[16px] border border-white/10 bg-[#0f1a30] px-3 py-3">{item.title}</div>
+                ))}
+              </div>
+            </div>
+            <div className="grid gap-3">
+              <Link href={`${base}/members`} className="inline-flex min-h-11 items-center justify-center rounded-[14px] bg-white px-5 text-sm font-semibold text-[#09111f]">
+                사람 흐름 열기
+              </Link>
+              <Link href={`${base}/applications`} className="inline-flex min-h-11 items-center justify-center rounded-[14px] border border-white/14 bg-white/5 px-5 text-sm font-medium text-white">
+                신청 보기
+              </Link>
+              <Link href={`${base}/notices`} className="inline-flex min-h-11 items-center justify-center rounded-[14px] border border-white/14 bg-white/5 px-5 text-sm font-medium text-white">
+                공지 보기
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <section className="rounded-[30px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SETUP</p>
+              <h2 className="mt-2 text-xl font-semibold text-[#111111]">지금 바로 할 일</h2>
+            </div>
+            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">실행 중심</span>
+          </div>
+          <div className="mt-4 grid gap-3">
+            {commandCenter.map((item) => (
+              <Link key={item.title} href={item.href} className="rounded-[18px] border border-[#ece6dc] bg-white p-4 transition hover:bg-[#fcfbf8]">
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">{item.label}</p>
+                <p className="mt-2 text-sm font-semibold text-[#111111]">{item.title}</p>
+                <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
               </Link>
             ))}
           </div>
-        </div>
-
-        <div className="rounded-xl border border-border bg-card p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">빠른 작업</h3>
-            <span className="text-xs text-muted-foreground">즉시 이동</span>
-          </div>
-          <div className="grid grid-cols-2 gap-2 max-[360px]:grid-cols-1">
-            <QuickAction href={`/app/${church.slug}/members`} title="교인 확인" desc="명단과 상태 점검" />
-            <QuickAction href={`/app/${church.slug}/applications`} title="신청 확인" desc="미처리 항목 점검" />
-            <QuickAction href={`/app/${church.slug}/notices`} title="공지 확인" desc="전달 상태 확인" />
-            <QuickAction href={`/app/${church.slug}/dashboard`} title="운영 요약" desc="오늘 상태 다시 확인" />
-          </div>
-        </div>
+        </section>
       </section>
 
-      <section className="grid grid-cols-1 gap-3 xl:grid-cols-3">
-        <div className="rounded-xl border border-border bg-card p-3 xl:col-span-2">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">최근 신청</h3>
-            <Link href={`/app/${church.slug}/applications`} className="text-xs text-primary hover:underline">전체 보기</Link>
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {overviewStats.map((item) => (
+          <div key={item.label} className="rounded-[22px] border border-[#e6dfd5] bg-white p-4 shadow-[0_10px_26px_rgba(15,23,42,0.05)]">
+            <p className="text-xs tracking-[0.16em] text-[#8C7A5B]">{item.label}</p>
+            <div className="mt-2 flex items-end justify-between gap-3">
+              <p className="text-[1.9rem] font-semibold tracking-[-0.04em] text-[#111111]">{item.value}</p>
+              <span className={`rounded-full px-2.5 py-1 text-[11px] ${item.tone === "amber" ? "bg-[#fff4df] text-[#8C6A2E]" : "bg-[#f3f4f6] text-[#5f564b]"}`}>{item.delta}</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            {data.recentApplications.map((a) => (
-              <div key={a.id} className="rounded-md border border-border p-2.5">
-                <p className="text-sm font-medium">{a.applicantName}</p>
-                <p className="mt-1 text-xs text-muted-foreground">상태: {a.status} · {formatDate(a.createdAt)}</p>
+        ))}
+      </section>
+
+      <section className="grid gap-3 xl:grid-cols-4">
+        {operatingSignals.map((item) => (
+          <div key={item.title} className="rounded-[22px] border border-[#e6dfd5] bg-[#fcfbf8] p-4 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-[#9a8b7a]">{item.label}</p>
+            <div className="mt-3 flex items-end justify-between gap-3">
+              <p className="text-lg font-semibold text-[#111111]">{item.title}</p>
+              <span className="rounded-full border border-[#eadfcd] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.value}</span>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.note}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
+        <div className="grid gap-4">
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">COMMAND CENTER</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 먼저 풀 일</h2>
               </div>
-            ))}
-          </div>
+              <span className="text-xs text-[#8C7A5B]">우선순위 기준</span>
+            </div>
+            <div className="mt-4 grid gap-3 lg:grid-cols-3">
+              {commandCenter.map((item) => (
+                <Link key={item.title} href={item.href} className="rounded-[20px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
+                  <p className="text-[11px] tracking-[0.16em] text-[#8C7A5B]">{item.label}</p>
+                  <p className="mt-3 text-base font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY INBOX</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 확인할 것</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">운영 허브</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {inboxItems.map((item) => (
+                <Link key={item.title} href={item.href} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.meta}</span>
+                        <span className="text-[11px] text-[#9a8b7a]">{item.priority}</span>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold text-[#111111]">{item.title}</p>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                    </div>
+                    <span className="rounded-[12px] border border-[#e1d7c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">보기</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">최근 공지</h3>
-            <Link href={`/app/${church.slug}/notices`} className="text-xs text-primary hover:underline">전체 보기</Link>
-          </div>
-          <ul className="space-y-2">
-            {data.recentNotices.map((n) => (
-              <li key={n.id} className="rounded-md border border-border p-2.5">
-                <p className="text-sm font-medium">{n.title}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{n.pinned ? "상단고정" : "일반"} · {formatDate(n.createdAt)}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="grid grid-cols-1 gap-3 xl:grid-cols-[1.05fr_0.95fr]">
-        <div className="space-y-2 rounded-xl border border-border bg-card p-3">
-          <div>
-            <h3 className="text-sm font-semibold">숨 모듈 허브</h3>
-            <p className="text-xs text-muted-foreground">숨 플랫폼 기능을 {church.name} 워크스페이스에서 연결해 사용합니다.</p>
-          </div>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {modules.map((module) => (
-              <ModuleCard key={module.title} {...module} />
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-border bg-card p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-sm font-semibold">최근 활동</h3>
-            <span className="text-xs text-muted-foreground">시스템 로그</span>
-          </div>
-          <div className="space-y-2">
-            {data.recentLogs.map((log) => (
-              <div key={log.id} className="rounded-md border border-border p-2.5">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium">{log.action}</p>
-                  <span className="text-[11px] text-muted-foreground">{formatDate(log.createdAt)}</span>
+        <div className="grid gap-4">
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">RECENT APPLICATIONS</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">최근 신청</h2>
+              </div>
+              <Link href={`${base}/applications`} className="text-xs text-[#8C7A5B] hover:text-[#121212]">전체 보기</Link>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {data.recentApplications.map((item) => (
+                <div key={item.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <p className="text-sm font-semibold text-[#111111]">{item.applicantName}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">상태: {item.status}</p>
+                  <p className="mt-2 text-[11px] text-[#9a8b7a]">{formatDate(item.createdAt)}</p>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">대상: {log.targetType}</p>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">RECENT NOTICES</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">최근 공지</h2>
               </div>
-            ))}
-          </div>
+              <Link href={`${base}/notices`} className="text-xs text-[#8C7A5B] hover:text-[#121212]">전체 보기</Link>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {data.recentNotices.map((item) => (
+                <div key={item.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-[11px] text-[#9a8b7a]">{item.pinned ? "상단고정" : "일반"} · {formatDate(item.createdAt)}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRODUCT AREAS</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">핵심 영역</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">핵심 모듈</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {productAreas.map((item) => (
+                <Link key={item.title} href={item.href} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.health}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                  <p className="mt-3 text-xs font-medium text-[#8C6A2E]">{item.cta}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
     </div>
-  );
-}
-
-function QuickAction({ href, title, desc }: { href: string; title: string; desc: string }) {
-  return (
-    <Link href={href} className="rounded-md border border-border bg-card p-2.5 transition active:scale-[0.99] hover:bg-muted/40">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-semibold">{title}</p>
-        <ChevronRight size={14} className="mt-0.5 text-primary" />
-      </div>
-      <p className="mt-0.5 text-[11px] text-muted-foreground">{desc}</p>
-    </Link>
-  );
-}
-
-function ModuleCard({ title, desc, href, state }: { title: string; desc: string; href: string; state: string }) {
-  const disabled = href === "#";
-  const stateClass = state === "활성" ? "bg-emerald-100 text-emerald-700" : state === "곧 연결" ? "bg-blue-100 text-blue-700" : "bg-muted text-muted-foreground";
-
-  return (
-    <Link
-      href={href}
-      aria-disabled={disabled}
-      className={`rounded-md border border-border p-3 transition ${disabled ? "pointer-events-none opacity-70" : "hover:bg-muted/40 active:scale-[0.99]"}`}
-    >
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-semibold">{title}</p>
-        <span className={`rounded-full px-2 py-0.5 text-[11px] ${stateClass}`}>{state}</span>
-      </div>
-      <p className="mt-1 text-xs text-muted-foreground">{desc}</p>
-    </Link>
   );
 }
