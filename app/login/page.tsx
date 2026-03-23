@@ -38,7 +38,7 @@ export default async function LoginPage({
         <form action="/api/login" method="post" className="mt-5 space-y-3">
           {next ? <input type="hidden" name="next" value={next} /> : null}
           <input name="email" type="email" required placeholder="admin@soom.church" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
-          <input name="password" type="password" required placeholder="••••••••" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
+          <input name="password" type="password" required placeholder="••••" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
           <Button className="w-full" type="submit">이메일로 로그인</Button>
         </form>
 

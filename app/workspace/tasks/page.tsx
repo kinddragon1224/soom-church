@@ -32,9 +32,30 @@ const reviewItems = [
 ];
 
 const handoffBoards = [
-  { title: "사람 흐름에서 들어온 후속 연락", desc: "새가족 등록 뒤 첫 연락과 소그룹 연결은 작업 보드에서 마감까지 추적합니다.", target: "사람" },
-  { title: "검토 완료 후 공지 예약", desc: "행사·예배 준비 태스크가 끝나면 바로 커뮤니케이션 모듈로 넘겨 발송을 붙입니다.", target: "커뮤니케이션" },
-  { title: "콘텐츠 요청과 체크리스트 연결", desc: "영상·랜딩 제작 요청은 현장 일정 태스크와 같이 묶여야 누락이 없습니다.", target: "콘텐츠" },
+  {
+    title: "사람 흐름에서 들어온 후속 연락",
+    desc: "새가족 등록 뒤 첫 연락과 소그룹 연결은 작업 보드에서 마감까지 추적합니다.",
+    target: "사람",
+    owner: "김선용",
+    due: "오늘",
+    action: "첫 연락 완료 후 정착 태스크로 이동",
+  },
+  {
+    title: "검토 완료 후 공지 예약",
+    desc: "행사·예배 준비 태스크가 끝나면 바로 커뮤니케이션 모듈로 넘겨 발송을 붙입니다.",
+    target: "커뮤니케이션",
+    owner: "사무국",
+    due: "발송 전날",
+    action: "검토 완료 즉시 예약 공지 생성",
+  },
+  {
+    title: "콘텐츠 요청과 체크리스트 연결",
+    desc: "영상·랜딩 제작 요청은 현장 일정 태스크와 같이 묶여야 누락이 없습니다.",
+    target: "콘텐츠",
+    owner: "콘텐츠팀",
+    due: "이번 주",
+    action: "현장 일정과 제작 마감 동기화",
+  },
 ];
 
 const workflowRules = [
@@ -197,6 +218,11 @@ export default function WorkspaceTasksPage() {
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.target}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                  <div className="mt-3 grid gap-2 text-[11px] text-[#7a6d5c] sm:grid-cols-3">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">담당: {item.owner}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">기한: {item.due}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">다음 액션: {item.action}</div>
+                  </div>
                 </div>
               ))}
             </div>

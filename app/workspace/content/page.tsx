@@ -32,9 +32,30 @@ const outputBoards = [
 ];
 
 const deliveryTracks = [
-  { title: "설교 → 쇼츠 → 공지", desc: "짧은 영상과 안내 문구를 한 묶음으로 배포합니다.", meta: "반복형" },
-  { title: "행사 → 랜딩 → 리마인드", desc: "행사 소개 페이지와 신청 안내를 같은 흐름으로 맞춥니다.", meta: "캠페인" },
-  { title: "채널 운영 → 썸네일 → 업로드", desc: "유튜브 운영 세팅과 결과물 규칙을 같이 관리합니다.", meta: "루틴" },
+  {
+    title: "설교 → 쇼츠 → 공지",
+    desc: "짧은 영상과 안내 문구를 한 묶음으로 배포합니다.",
+    meta: "반복형",
+    owner: "콘텐츠팀",
+    due: "예배 후 24시간",
+    action: "클립 확정 후 공지 문구와 같이 전달",
+  },
+  {
+    title: "행사 → 랜딩 → 리마인드",
+    desc: "행사 소개 페이지와 신청 안내를 같은 흐름으로 맞춥니다.",
+    meta: "캠페인",
+    owner: "김선용",
+    due: "행사 전 주",
+    action: "랜딩 공개 후 리마인드 흐름 연결",
+  },
+  {
+    title: "채널 운영 → 썸네일 → 업로드",
+    desc: "유튜브 운영 세팅과 결과물 규칙을 같이 관리합니다.",
+    meta: "루틴",
+    owner: "미디어팀",
+    due: "업로드 당일",
+    action: "썸네일/제목 규칙 확인 후 업로드",
+  },
 ];
 
 const productionRules = [
@@ -192,6 +213,11 @@ export default function WorkspaceContentPage() {
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.meta}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                  <div className="mt-3 grid gap-2 text-[11px] text-[#7a6d5c] sm:grid-cols-3">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">담당: {item.owner}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">기한: {item.due}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">다음 액션: {item.action}</div>
+                  </div>
                 </div>
               ))}
             </div>

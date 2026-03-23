@@ -105,10 +105,10 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
   const nextActions = nextActionMap[pathname as keyof typeof nextActionMap] ?? nextActionMap["/workspace"];
 
   return (
-    <main className="min-h-screen bg-[#F4F0E8] text-[#121212]">
-      <div className="grid min-h-screen lg:grid-cols-[296px_1fr]">
-        <aside className="border-b border-[#1b2740] bg-[#0F172A] px-4 py-5 text-white lg:min-h-full lg:border-b-0 lg:border-r">
-          <div className="lg:sticky lg:top-0 lg:flex lg:min-h-screen lg:flex-col lg:py-1">
+    <main className="min-h-screen bg-[#EDE6D8] text-[#121212] lg:h-dvh lg:min-h-0 lg:overflow-hidden">
+      <div className="grid min-h-screen lg:h-full lg:min-h-0 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-3 lg:p-3">
+        <aside className="border-b border-[#1b2740] bg-[#0F172A] px-4 py-5 text-white lg:h-full lg:min-h-0 lg:overflow-y-auto lg:rounded-[28px] lg:border lg:border-[#16233b] lg:shadow-[0_24px_60px_rgba(15,23,42,0.28)]">
+          <div className="lg:flex lg:min-h-full lg:flex-col lg:py-1">
             <div className="flex items-start justify-between gap-3 px-1">
               <div>
                 <Link href="/workspace" className="font-display text-[1.6rem] font-semibold tracking-[-0.08em] text-white">
@@ -204,8 +204,8 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
           </div>
         </aside>
 
-        <section className="min-w-0 bg-[#F4F0E8]">
-          <div className="border-b border-[#E3D9C9] bg-[#FBF9F4] px-5 py-4 sm:px-7">
+        <section className="min-w-0 bg-[#F4F0E8] lg:h-full lg:min-h-0 lg:overflow-y-auto lg:rounded-[30px] lg:border lg:border-[#DDD1BE] lg:bg-[#F4F0E8] lg:shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+          <div className="border-b border-[#E3D9C9] bg-[#FBF9F4] px-5 py-4 sm:px-7 lg:sticky lg:top-0 lg:z-20 lg:rounded-t-[30px] lg:backdrop-blur-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="flex flex-col gap-3">
                 <div>
@@ -220,16 +220,29 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                   <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">월요일 운영 모드</span>
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Link href="/" className="inline-flex min-h-10 items-center justify-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
-                  홈으로
-                </Link>
-                <Link href="/pricing" className="inline-flex min-h-10 items-center justify-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
-                  상품 보기
-                </Link>
-                <Link href="/signup" className="inline-flex min-h-10 items-center justify-center rounded-[12px] bg-[#0F172A] px-4 text-sm font-semibold text-white">
-                  무료로 시작하기
-                </Link>
+              <div className="flex flex-col items-stretch gap-3 lg:min-w-[420px] lg:items-end">
+                <div className="flex flex-col gap-2 lg:w-full lg:max-w-[440px]">
+                  <div className="flex items-center gap-2 rounded-[16px] border border-[#E7E0D4] bg-white px-3 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
+                    <span className="text-sm text-[#8C7A5B]">⌘K</span>
+                    <span className="text-sm text-[#7B6F60]">사람, 공지, 작업, 콘텐츠를 검색하세요</span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-[#8C7A5B]">
+                    <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1.5">알림 3건</span>
+                    <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1.5">자동화 준비 2건</span>
+                    <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1.5">김선용 · owner</span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link href="/" className="inline-flex min-h-10 items-center justify-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
+                    홈으로
+                  </Link>
+                  <Link href="/pricing" className="inline-flex min-h-10 items-center justify-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
+                    상품 보기
+                  </Link>
+                  <Link href="/signup" className="inline-flex min-h-10 items-center justify-center rounded-[12px] bg-[#0F172A] px-4 text-sm font-semibold text-white">
+                    무료로 시작하기
+                  </Link>
+                </div>
               </div>
             </div>
 

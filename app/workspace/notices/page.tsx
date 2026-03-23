@@ -32,9 +32,30 @@ const reviewQueue = [
 ];
 
 const handoffRoutes = [
-  { title: "신청자 목록 → 사람 흐름", desc: "행사 신청 공지가 나간 뒤 반응한 사람은 후속 연락 대상에 바로 이어집니다.", target: "사람" },
-  { title: "검토 완료 → 작업 흐름", desc: "문구와 링크 검토가 끝나면 담당자 확인 태스크로 넘겨 누락을 줄입니다.", target: "작업 흐름" },
-  { title: "공지 배포 → 콘텐츠 재사용", desc: "행사 공지 문구는 썸네일 문구와 영상 캡션으로 다시 이어질 수 있습니다.", target: "콘텐츠" },
+  {
+    title: "신청자 목록 → 사람 흐름",
+    desc: "행사 신청 공지가 나간 뒤 반응한 사람은 후속 연락 대상에 바로 이어집니다.",
+    target: "사람",
+    owner: "사무국",
+    due: "발송 직후",
+    action: "신청자 태그 후 후속 연락 큐로 전달",
+  },
+  {
+    title: "검토 완료 → 작업 흐름",
+    desc: "문구와 링크 검토가 끝나면 담당자 확인 태스크로 넘겨 누락을 줄입니다.",
+    target: "작업 흐름",
+    owner: "청년부 리더",
+    due: "발송 전날",
+    action: "최종 검수 태스크 생성",
+  },
+  {
+    title: "공지 배포 → 콘텐츠 재사용",
+    desc: "행사 공지 문구는 썸네일 문구와 영상 캡션으로 다시 이어질 수 있습니다.",
+    target: "콘텐츠",
+    owner: "콘텐츠팀",
+    due: "배포 후",
+    action: "문구와 링크를 콘텐츠 큐에 복사",
+  },
 ];
 
 const automationRules = [
@@ -196,6 +217,11 @@ export default function WorkspaceNoticesPage() {
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.target}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                  <div className="mt-3 grid gap-2 text-[11px] text-[#7a6d5c] sm:grid-cols-3">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">담당: {item.owner}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">기한: {item.due}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">다음 액션: {item.action}</div>
+                  </div>
                 </div>
               ))}
             </div>

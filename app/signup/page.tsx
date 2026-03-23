@@ -55,7 +55,7 @@ export default async function SignupPage({
 
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
           <Link href="/login" className="rounded-md border border-border px-3 py-2">이미 계정이 있다면 로그인</Link>
-          <Link href="/workspace" className="rounded-md border border-border px-3 py-2">워크스페이스 미리 보기</Link>
+          <Link href="/app/soom-dev/dashboard" className="rounded-md border border-border px-3 py-2">개발용 워크스페이스 보기</Link>
         </div>
       </Card>
     </main>

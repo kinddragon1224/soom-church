@@ -19,9 +19,30 @@ const planChecks = [
 ];
 
 const moduleReadiness = [
-  { title: "사람 흐름", desc: "새가족 상태 체계와 담당자 기준이 먼저 정리돼야 합니다.", state: "기본값 준비" },
-  { title: "커뮤니케이션", desc: "부서별 채널, 예약 기준, 메시지 톤을 같은 구조로 맞춥니다.", state: "연결 준비" },
-  { title: "콘텐츠 스튜디오", desc: "브리프 입력과 배포 handoff 규칙이 잡히면 확장할 수 있습니다.", state: "다음 단계" },
+  {
+    title: "사람 흐름",
+    desc: "새가족 상태 체계와 담당자 기준이 먼저 정리돼야 합니다.",
+    state: "기본값 준비",
+    owner: "김선용",
+    due: "이번 주",
+    action: "기본 상태 4개 확정",
+  },
+  {
+    title: "커뮤니케이션",
+    desc: "부서별 채널, 예약 기준, 메시지 톤을 같은 구조로 맞춥니다.",
+    state: "연결 준비",
+    owner: "사무국",
+    due: "도입 2단계",
+    action: "채널별 공지 규칙 정리",
+  },
+  {
+    title: "콘텐츠 스튜디오",
+    desc: "브리프 입력과 배포 handoff 규칙이 잡히면 확장할 수 있습니다.",
+    state: "다음 단계",
+    owner: "콘텐츠팀",
+    due: "후속 확장",
+    action: "브리프와 handoff 규칙 연결",
+  },
 ];
 
 const rolloutRules = [
@@ -136,6 +157,11 @@ export default function WorkspaceSettingsPage() {
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.state}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                  <div className="mt-3 grid gap-2 text-[11px] text-[#7a6d5c] sm:grid-cols-3">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">담당: {item.owner}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">기한: {item.due}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">다음 액션: {item.action}</div>
+                  </div>
                 </div>
               ))}
             </div>

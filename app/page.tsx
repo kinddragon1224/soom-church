@@ -167,7 +167,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/workspace" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
+            <Link href="/app/soom-dev/dashboard" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
               워크스페이스 보기
             </Link>
             <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.03] px-6 text-sm font-medium text-white">

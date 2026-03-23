@@ -137,6 +137,9 @@ const handoffQueue = [
     title: "새가족 첫 연락 배정",
     desc: "등록이 들어오면 담당자와 첫 연락 마감을 바로 태스크로 넘깁니다.",
     status: "오늘 3건",
+    owner: "사무국",
+    eta: "오늘 오후 4시",
+    action: "담당자 배정 후 마감 부여",
   },
   {
     from: "작업 흐름",
@@ -144,6 +147,9 @@ const handoffQueue = [
     title: "수련회 안내 발송 승인",
     desc: "검토가 끝난 작업은 예약 공지로 바로 이어져야 누락이 없습니다.",
     status: "수요일 예약",
+    owner: "청년부 리더",
+    eta: "수요일 오전",
+    action: "문구 승인 후 예약 발송",
   },
   {
     from: "커뮤니케이션",
@@ -151,6 +157,27 @@ const handoffQueue = [
     title: "부활절 홍보영상 배포 연결",
     desc: "공지 문구와 영상 링크를 같은 타이밍에 정렬해 도달률을 높입니다.",
     status: "승인 대기",
+    owner: "콘텐츠팀",
+    eta: "오늘 저녁",
+    action: "썸네일 확정 후 배포 묶기",
+  },
+];
+
+const crossModuleRail = [
+  {
+    title: "사람 → 커뮤니케이션",
+    summary: "첫 방문 이후 48시간 안에 첫 연락과 환영 안내가 이어져야 합니다.",
+    points: ["새가족 등록 확인", "담당자 배정", "환영 메시지 예약"],
+  },
+  {
+    title: "커뮤니케이션 → 콘텐츠",
+    summary: "공지에서 끝나지 않고 필요한 영상·랜딩까지 바로 연결합니다.",
+    points: ["행사 공지 확정", "썸네일/영상 연결", "채널별 배포 정렬"],
+  },
+  {
+    title: "콘텐츠 → 작업 흐름",
+    summary: "결과물 제작 이후 검토와 현장 실행 체크리스트를 다시 붙입니다.",
+    points: ["디자인 검토", "현장 체크리스트 연결", "배포 후 결과 확인"],
   },
 ];
 
@@ -311,6 +338,36 @@ export default function WorkspacePage() {
                   </div>
                   <p className="mt-3 text-sm font-semibold text-[#111111]">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.desc}</p>
+                  <div className="mt-3 grid gap-2 text-[11px] text-[#7a6d5c] sm:grid-cols-3">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">담당: {item.owner}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">기한: {item.eta}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2">다음 액션: {item.action}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">CROSS-MODULE FLOW</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">모듈이 이어지는 방식</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">gloo식 흐름 해석</span>
+            </div>
+            <div className="mt-4 grid gap-3 lg:grid-cols-3">
+              {crossModuleRail.map((item) => (
+                <div key={item.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <p className="text-sm font-semibold text-[#111111]">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.summary}</p>
+                  <div className="mt-3 grid gap-2">
+                    {item.points.map((point) => (
+                      <div key={point} className="rounded-[12px] border border-[#e6dfd5] bg-white px-3 py-2 text-[12px] text-[#7a6d5c]">
+                        {point}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

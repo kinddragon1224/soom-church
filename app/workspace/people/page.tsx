@@ -33,9 +33,30 @@ const teamNotes = [
 ];
 
 const handoffSignals = [
-  { title: "첫 연락 후 작업 생성", desc: "연락이 시작되면 소그룹 연결과 후속 체크를 작업 흐름으로 넘깁니다.", target: "작업 흐름" },
-  { title: "정착 상태별 안내 발송", desc: "정착중, 봉사연결 같은 상태에 따라 다음 안내 메시지를 붙입니다.", target: "커뮤니케이션" },
-  { title: "간증·봉사 스토리 후보", desc: "관계가 깊어진 사람은 콘텐츠 스토리 후보로 이어질 수 있습니다.", target: "콘텐츠" },
+  {
+    title: "첫 연락 후 작업 생성",
+    desc: "연락이 시작되면 소그룹 연결과 후속 체크를 작업 흐름으로 넘깁니다.",
+    target: "작업 흐름",
+    owner: "사무국",
+    due: "오늘 오후",
+    action: "첫 연락 완료 후 후속 태스크 생성",
+  },
+  {
+    title: "정착 상태별 안내 발송",
+    desc: "정착중, 봉사연결 같은 상태에 따라 다음 안내 메시지를 붙입니다.",
+    target: "커뮤니케이션",
+    owner: "청년부 리더",
+    due: "이번 주",
+    action: "상태 변경 시 환영/안내 메시지 예약",
+  },
+  {
+    title: "간증·봉사 스토리 후보",
+    desc: "관계가 깊어진 사람은 콘텐츠 스토리 후보로 이어질 수 있습니다.",
+    target: "콘텐츠",
+    owner: "콘텐츠팀",
+    due: "다음 검토",
+    action: "스토리 후보 태그 후 제작 큐로 전달",
+  },
 ];
 
 const automationReady = [
@@ -198,6 +219,11 @@ export default function WorkspacePeoplePage() {
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C6A2E]">{item.target}</span>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#5F564B]">{item.desc}</p>
+                  <div className="mt-3 grid gap-2 text-[11px] text-[#7a6d5c] sm:grid-cols-3">
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">담당: {item.owner}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">기한: {item.due}</div>
+                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">다음 액션: {item.action}</div>
+                  </div>
                 </div>
               ))}
             </div>
