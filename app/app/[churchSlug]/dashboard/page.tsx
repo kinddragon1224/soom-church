@@ -3,6 +3,22 @@ import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
 
+function getActivityLabel(action: string) {
+  const labels: Record<string, string> = {
+    WORKSPACE_ONBOARDED: "워크스페이스 시작",
+    MEMBER_CREATED: "사람 등록",
+    MEMBER_UPDATED: "사람 수정",
+    APPLICATION_CREATED: "신청 접수",
+    APPLICATION_UPDATED: "신청 처리",
+    NOTICE_CREATED: "공지 작성",
+    NOTICE_UPDATED: "공지 수정",
+    DISTRICT_CREATED: "교구 생성",
+    GROUP_CREATED: "목장 생성",
+  };
+
+  return labels[action] ?? action.replaceAll("_", " ").toLowerCase();
+}
+
 export default async function ChurchDashboardPage({ params }: { params: { churchSlug: string } }) {
   const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) {
@@ -88,6 +104,12 @@ export default async function ChurchDashboardPage({ params }: { params: { church
       cta: "전체 보기",
     },
   ] as const;
+
+  const activityRows = data.recentLogs.map((log) => ({
+    id: log.id,
+    title: getActivityLabel(log.action),
+    meta: `${log.targetType} · ${formatDate(log.createdAt)}`,
+  }));
 
   return (
     <div className="flex flex-col gap-5 text-[#111111]">
@@ -206,6 +228,29 @@ export default async function ChurchDashboardPage({ params }: { params: { church
                   <p className="text-xs font-medium text-[#8C6A2E] sm:text-right">{item.cta}</p>
                 </Link>
               ))}
+            </div>
+          </section>
+
+          <section className="overflow-hidden rounded-[24px] border border-[#e6dfd5] bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between border-b border-[#efe7da] px-5 py-4">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTIVITY</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">최근 활동</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">운영 로그 5개</span>
+            </div>
+
+            <div className="divide-y divide-[#f1eadf]">
+              {activityRows.length > 0 ? (
+                activityRows.map((item) => (
+                  <div key={item.id} className="grid gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_140px] sm:items-center">
+                    <p className="text-sm font-medium text-[#111111]">{item.title}</p>
+                    <p className="text-xs text-[#8C7A5B] sm:text-right">{item.meta}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="px-5 py-4 text-sm text-[#5f564b]">최근 활동이 아직 없어.</div>
+              )}
             </div>
           </section>
         </div>

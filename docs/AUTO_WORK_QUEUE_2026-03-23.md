@@ -15,6 +15,7 @@
    - [done] 카드 중심 구성을 dense row 운영 화면으로 재정리
    - 2026-03-23 23:31 KST: 홈 hero/queue/recent/areas 1차 재배치 완료
    - 2026-03-24 07:03 KST: dashboard hero 보조 정보와 queue/modules/recent를 gloo식 dense row 운영 보드로 다시 압축
+   - 2026-03-24 07:31 KST: dashboard에 최근 활동 로그 5개를 dense row 섹션으로 추가해 운영 변화도 같은 보드에서 바로 읽게 정리
 
 2. `/app/[churchSlug]/layout`
    - [done] 좌측 네비 밀도/활성 상태 개선
