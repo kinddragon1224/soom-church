@@ -55,6 +55,7 @@
 
 ## 참고 파일
 - 메인 복구 문서: `soom-church/docs/SESSION_SUMMARY_2026-03-23.md`
+- 작업 규칙: `soom-church/docs/WORKING_RULES.md`
 - 이전 맥락: `soom-church/docs/SESSION_SUMMARY_2026-03-08.md`
 - 현재 홈 코드: `soom-church/app/page.tsx`
 

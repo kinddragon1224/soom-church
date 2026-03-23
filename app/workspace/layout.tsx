@@ -104,9 +104,16 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
         <section className="min-w-0 bg-[#F4F0E8]">
           <div className="flex flex-col gap-4 border-b border-[#E3D9C9] bg-[#FBF9F4] px-5 py-4 sm:px-7 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">SOOM WORKSPACE</p>
-              <p className="mt-1 text-sm text-[#5F564B]">교회와 사역팀을 위한 운영 대시보드</p>
+            <div className="flex flex-col gap-3">
+              <div>
+                <p className="text-xs tracking-[0.18em] text-[#8C7A5B]">SOOM WORKSPACE</p>
+                <p className="mt-1 text-sm text-[#5F564B]">교회와 사역팀을 위한 운영 대시보드</p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs text-[#8C7A5B]">
+                <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">대흥교회 청년부</span>
+                <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">무료 플랜</span>
+                <span className="rounded-full border border-[#E7E0D4] bg-white px-3 py-1">팀원 4명</span>
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Link href="/" className="inline-flex min-h-10 items-center justify-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
