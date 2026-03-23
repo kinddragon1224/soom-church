@@ -45,9 +45,10 @@ export default function ContactPage() {
               쇼츠가 먼저인지, 유튜브 운영이 먼저인지, 행사 안내가 급한지 아직 정확히 정리되지 않아도 괜찮습니다.
               지금 상황을 알려주시면 가장 현실적인 시작점을 함께 정리해드립니다.
             </p>
-            <div className="mt-6 flex flex-col gap-2 text-sm text-white/60 sm:flex-row sm:flex-wrap sm:gap-4">
+            <div className="mt-6 grid gap-2 text-sm text-white/60 sm:flex sm:flex-row sm:flex-wrap sm:gap-4">
               <p>보내주신 내용은 확인 후 순서대로 답변드립니다.</p>
               <p>보통 1영업일 안에 1차 답변을 드립니다.</p>
+              <p>진행이 어렵거나 맞지 않는 경우에도 먼저 가능 여부를 솔직하게 안내드립니다.</p>
             </div>
           </div>
         </div>
@@ -165,6 +166,10 @@ export default function ContactPage() {
                 <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
                   <p className="font-semibold text-white">급한 일정도 가능한가요?</p>
                   <p className="mt-2">가능한 경우 빠른 대응 여부를 먼저 확인해드리고, 어려우면 현실적인 대안을 같이 제안드립니다.</p>
+                </div>
+                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                  <p className="font-semibold text-white">바로 계약해야 하나요?</p>
+                  <p className="mt-2">아닙니다. 먼저 상황을 보고, 지금 당장 필요한 범위만 가볍게 정리해드립니다.</p>
                 </div>
               </div>
             </div>

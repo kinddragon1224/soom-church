@@ -84,24 +84,25 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,11,22,0.94)_0%,rgba(5,11,22,0.7)_46%,rgba(5,11,22,0.42)_100%)] sm:bg-[linear-gradient(90deg,rgba(5,11,22,0.9)_0%,rgba(5,11,22,0.6)_44%,rgba(5,11,22,0.38)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.3)_0%,rgba(5,11,22,0.14)_28%,rgba(5,11,22,0.86)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
 
-        <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-7 pt-4 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
+        <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-6 pt-4 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="무료로 시작하기" />
 
-          <div className="flex flex-1 items-center pt-3 pb-10 sm:items-end sm:py-24 lg:py-28">
+          <div className="flex flex-1 items-center pt-1 pb-8 sm:items-end sm:py-24 lg:py-28">
             <div className="max-w-5xl">
-              <p className="text-[10px] tracking-[0.18em] text-white/48 sm:text-xs sm:tracking-[0.24em]">SOOM WORKSPACE FOR CHURCHES</p>
-              <h1 className="mt-2 font-display text-[2.55rem] font-semibold leading-[0.9] tracking-[-0.08em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
+              <p className="text-[10px] tracking-[0.16em] text-white/48 sm:text-xs sm:tracking-[0.24em]">SOOM WORKSPACE FOR CHURCHES</p>
+              <h1 className="mt-1.5 font-display text-[2.45rem] font-semibold leading-[0.9] tracking-[-0.085em] text-white sm:mt-5 sm:text-[4.5rem] lg:text-[5.9rem]">
                 교회를 돕다
               </h1>
-              <p className="mt-3 max-w-[22rem] text-[0.95rem] leading-6 text-white/78 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
+              <p className="mt-2.5 max-w-[21rem] text-[0.92rem] leading-[1.55] text-white/78 sm:mt-6 sm:max-w-3xl sm:text-lg sm:leading-8">
                 쇼츠, 유튜브 운영,
                 <br className="sm:hidden" /> 행사 안내 제작까지
               </p>
-              <p className="mt-3 max-w-[24rem] text-[0.92rem] leading-6 text-white/62 sm:mt-4 sm:max-w-3xl sm:text-base sm:leading-7">
-                숨은 교회와 사역자를 위한 워크스페이스를 만들고, 필요하면 실행형 콘텐츠 서비스까지 이어갑니다.
+              <p className="mt-2.5 max-w-[23rem] text-[0.89rem] leading-[1.6] text-white/62 sm:mt-4 sm:max-w-3xl sm:text-base sm:leading-7">
+                교회와 사역을 위한 워크스페이스를 만들고,
+                <br className="sm:hidden" /> 필요하면 실행까지 함께합니다.
               </p>
 
-              <div className="mt-5 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">
+              <div className="mt-4.5 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:gap-3">
                 <Link href="/signup" className="inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-[13px] font-semibold text-[#09111f] transition hover:bg-white/90 sm:min-h-12 sm:px-6 sm:text-sm">
                   무료로 시작하기
                 </Link>
@@ -119,12 +120,12 @@ export default function HomePage() {
           <div className="max-w-4xl">
             <p className="text-xs tracking-[0.24em] text-[#7a6f67]">DISCERNMENT</p>
             <h2 className="mt-5 font-display text-[2.05rem] leading-[1.06] tracking-[-0.05em] sm:text-[3.5rem]">
-              지금 더 필요한 것은
+              먼저 정리하고,
               <br />
-              많은 일보다 먼저 분별입니다
+              바로 실행합니다
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-              해야 할 일은 많아졌지만 무엇을 먼저 해야 하는지는 더 흐려졌습니다. 숨은 그 흐린 지점을 먼저 정리하고, 지금 바로 실행할 수 있는 시작점을 함께 찾습니다.
+              해야 할 일은 많은데 우선순위는 더 흐려질 때가 있습니다. 숨은 지금 먼저 해야 할 일부터 정리하고, 바로 움직일 수 있는 시작점을 함께 찾습니다.
             </p>
           </div>
 
@@ -241,7 +242,7 @@ export default function HomePage() {
               전달과 실행을 봅니다
             </h2>
             <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-              숨은 예쁜 결과물만 만드는 팀이 아닙니다. 교회와 사역의 메시지가 더 잘 전달되도록 필요한 구조와 실행을 함께 정리합니다.
+              숨은 예쁜 결과물보다 먼저 전달 구조를 봅니다. 교회와 사역의 메시지가 실제 실행으로 이어지도록 함께 정리합니다.
             </p>
           </div>
 
