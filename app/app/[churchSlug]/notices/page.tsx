@@ -2,6 +2,36 @@ import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceNotices } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
 
+function getNoticeDeliveryState({ pinned, index }: { pinned: boolean; index: number }) {
+  if (pinned) {
+    return {
+      lane: "핵심 공지",
+      surface: "상단 고정",
+      rhythm: "예배 전 반복 노출",
+      badgeClass: "bg-[#fff4df] text-[#8C6A2E]",
+      note: "예배 전에도 위에 남겨두는 핵심 공지",
+    };
+  }
+
+  if (index < 3) {
+    return {
+      lane: "이번 주 안내",
+      surface: "일반 공지",
+      rhythm: "오늘-주중 전달",
+      badgeClass: "border border-[#e6dfd5] bg-[#fcfbf8] text-[#8C7A5B]",
+      note: "지금 바로 확인할 최신 일반 공지",
+    };
+  }
+
+  return {
+    lane: "지난 공지",
+    surface: "일반 공지",
+    rhythm: "보관·재확인",
+    badgeClass: "border border-[#ece6dc] bg-white text-[#9a8b7a]",
+    note: "필요할 때 다시 꺼내 보는 이전 공지",
+  };
+}
+
 export default async function ChurchNoticesPage({ params }: { params: { churchSlug: string } }) {
   const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) {
@@ -18,6 +48,8 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
 
   const pinnedNotices = notices.filter((notice) => notice.pinned);
   const normalNotices = notices.filter((notice) => !notice.pinned);
+  const activeDeliveryNotices = normalNotices.slice(0, 3);
+  const archivedNotices = normalNotices.slice(3);
   const recentNotice = notices[0];
 
   const actionRail = [
@@ -93,10 +125,17 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
             </div>
             <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-[#111111]">일반 공지</p>
-                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{normalNotices.length}</span>
+                <p className="text-sm font-semibold text-[#111111]">이번 주 전달</p>
+                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{activeDeliveryNotices.length}</span>
               </div>
-              <p className="mt-2 text-xs text-[#8c7a5b]">일정 순으로 빠르게 훑는 기본 리스트입니다.</p>
+              <p className="mt-2 text-xs text-[#8c7a5b]">지금 바로 안내 중인 최신 일반 공지 묶음입니다.</p>
+            </div>
+            <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-[#111111]">지난 공지</p>
+                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{archivedNotices.length}</span>
+              </div>
+              <p className="mt-2 text-xs text-[#8c7a5b]">보관 상태로 두고 필요할 때 다시 확인합니다.</p>
             </div>
           </div>
         </section>
@@ -130,7 +169,8 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
             <div className="flex flex-wrap gap-2 text-[11px] text-[#8C7A5B]">
               <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">전체 {notices.length}</span>
               <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">고정 {pinnedNotices.length}</span>
-              <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">일반 {normalNotices.length}</span>
+              <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">이번 주 {activeDeliveryNotices.length}</span>
+              <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1.5">지난 공지 {archivedNotices.length}</span>
             </div>
           </div>
 
@@ -140,36 +180,36 @@ export default async function ChurchNoticesPage({ params }: { params: { churchSl
             </div>
           ) : (
             <div className="mt-2 divide-y divide-[#f0e8dc]">
-              {notices.map((notice, index) => (
-                <div key={notice.id} className="grid gap-3 py-3 lg:grid-cols-[minmax(0,1fr)_124px_116px] lg:items-center lg:gap-4">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="truncate text-sm font-semibold text-[#111111]">{notice.title}</p>
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-[11px] ${
-                          notice.pinned ? "bg-[#fff4df] text-[#8C6A2E]" : "border border-[#e6dfd5] bg-white text-[#8C7A5B]"
-                        }`}
-                      >
-                        {notice.pinned ? "상단고정" : "일반"}
-                      </span>
+              {notices.map((notice, index) => {
+                const deliveryState = getNoticeDeliveryState({ pinned: notice.pinned, index: notice.pinned ? index : normalNotices.findIndex((item) => item.id === notice.id) });
+
+                return (
+                  <div key={notice.id} className="grid gap-3 py-3 lg:grid-cols-[minmax(0,1fr)_168px_150px] lg:items-center lg:gap-4">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-semibold text-[#111111]">{notice.title}</p>
+                        <span className={`rounded-full px-2.5 py-1 text-[11px] ${deliveryState.badgeClass}`}>{deliveryState.surface}</span>
+                        <span className="rounded-full border border-[#ece6dc] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{deliveryState.lane}</span>
+                      </div>
+                      <p className="mt-1 line-clamp-1 text-sm text-[#5f564b]">{notice.content}</p>
+                      <p className="mt-2 text-[11px] text-[#8c7a5b]">{deliveryState.note}</p>
                     </div>
-                    <p className="mt-1 line-clamp-1 text-sm text-[#5f564b]">{notice.content}</p>
+                    <div className="grid grid-cols-2 gap-2 text-[11px] text-[#7a6d5c] lg:grid-cols-1">
+                      <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">등록일 {formatDate(notice.createdAt)}</div>
+                      <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">전달 {deliveryState.rhythm}</div>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 lg:justify-end">
+                      <p className="text-[11px] text-[#8c7a5b]">{notice.pinned ? "계속 상단 노출 중" : deliveryState.rhythm}</p>
+                      <button
+                        type="button"
+                        className="inline-flex h-9 items-center justify-center rounded-[12px] border border-[#e6dfd5] bg-white px-3 text-xs font-medium text-[#111111]"
+                      >
+                        내용 보기
+                      </button>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-[#7a6d5c] lg:grid-cols-1">
-                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">등록일 {formatDate(notice.createdAt)}</div>
-                    <div className="rounded-[12px] border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-2">순서 {index + 1}</div>
-                  </div>
-                  <div className="flex items-center justify-between gap-3 lg:justify-end">
-                    <p className="text-[11px] text-[#8c7a5b]">{notice.pinned ? "계속 상단 노출 중" : "일반 리스트 노출"}</p>
-                    <button
-                      type="button"
-                      className="inline-flex h-9 items-center justify-center rounded-[12px] border border-[#e6dfd5] bg-white px-3 text-xs font-medium text-[#111111]"
-                    >
-                      내용 보기
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
