@@ -39,6 +39,7 @@
    - [done] 신청 상태 표현 한국형으로 정리
    - [done] 리스트/우선순위 흐름 단순화
    - 2026-03-24 01:36 KST: 신청 상태를 접수됨/확인중/승인됨으로 현지화하고 dense row + 상태별 quick filter 구조로 단순화
+   - 2026-03-24 12:02 KST: 신청 화면 상단을 gloo식 hero + status rail + focus queue로 재구성하고, 상태 필터를 전체/미처리/확인중/승인됨으로 확장해 한 화면에서 바로 정리되게 압축
 
 5. `/app/[churchSlug]/notices`
    - [done] 공지 리스트 밀도 압축

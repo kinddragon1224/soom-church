@@ -112,15 +112,21 @@ export async function getWorkspaceMembers(
   )();
 }
 
-export async function getWorkspaceApplications(churchId: string, options?: { status?: string }) {
-  const status = options?.status === "PENDING" ? "PENDING" : "ALL";
+export async function getWorkspaceApplications(
+  churchId: string,
+  options?: { status?: "ALL" | "PENDING" | "IN_REVIEW" | "APPROVED" },
+) {
+  const status =
+    options?.status === "PENDING" || options?.status === "IN_REVIEW" || options?.status === "APPROVED"
+      ? options.status
+      : "ALL";
 
   return unstable_cache(
     async () =>
       prisma.application.findMany({
         where: {
           churchId,
-          ...(status === "PENDING" ? { status: "PENDING" } : {}),
+          ...(status === "ALL" ? {} : { status }),
         },
         orderBy: { createdAt: "desc" },
         take: 50,
