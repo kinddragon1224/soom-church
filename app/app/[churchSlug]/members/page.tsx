@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { startOfMonth, formatDate } from "@/lib/date";
+import { getStatusMeta } from "@/lib/member-status";
 import { getWorkspaceMembers } from "@/lib/workspace-data";
 
 export default async function ChurchMembersPage({
@@ -111,6 +112,7 @@ export default async function ChurchMembersPage({
                   <th className="px-4 py-3 text-left font-medium">교구/목장</th>
                   <th className="px-4 py-3 text-left font-medium">전화번호</th>
                   <th className="px-4 py-3 text-left font-medium">이메일</th>
+                  <th className="px-4 py-3 text-left font-medium">다음 작업</th>
                   <th className="px-4 py-3 text-left font-medium">등록일</th>
                 </tr>
               </thead>
@@ -126,6 +128,7 @@ export default async function ChurchMembersPage({
                     <td className="px-4 py-3 text-[#5f564b]">{member.district?.name ?? "미정"} / {member.group?.name ?? "미정"}</td>
                     <td className="px-4 py-3 text-[#5f564b]">{member.phone ?? "-"}</td>
                     <td className="px-4 py-3 text-[#5f564b]">{member.email ?? "-"}</td>
+                    <td className="px-4 py-3 text-[#5f564b]">{getStatusMeta(member.statusTag).nextAction}</td>
                     <td className="px-4 py-3 text-[#5f564b]">{formatDate(member.registeredAt)}</td>
                   </tr>
                 ))}

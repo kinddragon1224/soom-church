@@ -30,7 +30,7 @@ export async function getWorkspaceDashboardData(churchId: string) {
           where: { churchId, isDeleted: false },
           orderBy: { createdAt: "desc" },
           take: 5,
-          select: { id: true, name: true, statusTag: true, registeredAt: true },
+          select: { id: true, name: true, statusTag: true, registeredAt: true, districtId: true, groupId: true },
         }),
         prisma.application.findMany({
           where: { churchId },
