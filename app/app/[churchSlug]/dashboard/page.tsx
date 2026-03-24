@@ -68,24 +68,42 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const queueRows = [
     {
       lane: "지금",
-      title: `후속 연락 ${data.followUpMembers}건`,
-      desc: data.followUpMembers > 0 ? "먼저 연락할 사람부터 정리" : "급한 후속 연락이 없어",
+      title:
+        data.followUpMembers > 0
+          ? `${data.nextFollowUpMember?.name ?? "후속 대상"} 연락 먼저`
+          : "후속 연락 비어 있음",
+      desc:
+        data.followUpMembers > 0
+          ? `${data.nextFollowUpMember?.statusTag ?? "후속 필요"} · 남은 ${data.followUpMembers}건 중 먼저 처리`
+          : "급한 후속 연락이 없어",
       metric: data.followUpMembers > 0 ? `${Math.min(data.followUpMembers, 3)}건 먼저` : "비어 있음",
       href: `${base}/members?filter=followup`,
       cta: "사람 보기",
     },
     {
       lane: "다음",
-      title: `미처리 신청 ${data.pendingApplications}건`,
-      desc: data.pendingApplications > 0 ? "들어온 신청 상태 먼저 확인" : "지금은 대기 신청이 없어",
+      title:
+        data.pendingApplications > 0
+          ? `${data.nextPendingApplication?.applicantName ?? "새 신청"} 확인`
+          : "미처리 신청 비어 있음",
+      desc:
+        data.pendingApplications > 0
+          ? `${formatDate(data.nextPendingApplication?.createdAt ?? new Date())} 접수 · 남은 ${data.pendingApplications}건 정리`
+          : "지금은 대기 신청이 없어",
       metric: data.pendingApplications > 0 ? "확인 필요" : "안정",
       href: `${base}/applications?status=PENDING`,
       cta: "신청 보기",
     },
     {
       lane: "정리",
-      title: `미배정 인원 ${data.unassignedMembers}명`,
-      desc: data.unassignedMembers > 0 ? "교구나 목장 연결 비어 있음" : "배정 빠진 인원이 없어",
+      title:
+        data.unassignedMembers > 0
+          ? `${data.nextUnassignedMember?.name ?? "미배정 인원"} 배정 연결`
+          : "미배정 인원 비어 있음",
+      desc:
+        data.unassignedMembers > 0
+          ? `${data.nextUnassignedMember?.statusTag ?? "배정 필요"} · 남은 ${data.unassignedMembers}명 연결`
+          : "배정 빠진 인원이 없어",
       metric: data.unassignedMembers > 0 ? "연결 필요" : "완료",
       href: `${base}/members?filter=unassigned`,
       cta: "배정 보기",

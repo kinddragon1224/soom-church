@@ -17,6 +17,9 @@ export async function getWorkspaceDashboardData(churchId: string) {
         recentApplications,
         recentNotices,
         recentLogs,
+        nextFollowUpMember,
+        nextPendingApplication,
+        nextUnassignedMember,
       ] = await Promise.all([
         prisma.member.count({ where: { churchId, isDeleted: false } }),
         prisma.member.count({ where: { churchId, isDeleted: false, registeredAt: { gte: monthStart } } }),
@@ -47,6 +50,21 @@ export async function getWorkspaceDashboardData(churchId: string) {
           take: 5,
           select: { id: true, action: true, targetType: true, createdAt: true },
         }),
+        prisma.member.findFirst({
+          where: { churchId, isDeleted: false, requiresFollowUp: true },
+          orderBy: [{ updatedAt: "asc" }, { createdAt: "asc" }],
+          select: { id: true, name: true, statusTag: true, updatedAt: true },
+        }),
+        prisma.application.findFirst({
+          where: { churchId, status: "PENDING" },
+          orderBy: { createdAt: "asc" },
+          select: { id: true, applicantName: true, createdAt: true },
+        }),
+        prisma.member.findFirst({
+          where: { churchId, isDeleted: false, OR: [{ districtId: null }, { groupId: null }] },
+          orderBy: [{ updatedAt: "asc" }, { createdAt: "asc" }],
+          select: { id: true, name: true, statusTag: true, updatedAt: true },
+        }),
       ]);
 
       return {
@@ -59,6 +77,9 @@ export async function getWorkspaceDashboardData(churchId: string) {
         recentApplications,
         recentNotices,
         recentLogs,
+        nextFollowUpMember,
+        nextPendingApplication,
+        nextUnassignedMember,
       };
     },
     [`workspace-dashboard-${churchId}`],
