@@ -1,5 +1,13 @@
 import Link from "next/link";
+import { OrganizationUnitType } from "@prisma/client";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { prisma } from "@/lib/prisma";
+import {
+  createDistrictDefault,
+  createGroupDefault,
+  createHouseholdDefault,
+  updateChurchTerminology,
+} from "./actions";
 
 const statusTone = {
   ready: "border-[#d7e8dc] bg-[#eefbf3] text-[#2d7a46]",
@@ -21,6 +29,17 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
   const church = membership.church;
   const basePath = `/app/${church.slug}`;
 
+  const [households, districts, groups, labels] = await Promise.all([
+    prisma.household.findMany({ where: { churchId: church.id }, orderBy: { name: "asc" }, take: 12 }),
+    prisma.district.findMany({ where: { churchId: church.id }, orderBy: { name: "asc" }, take: 12 }),
+    prisma.group.findMany({ where: { churchId: church.id }, include: { district: true }, orderBy: { name: "asc" }, take: 12 }),
+    prisma.organizationUnitLabel.findMany({ where: { churchId: church.id }, orderBy: { type: "asc" } }),
+  ]);
+
+  const districtLabel = labels.find((item) => item.type === OrganizationUnitType.DISTRICT);
+  const departmentLabel = labels.find((item) => item.type === OrganizationUnitType.DEPARTMENT);
+  const groupLabel = labels.find((item) => item.type === OrganizationUnitType.GROUP);
+
   const setupChecklist = [
     {
       title: "기본 정보 점검",
@@ -30,18 +49,18 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
       href: "#profile-fields",
     },
     {
-      title: "팀 운영 규칙 준비",
-      desc: "역할별 권한과 초대 흐름을 정리할 순서를 먼저 맞춥니다.",
+      title: "사람 기본값 등록",
+      desc: "가족, 교구, 목장처럼 등록 폼에서 바로 쓰는 선택값을 여기서 준비합니다.",
       tone: "review",
-      status: "입력 초안 완료",
-      href: "#team-fields",
+      status: "실제 입력 가능",
+      href: "#member-defaults",
     },
     {
-      title: "기본 동작값 정의",
-      desc: "신청, 공지, 후속관리의 기본 리듬을 설정할 준비를 합니다.",
+      title: "용어 기준 정리",
+      desc: "교구 / 부서 / 목장처럼 보이는 이름을 교회 문맥에 맞게 맞춥니다.",
       tone: "next",
-      status: "입력 초안 완료",
-      href: "#default-rules",
+      status: "즉시 수정 가능",
+      href: "#terminology",
     },
   ] as const;
 
@@ -74,70 +93,10 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
     },
   ] as const;
 
-  const roleTemplates = [
-    {
-      name: "담당 사역자",
-      badge: "core",
-      summary: "전체 흐름 확인과 승인 담당",
-      defaults: ["멤버 보기", "신청 승인", "공지 발행"],
-    },
-    {
-      name: "행정",
-      badge: "ops",
-      summary: "명단 정리와 후속관리 운영",
-      defaults: ["멤버 편집", "배정 정리", "신청 처리"],
-    },
-    {
-      name: "콘텐츠",
-      badge: "studio",
-      summary: "공지/전달 자료 준비 담당",
-      defaults: ["공지 작성", "전달 상태 확인", "게시 일정 관리"],
-    },
-  ] as const;
-
-  const inviteFlowFields = [
-    { label: "초대 방식", value: "이메일 또는 링크", hint: "처음엔 두 방식 중 하나만 선택해도 됩니다." },
-    { label: "기본 역할", value: "행정", hint: "초대 시 가장 많이 쓰는 역할을 기본값으로 둡니다." },
-    { label: "승인 단계", value: "관리자 확인 후 활성화", hint: "실수 초대를 줄이기 위한 최소 승인 단계입니다." },
-  ] as const;
-
-  const defaultRuleSections = [
-    {
-      title: "신청 기본값",
-      tone: "review",
-      status: "운영 초안",
-      fields: [
-        { label: "기본 상태", value: "접수됨", hint: "새 신청은 모두 같은 시작점에서 들어옵니다." },
-        { label: "담당 배정 시점", value: "확인중으로 바꿀 때", hint: "상태 변경과 담당 배정을 같이 묶습니다." },
-        { label: "마감 기준", value: "안내 연결 완료", hint: "완료 대신 실제 사역 행동 기준으로 표시합니다." },
-      ],
-    },
-    {
-      title: "공지 전달 기본값",
-      tone: "next",
-      status: "전달 초안",
-      fields: [
-        { label: "기본 분류", value: "일반 공지", hint: "필요할 때만 고정 공지로 올립니다." },
-        { label: "전달 리듬", value: "이번 주 전달", hint: "최근 공지를 중심으로 보게 만드는 기본 리듬입니다." },
-        { label: "확인 기준", value: "담당자 전달 완료", hint: "읽음보다 전달 책임을 먼저 잡습니다." },
-      ],
-    },
-    {
-      title: "후속관리 기본값",
-      tone: "ready",
-      status: "실행 초안",
-      fields: [
-        { label: "첫 확인 시점", value: "등록 당일", hint: "가장 빠른 접촉 기준입니다." },
-        { label: "기본 담당", value: "교구 또는 목장 리더", hint: "미배정이면 행정이 먼저 챙기도록 둡니다." },
-        { label: "완료 조건", value: "배정 + 첫 연락 완료", hint: "실제 후속관리 종료 시점을 짧게 정의합니다." },
-      ],
-    },
-  ] as const;
-
   const nextActions = [
     { label: "멤버 역할 기준 보기", href: `${basePath}/members`, note: "팀 구조와 연결" },
+    { label: "조직 구조 보기", href: `${basePath}/organizations`, note: "교구/부서/목장 구조 확인" },
     { label: "신청 상태 흐름 보기", href: `${basePath}/applications`, note: "기본 처리 규칙 확인" },
-    { label: "공지 전달 리듬 보기", href: `${basePath}/notices`, note: "전달 상태와 연결" },
   ] as const;
 
   return (
@@ -153,30 +112,30 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
                 실제 편집 흐름으로 준비합니다
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
-                아직 복잡한 설정 화면을 늘리기보다, 지금 바로 점검하고 다음 작업과 연결되는 핵심 값만 먼저 정리합니다.
+                사람 등록 폼에서 반복해서 쓰는 기본값과 용어를 여기서 관리하도록 올렸어. 이제 가족, 교구, 목장은 설정에서 먼저 넣고 쓰면 돼.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 lg:max-w-[260px] lg:justify-end">
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{church.name}</span>
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">settings</span>
-              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">edit flow prep</span>
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">member defaults</span>
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
-              <p className="text-[11px] tracking-[0.16em] text-white/48">PROFILE</p>
-              <p className="mt-2 text-2xl font-semibold">3개</p>
-              <p className="mt-2 text-xs text-white/60">먼저 점검할 기본 항목</p>
+              <p className="text-[11px] tracking-[0.16em] text-white/48">가족</p>
+              <p className="mt-2 text-2xl font-semibold">{households.length}</p>
+              <p className="mt-2 text-xs text-white/60">등록된 기본 가정</p>
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
-              <p className="text-[11px] tracking-[0.16em] text-white/48">TEAM</p>
-              <p className="mt-2 text-2xl font-semibold">3역할</p>
-              <p className="mt-2 text-xs text-white/60">초대 기본 역할 초안</p>
+              <p className="text-[11px] tracking-[0.16em] text-white/48">교구</p>
+              <p className="mt-2 text-2xl font-semibold">{districts.length}</p>
+              <p className="mt-2 text-xs text-white/60">등록 폼 선택값</p>
             </div>
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
-              <p className="text-[11px] tracking-[0.16em] text-white/48">DEFAULTS</p>
-              <p className="mt-2 text-2xl font-semibold">3영역</p>
-              <p className="mt-2 text-xs text-white/60">신청 · 공지 · 후속관리 기준</p>
+              <p className="text-[11px] tracking-[0.16em] text-white/48">목장</p>
+              <p className="mt-2 text-2xl font-semibold">{groups.length}</p>
+              <p className="mt-2 text-xs text-white/60">교구 아래 기본 구조</p>
             </div>
           </div>
         </div>
@@ -225,10 +184,7 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
                   <span>설명</span>
                 </div>
                 {group.rows.map((row) => (
-                  <div
-                    key={row.label}
-                    className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-3 py-3 transition hover:border-[#dfd3bf] hover:bg-white"
-                  >
+                  <div key={row.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-3 py-3 transition hover:border-[#dfd3bf] hover:bg-white">
                     <div className="flex flex-col gap-2 md:grid md:grid-cols-[160px_minmax(0,1fr)_220px] md:items-center md:gap-3">
                       <p className="text-sm font-semibold text-[#111111]">{row.label}</p>
                       <div className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-2 text-sm text-[#111111]">{row.value}</div>
@@ -240,88 +196,86 @@ export default async function WorkspaceSettingsPage({ params }: { params: { chur
             </section>
           ))}
 
-          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-            <div className="flex flex-col gap-3 border-b border-[#efe7da] pb-4 sm:flex-row sm:items-end sm:justify-between">
+          <section id="member-defaults" className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3 border-b border-[#efe7da] pb-4">
               <div>
-                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ROLE TEMPLATES</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">기본 역할 입력 초안</h2>
-                <p className="mt-2 text-sm leading-6 text-[#5f564b]">실제 권한 관리 화면을 붙이기 전, 가장 자주 쓰는 팀 역할을 먼저 고정해둡니다.</p>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">MEMBER DEFAULTS</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">사람 등록 기본값</h2>
+                <p className="mt-2 text-sm leading-6 text-[#5f564b]">사람 등록 폼의 가족 / 교구 / 목장 선택값은 여기서 먼저 추가하면 기본 옵션으로 바로 보여.</p>
               </div>
-              <span className="rounded-full border border-[#eadfcd] bg-[#fff7e8] px-3 py-1 text-[11px] text-[#8C6A2E]">gloo-first 초안</span>
-            </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {roleTemplates.map((role) => (
-                <div key={role.name} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-[#111111]">{role.name}</p>
-                    <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{role.badge}</span>
-                  </div>
-                  <p className="mt-2 text-sm text-[#5f564b]">{role.summary}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {role.defaults.map((item) => (
-                      <span key={item} className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51]">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
             </div>
 
-            <div className="mt-4 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-[#111111]">초대 기본값</p>
-                <span className="rounded-full border border-[#d9e3f5] bg-[#eff4ff] px-2.5 py-1 text-[11px] text-[#365b96]">invite flow</span>
+            <div className="mt-4 grid gap-4 xl:grid-cols-3">
+              <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                <p className="text-sm font-semibold text-[#111111]">가족 기본값</p>
+                <form action={createHouseholdDefault.bind(null, params.churchSlug)} className="mt-3 grid gap-3">
+                  <input name="name" placeholder="예: 김가정, 3구역 새가족" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                  <input name="address" placeholder="주소 메모" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                  <textarea name="notes" placeholder="가족 설명 / 메모" className="min-h-[88px] rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                  <button className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">가족 추가</button>
+                </form>
+                <div className="mt-3 grid gap-2">
+                  {households.map((item) => (
+                    <div key={item.id} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-2 text-sm text-[#111111]">{item.name}</div>
+                  ))}
+                </div>
               </div>
-              <div className="mt-3 grid gap-2">
-                {inviteFlowFields.map((field) => (
-                  <div key={field.label} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-3">
-                    <div className="flex flex-col gap-1 md:grid md:grid-cols-[140px_minmax(0,1fr)] md:items-center md:gap-3">
-                      <p className="text-xs font-semibold tracking-[0.04em] text-[#7a6d5c]">{field.label}</p>
-                      <div>
-                        <p className="text-sm text-[#111111]">{field.value}</p>
-                        <p className="mt-1 text-xs leading-5 text-[#8c7a5b]">{field.hint}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+
+              <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                <p className="text-sm font-semibold text-[#111111]">교구 기본값</p>
+                <form action={createDistrictDefault.bind(null, params.churchSlug)} className="mt-3 grid gap-3">
+                  <input name="name" placeholder="예: 1교구, 청장년교구" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                  <input name="leadName" placeholder="담당자 / 리더명" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                  <button className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">교구 추가</button>
+                </form>
+                <div className="mt-3 grid gap-2">
+                  {districts.map((item) => (
+                    <div key={item.id} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-2 text-sm text-[#111111]">{item.name}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                <p className="text-sm font-semibold text-[#111111]">목장 기본값</p>
+                <form action={createGroupDefault.bind(null, params.churchSlug)} className="mt-3 grid gap-3">
+                  <select name="districtId" defaultValue="" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]">
+                    <option value="">소속 교구 선택</option>
+                    {districts.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+                  </select>
+                  <input name="name" placeholder="예: 소망 목장, 청년 2목장" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                  <button className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">목장 추가</button>
+                </form>
+                <div className="mt-3 grid gap-2">
+                  {groups.map((item) => (
+                    <div key={item.id} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-2 text-sm text-[#111111]">{item.name} <span className="text-xs text-[#8C7A5B]">· {item.district.name}</span></div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
         </div>
 
         <div className="grid gap-4">
-          <section id="default-rules" className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+          <section id="terminology" className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">DEFAULT RULES</p>
-                <h2 className="mt-2 text-lg font-semibold text-[#111111]">기본 동작값 입력 초안</h2>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">TERMINOLOGY</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">교회별 용어</h2>
               </div>
-              <span className="rounded-full border border-[#d9e3f5] bg-[#eff4ff] px-3 py-1 text-[11px] text-[#365b96]">다음 단계 연결</span>
+              <span className="rounded-full border border-[#d9e3f5] bg-[#eff4ff] px-3 py-1 text-[11px] text-[#365b96]">교구 / 부서 / 목장</span>
             </div>
-            <div className="mt-4 grid gap-3">
-              {defaultRuleSections.map((section) => (
-                <div key={section.title} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-[#111111]">{section.title}</p>
-                    <span className={`rounded-full border px-2.5 py-1 text-[11px] ${statusTone[section.tone]}`}>{section.status}</span>
-                  </div>
-                  <div className="mt-3 grid gap-2">
-                    {section.fields.map((field) => (
-                      <div key={field.label} className="rounded-[14px] border border-[#e6dfd5] bg-white px-3 py-3">
-                        <div className="flex flex-col gap-1 md:grid md:grid-cols-[132px_minmax(0,1fr)] md:items-center md:gap-3">
-                          <p className="text-xs font-semibold tracking-[0.04em] text-[#7a6d5c]">{field.label}</p>
-                          <div>
-                            <p className="text-sm text-[#111111]">{field.value}</p>
-                            <p className="mt-1 text-xs leading-5 text-[#8c7a5b]">{field.hint}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">조직 화면과 설정 화면에서 보이는 기본 용어를 여기서 맞춘다. 지금은 교구 / 부서 / 목장 기준으로 정리해뒀어.</p>
+            <form action={updateChurchTerminology.bind(null, params.churchSlug)} className="mt-4 grid gap-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <input name="districtSingular" defaultValue={districtLabel?.singular ?? "교구"} placeholder="교구 단수형" className="rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" />
+                <input name="districtPlural" defaultValue={districtLabel?.plural ?? districtLabel?.singular ?? "교구"} placeholder="교구 복수형" className="rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" />
+                <input name="departmentSingular" defaultValue={departmentLabel?.singular ?? "부서"} placeholder="부서 단수형" className="rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" />
+                <input name="departmentPlural" defaultValue={departmentLabel?.plural ?? departmentLabel?.singular ?? "부서"} placeholder="부서 복수형" className="rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" />
+                <input name="groupSingular" defaultValue={groupLabel?.singular ?? "목장"} placeholder="목장 단수형" className="rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" />
+                <input name="groupPlural" defaultValue={groupLabel?.plural ?? groupLabel?.singular ?? "목장"} placeholder="목장 복수형" className="rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" />
+              </div>
+              <button className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">용어 저장</button>
+            </form>
           </section>
 
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
