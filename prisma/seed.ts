@@ -299,6 +299,17 @@ async function main() {
     });
   }
 
+  const lifeExists = await prisma.memberLifeStatus.findFirst({ where: { churchId: church.id, memberId: parkSujin.id, title: "가정 재정 점검" } });
+  if (!lifeExists) {
+    await prisma.memberLifeStatus.createMany({
+      data: [
+        { churchId: church.id, memberId: parkSujin.id, type: "FINANCE", title: "가정 재정 점검", summary: "자녀 교육비 부담으로 지출 압박이 큼", happenedAt: new Date("2026-03-12T00:00:00+09:00") },
+        { churchId: church.id, memberId: parkSujin.id, type: "FAMILY", title: "가족 돌봄 이슈", summary: "부모님 병원 동행으로 주중 시간이 부족함", happenedAt: new Date("2026-03-14T00:00:00+09:00") },
+        { churchId: church.id, memberId: kangEunmi.id, type: "HEALTH", title: "건강 회복 필요", summary: "허리 통증으로 장시간 봉사 어려움", happenedAt: new Date("2026-03-18T00:00:00+09:00") },
+      ],
+    });
+  }
+
   const faithExists = await prisma.memberFaithMilestone.findFirst({ where: { churchId: church.id, memberId: parkSujin.id, type: SacramentType.BAPTISM } });
   if (!faithExists) {
     await prisma.memberFaithMilestone.createMany({

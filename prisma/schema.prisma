@@ -95,6 +95,21 @@ enum CareCategory {
   CUSTOM
 }
 
+enum LifeStatusType {
+  HEALTH
+  FINANCE
+  JOB
+  MARRIAGE
+  DIVORCE
+  FUNERAL
+  FAMILY
+  RESIDENCE
+  PREGNANCY
+  EDUCATION
+  MILITARY
+  CUSTOM
+}
+
 enum SacramentType {
   BAPTISM
   INFANT_BAPTISM
@@ -122,6 +137,7 @@ model Church {
   memberOrganizationLinks MemberOrganization[]
   memberRelationships     MemberRelationship[]    @relation("RelationshipChurch")
   careRecords             MemberCareRecord[]
+  lifeStatuses            MemberLifeStatus[]
   faithMilestones         MemberFaithMilestone[]
   applicationForms        ApplicationForm[]
   applications            Application[]
@@ -259,6 +275,7 @@ model Member {
   relationshipsFrom     MemberRelationship[]   @relation("MemberRelationshipFrom")
   relationshipsTo       MemberRelationship[]   @relation("MemberRelationshipTo")
   careRecords           MemberCareRecord[]
+  lifeStatuses          MemberLifeStatus[]
   faithMilestones       MemberFaithMilestone[]
   registeredAt          DateTime               @default(now())
   position              String?
@@ -446,6 +463,27 @@ model MemberCareRecord {
 
   @@index([churchId, memberId, happenedAt])
   @@index([churchId, category])
+}
+
+model MemberLifeStatus {
+  id          String         @id @default(cuid())
+  churchId     String
+  memberId     String
+  type        LifeStatusType
+  customType  String?
+  title       String
+  status      String?
+  summary     String?
+  details     String?
+  happenedAt  DateTime?
+  isActive    Boolean        @default(true)
+  church      Church         @relation(fields: [churchId], references: [id])
+  member      Member         @relation(fields: [memberId], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([churchId, memberId])
+  @@index([churchId, type])
 }
 
 model MemberFaithMilestone {

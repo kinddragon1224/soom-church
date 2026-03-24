@@ -117,6 +117,32 @@ export default async function ChurchMemberRecordPage({
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
             <div className="flex items-center justify-between gap-3">
               <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">LIFE STATUS</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">가정 · 삶의 상태</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">건강 · 재정 · 직장 · 결혼</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {member.lifeStatuses.length === 0 ? (
+                <div className="rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] p-6 text-sm text-[#5f564b]">아직 기록된 삶의 상태가 없어.</div>
+              ) : (
+                member.lifeStatuses.map((status) => (
+                  <div key={status.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-semibold text-[#111111]">{status.title}</p>
+                      <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{status.type}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-[#5f564b]">{status.summary ?? status.details ?? "세부 내용 없음"}</p>
+                    <p className="mt-2 text-[11px] text-[#8c7a5b]">{status.happenedAt ? formatDate(status.happenedAt) : "날짜 미정"}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">CARE LOG</p>
                 <h2 className="mt-2 text-lg font-semibold text-[#111111]">심방 · 상담 · 메모</h2>
               </div>

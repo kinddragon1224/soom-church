@@ -179,6 +179,10 @@ export async function getWorkspaceMemberRecord(churchId: string, memberId: strin
             orderBy: { happenedAt: "desc" },
             take: 20,
           },
+          lifeStatuses: {
+            orderBy: [{ isActive: "desc" }, { happenedAt: "desc" }],
+            take: 20,
+          },
           faithMilestones: {
             orderBy: { happenedAt: "desc" },
             take: 20,
