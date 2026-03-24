@@ -37,6 +37,8 @@ export default async function ChurchWorkspaceLayout({
       church={membership.church}
       role={membership.role}
       summary={{
+        totalMembers: summary.totalMembers,
+        newThisMonth: summary.newThisMonth,
         followUpMembers: summary.followUpMembers,
         pendingApplications: summary.pendingApplications,
         unassignedMembers: summary.unassignedMembers,

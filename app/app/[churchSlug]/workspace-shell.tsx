@@ -31,6 +31,8 @@ type WorkspaceShellProps = {
   church: { name: string; slug: string };
   role: string;
   summary: {
+    totalMembers: number;
+    newThisMonth: number;
     followUpMembers: number;
     pendingApplications: number;
     unassignedMembers: number;
@@ -82,6 +84,11 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
       { label: "사람 보기", href: `${base}/members` },
       { label: "홈", href: `${base}/dashboard` },
     ],
+    organizations: [
+      { label: "미배정 사람", href: `${base}/members?filter=followup`, primary: true },
+      { label: "사람 보기", href: `${base}/members` },
+      { label: "홈", href: `${base}/dashboard` },
+    ],
     notices: [
       { label: "최근 공지", href: `${base}/notices`, primary: true },
       { label: "사람 보기", href: `${base}/members` },
@@ -94,7 +101,48 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
     ],
   };
 
+  const sectionStatusByKey: Record<string, { label: string; value: string; tone?: "neutral" | "alert" }[]> = {
+    dashboard: [
+      { label: "전체 사람", value: `${summary.totalMembers}명` },
+      { label: "오늘 후속", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}건` : "없음", tone: summary.followUpMembers > 0 ? "alert" : "neutral" },
+      { label: "미처리 신청", value: summary.pendingApplications > 0 ? `${summary.pendingApplications}건` : "없음", tone: summary.pendingApplications > 0 ? "alert" : "neutral" },
+    ],
+    members: [
+      { label: "전체 사람", value: `${summary.totalMembers}명` },
+      { label: "이번 달 등록", value: summary.newThisMonth > 0 ? `${summary.newThisMonth}명` : "없음" },
+      { label: "후속 필요", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명` : "없음", tone: summary.followUpMembers > 0 ? "alert" : "neutral" },
+    ],
+    applications: [
+      { label: "미처리", value: summary.pendingApplications > 0 ? `${summary.pendingApplications}건` : "없음", tone: summary.pendingApplications > 0 ? "alert" : "neutral" },
+      { label: "이번 달 등록", value: summary.newThisMonth > 0 ? `${summary.newThisMonth}명` : "없음" },
+      { label: "후속 연계", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명` : "없음" },
+    ],
+    organizations: [
+      { label: "미배정", value: summary.unassignedMembers > 0 ? `${summary.unassignedMembers}명` : "없음", tone: summary.unassignedMembers > 0 ? "alert" : "neutral" },
+      { label: "전체 사람", value: `${summary.totalMembers}명` },
+      { label: "후속 필요", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명` : "없음" },
+    ],
+    notices: [
+      { label: "전달 대기", value: summary.pendingApplications > 0 ? `${summary.pendingApplications}건 참고` : "안정" },
+      { label: "후속 필요", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명` : "없음" },
+      { label: "전체 사람", value: `${summary.totalMembers}명` },
+    ],
+    settings: [
+      { label: "후속 기본값", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명 영향` : "안정" },
+      { label: "신청 기본값", value: summary.pendingApplications > 0 ? `${summary.pendingApplications}건 영향` : "안정" },
+      { label: "조직 기본값", value: summary.unassignedMembers > 0 ? `${summary.unassignedMembers}명 영향` : "안정" },
+    ],
+  };
+
+  const navBadgeByKey: Partial<Record<string, string>> = {
+    dashboard: summary.followUpMembers > 0 ? `${summary.followUpMembers}` : "",
+    members: summary.newThisMonth > 0 ? `+${summary.newThisMonth}` : `${summary.totalMembers}`,
+    applications: summary.pendingApplications > 0 ? `${summary.pendingApplications}` : "",
+    organizations: summary.unassignedMembers > 0 ? `${summary.unassignedMembers}` : "",
+  };
+
   const quickActions = quickActionsBySection[currentItem.key] ?? quickActionsBySection.dashboard;
+  const sectionStatus = sectionStatusByKey[currentItem.key] ?? sectionStatusByKey.dashboard;
 
   return (
     <main className="min-h-screen bg-[#EDE6D8] text-[#121212] lg:h-dvh lg:min-h-0 lg:overflow-hidden">
@@ -116,7 +164,8 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
               <p className="mt-2 text-sm font-semibold text-white">{church.name}</p>
               <div className="mt-3 flex flex-wrap gap-2 text-[10px] text-white/58">
                 <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">무료</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">LIVE</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">{summary.totalMembers}명</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1">후속 {summary.followUpMembers}건</span>
               </div>
             </div>
 
@@ -128,6 +177,7 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
                     {section.items.map((item) => {
                       const href = `${base}/${item.href}`;
                       const active = pathname === href || pathname.startsWith(`${href}/`);
+                      const badge = navBadgeByKey[item.key];
 
                       return (
                         <Link
@@ -144,13 +194,24 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
                               <p className={`font-medium ${active ? "font-semibold" : ""}`}>{item.label}</p>
                               <p className={`mt-1 text-[10px] ${active ? "text-[#47391d]" : "text-white/36"}`}>{item.hint}</p>
                             </div>
-                            <span
-                              className={`rounded-full px-2 py-1 text-[9px] uppercase tracking-[0.16em] ${
-                                active ? "bg-black/10 text-[#3d3118]" : "bg-white/6 text-white/24"
-                              }`}
-                            >
-                              {active ? "on" : ""}
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                              {badge ? (
+                                <span
+                                  className={`rounded-full px-2 py-1 text-[9px] font-semibold ${
+                                    active ? "bg-black/10 text-[#3d3118]" : "bg-white/8 text-white/62"
+                                  }`}
+                                >
+                                  {badge}
+                                </span>
+                              ) : null}
+                              <span
+                                className={`rounded-full px-2 py-1 text-[9px] uppercase tracking-[0.16em] ${
+                                  active ? "bg-black/10 text-[#3d3118]" : "bg-white/6 text-white/24"
+                                }`}
+                              >
+                                {active ? "on" : ""}
+                              </span>
+                            </div>
                           </div>
                         </Link>
                       );
@@ -210,6 +271,22 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
                       item.tone === "alert"
                         ? "border-[#E9D8B0] bg-[#FFF7E8]"
                         : "border-[#E7E0D4] bg-white"
+                    }`}
+                  >
+                    <p className="text-[11px] tracking-[0.16em] text-[#9A8B7A]">{item.label}</p>
+                    <p className="mt-2 text-sm font-semibold text-[#121212]">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-2 md:grid-cols-3">
+                {sectionStatus.map((item) => (
+                  <div
+                    key={item.label}
+                    className={`rounded-[16px] border px-3.5 py-3 ${
+                      item.tone === "alert"
+                        ? "border-[#E9D8B0] bg-[#FFF7E8]"
+                        : "border-[#E7E0D4] bg-[#F6F1E8]"
                     }`}
                   >
                     <p className="text-[11px] tracking-[0.16em] text-[#9A8B7A]">{item.label}</p>
