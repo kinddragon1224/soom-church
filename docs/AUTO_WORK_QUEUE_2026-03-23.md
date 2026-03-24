@@ -67,6 +67,7 @@
    - 2026-03-24 05:32 KST: `platform-admin/users`에 워크스페이스별 온보딩 메타(팀/출석규모/우선 목표/유입 경로)를 함께 노출해 사용자-교회 연결 상태를 운영 화면에서 바로 읽게 정리
    - 2026-03-24 10:37 KST: `platform-admin/churches` 상단을 gloo식 상태 요약 rail로 보강하고, 각 행에 워크스페이스 대시보드/사람 이동 CTA를 붙여 운영 판단 후 바로 들어가게 정리
    - 2026-03-24 11:08 KST: `platform-admin/churches`에 방금 온보딩/체험중/데이터 비어 있음 3칸 focus rail을 추가해 관리자 첫 시야에서 바로 열어볼 워크스페이스를 gloo식으로 압축
+   - 2026-03-24 11:31 KST: `platform-admin/churches`에 즉시 확인/빈 데이터/legacy/trial attention rail과 행별 focus badge를 추가해 지금 열어볼 워크스페이스가 리스트 안에서도 바로 튀게 정리
 
 ## Done so far
 - `/app` 실사용 진입 복구

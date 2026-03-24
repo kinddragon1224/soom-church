@@ -46,6 +46,18 @@ function statusTone(isActive: boolean) {
     : "border-[#eadfd3] bg-[#fcf7f1] text-[#8b6f47]";
 }
 
+function planStatusLabel(status?: string) {
+  return (
+    {
+      TRIALING: "체험중",
+      ACTIVE: "유료 운영중",
+      CANCELED: "해지됨",
+      PAST_DUE: "결제 확인 필요",
+      INCOMPLETE: "설정 미완료",
+    }[status ?? ""] ?? (status || "상태 없음")
+  );
+}
+
 export default async function PlatformAdminChurchesPage() {
   const churches = await prisma.church.findMany({
     orderBy: { createdAt: "desc" },
@@ -75,6 +87,8 @@ export default async function PlatformAdminChurchesPage() {
     const plan = church.subscriptions[0]?.plan ?? "FREE";
     const planStatus = church.subscriptions[0]?.status ?? "-";
 
+    const needsAttention = !church.isActive || planStatus === "TRIALING" || church._count.members === 0 || createdFrom === "legacy";
+
     return {
       id: church.id,
       name: church.name,
@@ -97,7 +111,9 @@ export default async function PlatformAdminChurchesPage() {
       members: church._count.members,
       plan,
       planStatus,
+      planStatusLabel: planStatusLabel(planStatus),
       isActive: church.isActive,
+      needsAttention,
       workspaceHref: `/app/${church.slug}/dashboard`,
       membersHref: `/app/${church.slug}/members`,
     };
@@ -107,10 +123,14 @@ export default async function PlatformAdminChurchesPage() {
   const trialCount = rows.filter((row) => row.planStatus === "TRIALING").length;
   const activeCount = rows.filter((row) => row.isActive).length;
   const inactiveCount = rows.length - activeCount;
+  const legacyCount = rows.filter((row) => row.createdFrom === "legacy").length;
+  const emptyCount = rows.filter((row) => row.members === 0).length;
+  const attentionCount = rows.filter((row) => row.needsAttention).length;
 
   const latestOnboarded = rows.find((row) => row.createdFrom !== "legacy") ?? rows[0] ?? null;
   const trialWorkspace = rows.find((row) => row.planStatus === "TRIALING") ?? null;
   const emptyWorkspace = rows.find((row) => row.members === 0) ?? null;
+  const attentionWorkspace = rows.find((row) => row.needsAttention) ?? null;
 
   const focusCards = [
     latestOnboarded
@@ -158,6 +178,44 @@ export default async function PlatformAdminChurchesPage() {
           href: undefined,
           cta: "완료",
         },
+    attentionWorkspace
+      ? {
+          label: "지금 열어볼 곳",
+          title: attentionWorkspace.name,
+          note: `${attentionWorkspace.planStatusLabel} · ${attentionWorkspace.members === 0 ? "교인 데이터 없음" : `교인 ${attentionWorkspace.members}명`} · ${attentionWorkspace.isActive ? "운영중" : "비활성"}`,
+          href: attentionWorkspace.workspaceHref,
+          cta: "바로 열기",
+        }
+      : {
+          label: "지금 열어볼 곳",
+          title: "긴급 확인 대상 없음",
+          note: "체험, 비활성, 빈 데이터 워크스페이스가 없습니다.",
+          href: undefined,
+          cta: "안정",
+        },
+  ];
+
+  const attentionRail = [
+    {
+      label: "즉시 확인",
+      value: attentionCount,
+      note: "체험·비활성·빈 데이터·legacy",
+    },
+    {
+      label: "빈 데이터",
+      value: emptyCount,
+      note: "교인 0명 워크스페이스",
+    },
+    {
+      label: "legacy",
+      value: legacyCount,
+      note: "온보딩 메타 없음",
+    },
+    {
+      label: "trial",
+      value: trialCount,
+      note: "유료 전환 체크 대상",
+    },
   ];
 
   return (
@@ -210,7 +268,7 @@ export default async function PlatformAdminChurchesPage() {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-2 xl:grid-cols-3">
+        <div className="mt-4 grid gap-2 xl:grid-cols-4">
           {focusCards.map((card) => (
             <div key={card.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
               <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">{card.label}</p>
@@ -234,6 +292,21 @@ export default async function PlatformAdminChurchesPage() {
           ))}
         </div>
 
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          {attentionRail.map((item) => (
+            <div key={item.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">{item.label}</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{item.value}</p>
+                </div>
+                <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">focus</span>
+              </div>
+              <p className="mt-1 text-xs text-[#8c7a5b]">{item.note}</p>
+            </div>
+          ))}
+        </div>
+
         <div className="mt-4 grid gap-2">
           <div className="hidden grid-cols-[minmax(0,1.2fr)_minmax(0,1.15fr)_120px_210px] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] lg:grid">
             <span>교회 / 담당자</span>
@@ -252,6 +325,15 @@ export default async function PlatformAdminChurchesPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-semibold text-[#111111]">{row.name}</p>
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{row.slug}</span>
+                    {row.planStatus === "TRIALING" ? (
+                      <span className="rounded-full border border-[#eadfc9] bg-[#fff8ec] px-2.5 py-1 text-[11px] text-[#9b7331]">trial</span>
+                    ) : null}
+                    {row.members === 0 ? (
+                      <span className="rounded-full border border-[#eadfd3] bg-[#fcf7f1] px-2.5 py-1 text-[11px] text-[#8b6f47]">빈 데이터</span>
+                    ) : null}
+                    {row.createdFrom === "legacy" ? (
+                      <span className="rounded-full border border-[#e2def4] bg-[#f7f5ff] px-2.5 py-1 text-[11px] text-[#6657a8]">legacy</span>
+                    ) : null}
                   </div>
                   <p className="mt-1 text-xs text-[#7a6d5c]">
                     {row.ownerName} · {row.role} · {row.createdAtLabel}
@@ -273,7 +355,7 @@ export default async function PlatformAdminChurchesPage() {
                   <div className="inline-flex rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51]">
                     {row.plan}
                   </div>
-                  <p className="mt-2 text-xs text-[#8c7a5b]">{row.planStatus}</p>
+                  <p className="mt-2 text-xs text-[#8c7a5b]">{row.planStatusLabel}</p>
                 </div>
 
                 <div className="flex flex-col items-start gap-2 lg:items-end">
