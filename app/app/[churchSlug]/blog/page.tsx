@@ -9,6 +9,8 @@ export default async function ChurchBlogPage({ params }: { params: { churchSlug:
 
   const church = membership.church;
   const posts = await getChurchBlogPosts(church.id);
+  const publishedCount = posts.filter((post) => post.status === "PUBLISHED").length;
+  const draftCount = posts.filter((post) => post.status === "DRAFT").length;
 
   return (
     <div className="flex flex-col gap-6 text-[#111111]">
@@ -16,14 +18,20 @@ export default async function ChurchBlogPage({ params }: { params: { churchSlug:
         <div className="rounded-[28px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
           <p className="text-[11px] tracking-[0.2em] text-white/46">BLOG STUDIO</p>
           <h1 className="mt-3 text-[2.1rem] font-semibold leading-[0.98] tracking-[-0.06em] text-white">블로그 글을 작성하고 발행합니다</h1>
-          <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">워크스페이스 안에서 초안, 발행, 보관 상태를 관리하는 블로그 작성 1차 화면입니다.</p>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">워크스페이스 안에서 초안, 발행, 보관 상태를 관리하는 블로그 작성 화면입니다.</p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-[18px] border border-white/10 bg-white/8 p-4"><p className="text-[11px] tracking-[0.16em] text-white/48">전체</p><p className="mt-2 text-2xl font-semibold">{posts.length}</p></div>
+            <div className="rounded-[18px] border border-white/10 bg-white/8 p-4"><p className="text-[11px] tracking-[0.16em] text-white/48">초안</p><p className="mt-2 text-2xl font-semibold">{draftCount}</p></div>
+            <div className="rounded-[18px] border border-white/10 bg-white/8 p-4"><p className="text-[11px] tracking-[0.16em] text-white/48">발행</p><p className="mt-2 text-2xl font-semibold">{publishedCount}</p></div>
+          </div>
         </div>
         <section className="rounded-[28px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
           <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTIONS</p>
           <h2 className="mt-2 text-xl font-semibold text-[#111111]">바로 작업</h2>
           <div className="mt-4 grid gap-3">
             <Link href={`/app/${church.slug}/blog/new`} className="rounded-[14px] bg-[#0F172A] px-4 py-3 text-sm font-semibold text-white">새 글 작성</Link>
-            <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4 text-sm text-[#111111]">전체 글 {posts.length}개</div>
+            <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4 text-sm text-[#111111]">SEO 입력 포함</div>
+            <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4 text-sm text-[#111111]">미리보기 사용 가능</div>
           </div>
         </section>
       </section>
@@ -41,11 +49,12 @@ export default async function ChurchBlogPage({ params }: { params: { churchSlug:
             <div className="rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] p-6 text-sm text-[#5f564b]">아직 작성된 글이 없습니다. 첫 글을 작성해보세요.</div>
           ) : (
             posts.map((post) => (
-              <Link key={post.id} href={`/app/${church.slug}/blog/${post.id}/edit`} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 transition hover:bg-white">
-                <div className="flex items-center justify-between gap-3">
+              <div key={post.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold text-[#111111]">{post.title}</p>
                     <p className="mt-2 text-sm text-[#5f564b]">{post.excerpt ?? "요약문 없음"}</p>
+                    <p className="mt-2 text-xs text-[#8C7A5B]">SEO 제목 · {post.seoTitle ?? "미입력"}</p>
                   </div>
                   <div className="text-right text-xs text-[#8C7A5B]">
                     <p>{post.status}</p>
@@ -53,7 +62,11 @@ export default async function ChurchBlogPage({ params }: { params: { churchSlug:
                     <p className="mt-1">{post.author.name}</p>
                   </div>
                 </div>
-              </Link>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link href={`/app/${church.slug}/blog/${post.id}/edit`} className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-xs font-medium text-[#121212]">수정</Link>
+                  <Link href={`/app/${church.slug}/blog/${post.id}/preview`} className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-xs font-medium text-[#121212]">미리보기</Link>
+                </div>
+              </div>
             ))
           )}
         </div>

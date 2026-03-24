@@ -386,6 +386,8 @@ model BlogPost {
   title          String
   slug           String
   excerpt        String?
+  seoTitle       String?
+  seoDescription String?
   contentJson    String
   coverImageUrl  String?
   status         BlogPostStatus @default(DRAFT)

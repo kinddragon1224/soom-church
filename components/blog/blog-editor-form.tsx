@@ -6,6 +6,8 @@ type BlogEditorValue = {
   title?: string;
   slug?: string;
   excerpt?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   coverImageUrl?: string | null;
   status?: BlogPostStatus;
   contentJson?: string;
@@ -59,6 +61,10 @@ export function BlogEditorForm({
           <label className="text-sm font-medium text-[#3f3528] lg:col-span-2">요약문<textarea name="excerpt" defaultValue={value?.excerpt ?? ""} className="mt-1 min-h-[88px] w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
           <label className="text-sm font-medium text-[#3f3528]">대표 이미지 URL<input name="coverImageUrl" defaultValue={value?.coverImageUrl ?? ""} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
           <label className="text-sm font-medium text-[#3f3528]">상태<select name="status" defaultValue={value?.status ?? BlogPostStatus.DRAFT} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]"><option value={BlogPostStatus.DRAFT}>초안</option><option value={BlogPostStatus.PUBLISHED}>발행</option><option value={BlogPostStatus.ARCHIVED}>보관</option></select></label>
+        </div>
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          <label className="text-sm font-medium text-[#3f3528]">SEO 제목<input name="seoTitle" defaultValue={value?.seoTitle ?? ""} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
+          <label className="text-sm font-medium text-[#3f3528]">SEO 설명<textarea name="seoDescription" defaultValue={value?.seoDescription ?? ""} className="mt-1 min-h-[88px] w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
         </div>
         <div className="mt-4 flex flex-wrap gap-2">
           <button className="rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">저장</button>

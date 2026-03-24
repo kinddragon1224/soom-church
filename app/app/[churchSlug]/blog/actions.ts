@@ -40,32 +40,39 @@ async function refreshBlog(churchId: string, postId?: string) {
   if (postId) revalidateTag(`church:${churchId}:blog:${postId}`);
 }
 
+function getPostInput(formData: FormData) {
+  return {
+    title: String(formData.get("title") || "").trim(),
+    excerpt: asOptionalString(formData.get("excerpt")),
+    seoTitle: asOptionalString(formData.get("seoTitle")),
+    seoDescription: asOptionalString(formData.get("seoDescription")),
+    coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
+    contentJson: buildContentJson(formData),
+    status: String(formData.get("status") || BlogPostStatus.DRAFT) as BlogPostStatus,
+  };
+}
+
 export async function createBlogPost(churchSlug: string, formData: FormData) {
   const { membership, userId } = await requireWorkspaceMembership(churchSlug);
   if (!membership) return;
 
-  const title = String(formData.get("title") || "").trim();
-  if (!title) return;
+  const input = getPostInput(formData);
+  if (!input.title) return;
 
-  const slugBase = slugify(String(formData.get("slug") || "") || title) || `post-${Date.now()}`;
+  const slugBase = slugify(String(formData.get("slug") || "") || input.title) || `post-${Date.now()}`;
   let slug = slugBase;
   let suffix = 1;
   while (await prisma.blogPost.findFirst({ where: { churchId: membership.church.id, slug }, select: { id: true } })) {
     slug = `${slugBase}-${suffix++}`;
   }
 
-  const status = String(formData.get("status") || BlogPostStatus.DRAFT) as BlogPostStatus;
   const post = await prisma.blogPost.create({
     data: {
       churchId: membership.church.id,
       authorId: userId,
-      title,
       slug,
-      excerpt: asOptionalString(formData.get("excerpt")),
-      coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
-      contentJson: buildContentJson(formData),
-      status,
-      publishedAt: status === BlogPostStatus.PUBLISHED ? new Date() : null,
+      ...input,
+      publishedAt: input.status === BlogPostStatus.PUBLISHED ? new Date() : null,
     },
   });
 
@@ -77,22 +84,17 @@ export async function updateBlogPost(churchSlug: string, postId: string, formDat
   const { membership } = await requireWorkspaceMembership(churchSlug);
   if (!membership) return;
 
-  const title = String(formData.get("title") || "").trim();
-  if (!title) return;
-
   const existing = await prisma.blogPost.findFirst({ where: { id: postId, churchId: membership.church.id } });
   if (!existing) return;
 
-  const status = String(formData.get("status") || existing.status) as BlogPostStatus;
+  const input = getPostInput(formData);
+  if (!input.title) return;
+
   await prisma.blogPost.update({
     where: { id: existing.id },
     data: {
-      title,
-      excerpt: asOptionalString(formData.get("excerpt")),
-      coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
-      contentJson: buildContentJson(formData),
-      status,
-      publishedAt: status === BlogPostStatus.PUBLISHED ? existing.publishedAt ?? new Date() : null,
+      ...input,
+      publishedAt: input.status === BlogPostStatus.PUBLISHED ? existing.publishedAt ?? new Date() : null,
     },
   });
 
