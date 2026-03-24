@@ -10,6 +10,7 @@ const navSections = [
       { key: "dashboard", label: "홈", href: "dashboard", hint: "운영 요약" },
       { key: "members", label: "사람", href: "members", hint: "교인과 상태" },
       { key: "applications", label: "신청", href: "applications", hint: "접수와 처리" },
+      { key: "organizations", label: "조직", href: "organizations", hint: "교구와 부서" },
       { key: "notices", label: "공지", href: "notices", hint: "전달 흐름" },
     ],
   },
