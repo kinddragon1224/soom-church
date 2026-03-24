@@ -15,12 +15,12 @@ export default async function GuidesAdminPage({ searchParams }: { searchParams?:
       <section className="rounded-[24px] border border-[#e6dfd5] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-5 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.2em] text-white/46">AI GUIDE STUDIO</p>
+            <p className="text-[11px] tracking-[0.2em] text-white/46">BLOG STUDIO</p>
             <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.06em] text-white">네이버 블로그 스타일 1차 에디터</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/66">제목 영역, 본문 캔버스, 우측 설정 패널 구조로 작성 흐름을 재구성한 1차 관리자 화면.</p>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/66">제목 영역, 본문 캔버스, 우측 설정 패널 구조로 재구성한 블로그 관리자 화면.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link href="/ai-guides" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">공개 페이지 보기</Link>
+            <Link href="/ai-guides" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">공개 블로그 보기</Link>
           </div>
         </div>
       </section>
@@ -31,7 +31,7 @@ export default async function GuidesAdminPage({ searchParams }: { searchParams?:
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">POST LIST</p>
-            <h2 className="mt-2 text-lg font-semibold text-[#111111]">작성된 안내서</h2>
+            <h2 className="mt-2 text-lg font-semibold text-[#111111]">작성된 블로그 글</h2>
           </div>
           <span className="text-xs text-[#8C7A5B]">총 {posts.length}개</span>
         </div>

@@ -77,7 +77,7 @@ export function GuidePostForm({
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">BLOG STYLE EDITOR</p>
-            <h2 className="mt-2 text-lg font-semibold text-[#111111]">AI 안내서 작성</h2>
+            <h2 className="mt-2 text-lg font-semibold text-[#111111]">블로그 글 작성</h2>
           </div>
           <div className="flex flex-wrap gap-2">
             <span className={chipClass}>제목</span>
