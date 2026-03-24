@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Users, Building2, ClipboardList, Megaphone, History, BookOpen } from "lucide-react";
+import { Building2, ClipboardList, CreditCard, LayoutDashboard, Newspaper, Users, Wrench } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -13,23 +13,20 @@ type MenuGroup = {
 
 const menuGroups: MenuGroup[] = [
   {
-    title: "대시보드",
-    items: [{ href: "/dashboard", label: "운영 현황", icon: LayoutDashboard }],
-  },
-  {
-    title: "교인",
+    title: "플랫폼",
     items: [
-      { href: "/members", label: "교인", icon: Users },
-      { href: "/districts", label: "교구/목장", icon: Building2 },
+      { href: "/platform-admin", label: "개요", icon: LayoutDashboard },
+      { href: "/platform-admin/churches", label: "교회 목록", icon: Building2 },
+      { href: "/platform-admin/users", label: "사용자", icon: Users },
+      { href: "/platform-admin/subscriptions", label: "구독", icon: CreditCard },
+      { href: "/platform-admin/provisioning", label: "워크스페이스 생성", icon: Wrench },
     ],
   },
   {
-    title: "운영",
+    title: "콘텐츠",
     items: [
-      { href: "/applications", label: "신청", icon: ClipboardList },
-      { href: "/notices", label: "공지", icon: Megaphone },
-      { href: "/guides", label: "AI 안내서", icon: BookOpen },
-      { href: "/activity-logs", label: "활동 로그", icon: History },
+      { href: "/guides", label: "AI 안내서", icon: Newspaper },
+      { href: "/ai-guides", label: "공개 페이지", icon: ClipboardList },
     ],
   },
 ];
@@ -39,15 +36,16 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      <div className="mb-5">
-        <p className="text-xs text-muted-foreground">SOOM CHURCH HUB</p>
-        <h1 className="text-lg font-bold text-primary sm:text-xl">숨 관리자</h1>
+      <div className="mb-5 rounded-[20px] border border-white/8 bg-white/[0.04] p-4 text-white">
+        <p className="text-[11px] tracking-[0.18em] text-white/46">SOOM PLATFORM</p>
+        <h1 className="mt-2 text-lg font-semibold">숨 플랫폼 운영 콘솔</h1>
+        <p className="mt-2 text-xs text-white/60">워크스페이스, 사용자, 구독, 콘텐츠를 관리하는 관리자 전용 화면</p>
       </div>
 
-      <nav className="space-y-4">
+      <nav className="space-y-5">
         {menuGroups.map((group) => (
           <div key={group.title}>
-            <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/80">{group.title}</p>
+            <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/34">{group.title}</p>
             <div className="space-y-1">
               {group.items.map((menu) => {
                 const Icon = menu.icon;
@@ -58,8 +56,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                     href={menu.href}
                     onClick={onNavigate}
                     className={cn(
-                      "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition",
-                      active ? "bg-primary text-white" : "hover:bg-muted",
+                      "flex items-center gap-2 rounded-[14px] px-3 py-2.5 text-sm transition",
+                      active ? "bg-white text-[#0F172A]" : "text-white/74 hover:bg-white/8 hover:text-white",
                     )}
                   >
                     <Icon size={16} />
@@ -77,7 +75,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
 export function DesktopSidebar() {
   return (
-    <aside className="hidden w-64 shrink-0 border-r border-border bg-white p-4 lg:block">
+    <aside className="hidden w-72 shrink-0 border-r border-white/8 bg-[#0f172a] p-4 lg:block">
       <SidebarContent />
     </aside>
   );
@@ -85,7 +83,7 @@ export function DesktopSidebar() {
 
 export function MobileSidebar({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <aside className="h-full w-full border-r border-border bg-white p-4">
+    <aside className="h-full w-full border-r border-white/8 bg-[#0f172a] p-4">
       <SidebarContent onNavigate={onNavigate} />
     </aside>
   );

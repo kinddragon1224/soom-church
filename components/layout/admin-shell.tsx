@@ -25,7 +25,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex min-h-screen w-full min-w-0">
+    <div className="flex min-h-screen w-full min-w-0 bg-[#f7f4ee]">
       <DesktopSidebar />
 
       <div
@@ -52,11 +52,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             mobileOpen ? "translate-x-0" : "-translate-x-full",
           )}
         >
-          <div className="flex items-center justify-end border-b border-border bg-white px-4 py-3">
+          <div className="flex items-center justify-end border-b border-white/8 bg-[#0f172a] px-4 py-3 text-white">
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-white/12"
               aria-label="드로어 닫기"
             >
               <X size={16} />
