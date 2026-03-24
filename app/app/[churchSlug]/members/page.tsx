@@ -56,7 +56,7 @@ export default async function ChurchMembersPage({
             </div>
             <div className="flex flex-wrap gap-2 xl:justify-end">
               <button className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">내보내기</button>
-              <button className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">일괄 등록</button>
+              <button className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">CSV 등록</button>
               <Link href={`/app/${church.slug}/members/new`} className="rounded-[14px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">사람 추가</Link>
             </div>
           </div>

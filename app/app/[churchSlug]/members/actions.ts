@@ -79,7 +79,7 @@ export async function createWorkspaceMember(churchSlug: string, formData: FormDa
   });
 
   await refreshMemberView(membership.church.id, created.id);
-  redirect(`/app/${churchSlug}/members/${created.id}`);
+  redirect(`/app/${churchSlug}/members/${created.id}/summary`);
 }
 
 export async function updateWorkspaceMember(churchSlug: string, memberId: string, formData: FormData) {
@@ -103,7 +103,37 @@ export async function updateWorkspaceMember(churchSlug: string, memberId: string
   });
 
   await refreshMemberView(membership.church.id, updated.id);
-  redirect(`/app/${churchSlug}/members/${updated.id}`);
+  redirect(`/app/${churchSlug}/members/${updated.id}/summary`);
+}
+
+export async function updateMemberStatus(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const statusTag = String(formData.get("statusTag") || "").trim();
+  const requiresFollowUp = formData.get("requiresFollowUp") === "on";
+  if (!statusTag) return;
+
+  await prisma.member.update({
+    where: { id: member.id },
+    data: { statusTag, requiresFollowUp },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_STATUS_UPDATED",
+      targetType: "Member",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ statusTag, requiresFollowUp }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}/summary`);
 }
 
 export async function softDeleteMember(churchSlug: string, memberId: string) {
