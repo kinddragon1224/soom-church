@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { restoreMember, softDeleteMember } from "../actions";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { formatDate } from "@/lib/date";
 import { getWorkspaceMemberRecord } from "@/lib/workspace-data";
@@ -45,6 +46,8 @@ export default async function ChurchMemberRecordPage({
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{member.position ?? "직분 미정"}</span>
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{member.statusTag}</span>
               {member.requiresFollowUp ? <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">후속 연락 필요</span> : null}
+              {member.isDeleted ? <span className="rounded-full border border-[#f0c9c9] bg-[#fff2f2] px-3 py-1.5 text-xs text-[#9a4a4a]">삭제됨</span> : null}
+              <Link href={`/app/${church.slug}/members/${member.id}/edit`} className="rounded-[12px] border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-medium text-white">수정</Link>
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -73,6 +76,17 @@ export default async function ChurchMemberRecordPage({
               <h2 className="mt-2 text-xl font-semibold text-[#111111]">핵심 정보</h2>
             </div>
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">record</span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {member.isDeleted ? (
+              <form action={restoreMember.bind(null, church.slug, member.id)}>
+                <button className="rounded-[14px] border border-[#d7e8dc] bg-[#eefbf3] px-4 py-2 text-sm font-semibold text-[#2d7a46]">복구</button>
+              </form>
+            ) : (
+              <form action={softDeleteMember.bind(null, church.slug, member.id)}>
+                <button className="rounded-[14px] border border-[#f0c9c9] bg-[#fff2f2] px-4 py-2 text-sm font-semibold text-[#9a4a4a]">삭제</button>
+              </form>
+            )}
           </div>
           <div className="mt-4 grid gap-3">
             <div className="rounded-[18px] border border-[#ece6dc] bg-white p-4 text-sm text-[#111111]">전화번호 · {member.phone ?? "-"}</div>
