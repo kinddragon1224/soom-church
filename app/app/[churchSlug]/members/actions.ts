@@ -2,15 +2,44 @@
 
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { CareCategory, MemberOrgRole, RelationshipType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 
-export async function softDeleteMember(churchSlug: string, memberId: string) {
-  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
-  if (!membership) return;
+function asOptionalString(value: FormDataEntryValue | null) {
+  const text = String(value || "").trim();
+  return text || null;
+}
 
-  const member = await prisma.member.findFirst({ where: { id: memberId, churchId: membership.church.id } });
-  if (!member) return;
+function parseDate(value: FormDataEntryValue | null, fallback = new Date()) {
+  const text = String(value || "").trim();
+  return text ? new Date(text) : fallback;
+}
+
+async function getScopedMember(churchSlug: string, memberId: string) {
+  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
+  if (!membership) return null;
+
+  const member = await prisma.member.findFirst({
+    where: { id: memberId, churchId: membership.church.id },
+  });
+  if (!member) return null;
+
+  return { membership, userId, member };
+}
+
+async function refreshMemberView(churchId: string, memberId: string) {
+  revalidateTag(`church:${churchId}:member:${memberId}`);
+  revalidateTag(`church:${churchId}:members`);
+  revalidateTag(`church:${churchId}:dashboard`);
+  revalidateTag(`church:${churchId}:organizations`);
+}
+
+export async function softDeleteMember(churchSlug: string, memberId: string) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
 
   await prisma.member.update({ where: { id: member.id }, data: { isDeleted: true } });
   await prisma.activityLog.create({
@@ -24,15 +53,15 @@ export async function softDeleteMember(churchSlug: string, memberId: string) {
     },
   });
 
+  await refreshMemberView(membership.church.id, member.id);
   redirect(`/app/${churchSlug}/members`);
 }
 
 export async function restoreMember(churchSlug: string, memberId: string) {
-  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
-  if (!membership) return;
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
 
-  const member = await prisma.member.findFirst({ where: { id: memberId, churchId: membership.church.id } });
-  if (!member) return;
+  const { membership, userId, member } = scoped;
 
   await prisma.member.update({ where: { id: member.id }, data: { isDeleted: false } });
   await prisma.activityLog.create({
@@ -46,22 +75,19 @@ export async function restoreMember(churchSlug: string, memberId: string) {
     },
   });
 
-  revalidateTag(`church:${membership.church.id}:member:${member.id}`);
-  revalidateTag(`church:${membership.church.id}:members`);
+  await refreshMemberView(membership.church.id, member.id);
   redirect(`/app/${churchSlug}/members/${member.id}`);
 }
 
 export async function addCareRecord(churchSlug: string, memberId: string, formData: FormData) {
-  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
-  if (!membership) return;
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
 
-  const member = await prisma.member.findFirst({ where: { id: memberId, churchId: membership.church.id } });
-  if (!member) return;
-
+  const { membership, userId, member } = scoped;
   const title = String(formData.get("title") || "").trim();
-  const category = String(formData.get("category") || "VISIT").trim();
-  const summary = String(formData.get("summary") || "").trim();
-  const happenedAtRaw = String(formData.get("happenedAt") || "").trim();
+  const category = String(formData.get("category") || "VISIT").trim() as CareCategory;
+  const summary = asOptionalString(formData.get("summary"));
+  const happenedAt = parseDate(formData.get("happenedAt"));
 
   if (!title) return;
 
@@ -69,10 +95,10 @@ export async function addCareRecord(churchSlug: string, memberId: string, formDa
     data: {
       churchId: membership.church.id,
       memberId: member.id,
-      category: category as any,
+      category,
       title,
-      summary: summary || null,
-      happenedAt: happenedAtRaw ? new Date(happenedAtRaw) : new Date(),
+      summary,
+      happenedAt,
       recordedBy: userId,
     },
   });
@@ -88,6 +114,355 @@ export async function addCareRecord(churchSlug: string, memberId: string, formDa
     },
   });
 
-  revalidateTag(`church:${membership.church.id}:member:${member.id}`);
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function addAttendanceRecord(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const attendanceType = String(formData.get("attendanceType") || "주일예배").trim();
+  const attendanceStatus = String(formData.get("attendanceStatus") || "출석").trim();
+  const summary = asOptionalString(formData.get("summary"));
+  const happenedAt = parseDate(formData.get("happenedAt"));
+
+  await prisma.memberCareRecord.create({
+    data: {
+      churchId: membership.church.id,
+      memberId: member.id,
+      category: CareCategory.ATTENDANCE,
+      title: `${attendanceType} · ${attendanceStatus}`,
+      summary,
+      happenedAt,
+      recordedBy: userId,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_ATTENDANCE_RECORDED",
+      targetType: "MemberCareRecord",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ attendanceType, attendanceStatus }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function addMinistryRecord(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const ministryName = String(formData.get("ministryName") || "").trim();
+  const ministryRole = String(formData.get("ministryRole") || "참여").trim();
+  const summary = asOptionalString(formData.get("summary"));
+  const happenedAt = parseDate(formData.get("happenedAt"));
+
+  if (!ministryName) return;
+
+  await prisma.memberCareRecord.create({
+    data: {
+      churchId: membership.church.id,
+      memberId: member.id,
+      category: CareCategory.MINISTRY,
+      title: `${ministryName} · ${ministryRole}`,
+      summary,
+      happenedAt,
+      recordedBy: userId,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_MINISTRY_RECORDED",
+      targetType: "MemberCareRecord",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ ministryName, ministryRole }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function createFamilyLink(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const relatedMemberId = String(formData.get("relatedMemberId") || "").trim();
+  const relationshipType = String(formData.get("relationshipType") || "CUSTOM").trim() as RelationshipType;
+  const customRelationship = asOptionalString(formData.get("customRelationship"));
+  const notes = asOptionalString(formData.get("notes"));
+
+  if (!relatedMemberId || relatedMemberId === member.id) return;
+
+  const relatedMember = await prisma.member.findFirst({
+    where: { id: relatedMemberId, churchId: membership.church.id, isDeleted: false },
+    select: { id: true, name: true },
+  });
+  if (!relatedMember) return;
+
+  const existing = await prisma.memberRelationship.findFirst({
+    where: {
+      churchId: membership.church.id,
+      relationshipType,
+      OR: [
+        { fromMemberId: member.id, toMemberId: relatedMember.id },
+        { fromMemberId: relatedMember.id, toMemberId: member.id },
+      ],
+    },
+  });
+
+  if (!existing) {
+    await prisma.memberRelationship.create({
+      data: {
+        churchId: membership.church.id,
+        fromMemberId: member.id,
+        toMemberId: relatedMember.id,
+        relationshipType,
+        customRelationship,
+        notes,
+      },
+    });
+  }
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_FAMILY_LINK_CREATED",
+      targetType: "MemberRelationship",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ relatedMemberId, relationshipType }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function updateFamilyLink(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const relationshipId = String(formData.get("relationshipId") || "").trim();
+  const relationshipType = String(formData.get("relationshipType") || "CUSTOM").trim() as RelationshipType;
+  const customRelationship = asOptionalString(formData.get("customRelationship"));
+  const notes = asOptionalString(formData.get("notes"));
+
+  if (!relationshipId) return;
+
+  const relationship = await prisma.memberRelationship.findFirst({
+    where: {
+      id: relationshipId,
+      churchId: membership.church.id,
+      OR: [{ fromMemberId: member.id }, { toMemberId: member.id }],
+    },
+  });
+  if (!relationship) return;
+
+  await prisma.memberRelationship.update({
+    where: { id: relationship.id },
+    data: { relationshipType, customRelationship, notes },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_FAMILY_LINK_UPDATED",
+      targetType: "MemberRelationship",
+      targetId: relationship.id,
+      memberId: member.id,
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function removeFamilyLink(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const relationshipId = String(formData.get("relationshipId") || "").trim();
+  if (!relationshipId) return;
+
+  const relationship = await prisma.memberRelationship.findFirst({
+    where: {
+      id: relationshipId,
+      churchId: membership.church.id,
+      OR: [{ fromMemberId: member.id }, { toMemberId: member.id }],
+    },
+  });
+  if (!relationship) return;
+
+  await prisma.memberRelationship.delete({ where: { id: relationship.id } });
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_FAMILY_LINK_REMOVED",
+      targetType: "MemberRelationship",
+      targetId: relationship.id,
+      memberId: member.id,
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function addOrganizationMembership(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const organizationId = String(formData.get("organizationId") || "").trim();
+  const role = String(formData.get("role") || "MEMBER").trim() as MemberOrgRole;
+  const customRoleLabel = asOptionalString(formData.get("customRoleLabel"));
+  const notes = asOptionalString(formData.get("notes"));
+  const isPrimary = formData.get("isPrimary") === "on";
+
+  if (!organizationId) return;
+
+  const organization = await prisma.organizationUnit.findFirst({
+    where: { id: organizationId, churchId: membership.church.id },
+    select: { id: true, name: true },
+  });
+  if (!organization) return;
+
+  const existing = await prisma.memberOrganization.findFirst({
+    where: { churchId: membership.church.id, memberId: member.id, organizationId: organization.id },
+  });
+
+  if (isPrimary) {
+    await prisma.memberOrganization.updateMany({
+      where: { churchId: membership.church.id, memberId: member.id },
+      data: { isPrimary: false },
+    });
+  }
+
+  if (existing) {
+    await prisma.memberOrganization.update({
+      where: { id: existing.id },
+      data: { role, customRoleLabel, notes, isPrimary },
+    });
+  } else {
+    await prisma.memberOrganization.create({
+      data: {
+        churchId: membership.church.id,
+        memberId: member.id,
+        organizationId: organization.id,
+        role,
+        customRoleLabel,
+        notes,
+        isPrimary,
+      },
+    });
+  }
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_ORGANIZATION_LINK_CREATED",
+      targetType: "MemberOrganization",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ organizationId, role }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function updateOrganizationMembership(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const linkId = String(formData.get("linkId") || "").trim();
+  const role = String(formData.get("role") || "MEMBER").trim() as MemberOrgRole;
+  const customRoleLabel = asOptionalString(formData.get("customRoleLabel"));
+  const notes = asOptionalString(formData.get("notes"));
+  const isPrimary = formData.get("isPrimary") === "on";
+
+  if (!linkId) return;
+
+  const link = await prisma.memberOrganization.findFirst({
+    where: { id: linkId, churchId: membership.church.id, memberId: member.id },
+  });
+  if (!link) return;
+
+  if (isPrimary) {
+    await prisma.memberOrganization.updateMany({
+      where: { churchId: membership.church.id, memberId: member.id },
+      data: { isPrimary: false },
+    });
+  }
+
+  await prisma.memberOrganization.update({
+    where: { id: link.id },
+    data: { role, customRoleLabel, notes, isPrimary },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_ORGANIZATION_LINK_UPDATED",
+      targetType: "MemberOrganization",
+      targetId: link.id,
+      memberId: member.id,
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function removeOrganizationMembership(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const linkId = String(formData.get("linkId") || "").trim();
+  if (!linkId) return;
+
+  const link = await prisma.memberOrganization.findFirst({
+    where: { id: linkId, churchId: membership.church.id, memberId: member.id },
+  });
+  if (!link) return;
+
+  await prisma.memberOrganization.delete({ where: { id: link.id } });
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_ORGANIZATION_LINK_REMOVED",
+      targetType: "MemberOrganization",
+      targetId: link.id,
+      memberId: member.id,
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
   redirect(`/app/${churchSlug}/members/${member.id}`);
 }
