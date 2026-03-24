@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { restoreMember, softDeleteMember } from "../actions";
+import { addCareRecord, restoreMember, softDeleteMember } from "../actions";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { formatDate } from "@/lib/date";
 import { getWorkspaceMemberRecord } from "@/lib/workspace-data";
@@ -162,6 +162,20 @@ export default async function ChurchMemberRecordPage({
               </div>
               <span className="text-xs text-[#8C7A5B]">최신 순</span>
             </div>
+            <form action={addCareRecord.bind(null, church.slug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[140px_minmax(0,1fr)_140px_auto]">
+              <select name="category" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                <option value="VISIT">심방</option>
+                <option value="COUNSEL">상담</option>
+                <option value="FAMILY">가정</option>
+                <option value="HEALTH">건강</option>
+                <option value="JOB">직장</option>
+                <option value="NOTE">메모</option>
+              </select>
+              <input name="title" placeholder="기록 제목" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+              <input name="happenedAt" type="date" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+              <button className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">기록 추가</button>
+              <textarea name="summary" placeholder="간단 메모" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+            </form>
             <div className="mt-4 grid gap-3">
               {member.careRecords.length === 0 ? (
                 <div className="rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] p-6 text-sm text-[#5f564b]">아직 기록이 없어. 심방이나 상담 메모가 쌓이면 여기서 본다.</div>
