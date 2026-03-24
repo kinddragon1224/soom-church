@@ -23,12 +23,14 @@ function slugify(value: string) {
 
 function buildContentJson(formData: FormData) {
   const hero = String(formData.get("hero") || "").trim();
-  const sections = [1, 2, 3]
+  const sections = [1, 2, 3, 4]
     .map((index) => ({
       heading: String(formData.get(`heading_${index}`) || "").trim(),
       body: String(formData.get(`body_${index}`) || "").trim(),
+      imageUrl: String(formData.get(`imageUrl_${index}`) || "").trim(),
+      imageCaption: String(formData.get(`imageCaption_${index}`) || "").trim(),
     }))
-    .filter((section) => section.heading || section.body);
+    .filter((section) => section.heading || section.body || section.imageUrl || section.imageCaption);
 
   return JSON.stringify({ hero, sections });
 }

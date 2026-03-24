@@ -26,7 +26,7 @@ export default async function EditBlogPostPage({
         </div>
         {searchParams?.saved === "1" ? <span className="rounded-full bg-[#eefbf3] px-3 py-1 text-xs font-semibold text-[#2d7a46]">저장 완료</span> : null}
       </div>
-      <BlogEditorForm action={updateBlogPost.bind(null, params.churchSlug, post.id)} value={post} />
+      <BlogEditorForm churchSlug={params.churchSlug} action={updateBlogPost.bind(null, params.churchSlug, post.id)} value={post} />
     </div>
   );
 }

@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { BlogPostStatus } from "@prisma/client";
 
 type BlogEditorValue = {
+  id?: string;
   title?: string;
   slug?: string;
   excerpt?: string | null;
@@ -9,29 +11,44 @@ type BlogEditorValue = {
   contentJson?: string;
 };
 
+type BlogSection = {
+  heading: string;
+  body: string;
+  imageUrl: string;
+  imageCaption: string;
+};
+
 function parseContent(contentJson?: string) {
   try {
     const parsed = contentJson ? JSON.parse(contentJson) : null;
     return {
       hero: parsed?.hero ?? "",
-      sections: [1, 2, 3].map((index) => parsed?.sections?.[index - 1] ?? { heading: "", body: "" }),
+      sections: [1, 2, 3, 4].map<BlogSection>((index) => ({
+        heading: parsed?.sections?.[index - 1]?.heading ?? "",
+        body: parsed?.sections?.[index - 1]?.body ?? "",
+        imageUrl: parsed?.sections?.[index - 1]?.imageUrl ?? "",
+        imageCaption: parsed?.sections?.[index - 1]?.imageCaption ?? "",
+      })),
     };
   } catch {
     return {
       hero: "",
-      sections: [1, 2, 3].map(() => ({ heading: "", body: "" })),
+      sections: [1, 2, 3, 4].map<BlogSection>(() => ({ heading: "", body: "", imageUrl: "", imageCaption: "" })),
     };
   }
 }
 
 export function BlogEditorForm({
+  churchSlug,
   action,
   value,
 }: {
+  churchSlug: string;
   action: (formData: FormData) => Promise<void>;
   value?: BlogEditorValue;
 }) {
   const content = parseContent(value?.contentJson);
+  const previewHref = value?.id ? `/app/${churchSlug}/blog/${value.id}/preview` : null;
 
   return (
     <form action={action} className="grid gap-4">
@@ -42,6 +59,10 @@ export function BlogEditorForm({
           <label className="text-sm font-medium text-[#3f3528] lg:col-span-2">요약문<textarea name="excerpt" defaultValue={value?.excerpt ?? ""} className="mt-1 min-h-[88px] w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
           <label className="text-sm font-medium text-[#3f3528]">대표 이미지 URL<input name="coverImageUrl" defaultValue={value?.coverImageUrl ?? ""} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
           <label className="text-sm font-medium text-[#3f3528]">상태<select name="status" defaultValue={value?.status ?? BlogPostStatus.DRAFT} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]"><option value={BlogPostStatus.DRAFT}>초안</option><option value={BlogPostStatus.PUBLISHED}>발행</option><option value={BlogPostStatus.ARCHIVED}>보관</option></select></label>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button className="rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">저장</button>
+          {previewHref ? <Link href={previewHref} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2.5 text-sm font-medium text-[#121212]">미리보기</Link> : null}
         </div>
       </section>
 
@@ -56,11 +77,12 @@ export function BlogEditorForm({
               <div className="mt-3 grid gap-3">
                 <input name={`heading_${index + 1}`} defaultValue={section.heading} placeholder="소제목" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
                 <textarea name={`body_${index + 1}`} defaultValue={section.body} placeholder="본문" className="min-h-[160px] rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                <input name={`imageUrl_${index + 1}`} defaultValue={section.imageUrl} placeholder="이미지 URL" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
+                <input name={`imageCaption_${index + 1}`} defaultValue={section.imageCaption} placeholder="이미지 설명" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
               </div>
             </div>
           ))}
         </div>
-        <button className="mt-4 rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">저장</button>
       </section>
     </form>
   );
