@@ -6,6 +6,18 @@ import { Gender } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 
+type PreviewRow = {
+  rowNumber: number;
+  name: string;
+  phone: string;
+  districtName: string;
+  groupName: string;
+  householdName: string;
+  statusTag: string;
+  result: "ready" | "duplicate" | "invalid";
+  reason: string;
+};
+
 function parseCsvLine(line: string) {
   const result: string[] = [];
   let current = "";
@@ -94,8 +106,62 @@ async function refreshMembers(churchId: string) {
   revalidateTag(`church:${churchId}:dashboard`);
 }
 
-export async function importMembersCsv(churchSlug: string, formData: FormData) {
-  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
+function buildPreview(rows: Record<string, string>[], duplicates: Set<string>) {
+  const previewRows: PreviewRow[] = rows.map((row, index) => {
+    const name = getValue(row, ["name", "이름", "성명"]);
+    const phone = getValue(row, ["phone", "전화번호", "휴대폰", "연락처"]);
+    const districtName = getValue(row, ["district", "교구"]);
+    const groupName = getValue(row, ["group", "목장"]);
+    const householdName = getValue(row, ["household", "family", "가족", "가정"]);
+    const statusTag = inferStatusTag(getValue(row, ["status", "상태", "상태태그"]));
+
+    if (!name || !phone) {
+      return {
+        rowNumber: index + 2,
+        name,
+        phone,
+        districtName,
+        groupName,
+        householdName,
+        statusTag,
+        result: "invalid",
+        reason: "이름 또는 전화번호 없음",
+      };
+    }
+
+    const duplicateKey = `${name}::${phone}`;
+    if (duplicates.has(duplicateKey)) {
+      return {
+        rowNumber: index + 2,
+        name,
+        phone,
+        districtName,
+        groupName,
+        householdName,
+        statusTag,
+        result: "duplicate",
+        reason: "기존 성도와 중복",
+      };
+    }
+
+    return {
+      rowNumber: index + 2,
+      name,
+      phone,
+      districtName,
+      groupName,
+      householdName,
+      statusTag,
+      result: "ready",
+      reason: "등록 가능",
+    };
+  });
+
+  return previewRows;
+}
+
+export async function previewMembersCsv(churchSlug: string, formData: FormData) {
+  const { membership } = await requireWorkspaceMembership(churchSlug);
   if (!membership) return;
 
   const file = formData.get("csvFile");
@@ -103,6 +169,31 @@ export async function importMembersCsv(churchSlug: string, formData: FormData) {
 
   const raw = await file.text();
   const { rows } = parseCsv(raw);
+  if (!rows.length) {
+    redirect(`/app/${churchSlug}/members/import?error=empty`);
+  }
+
+  const existingMembers = await prisma.member.findMany({
+    where: { churchId: membership.church.id, isDeleted: false },
+    select: { name: true, phone: true },
+  });
+  const duplicates = new Set(existingMembers.map((item) => `${item.name}::${item.phone}`));
+  const previewRows = buildPreview(rows, duplicates);
+
+  const payload = Buffer.from(JSON.stringify(rows), "utf8").toString("base64url");
+  const preview = Buffer.from(JSON.stringify(previewRows), "utf8").toString("base64url");
+
+  redirect(`/app/${churchSlug}/members/import?payload=${payload}&preview=${preview}`);
+}
+
+export async function importMembersCsv(churchSlug: string, formData: FormData) {
+  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
+  if (!membership) return;
+
+  const payload = String(formData.get("payload") || "").trim();
+  if (!payload) return;
+
+  const rows = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as Record<string, string>[];
   if (!rows.length) return;
 
   const churchId = membership.church.id;
@@ -115,11 +206,16 @@ export async function importMembersCsv(churchSlug: string, formData: FormData) {
   const groupMap = new Map(groups.map((item) => [`${item.districtId}:${item.name.trim()}`, item]));
 
   let importedCount = 0;
+  let skippedCount = 0;
+  const failedRows: string[] = [];
 
   for (const row of rows) {
     const name = getValue(row, ["name", "이름", "성명"]);
     const phone = getValue(row, ["phone", "전화번호", "휴대폰", "연락처"]);
-    if (!name || !phone) continue;
+    if (!name || !phone) {
+      failedRows.push(`${name || "이름없음"} / ${phone || "전화없음"} · 필수값 누락`);
+      continue;
+    }
 
     const districtName = getValue(row, ["district", "교구"]);
     const groupName = getValue(row, ["group", "목장"]);
@@ -166,7 +262,10 @@ export async function importMembersCsv(churchSlug: string, formData: FormData) {
       where: { churchId, name, phone, isDeleted: false },
       select: { id: true },
     });
-    if (existingMember) continue;
+    if (existingMember) {
+      skippedCount += 1;
+      continue;
+    }
 
     const created = await prisma.member.create({
       data: {
@@ -207,5 +306,6 @@ export async function importMembersCsv(churchSlug: string, formData: FormData) {
   }
 
   await refreshMembers(churchId);
-  redirect(`/app/${churchSlug}/members/import?done=${importedCount}`);
+  const failed = failedRows.length ? `&failed=${encodeURIComponent(failedRows.join("\n"))}` : "";
+  redirect(`/app/${churchSlug}/members/import?done=${importedCount}&skipped=${skippedCount}${failed}`);
 }

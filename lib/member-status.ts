@@ -53,3 +53,15 @@ export function getStatusMeta(statusTag: string) {
     description: "현재 상태를 확인합니다.",
   };
 }
+
+export function getStatusUpdatePatch(statusTag: string, requiresFollowUp: boolean) {
+  if (statusTag === "휴면" || statusTag === "심방필요") {
+    return { statusTag, requiresFollowUp: true };
+  }
+
+  if (statusTag === "봉사연결" || statusTag === "목장배정완료") {
+    return { statusTag, requiresFollowUp: false };
+  }
+
+  return { statusTag, requiresFollowUp };
+}

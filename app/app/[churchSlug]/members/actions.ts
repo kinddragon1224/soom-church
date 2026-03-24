@@ -3,6 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { CareCategory, MemberOrgRole, RelationshipType } from "@prisma/client";
+import { getStatusUpdatePatch } from "@/lib/member-status";
 import { prisma } from "@/lib/prisma";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 
@@ -117,7 +118,7 @@ export async function updateMemberStatus(churchSlug: string, memberId: string, f
 
   await prisma.member.update({
     where: { id: member.id },
-    data: { statusTag, requiresFollowUp },
+    data: getStatusUpdatePatch(statusTag, requiresFollowUp),
   });
 
   await prisma.activityLog.create({
