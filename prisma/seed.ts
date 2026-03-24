@@ -358,6 +358,21 @@ async function main() {
     });
   }
 
+  const existingGuide = await prisma.guidePost.findFirst({ where: { slug: "sermon-ai-start" } });
+  if (!existingGuide) {
+    await prisma.guidePost.create({
+      data: {
+        title: "설교 준비에 AI를 시작하는 가장 쉬운 방법",
+        slug: "sermon-ai-start",
+        excerpt: "설교 초안을 대신 쓰게 하는 것이 아니라, 구조 정리와 자료 탐색을 빠르게 돕는 방식으로 AI를 시작하는 방법을 정리합니다.",
+        content: "AI는 설교를 대신하는 도구가 아니라 준비 시간을 줄이는 보조 도구입니다.\n\n1. 본문을 먼저 정합니다.\n2. 핵심 질문을 3개로 나눕니다.\n3. AI에게 배경 정보, 반대 관점, 적용 예시를 따로 요청합니다.\n4. 마지막 구조와 문장은 직접 정리합니다.",
+        published: true,
+        publishedAt: new Date(),
+        authorId: demoUser.id,
+      },
+    });
+  }
+
   await prisma.activityLog.create({
     data: {
       churchId: church.id,
