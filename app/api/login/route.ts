@@ -10,6 +10,9 @@ const DEV_USER_PASSWORD = "1234";
 const DEV_CHURCH_SLUG = "soom-dev";
 const DEV_CHURCH_NAME = "숨 개발용 워크스페이스";
 
+const PLATFORM_ADMIN_EMAIL = "platform-admin@soom.church";
+const PLATFORM_ADMIN_PASSWORD = "1234";
+
 async function ensureDevWorkspaceAccount() {
   const church = await prisma.church.upsert({
     where: { slug: DEV_CHURCH_SLUG },
@@ -59,13 +62,32 @@ async function ensureDevWorkspaceAccount() {
   return user;
 }
 
+async function ensurePlatformAdminAccount() {
+  return prisma.user.upsert({
+    where: { email: PLATFORM_ADMIN_EMAIL },
+    update: { name: "숨 플랫폼 관리자", passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD), isActive: true },
+    create: {
+      email: PLATFORM_ADMIN_EMAIL,
+      name: "숨 플랫폼 관리자",
+      passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD),
+      isActive: true,
+    },
+    select: { id: true },
+  });
+}
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "");
 
-  const user = email === DEV_USER_EMAIL ? await ensureDevWorkspaceAccount() : await prisma.user.findUnique({ where: { email }, select: { id: true } });
+  const user = email === DEV_USER_EMAIL
+    ? await ensureDevWorkspaceAccount()
+    : email === PLATFORM_ADMIN_EMAIL
+      ? await ensurePlatformAdminAccount()
+      : await prisma.user.findUnique({ where: { email }, select: { id: true } });
+
   const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/app";
 
   try {
