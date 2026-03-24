@@ -237,6 +237,9 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
               <div className="mt-3 grid gap-2">
                 <Link href="/" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">홈</Link>
                 <Link href="/app" className="rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2 text-sm text-white/74 transition hover:bg-white/8 hover:text-white">워크스페이스</Link>
+                <form action="/api/logout" method="post">
+                  <button type="submit" className="w-full rounded-[14px] border border-white/8 bg-white/[0.03] px-3 py-2 text-left text-sm text-white/74 transition hover:bg-white/8 hover:text-white">로그아웃</button>
+                </form>
               </div>
             </div>
           </div>
