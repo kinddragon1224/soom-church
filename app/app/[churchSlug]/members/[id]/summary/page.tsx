@@ -74,6 +74,7 @@ export default async function MemberSummaryPage({ params }: { params: { churchSl
   const completionCount = checklist.filter((item) => item.done).length;
   const statusMeta = getStatusMeta(member.statusTag);
   const primaryLinks = getPrimaryLinks(church.slug, member.id, member.statusTag);
+  const needsAssignment = !member.districtId || !member.groupId;
 
   return (
     <div className="flex flex-col gap-6 text-[#111111]">
@@ -87,6 +88,11 @@ export default async function MemberSummaryPage({ params }: { params: { churchSl
             <p className="mt-2 text-lg font-semibold text-white">{statusMeta.stage}</p>
             <p className="mt-1 text-sm text-white/68">다음 작업 · {statusMeta.nextAction}</p>
             <p className="mt-2 text-sm text-white/60">{statusMeta.description}</p>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {statusMeta.quickActions.map((item) => (
+              <span key={item} className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{item}</span>
+            ))}
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-4">
             <div className="rounded-[18px] border border-white/10 bg-white/8 p-4">
@@ -152,26 +158,43 @@ export default async function MemberSummaryPage({ params }: { params: { churchSl
           </div>
         </section>
 
-        <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">CHECKLIST</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">등록 후 정리 항목</h2>
-            </div>
-            <span className="text-xs text-[#8C7A5B]">워크스페이스 연결 상태</span>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {checklist.map((item) => (
-              <div key={item.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-[#111111]">{item.label}</p>
-                  <span className={`rounded-full px-2.5 py-1 text-[11px] ${item.done ? "bg-[#eefbf3] text-[#2d7a46]" : "bg-[#fff7e8] text-[#8C6A2E]"}`}>{item.done ? "완료" : "필요"}</span>
-                </div>
-                <p className="mt-2 text-sm text-[#5f564b]">{item.value}</p>
+        <div className="grid gap-4">
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ASSIGNMENT</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">배정 상태</h2>
               </div>
-            ))}
-          </div>
-        </section>
+              <span className={`rounded-full px-2.5 py-1 text-[11px] ${needsAssignment ? "bg-[#fff7e8] text-[#8C6A2E]" : "bg-[#eefbf3] text-[#2d7a46]"}`}>{needsAssignment ? "추가 입력 필요" : "배정 완료"}</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4 text-sm text-[#111111]">교구 · {member.district?.name ?? "미배정"}</div>
+              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4 text-sm text-[#111111]">목장 · {member.group?.name ?? "미배정"}</div>
+              <Link href={`/app/${church.slug}/members/${member.id}/edit`} className="rounded-[12px] bg-[#0F172A] px-4 py-3 text-center text-sm font-semibold text-white">배정 정보 바로 수정</Link>
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">CHECKLIST</p>
+                <h2 className="mt-2 text-lg font-semibold text-[#111111]">등록 후 정리 항목</h2>
+              </div>
+              <span className="text-xs text-[#8C7A5B]">워크스페이스 연결 상태</span>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {checklist.map((item) => (
+                <div key={item.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#111111]">{item.label}</p>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] ${item.done ? "bg-[#eefbf3] text-[#2d7a46]" : "bg-[#fff7e8] text-[#8C6A2E]"}`}>{item.done ? "완료" : "필요"}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-[#5f564b]">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
       </section>
     </div>
   );

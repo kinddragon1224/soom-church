@@ -14,6 +14,21 @@ type PreviewRow = {
   reason: string;
 };
 
+const CSV_COLUMNS = [
+  { name: "이름", required: true, note: "성도 이름" },
+  { name: "전화번호", required: true, note: "중복 확인 기준" },
+  { name: "성별", required: false, note: "남 / 여 / male / female" },
+  { name: "이메일", required: false, note: "선택 입력" },
+  { name: "교구", required: false, note: "없으면 자동 생성" },
+  { name: "목장", required: false, note: "교구와 함께 연결" },
+  { name: "가족", required: false, note: "없으면 자동 생성" },
+  { name: "직분", required: false, note: "예: 집사, 성도" },
+  { name: "상태", required: false, note: "비우면 등록대기" },
+  { name: "등록일", required: false, note: "비우면 오늘" },
+  { name: "직업", required: false, note: "현재 직업" },
+  { name: "메모", required: false, note: "운영 메모" },
+] as const;
+
 export default async function MemberImportPage({
   params,
   searchParams,
@@ -33,6 +48,7 @@ export default async function MemberImportPage({
     ? JSON.parse(Buffer.from(searchParams.preview, "base64url").toString("utf8"))
     : [];
   const sampleCsv = `이름,성별,전화번호,이메일,교구,목장,가족,직분,상태,등록일,직업,메모\n김은혜,여,010-1111-2222,eunhye@example.com,1교구,소망 목장,김가정,집사,등록대기,2026-03-24,교사,새가족\n박진수,남,010-3333-4444,jinsu@example.com,2교구,은혜 목장,박가정,성도,새가족,2026-03-24,회사원,후속 연락 필요`;
+  const templateHref = `data:text/csv;charset=utf-8,${encodeURIComponent(sampleCsv)}`;
 
   return (
     <div className="flex flex-col gap-6 text-[#111111]">
@@ -66,12 +82,13 @@ export default async function MemberImportPage({
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1 text-[11px] text-[#8C7A5B]">.csv</span>
           </div>
           {doneCount > 0 ? <div className="mt-4 rounded-[18px] border border-[#d7e8dc] bg-[#eefbf3] p-4 text-sm font-semibold text-[#2d7a46]">{doneCount}명 등록 완료 · 중복 {skippedCount}건 건너뜀</div> : null}
-          {searchParams?.error === "empty" ? <div className="mt-4 rounded-[18px] border border-[#f0c9c9] bg-[#fff2f2] p-4 text-sm font-semibold text-[#9a4a4a]">비어 있는 CSV 파일이야.</div> : null}
+          {searchParams?.error === "empty" ? <div className="mt-4 rounded-[18px] border border-[#f0c9c9] bg-[#fff2f2] p-4 text-sm font-semibold text-[#9a4a4a]">비어 있는 CSV 파일입니다.</div> : null}
           <form action={previewMembersCsv.bind(null, params.churchSlug)} className="mt-4 grid gap-3">
             <input name="csvFile" type="file" accept=".csv,text/csv" className="rounded-[14px] border border-[#E7E0D4] bg-white px-3 py-2.5 text-sm text-[#111111]" />
             <button className="rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">CSV 미리보기</button>
           </form>
           <div className="mt-4 grid gap-2">
+            <a href={templateHref} download="members-import-template.csv" className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-3 text-sm font-medium text-[#111111]">CSV 템플릿 다운로드</a>
             <Link href={`/app/${church.slug}/settings#member-defaults`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-3 text-sm font-medium text-[#111111]">기본값 관리 열기</Link>
             <Link href={`/app/${church.slug}/members`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-3 text-sm font-medium text-[#111111]">사람 목록으로 이동</Link>
           </div>
@@ -127,6 +144,27 @@ export default async function MemberImportPage({
           <pre className="mt-4 whitespace-pre-wrap rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 text-sm leading-6 text-[#3f3528]">{failedText}</pre>
         </section>
       ) : null}
+
+      <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">COLUMN GUIDE</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#111111]">컬럼 가이드</h2>
+          </div>
+          <span className="text-xs text-[#8C7A5B]">필수/선택 입력</span>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {CSV_COLUMNS.map((column) => (
+            <div key={column.name} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold text-[#111111]">{column.name}</p>
+                <span className={`rounded-full px-2.5 py-1 text-[11px] ${column.required ? "bg-[#fff7e8] text-[#8C6A2E]" : "bg-white text-[#8C7A5B] border border-[#e6dfd5]"}`}>{column.required ? "필수" : "선택"}</span>
+              </div>
+              <p className="mt-2 text-sm text-[#5f564b]">{column.note}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
         <div className="flex items-center justify-between gap-3">
