@@ -72,6 +72,8 @@ export default async function PlatformAdminChurchesPage() {
     const setupNote = onboarding?.setupNote?.trim() || "운영 메모 없음";
     const createdFrom = onboarding?.createdFrom === "app-onboarding" ? "앱 온보딩" : onboarding?.createdFrom ?? "legacy";
     const createdAt = church.activityLogs[0]?.createdAt ?? church.createdAt;
+    const plan = church.subscriptions[0]?.plan ?? "FREE";
+    const planStatus = church.subscriptions[0]?.status ?? "-";
 
     return {
       id: church.id,
@@ -84,6 +86,7 @@ export default async function PlatformAdminChurchesPage() {
       goal,
       setupNote,
       createdFrom,
+      createdAt,
       createdAtLabel: new Date(createdAt).toLocaleString("ko-KR", {
         month: "short",
         day: "numeric",
@@ -92,8 +95,8 @@ export default async function PlatformAdminChurchesPage() {
       }),
       memberships: church._count.memberships,
       members: church._count.members,
-      plan: church.subscriptions[0]?.plan ?? "FREE",
-      planStatus: church.subscriptions[0]?.status ?? "-",
+      plan,
+      planStatus,
       isActive: church.isActive,
       workspaceHref: `/app/${church.slug}/dashboard`,
       membersHref: `/app/${church.slug}/members`,
@@ -104,6 +107,58 @@ export default async function PlatformAdminChurchesPage() {
   const trialCount = rows.filter((row) => row.planStatus === "TRIALING").length;
   const activeCount = rows.filter((row) => row.isActive).length;
   const inactiveCount = rows.length - activeCount;
+
+  const latestOnboarded = rows.find((row) => row.createdFrom !== "legacy") ?? rows[0] ?? null;
+  const trialWorkspace = rows.find((row) => row.planStatus === "TRIALING") ?? null;
+  const emptyWorkspace = rows.find((row) => row.members === 0) ?? null;
+
+  const focusCards = [
+    latestOnboarded
+      ? {
+          label: "방금 온보딩",
+          title: latestOnboarded.name,
+          note: `${latestOnboarded.ownerName} · ${latestOnboarded.team} · ${latestOnboarded.createdAtLabel}`,
+          href: latestOnboarded.workspaceHref,
+          cta: "대시보드",
+        }
+      : {
+          label: "방금 온보딩",
+          title: "연결된 워크스페이스 없음",
+          note: "최근 온보딩 데이터가 아직 없습니다.",
+          href: undefined,
+          cta: "대기",
+        },
+    trialWorkspace
+      ? {
+          label: "체험중 확인",
+          title: `${trialWorkspace.name} · ${trialWorkspace.plan}`,
+          note: `${trialWorkspace.goal} · 사람 ${trialWorkspace.members}명`,
+          href: trialWorkspace.workspaceHref,
+          cta: "열기",
+        }
+      : {
+          label: "체험중 확인",
+          title: "체험중 워크스페이스 없음",
+          note: "지금은 trial 상태 워크스페이스가 없습니다.",
+          href: undefined,
+          cta: "대기",
+        },
+    emptyWorkspace
+      ? {
+          label: "데이터 비어 있음",
+          title: emptyWorkspace.name,
+          note: `${emptyWorkspace.team} · 교인 데이터 0명 · ${emptyWorkspace.setupNote}`,
+          href: emptyWorkspace.membersHref,
+          cta: "사람 보기",
+        }
+      : {
+          label: "데이터 비어 있음",
+          title: "교인 데이터 0명 없음",
+          note: "최근 50개 워크스페이스는 모두 교인 데이터가 있습니다.",
+          href: undefined,
+          cta: "완료",
+        },
+  ];
 
   return (
     <section className="space-y-4 text-[#111111]">
@@ -153,6 +208,30 @@ export default async function PlatformAdminChurchesPage() {
             <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{onboardingCount}</p>
             <p className="mt-1 text-xs text-[#8c7a5b]">앱 온보딩 메타 연결됨</p>
           </div>
+        </div>
+
+        <div className="mt-4 grid gap-2 xl:grid-cols-3">
+          {focusCards.map((card) => (
+            <div key={card.label} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
+              <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">{card.label}</p>
+              <p className="mt-2 text-sm font-semibold text-[#111111]">{card.title}</p>
+              <p className="mt-1 line-clamp-2 text-xs text-[#8c7a5b]">{card.note}</p>
+              <div className="mt-3">
+                {card.href ? (
+                  <Link
+                    href={card.href}
+                    className="inline-flex rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
+                  >
+                    {card.cta}
+                  </Link>
+                ) : (
+                  <span className="inline-flex rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#9a8b7a]">
+                    {card.cta}
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="mt-4 grid gap-2">
