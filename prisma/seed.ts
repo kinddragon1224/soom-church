@@ -1,4 +1,4 @@
-import { PrismaClient, Gender, ApplicationStatus, MembershipRole, Plan, SubscriptionStatus } from "@prisma/client";
+import { PrismaClient, Gender, ApplicationStatus, MembershipRole, Plan, SubscriptionStatus, OrganizationUnitType, MemberOrgRole, RelationshipType, CareCategory, SacramentType } from "@prisma/client";
 import { hashPassword } from "../lib/password";
 
 const prisma = new PrismaClient();
@@ -106,13 +106,54 @@ async function main() {
     create: { churchId: church.id, districtId: districtB.id, name: "은혜 목장" },
   });
 
+  const orgLabels = [
+    { type: OrganizationUnitType.DISTRICT, singular: "교구", plural: "교구" },
+    { type: OrganizationUnitType.GROUP, singular: "목장", plural: "목장" },
+    { type: OrganizationUnitType.DEPARTMENT, singular: "부서", plural: "부서" },
+    { type: OrganizationUnitType.MINISTRY, singular: "사역", plural: "사역" },
+    { type: OrganizationUnitType.FELLOWSHIP, singular: "선교회", plural: "선교회" },
+    { type: OrganizationUnitType.SPECIAL_COMMUNITY, singular: "공동체", plural: "공동체" },
+  ];
+
+  for (const label of orgLabels) {
+    await prisma.organizationUnitLabel.upsert({
+      where: { churchId_type: { churchId: church.id, type: label.type } },
+      update: { singular: label.singular, plural: label.plural },
+      create: { churchId: church.id, type: label.type, singular: label.singular, plural: label.plural },
+    });
+  }
+
+  const ieumDistrict = await prisma.organizationUnit.upsert({
+    where: { churchId_slug: { churchId: church.id, slug: "ieum-district" } },
+    update: { name: "이음교구", type: OrganizationUnitType.DISTRICT },
+    create: { churchId: church.id, name: "이음교구", slug: "ieum-district", type: OrganizationUnitType.DISTRICT },
+  });
+
+  const gidoGroup = await prisma.organizationUnit.upsert({
+    where: { churchId_slug: { churchId: church.id, slug: "gido-group" } },
+    update: { name: "G.I.D.O 목장", type: OrganizationUnitType.GROUP, parentId: ieumDistrict.id },
+    create: { churchId: church.id, name: "G.I.D.O 목장", slug: "gido-group", type: OrganizationUnitType.GROUP, parentId: ieumDistrict.id },
+  });
+
+  const youthDept = await prisma.organizationUnit.upsert({
+    where: { churchId_slug: { churchId: church.id, slug: "yedidiyah-young-adults" } },
+    update: { name: "여디디야", type: OrganizationUnitType.DEPARTMENT },
+    create: { churchId: church.id, name: "여디디야", slug: "yedidiyah-young-adults", type: OrganizationUnitType.DEPARTMENT },
+  });
+
+  const womensMission = await prisma.organizationUnit.upsert({
+    where: { churchId_slug: { churchId: church.id, slug: "total-women-mission" } },
+    update: { name: "총여선교회", type: OrganizationUnitType.FELLOWSHIP },
+    create: { churchId: church.id, name: "총여선교회", slug: "total-women-mission", type: OrganizationUnitType.FELLOWSHIP },
+  });
+
   const household = await prisma.household.upsert({
     where: { id: `${church.id}-park-home` },
     update: { name: "박가정", address: "대전 중구" },
     create: { id: `${church.id}-park-home`, churchId: church.id, name: "박가정", address: "대전 중구" },
   });
 
-  await prisma.member.upsert({
+  const parkSujin = await prisma.member.upsert({
     where: { id: `${church.id}-member-park-sujin` },
     update: {
       name: "박수진",
@@ -127,6 +168,9 @@ async function main() {
       position: "집사",
       statusTag: "정착중",
       requiresFollowUp: true,
+      currentJob: "중학교 교사",
+      previousChurch: "대흥침례교회 이명",
+      baptismStatus: "침례 완료",
       isDeleted: false,
     },
     create: {
@@ -144,10 +188,13 @@ async function main() {
       position: "집사",
       statusTag: "정착중",
       requiresFollowUp: true,
+      currentJob: "중학교 교사",
+      previousChurch: "대흥침례교회 이명",
+      baptismStatus: "침례 완료",
     },
   });
 
-  await prisma.member.upsert({
+  const leeMinho = await prisma.member.upsert({
     where: { id: `${church.id}-member-lee-minho` },
     update: {
       name: "이민호",
@@ -158,6 +205,9 @@ async function main() {
       groupId: groupB.id,
       position: "성도",
       statusTag: "목장배정완료",
+      currentJob: "디자이너",
+      previousFaith: "모태신앙",
+      baptismStatus: "세례 완료",
       isDeleted: false,
     },
     create: {
@@ -171,8 +221,93 @@ async function main() {
       groupId: groupB.id,
       position: "성도",
       statusTag: "목장배정완료",
+      currentJob: "디자이너",
+      previousFaith: "모태신앙",
+      baptismStatus: "세례 완료",
     },
   });
+
+  const kangEunmi = await prisma.member.upsert({
+    where: { id: `${church.id}-member-kang-eunmi` },
+    update: {
+      name: "강은미",
+      gender: Gender.FEMALE,
+      birthDate: new Date("1990-09-12"),
+      phone: "010-3333-4444",
+      email: "eunmi@example.com",
+      address: "대전 서구",
+      householdId: household.id,
+      districtId: districtA.id,
+      groupId: groupA.id,
+      position: "권사",
+      statusTag: "정착완료",
+      currentJob: "간호사",
+      baptismStatus: "침례 완료",
+      isDeleted: false,
+    },
+    create: {
+      id: `${church.id}-member-kang-eunmi`,
+      churchId: church.id,
+      name: "강은미",
+      gender: Gender.FEMALE,
+      birthDate: new Date("1990-09-12"),
+      phone: "010-3333-4444",
+      email: "eunmi@example.com",
+      address: "대전 서구",
+      householdId: household.id,
+      districtId: districtA.id,
+      groupId: groupA.id,
+      position: "권사",
+      statusTag: "정착완료",
+      currentJob: "간호사",
+      baptismStatus: "침례 완료",
+    },
+  });
+
+  await prisma.memberOrganization.createMany({
+    data: [
+      { churchId: church.id, memberId: parkSujin.id, organizationId: ieumDistrict.id, role: MemberOrgRole.MEMBER, isPrimary: true },
+      { churchId: church.id, memberId: parkSujin.id, organizationId: gidoGroup.id, role: MemberOrgRole.MEMBER },
+      { churchId: church.id, memberId: parkSujin.id, organizationId: womensMission.id, role: MemberOrgRole.VOLUNTEER },
+      { churchId: church.id, memberId: leeMinho.id, organizationId: youthDept.id, role: MemberOrgRole.VOLUNTEER, isPrimary: true },
+      { churchId: church.id, memberId: kangEunmi.id, organizationId: ieumDistrict.id, role: MemberOrgRole.LEAD, isPrimary: true },
+      { churchId: church.id, memberId: kangEunmi.id, organizationId: gidoGroup.id, role: MemberOrgRole.ASSISTANT_LEAD },
+    ],
+    skipDuplicates: true,
+  });
+
+  const existingRelationship = await prisma.memberRelationship.findFirst({
+    where: { churchId: church.id, fromMemberId: parkSujin.id, toMemberId: kangEunmi.id, relationshipType: RelationshipType.SPOUSE },
+  });
+  if (!existingRelationship) {
+    await prisma.memberRelationship.createMany({
+      data: [
+        { churchId: church.id, fromMemberId: parkSujin.id, toMemberId: kangEunmi.id, relationshipType: RelationshipType.SPOUSE, isPrimaryFamilyLink: true },
+        { churchId: church.id, fromMemberId: kangEunmi.id, toMemberId: parkSujin.id, relationshipType: RelationshipType.SPOUSE, isPrimaryFamilyLink: true },
+      ],
+    });
+  }
+
+  const careExists = await prisma.memberCareRecord.findFirst({ where: { churchId: church.id, memberId: parkSujin.id, title: "봄 심방" } });
+  if (!careExists) {
+    await prisma.memberCareRecord.createMany({
+      data: [
+        { churchId: church.id, memberId: parkSujin.id, category: CareCategory.VISIT, title: "봄 심방", summary: "가정 예배와 자녀 양육 부담을 함께 나눔", recordedBy: "김선용", happenedAt: new Date("2026-03-10T10:00:00+09:00") },
+        { churchId: church.id, memberId: parkSujin.id, category: CareCategory.JOB, title: "직장 고민 메모", summary: "학기 중 업무 과중으로 피로감 호소", recordedBy: "김선용", happenedAt: new Date("2026-03-16T15:30:00+09:00") },
+        { churchId: church.id, memberId: kangEunmi.id, category: CareCategory.HEALTH, title: "건강 기도 요청", summary: "허리 통증으로 장시간 봉사 어려움", recordedBy: "조성진", happenedAt: new Date("2026-03-18T18:00:00+09:00") },
+      ],
+    });
+  }
+
+  const faithExists = await prisma.memberFaithMilestone.findFirst({ where: { churchId: church.id, memberId: parkSujin.id, type: SacramentType.BAPTISM } });
+  if (!faithExists) {
+    await prisma.memberFaithMilestone.createMany({
+      data: [
+        { churchId: church.id, memberId: parkSujin.id, type: SacramentType.BAPTISM, happenedAt: new Date("2018-05-20T00:00:00+09:00"), churchName: "대흥침례교회" },
+        { churchId: church.id, memberId: leeMinho.id, type: SacramentType.MEMBERSHIP_TRANSFER, happenedAt: new Date("2024-09-01T00:00:00+09:00"), churchName: "서울새빛교회" },
+      ],
+    });
+  }
 
   const existingForm = await prisma.applicationForm.findFirst({ where: { churchId: church.id, title: "새가족 등록 신청" } });
   const form = existingForm
