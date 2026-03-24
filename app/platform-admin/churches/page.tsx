@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -94,12 +95,15 @@ export default async function PlatformAdminChurchesPage() {
       plan: church.subscriptions[0]?.plan ?? "FREE",
       planStatus: church.subscriptions[0]?.status ?? "-",
       isActive: church.isActive,
+      workspaceHref: `/app/${church.slug}/dashboard`,
+      membersHref: `/app/${church.slug}/members`,
     };
   });
 
   const onboardingCount = rows.filter((row) => row.createdFrom !== "legacy").length;
   const trialCount = rows.filter((row) => row.planStatus === "TRIALING").length;
   const activeCount = rows.filter((row) => row.isActive).length;
+  const inactiveCount = rows.length - activeCount;
 
   return (
     <section className="space-y-4 text-[#111111]">
@@ -128,12 +132,35 @@ export default async function PlatformAdminChurchesPage() {
           <p className="text-xs text-[#8C7A5B]">설명보다 상태·버튼·메모 우선</p>
         </div>
 
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
+            <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">ACTIVE</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{activeCount}</p>
+            <p className="mt-1 text-xs text-[#8c7a5b]">현재 운영중인 워크스페이스</p>
+          </div>
+          <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
+            <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">INACTIVE</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{inactiveCount}</p>
+            <p className="mt-1 text-xs text-[#8c7a5b]">비활성 전환된 워크스페이스</p>
+          </div>
+          <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
+            <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">TRIAL</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{trialCount}</p>
+            <p className="mt-1 text-xs text-[#8c7a5b]">체험중 플랜 상태</p>
+          </div>
+          <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
+            <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">ONBOARDED</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{onboardingCount}</p>
+            <p className="mt-1 text-xs text-[#8c7a5b]">앱 온보딩 메타 연결됨</p>
+          </div>
+        </div>
+
         <div className="mt-4 grid gap-2">
-          <div className="hidden grid-cols-[minmax(0,1.35fr)_minmax(0,1.1fr)_120px_150px] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] lg:grid">
+          <div className="hidden grid-cols-[minmax(0,1.2fr)_minmax(0,1.15fr)_120px_210px] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] lg:grid">
             <span>교회 / 담당자</span>
             <span>온보딩 입력값</span>
             <span>플랜</span>
-            <span className="text-right">운영 상태</span>
+            <span className="text-right">운영 상태 / 이동</span>
           </div>
 
           {rows.map((row) => (
@@ -141,7 +168,7 @@ export default async function PlatformAdminChurchesPage() {
               key={row.id}
               className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-3 py-3 transition hover:border-[#dfd3bf] hover:bg-white"
             >
-              <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1.1fr)_120px_150px] lg:items-center lg:gap-3">
+              <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1.15fr)_120px_210px] lg:items-center lg:gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-semibold text-[#111111]">{row.name}</p>
@@ -170,10 +197,24 @@ export default async function PlatformAdminChurchesPage() {
                   <p className="mt-2 text-xs text-[#8c7a5b]">{row.planStatus}</p>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 lg:justify-end">
+                <div className="flex flex-col items-start gap-2 lg:items-end">
                   <span className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] ${statusTone(row.isActive)}`}>
                     {row.isActive ? "운영중" : "비활성"}
                   </span>
+                  <div className="flex flex-wrap gap-2 lg:justify-end">
+                    <Link
+                      href={row.workspaceHref}
+                      className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
+                    >
+                      대시보드
+                    </Link>
+                    <Link
+                      href={row.membersHref}
+                      className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
+                    >
+                      사람
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
