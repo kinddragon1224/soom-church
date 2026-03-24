@@ -132,3 +132,39 @@ export async function getWorkspaceNotices(churchId: string) {
     { revalidate: 20, tags: [`church:${churchId}:notices`] },
   )();
 }
+
+export async function getWorkspaceMemberRecord(churchId: string, memberId: string) {
+  return unstable_cache(
+    async () =>
+      prisma.member.findFirst({
+        where: { id: memberId, churchId, isDeleted: false },
+        include: {
+          household: true,
+          district: true,
+          group: true,
+          organizations: {
+            include: { organization: true },
+            orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+          },
+          relationshipsFrom: {
+            include: { toMember: true },
+            orderBy: { createdAt: "asc" },
+          },
+          relationshipsTo: {
+            include: { fromMember: true },
+            orderBy: { createdAt: "asc" },
+          },
+          careRecords: {
+            orderBy: { happenedAt: "desc" },
+            take: 20,
+          },
+          faithMilestones: {
+            orderBy: { happenedAt: "desc" },
+            take: 20,
+          },
+        },
+      }),
+    [`workspace-member-record-${churchId}-${memberId}`],
+    { revalidate: 20, tags: [`church:${churchId}:member:${memberId}`] },
+  )();
+}

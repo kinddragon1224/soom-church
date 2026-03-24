@@ -117,7 +117,7 @@ export default async function ChurchMembersPage({
               <tbody>
                 {members.map((member) => (
                   <tr key={member.id} className="border-t border-[#f1eadf] text-[#111111]">
-                    <td className="px-4 py-3 font-medium">{member.name}</td>
+                    <td className="px-4 py-3 font-medium"><Link href={`/app/${church.slug}/members/${member.id}`} className="hover:text-[#8C6A2E]">{member.name}</Link></td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-[11px] ${member.requiresFollowUp ? "bg-[#fff4df] text-[#8C6A2E]" : "border border-[#E7E0D4] bg-white text-[#5f564b]"}`}>
                         {member.requiresFollowUp ? "후속 연락 필요" : member.statusTag}
