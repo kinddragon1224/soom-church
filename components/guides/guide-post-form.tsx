@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef, useState } from "react";
+
 type GuidePostValue = {
   id?: string;
   title?: string;
@@ -20,6 +24,24 @@ export function GuidePostForm({
   action: (formData: FormData) => Promise<void>;
   value?: GuidePostValue;
 }) {
+  const [coverImageUrl, setCoverImageUrl] = useState(value?.coverImageUrl ?? "");
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  async function handleUpload(file: File) {
+    const body = new FormData();
+    body.append("file", file);
+    setUploading(true);
+    try {
+      const res = await fetch("/api/uploads/image", { method: "POST", body });
+      const data = await res.json();
+      if (data.url) setCoverImageUrl(data.url);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
   return (
     <form action={action} className="grid gap-4 text-[#111111]">
       <input type="hidden" name="authorEmail" value="dev@soom.church" />
@@ -45,36 +67,26 @@ export function GuidePostForm({
         <div className="grid gap-4">
           <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-7">
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">TITLE AREA</p>
-            <input
-              name="title"
-              defaultValue={value?.title ?? ""}
-              placeholder="제목을 입력하세요"
-              className="mt-4 w-full border-none bg-transparent px-0 py-0 text-[2rem] font-semibold tracking-[-0.06em] text-[#111111] outline-none placeholder:text-[#b2a79a] sm:text-[2.6rem]"
-            />
-            <textarea
-              name="excerpt"
-              defaultValue={value?.excerpt ?? ""}
-              placeholder="요약문을 입력하세요"
-              className="mt-4 min-h-[88px] w-full resize-none border-none bg-transparent px-0 py-0 text-base leading-7 text-[#5f564b] outline-none placeholder:text-[#b2a79a]"
-            />
+            <input name="title" defaultValue={value?.title ?? ""} placeholder="제목을 입력하세요" className="mt-4 w-full border-none bg-transparent px-0 py-0 text-[2rem] font-semibold tracking-[-0.06em] text-[#111111] outline-none placeholder:text-[#b2a79a] sm:text-[2.6rem]" />
+            <textarea name="excerpt" defaultValue={value?.excerpt ?? ""} placeholder="요약문을 입력하세요" className="mt-4 min-h-[88px] w-full resize-none border-none bg-transparent px-0 py-0 text-base leading-7 text-[#5f564b] outline-none placeholder:text-[#b2a79a]" />
           </section>
 
           <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-7">
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">COVER</p>
-            <input name="coverImageUrl" defaultValue={value?.coverImageUrl ?? ""} placeholder="대표 이미지 URL" className={`${fieldClass} mt-4`} />
+            <input name="coverImageUrl" value={coverImageUrl} onChange={(event) => setCoverImageUrl(event.target.value)} placeholder="대표 이미지 URL" className={`${fieldClass} mt-4`} />
             <div className="mt-4 rounded-[22px] border border-dashed border-[#d8cfbf] bg-[#fcfbf8] p-6 text-sm text-[#7b6f60]">
-              이미지 업로드는 다음 단계에서 붙이고, 지금은 URL 기반으로 대표 이미지를 연결하는 구조야.
+              <div className="flex flex-wrap items-center gap-3">
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-sm font-medium text-[#111111]">이미지 업로드</button>
+                <span>{uploading ? "업로드 중..." : "5MB 이하 이미지 업로드 가능"}</span>
+              </div>
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void handleUpload(file); }} />
             </div>
+            {coverImageUrl ? <img src={coverImageUrl} alt="cover preview" className="mt-4 w-full rounded-[20px] border border-[#ece6dc] object-cover" /> : null}
           </section>
 
           <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-7">
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">BODY</p>
-            <textarea
-              name="content"
-              defaultValue={value?.content ?? ""}
-              placeholder="본문을 입력하세요"
-              className="mt-4 min-h-[520px] w-full resize-y border-none bg-transparent px-0 py-0 text-base leading-8 text-[#2d261f] outline-none placeholder:text-[#b2a79a]"
-            />
+            <textarea name="content" defaultValue={value?.content ?? ""} placeholder="본문을 입력하세요" className="mt-4 min-h-[520px] w-full resize-y border-none bg-transparent px-0 py-0 text-base leading-8 text-[#2d261f] outline-none placeholder:text-[#b2a79a]" />
           </section>
         </div>
 
