@@ -24,13 +24,23 @@ async function refreshGuides(slug?: string) {
   if (slug) revalidateTag(`public:guides:${slug}`);
 }
 
+function normalizeContent(raw: string) {
+  const trimmed = raw.trim();
+  if (!trimmed) return JSON.stringify({ blocks: [] });
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (Array.isArray(parsed?.blocks)) return JSON.stringify(parsed);
+  } catch {}
+  return JSON.stringify({ blocks: [{ type: "paragraph", content: trimmed }] });
+}
+
 function getGuideInput(formData: FormData) {
   return {
     title: String(formData.get("title") || "").trim(),
     excerpt: asOptionalString(formData.get("excerpt")),
     seoTitle: asOptionalString(formData.get("seoTitle")),
     seoDescription: asOptionalString(formData.get("seoDescription")),
-    content: String(formData.get("content") || "").trim(),
+    content: normalizeContent(String(formData.get("contentJson") || formData.get("content") || "")),
     coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
   };
 }

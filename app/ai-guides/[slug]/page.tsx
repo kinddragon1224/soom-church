@@ -6,6 +6,16 @@ import { prisma } from "@/lib/prisma";
 
 export const revalidate = 20;
 
+type ContentBlock = { type?: "paragraph" | "heading" | "quote"; content?: string };
+
+function parseContent(content: string): ContentBlock[] {
+  try {
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed?.blocks)) return parsed.blocks;
+  } catch {}
+  return [{ type: "paragraph", content }];
+}
+
 export default async function GuideDetailPage({ params }: { params: { slug: string } }) {
   const loggedIn = await isLoggedIn();
   const post = await prisma.guidePost.findFirst({
@@ -21,6 +31,8 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
     },
   });
   if (!post) notFound();
+
+  const blocks = parseContent(post.content);
 
   return (
     <main className="min-h-screen bg-[#f7f4ee] text-[#0c1220]">
@@ -45,7 +57,17 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
               </div>
             ) : null}
             {post.coverImageUrl ? <img src={post.coverImageUrl} alt={post.title} className="mt-8 w-full rounded-[24px] object-cover" /> : null}
-            <div className="prose prose-slate mt-8 max-w-none whitespace-pre-wrap text-base leading-8 text-[#1f2937]">{post.content}</div>
+            <div className="mt-8 grid gap-6">
+              {blocks.map((block, index) => {
+                if (block.type === "heading") {
+                  return <h2 key={index} className="text-2xl font-semibold tracking-[-0.04em] text-[#111111]">{block.content}</h2>;
+                }
+                if (block.type === "quote") {
+                  return <blockquote key={index} className="rounded-[20px] border-l-4 border-[#c7a874] bg-[#fcfbf8] px-5 py-4 text-lg leading-8 text-[#5a4630]">{block.content}</blockquote>;
+                }
+                return <p key={index} className="whitespace-pre-wrap text-base leading-8 text-[#1f2937]">{block.content}</p>;
+              })}
+            </div>
           </article>
         </div>
       </section>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 type GuidePostValue = {
   id?: string;
@@ -14,8 +14,20 @@ type GuidePostValue = {
   published?: boolean;
 };
 
+type BlockType = "paragraph" | "heading" | "quote";
+type EditorBlock = { type: BlockType; content: string };
+
 const fieldClass = "w-full rounded-[16px] border border-[#ddd5c8] bg-white px-4 py-3 text-sm text-[#111111] outline-none transition focus:border-[#b9a88c] focus:ring-2 focus:ring-[#efe3cc]";
 const chipClass = "rounded-full border border-[#e3d8c6] bg-white px-3 py-1.5 text-xs font-medium text-[#6f6252]";
+
+function parseBlocks(content?: string): EditorBlock[] {
+  if (!content?.trim()) return [{ type: "paragraph", content: "" }];
+  try {
+    const parsed = JSON.parse(content);
+    if (Array.isArray(parsed?.blocks)) return parsed.blocks;
+  } catch {}
+  return [{ type: "paragraph", content }];
+}
 
 export function GuidePostForm({
   action,
@@ -26,7 +38,9 @@ export function GuidePostForm({
 }) {
   const [coverImageUrl, setCoverImageUrl] = useState(value?.coverImageUrl ?? "");
   const [uploading, setUploading] = useState(false);
+  const [blocks, setBlocks] = useState<EditorBlock[]>(() => parseBlocks(value?.content));
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const contentJson = useMemo(() => JSON.stringify({ blocks }), [blocks]);
 
   async function handleUpload(file: File) {
     const body = new FormData();
@@ -42,9 +56,22 @@ export function GuidePostForm({
     }
   }
 
+  function updateBlock(index: number, patch: Partial<EditorBlock>) {
+    setBlocks((current) => current.map((block, i) => (i === index ? { ...block, ...patch } : block)));
+  }
+
+  function addBlock(type: BlockType) {
+    setBlocks((current) => [...current, { type, content: "" }]);
+  }
+
+  function removeBlock(index: number) {
+    setBlocks((current) => (current.length === 1 ? current : current.filter((_, i) => i !== index)));
+  }
+
   return (
     <form action={action} className="grid gap-4 text-[#111111]">
       <input type="hidden" name="authorEmail" value="dev@soom.church" />
+      <input type="hidden" name="contentJson" value={contentJson} />
 
       <section className="sticky top-3 z-10 rounded-[24px] border border-[#e6dfd5] bg-white/95 p-4 shadow-[0_10px_28px_rgba(15,23,42,0.08)] backdrop-blur sm:p-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -57,7 +84,7 @@ export function GuidePostForm({
             <span className={chipClass}>요약</span>
             <span className={chipClass}>SEO</span>
             <span className={chipClass}>대표 이미지</span>
-            <span className={chipClass}>본문</span>
+            <span className={chipClass}>본문 블록</span>
             <button className="rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">저장</button>
           </div>
         </div>
@@ -85,8 +112,32 @@ export function GuidePostForm({
           </section>
 
           <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-7">
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">BODY</p>
-            <textarea name="content" defaultValue={value?.content ?? ""} placeholder="본문을 입력하세요" className="mt-4 min-h-[520px] w-full resize-y border-none bg-transparent px-0 py-0 text-base leading-8 text-[#2d261f] outline-none placeholder:text-[#b2a79a]" />
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">BODY BLOCKS</p>
+                <h3 className="mt-2 text-lg font-semibold text-[#111111]">본문 블록</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => addBlock("paragraph")} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">문단</button>
+                <button type="button" onClick={() => addBlock("heading")} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">소제목</button>
+                <button type="button" onClick={() => addBlock("quote")} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">인용</button>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-4">
+              {blocks.map((block, index) => (
+                <div key={index} className="rounded-[20px] border border-[#ece6dc] bg-[#fcfbf8] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <select value={block.type} onChange={(event) => updateBlock(index, { type: event.target.value as BlockType })} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-xs font-medium text-[#111111]">
+                      <option value="paragraph">문단</option>
+                      <option value="heading">소제목</option>
+                      <option value="quote">인용</option>
+                    </select>
+                    <button type="button" onClick={() => removeBlock(index)} className="rounded-[12px] border border-[#ead0d0] bg-white px-3 py-2 text-xs font-medium text-[#9a4a4a]">삭제</button>
+                  </div>
+                  <textarea value={block.content} onChange={(event) => updateBlock(index, { content: event.target.value })} placeholder={block.type === "heading" ? "소제목을 입력하세요" : block.type === "quote" ? "인용문을 입력하세요" : "본문을 입력하세요"} className="mt-3 min-h-[140px] w-full resize-y border-none bg-transparent px-0 py-0 text-base leading-8 text-[#2d261f] outline-none placeholder:text-[#b2a79a]" />
+                </div>
+              ))}
+            </div>
           </section>
         </div>
 
@@ -104,15 +155,6 @@ export function GuidePostForm({
             <div className="mt-4 grid gap-3">
               <label className="text-sm font-medium text-[#3f3528]">SEO 제목<input name="seoTitle" defaultValue={value?.seoTitle ?? ""} className={`${fieldClass} mt-1`} /></label>
               <label className="text-sm font-medium text-[#3f3528]">SEO 설명<textarea name="seoDescription" defaultValue={value?.seoDescription ?? ""} className={`${fieldClass} mt-1 min-h-[100px]`} /></label>
-            </div>
-          </section>
-
-          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">EDITOR GUIDE</p>
-            <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
-              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">제목은 짧고 강하게, 요약문은 2~3문장으로 정리</div>
-              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">본문은 문단 단위로 쓰고, 한 문단은 너무 길지 않게 유지</div>
-              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">SEO 제목과 설명은 검색 노출 기준으로 따로 정리</div>
             </div>
           </section>
         </aside>
