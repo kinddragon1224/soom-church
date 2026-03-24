@@ -8,6 +8,8 @@ type GuidePostValue = {
   published?: boolean;
 };
 
+const fieldClass = "mt-1 w-full rounded-[14px] border border-[#d9d2c7] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111] outline-none transition focus:border-[#b9a88c] focus:bg-white";
+
 export function GuidePostForm({
   action,
   value,
@@ -16,19 +18,19 @@ export function GuidePostForm({
   value?: GuidePostValue;
 }) {
   return (
-    <form action={action} className="grid gap-4 rounded-xl border border-border bg-white p-4 sm:p-5">
+    <form action={action} className="grid gap-4 rounded-[24px] border border-[#e6dfd5] bg-white p-4 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-5">
       <div>
-        <h2 className="text-base font-semibold">안내서 작성</h2>
-        <p className="mt-2 text-sm text-muted-foreground">공개 AI 안내서 탭에 바로 연결되는 글쓰기 폼이야.</p>
+        <h2 className="text-lg font-semibold text-[#111111]">안내서 작성</h2>
+        <p className="mt-2 text-sm text-[#5f564b]">공개 AI 안내서 탭에 직접 연결되는 글쓰기 폼입니다.</p>
       </div>
       <input type="hidden" name="authorEmail" value="dev@soom.church" />
-      <label className="text-sm font-medium">제목<input name="title" defaultValue={value?.title ?? ""} className="mt-1 w-full rounded-md border border-border px-3 py-2" /></label>
-      <label className="text-sm font-medium">슬러그<input name="slug" defaultValue={value?.slug ?? ""} className="mt-1 w-full rounded-md border border-border px-3 py-2" /></label>
-      <label className="text-sm font-medium">요약문<textarea name="excerpt" defaultValue={value?.excerpt ?? ""} className="mt-1 min-h-[88px] w-full rounded-md border border-border px-3 py-2" /></label>
-      <label className="text-sm font-medium">커버 이미지 URL<input name="coverImageUrl" defaultValue={value?.coverImageUrl ?? ""} className="mt-1 w-full rounded-md border border-border px-3 py-2" /></label>
-      <label className="text-sm font-medium">본문<textarea name="content" defaultValue={value?.content ?? ""} className="mt-1 min-h-[320px] w-full rounded-md border border-border px-3 py-2" /></label>
-      <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="published" defaultChecked={value?.published} /> 발행</label>
-      <button className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white">저장</button>
+      <label className="text-sm font-medium text-[#3f3528]">제목<input name="title" defaultValue={value?.title ?? ""} className={fieldClass} /></label>
+      <label className="text-sm font-medium text-[#3f3528]">슬러그<input name="slug" defaultValue={value?.slug ?? ""} className={fieldClass} /></label>
+      <label className="text-sm font-medium text-[#3f3528]">요약문<textarea name="excerpt" defaultValue={value?.excerpt ?? ""} className={`${fieldClass} min-h-[100px]`} /></label>
+      <label className="text-sm font-medium text-[#3f3528]">커버 이미지 URL<input name="coverImageUrl" defaultValue={value?.coverImageUrl ?? ""} className={fieldClass} /></label>
+      <label className="text-sm font-medium text-[#3f3528]">본문<textarea name="content" defaultValue={value?.content ?? ""} className={`${fieldClass} min-h-[320px]`} /></label>
+      <label className="flex items-center gap-2 text-sm font-medium text-[#5f564b]"><input type="checkbox" name="published" defaultChecked={value?.published} /> 발행</label>
+      <button className="rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">저장</button>
     </form>
   );
 }
