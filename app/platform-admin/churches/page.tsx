@@ -364,6 +364,12 @@ export default async function PlatformAdminChurchesPage() {
                   </span>
                   <div className="flex flex-wrap gap-2 lg:justify-end">
                     <Link
+                      href={`/platform-admin/churches/${row.id}`}
+                      className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
+                    >
+                      상세
+                    </Link>
+                    <Link
                       href={row.workspaceHref}
                       className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
                     >
