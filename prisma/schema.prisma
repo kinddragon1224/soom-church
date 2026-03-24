@@ -355,6 +355,8 @@ model GuidePost {
   title         String
   slug          String           @unique
   excerpt       String?
+  seoTitle      String?
+  seoDescription String?
   content       String
   coverImageUrl String?
   published     Boolean          @default(false)

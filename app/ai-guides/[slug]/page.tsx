@@ -10,7 +10,15 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
   const loggedIn = await isLoggedIn();
   const post = await prisma.guidePost.findFirst({
     where: { slug: params.slug, published: true },
-    select: { title: true, excerpt: true, content: true, coverImageUrl: true, publishedAt: true },
+    select: {
+      title: true,
+      excerpt: true,
+      seoTitle: true,
+      seoDescription: true,
+      content: true,
+      coverImageUrl: true,
+      publishedAt: true,
+    },
   });
   if (!post) notFound();
 
@@ -29,6 +37,13 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
             <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">AI GUIDE</p>
             <h1 className="mt-4 font-display text-[2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3rem]">{post.title}</h1>
             {post.excerpt ? <p className="mt-5 text-sm leading-7 text-[#5d667d] sm:text-base">{post.excerpt}</p> : null}
+            {post.seoTitle || post.seoDescription ? (
+              <div className="mt-6 rounded-[20px] border border-[#ece6dc] bg-[#fcfbf8] p-4">
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SEO</p>
+                {post.seoTitle ? <p className="mt-2 text-sm font-semibold text-[#111111]">{post.seoTitle}</p> : null}
+                {post.seoDescription ? <p className="mt-2 text-sm leading-6 text-[#5d667d]">{post.seoDescription}</p> : null}
+              </div>
+            ) : null}
             {post.coverImageUrl ? <img src={post.coverImageUrl} alt={post.title} className="mt-8 w-full rounded-[24px] object-cover" /> : null}
             <div className="prose prose-slate mt-8 max-w-none whitespace-pre-wrap text-base leading-8 text-[#1f2937]">{post.content}</div>
           </article>

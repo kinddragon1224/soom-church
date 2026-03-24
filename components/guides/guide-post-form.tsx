@@ -3,6 +3,8 @@ type GuidePostValue = {
   title?: string;
   slug?: string;
   excerpt?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   coverImageUrl?: string | null;
   content?: string;
   published?: boolean;
@@ -31,6 +33,7 @@ export function GuidePostForm({
           <div className="flex flex-wrap gap-2">
             <span className={chipClass}>제목</span>
             <span className={chipClass}>요약</span>
+            <span className={chipClass}>SEO</span>
             <span className={chipClass}>대표 이미지</span>
             <span className={chipClass}>본문</span>
             <button className="rounded-[14px] bg-[#0F172A] px-4 py-2.5 text-sm font-semibold text-white">저장</button>
@@ -85,11 +88,19 @@ export function GuidePostForm({
           </section>
 
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SEO</p>
+            <div className="mt-4 grid gap-3">
+              <label className="text-sm font-medium text-[#3f3528]">SEO 제목<input name="seoTitle" defaultValue={value?.seoTitle ?? ""} className={`${fieldClass} mt-1`} /></label>
+              <label className="text-sm font-medium text-[#3f3528]">SEO 설명<textarea name="seoDescription" defaultValue={value?.seoDescription ?? ""} className={`${fieldClass} mt-1 min-h-[100px]`} /></label>
+            </div>
+          </section>
+
+          <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">EDITOR GUIDE</p>
             <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
               <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">제목은 짧고 강하게, 요약문은 2~3문장으로 정리</div>
               <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">본문은 문단 단위로 쓰고, 한 문단은 너무 길지 않게 유지</div>
-              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">커버 이미지는 공개 목록 카드에 바로 반영</div>
+              <div className="rounded-[16px] border border-[#ece6dc] bg-[#fcfbf8] p-4">SEO 제목과 설명은 검색 노출 기준으로 따로 정리</div>
             </div>
           </section>
         </aside>

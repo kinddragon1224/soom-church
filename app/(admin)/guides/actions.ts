@@ -24,15 +24,26 @@ async function refreshGuides(slug?: string) {
   if (slug) revalidateTag(`public:guides:${slug}`);
 }
 
+function getGuideInput(formData: FormData) {
+  return {
+    title: String(formData.get("title") || "").trim(),
+    excerpt: asOptionalString(formData.get("excerpt")),
+    seoTitle: asOptionalString(formData.get("seoTitle")),
+    seoDescription: asOptionalString(formData.get("seoDescription")),
+    content: String(formData.get("content") || "").trim(),
+    coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
+  };
+}
+
 export async function createGuidePost(formData: FormData) {
-  const title = String(formData.get("title") || "").trim();
+  const input = getGuideInput(formData);
   const authorEmail = String(formData.get("authorEmail") || "dev@soom.church").trim();
-  if (!title) return;
+  if (!input.title) return;
 
   const author = await prisma.user.findUnique({ where: { email: authorEmail } });
   if (!author) return;
 
-  const slugBase = slugify(String(formData.get("slug") || "") || title) || `guide-${Date.now()}`;
+  const slugBase = slugify(String(formData.get("slug") || "") || input.title) || `guide-${Date.now()}`;
   let slug = slugBase;
   let suffix = 1;
   while (await prisma.guidePost.findUnique({ where: { slug } })) {
@@ -42,11 +53,8 @@ export async function createGuidePost(formData: FormData) {
   const published = formData.get("published") === "on";
   const post = await prisma.guidePost.create({
     data: {
-      title,
+      ...input,
       slug,
-      excerpt: asOptionalString(formData.get("excerpt")),
-      content: String(formData.get("content") || "").trim(),
-      coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
       published,
       publishedAt: published ? new Date() : null,
       authorId: author.id,
@@ -61,14 +69,12 @@ export async function updateGuidePost(postId: string, formData: FormData) {
   const existing = await prisma.guidePost.findUnique({ where: { id: postId } });
   if (!existing) return;
 
+  const input = getGuideInput(formData);
   const published = formData.get("published") === "on";
   await prisma.guidePost.update({
     where: { id: existing.id },
     data: {
-      title: String(formData.get("title") || "").trim(),
-      excerpt: asOptionalString(formData.get("excerpt")),
-      content: String(formData.get("content") || "").trim(),
-      coverImageUrl: asOptionalString(formData.get("coverImageUrl")),
+      ...input,
       published,
       publishedAt: published ? existing.publishedAt ?? new Date() : null,
     },
