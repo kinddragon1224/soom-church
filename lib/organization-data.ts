@@ -13,6 +13,21 @@ export async function getChurchOrganizationOverview(churchId: string) {
           where: { churchId },
           include: {
             parent: { select: { id: true, name: true, type: true } },
+            memberLinks: {
+              include: {
+                member: {
+                  select: {
+                    id: true,
+                    name: true,
+                    statusTag: true,
+                    district: { select: { name: true } },
+                    group: { select: { name: true } },
+                  },
+                },
+              },
+              orderBy: [{ isPrimary: "desc" }, { createdAt: "asc" }],
+              take: 6,
+            },
             _count: { select: { memberLinks: true, children: true } },
           },
           orderBy: [{ type: "asc" }, { name: "asc" }],
