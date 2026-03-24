@@ -17,6 +17,7 @@
    - 2026-03-24 07:03 KST: dashboard hero 보조 정보와 queue/modules/recent를 gloo식 dense row 운영 보드로 다시 압축
    - 2026-03-24 07:31 KST: dashboard에 최근 활동 로그 5개를 dense row 섹션으로 추가해 운영 변화도 같은 보드에서 바로 읽게 정리
    - 2026-03-24 08:09 KST: dashboard hero를 gloo식 today board로 다시 압축해서 오늘 처리할 2개와 마지막 변화 1개를 상단에서 바로 읽게 정리
+   - 2026-03-24 09:06 KST: dashboard 상태 카드를 gloo식 status rail 한 줄 row로 다시 묶어 전체 사람/후속/신청/미배정을 같은 보드 톤으로 바로 누르게 정리
 
 2. `/app/[churchSlug]/layout`
    - [done] 좌측 네비 밀도/활성 상태 개선

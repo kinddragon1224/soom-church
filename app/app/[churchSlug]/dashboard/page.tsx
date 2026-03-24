@@ -35,10 +35,34 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const base = `/app/${church.slug}`;
 
   const overviewStats = [
-    { label: "전체 사람", value: String(data.totalMembers), meta: `이번 달 +${data.newThisMonth}` },
-    { label: "후속 연락", value: String(data.followUpMembers), meta: data.followUpMembers > 0 ? `오늘 우선 ${Math.min(data.followUpMembers, 3)}건` : "오늘 비어 있음" },
-    { label: "미처리 신청", value: String(data.pendingApplications), meta: data.pendingApplications > 0 ? "바로 확인" : "새 신청 대기 없음" },
-    { label: "미배정", value: String(data.unassignedMembers), meta: data.unassignedMembers > 0 ? "연결 필요" : "배정 안정" },
+    {
+      label: "전체 사람",
+      value: String(data.totalMembers),
+      meta: `이번 달 +${data.newThisMonth}`,
+      href: `${base}/members`,
+      cta: "목록",
+    },
+    {
+      label: "후속 연락",
+      value: String(data.followUpMembers),
+      meta: data.followUpMembers > 0 ? `오늘 우선 ${Math.min(data.followUpMembers, 3)}건` : "오늘 비어 있음",
+      href: `${base}/members?filter=followup`,
+      cta: "바로 보기",
+    },
+    {
+      label: "미처리 신청",
+      value: String(data.pendingApplications),
+      meta: data.pendingApplications > 0 ? "바로 확인" : "새 신청 대기 없음",
+      href: `${base}/applications?status=PENDING`,
+      cta: "확인",
+    },
+    {
+      label: "미배정",
+      value: String(data.unassignedMembers),
+      meta: data.unassignedMembers > 0 ? "연결 필요" : "배정 안정",
+      href: `${base}/members?filter=unassigned`,
+      cta: "정리",
+    },
   ] as const;
 
   const queueRows = [
@@ -193,16 +217,29 @@ export default async function ChurchDashboardPage({ params }: { params: { church
         </div>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {overviewStats.map((item) => (
-          <div key={item.label} className="rounded-[22px] border border-[#e6dfd5] bg-white p-4 shadow-[0_10px_26px_rgba(15,23,42,0.05)]">
-            <p className="text-[11px] tracking-[0.16em] text-[#8C7A5B]">{item.label}</p>
-            <div className="mt-2 flex items-end justify-between gap-3">
-              <p className="text-[1.9rem] font-semibold tracking-[-0.04em] text-[#111111]">{item.value}</p>
-              <span className="rounded-full border border-[#e6dfd5] bg-[#fbf9f4] px-2.5 py-1 text-[11px] text-[#8C7A5B]">{item.meta}</span>
-            </div>
+      <section className="overflow-hidden rounded-[24px] border border-[#e6dfd5] bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+        <div className="flex items-center justify-between border-b border-[#efe7da] px-5 py-4">
+          <div>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">STATUS RAIL</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#111111]">오늘 상태</h2>
           </div>
-        ))}
+          <span className="text-xs text-[#8C7A5B]">한 줄 확인</span>
+        </div>
+
+        <div className="divide-y divide-[#f1eadf]">
+          {overviewStats.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="grid gap-3 px-5 py-4 transition hover:bg-[#fcfbf8] sm:grid-cols-[96px_92px_minmax(0,1fr)_72px] sm:items-center"
+            >
+              <p className="text-[11px] tracking-[0.16em] text-[#8C7A5B]">{item.label}</p>
+              <p className="text-[1.7rem] font-semibold tracking-[-0.05em] text-[#111111]">{item.value}</p>
+              <p className="text-sm text-[#5f564b]">{item.meta}</p>
+              <p className="text-xs font-medium text-[#8C6A2E] sm:text-right">{item.cta}</p>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
