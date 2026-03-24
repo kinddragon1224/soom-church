@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
-import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { formatDate } from "@/lib/date";
+import { getStatusMeta } from "@/lib/member-status";
+import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 
 function getActivityLabel(action: string) {
   const labels: Record<string, string> = {
@@ -63,6 +64,13 @@ export default async function ChurchDashboardPage({ params }: { params: { church
       href: `${base}/members?filter=unassigned`,
       cta: "정리",
     },
+    {
+      label: "심방 필요",
+      value: String(data.visitNeededMembers),
+      meta: data.visitNeededMembers > 0 ? "집중 확인" : "대상 없음",
+      href: `${base}/members`,
+      cta: "보기",
+    },
   ] as const;
 
   const queueRows = [
@@ -111,7 +119,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   ] as const;
 
   const moduleRows = [
-    { title: "사람", value: `${data.totalMembers}명`, meta: `후속 ${data.followUpMembers} · 미배정 ${data.unassignedMembers}`, href: `${base}/members`, cta: "열기" },
+    { title: "사람", value: `${data.totalMembers}명`, meta: `후속 ${data.followUpMembers} · 미배정 ${data.unassignedMembers} · 심방 ${data.visitNeededMembers}`, href: `${base}/members`, cta: "열기" },
     { title: "신청", value: `${data.pendingApplications}건`, meta: data.recentApplications[0] ? `${data.recentApplications[0].applicantName} · ${formatDate(data.recentApplications[0].createdAt)}` : "새 신청이 들어오면 여기에 표시", href: `${base}/applications`, cta: "열기" },
     { title: "공지", value: `${data.recentNotices.length}개`, meta: data.recentNotices[0] ? `${data.recentNotices[0].pinned ? "상단고정" : "일반"} · ${data.recentNotices[0].title}` : "최근 공지가 아직 없음", href: `${base}/notices`, cta: "열기" },
     { title: "설정", value: "기본값", meta: "역할, 초대, 기본 흐름 정리", href: `${base}/settings`, cta: "열기" },
@@ -140,7 +148,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
       section: "최근 등록",
       title: data.recentMembers[0]?.name ?? "아직 등록 인원이 없어",
       meta: data.recentMembers[0]
-        ? `${data.recentMembers[0].statusTag} · ${formatDate(data.recentMembers[0].registeredAt)}`
+        ? `${data.recentMembers[0].statusTag} · ${getStatusMeta(data.recentMembers[0].statusTag).nextAction} · ${formatDate(data.recentMembers[0].registeredAt)}`
         : "새 사람을 등록하면 여기서 바로 확인",
       href: `${base}/members`,
       cta: "전체 보기",

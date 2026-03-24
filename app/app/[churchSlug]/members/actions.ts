@@ -137,6 +137,43 @@ export async function updateMemberStatus(churchSlug: string, memberId: string, f
   redirect(`/app/${churchSlug}/members/${member.id}/summary`);
 }
 
+export async function advanceMemberStatus(churchSlug: string, memberId: string) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const nextStatusMap: Record<string, string> = {
+    등록대기: "새가족",
+    새가족: "정착중",
+    정착중: "목장배정완료",
+    목장배정완료: "봉사연결",
+    봉사연결: "봉사연결",
+    휴면: "새가족",
+    심방필요: "정착중",
+  };
+  const nextStatus = nextStatusMap[member.statusTag] ?? member.statusTag;
+
+  await prisma.member.update({
+    where: { id: member.id },
+    data: getStatusUpdatePatch(nextStatus, member.requiresFollowUp),
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_STATUS_ADVANCED",
+      targetType: "Member",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ from: member.statusTag, to: nextStatus }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}/summary`);
+}
+
 export async function softDeleteMember(churchSlug: string, memberId: string) {
   const scoped = await getScopedMember(churchSlug, memberId);
   if (!scoped) return;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { advanceMemberStatus } from "./actions";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { startOfMonth, formatDate } from "@/lib/date";
 import { getStatusMeta } from "@/lib/member-status";
@@ -114,6 +115,7 @@ export default async function ChurchMembersPage({
                   <th className="px-4 py-3 text-left font-medium">이메일</th>
                   <th className="px-4 py-3 text-left font-medium">다음 작업</th>
                   <th className="px-4 py-3 text-left font-medium">등록일</th>
+                  <th className="px-4 py-3 text-left font-medium">빠른 처리</th>
                 </tr>
               </thead>
               <tbody>
@@ -130,6 +132,11 @@ export default async function ChurchMembersPage({
                     <td className="px-4 py-3 text-[#5f564b]">{member.email ?? "-"}</td>
                     <td className="px-4 py-3 text-[#5f564b]">{getStatusMeta(member.statusTag).nextAction}</td>
                     <td className="px-4 py-3 text-[#5f564b]">{formatDate(member.registeredAt)}</td>
+                    <td className="px-4 py-3">
+                      <form action={advanceMemberStatus.bind(null, church.slug, member.id)}>
+                        <button className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-1.5 text-xs font-medium text-[#121212]">다음 단계</button>
+                      </form>
+                    </td>
                   </tr>
                 ))}
               </tbody>
