@@ -4,7 +4,7 @@ import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { WorkspaceShell } from "./workspace-shell";
 
 export const dynamic = "force-dynamic";
-export const preferredRegion = "sin1";
+export const preferredRegion = "icn1";
 
 export default async function ChurchWorkspaceLayout({
   children,

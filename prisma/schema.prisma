@@ -42,6 +42,12 @@ enum SubscriptionStatus {
   CANCELED
 }
 
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 enum OrganizationUnitType {
   CONGREGATION
   DISTRICT
@@ -142,6 +148,7 @@ model Church {
   applicationForms        ApplicationForm[]
   applications            Application[]
   notices                 Notice[]
+  blogPosts               BlogPost[]
   activityLogs            ActivityLog[]
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
@@ -157,6 +164,7 @@ model User {
   activityLogs ActivityLog[]
   notices      Notice[]           @relation("NoticeAuthor")
   guidePosts   GuidePost[]        @relation("GuidePostAuthor")
+  blogPosts    BlogPost[]         @relation("BlogPostAuthor")
   applications Application[]      @relation("ApplicationAssignee")
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
@@ -369,6 +377,27 @@ model GuidePostImage {
   createdAt  DateTime  @default(now())
 
   @@index([postId, sortOrder])
+}
+
+model BlogPost {
+  id            String         @id @default(cuid())
+  churchId       String
+  authorId       String
+  title          String
+  slug           String
+  excerpt        String?
+  contentJson    String
+  coverImageUrl  String?
+  status         BlogPostStatus @default(DRAFT)
+  publishedAt    DateTime?
+  church         Church         @relation(fields: [churchId], references: [id])
+  author         User           @relation("BlogPostAuthor", fields: [authorId], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([churchId, slug])
+  @@index([churchId, status])
+  @@index([churchId, createdAt])
 }
 
 model OrganizationUnit {
