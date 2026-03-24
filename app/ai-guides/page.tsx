@@ -1,10 +1,12 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
+import { isLoggedIn } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 20;
 
 export default async function GuidesPage() {
+  const loggedIn = await isLoggedIn();
   const posts = await prisma.guidePost.findMany({
     where: { published: true },
     orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
@@ -15,7 +17,7 @@ export default async function GuidesPage() {
     <main className="min-h-screen bg-[#f7f4ee] text-[#0c1220]">
       <section className="border-b border-[#e6dfd5] bg-white">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
-          <SiteHeader current="guides" />
+          <SiteHeader current="guides" loggedIn={loggedIn} />
         </div>
       </section>
 

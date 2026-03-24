@@ -9,6 +9,7 @@ type SiteHeaderProps = {
   current?: "home" | "workspace" | "pricing" | "about" | "guides" | "contact";
   ctaHref?: string;
   ctaLabel?: string;
+  loggedIn?: boolean;
 };
 
 const navItems = [
@@ -25,6 +26,7 @@ export default function SiteHeader({
   current,
   ctaHref = "/contact",
   ctaLabel = "문의하기",
+  loggedIn = false,
 }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const isDark = theme === "dark";
@@ -79,11 +81,20 @@ export default function SiteHeader({
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
-          <form action="/api/logout" method="post">
-            <button type="submit" className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold ${isDark ? "border-white/20 bg-white/5 text-white" : "border-[#d9d2c7] bg-white text-[#0c1220]"}`}>
-              로그아웃
-            </button>
-          </form>
+          {loggedIn ? (
+            <form action="/api/logout" method="post">
+              <button type="submit" className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold ${isDark ? "border-white/20 bg-white/5 text-white" : "border-[#d9d2c7] bg-white text-[#0c1220]"}`}>
+                로그아웃
+              </button>
+            </form>
+          ) : (
+            <Link
+              href="/login"
+              className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold ${isDark ? "border-white/20 bg-white/5 text-white" : "border-[#d9d2c7] bg-white text-[#0c1220]"}`}
+            >
+              로그인
+            </Link>
+          )}
           <Link
             href={ctaHref}
             className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold ${buttonClass}`}
@@ -128,27 +139,30 @@ export default function SiteHeader({
             </div>
 
             <div className="mt-auto grid gap-3 pt-10">
-              <form action="/api/logout" method="post">
-                <button
-                  type="submit"
-                  className={`inline-flex min-h-12 w-full items-center justify-center rounded-full border px-5 text-sm font-semibold ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
+              {loggedIn ? (
+                <form action="/api/logout" method="post">
+                  <button
+                    type="submit"
+                    className={`inline-flex min-h-12 w-full items-center justify-center rounded-full border px-5 text-sm font-semibold ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
+                  >
+                    로그아웃
+                  </button>
+                </form>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-medium ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
                 >
-                  로그아웃
-                </button>
-              </form>
+                  로그인
+                </Link>
+              )}
               <Link
                 href={ctaHref}
                 onClick={() => setOpen(false)}
                 className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-semibold ${buttonClass}`}
               >
                 {ctaLabel}
-              </Link>
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-medium ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
-              >
-                로그인
               </Link>
             </div>
           </div>

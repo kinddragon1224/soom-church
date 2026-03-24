@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
+import { isLoggedIn } from "@/lib/auth";
 
 const painPoints = [
   "메시지는 있는데 전달이 약할 때",
@@ -73,7 +74,8 @@ const guideTopics = [
   "주보와 공지 문구를 AI로 더 빠르게 정리하는 법",
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const loggedIn = await isLoggedIn();
   return (
     <main className="min-h-screen bg-[#050b16] text-white">
       <section className="relative overflow-hidden border-b border-white/10 bg-[#050b16]">
@@ -85,7 +87,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.18)_0%,rgba(5,11,22,0.12)_24%,rgba(5,11,22,0.88)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.2)_0%,rgba(5,11,22,0.18)_30%,rgba(5,11,22,0.82)_100%)]" />
 
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-4 pt-3 sm:min-h-screen sm:px-8 sm:pb-10 lg:px-10">
-          <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="무료로 시작하기" />
+          <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="무료로 시작하기" loggedIn={loggedIn} />
 
           <div className="flex flex-1 items-start pt-8 pb-5 sm:items-end sm:py-24 lg:py-28">
             <div className="max-w-5xl">

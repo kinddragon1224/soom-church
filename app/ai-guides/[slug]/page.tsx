@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/components/site-header";
+import { isLoggedIn } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export const revalidate = 20;
 
 export default async function GuideDetailPage({ params }: { params: { slug: string } }) {
+  const loggedIn = await isLoggedIn();
   const post = await prisma.guidePost.findFirst({
     where: { slug: params.slug, published: true },
     select: { title: true, excerpt: true, content: true, coverImageUrl: true, publishedAt: true },
@@ -16,7 +18,7 @@ export default async function GuideDetailPage({ params }: { params: { slug: stri
     <main className="min-h-screen bg-[#f7f4ee] text-[#0c1220]">
       <section className="border-b border-[#e6dfd5] bg-white">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
-          <SiteHeader current="guides" />
+          <SiteHeader current="guides" loggedIn={loggedIn} />
         </div>
       </section>
 
