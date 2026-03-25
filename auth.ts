@@ -125,10 +125,10 @@ export async function getPostLoginPath(userId: string) {
   if (isPlatformAdminEmail(user.email)) return "/platform-admin";
 
   const church = await getFirstChurchByUserId(user.id);
-  if (church) return `/app/${church.slug}/dashboard`;
+  if (church) return "/workspace";
 
   if (user.email === "dev@soom.church") {
-    return "/app/soom-dev/dashboard";
+    return "/workspace";
   }
 
   return "/app";

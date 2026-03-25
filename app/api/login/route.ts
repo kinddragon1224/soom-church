@@ -97,7 +97,7 @@ export async function POST(request: Request) {
       ? await ensurePlatformAdminAccount(email)
       : await prisma.user.findUnique({ where: { email }, select: { id: true } });
 
-  const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/app/soom-dev/dashboard";
+  const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/workspace";
 
   try {
     await signIn("credentials", {
