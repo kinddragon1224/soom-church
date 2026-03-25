@@ -42,7 +42,7 @@ export default async function GuidesPage() {
                 <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
               </div>
 
-              <div className="mx-auto max-w-[980px] text-center lg:max-w-[920px] xl:max-w-[980px]">
+              <div className="mx-auto max-w-[1240px] select-none text-center cursor-default lg:max-w-[1180px] xl:max-w-[1320px]">
                 <h1 className="text-[3.15rem] font-light leading-[1.02] tracking-[-0.065em] text-white sm:text-[5.1rem] lg:text-[7rem] xl:text-[7.8rem]">
                   교회와 사역을 위한
                   <br />
