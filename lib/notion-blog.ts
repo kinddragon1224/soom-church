@@ -32,14 +32,14 @@ const NOTION_VERSION = "2026-03-11";
 const ROOT_PAGE_ID = process.env.NOTION_BLOG_ROOT_PAGE_ID;
 const TOKEN = process.env.NOTION_API_KEY;
 
-function ensureConfig() {
-  if (!TOKEN || !ROOT_PAGE_ID) {
-    throw new Error("Notion blog env is not configured.");
-  }
+function isConfigured() {
+  return Boolean(TOKEN && ROOT_PAGE_ID);
 }
 
 async function notion(path: string, init?: RequestInit) {
-  ensureConfig();
+  if (!isConfigured()) {
+    throw new Error("Notion blog env is not configured.");
+  }
   const response = await fetch(`https://api.notion.com/v1${path}`, {
     ...init,
     headers: {
@@ -133,6 +133,8 @@ function blockToContent(block: NotionBlock): NotionBlogContentBlock | null {
 }
 
 export const listNotionBlogPosts = cache(async (): Promise<NotionBlogPostSummary[]> => {
+  if (!isConfigured()) return [];
+
   const pages = await getBlogChildPages();
 
   return pages.map((page) => {
@@ -149,6 +151,8 @@ export const listNotionBlogPosts = cache(async (): Promise<NotionBlogPostSummary
 });
 
 export const getNotionBlogPostBySlug = cache(async (slug: string): Promise<NotionBlogPostDetail | null> => {
+  if (!isConfigured()) return null;
+
   const pages = await listNotionBlogPosts();
   const matched = pages.find((page) => page.slug === slug);
   if (!matched) return null;
