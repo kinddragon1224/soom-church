@@ -18,12 +18,13 @@ export default async function PlatformAdminLayout({ children }: { children: Reac
           <span className="text-xs text-muted-foreground">{user.name}</span>
         </div>
         <nav className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm">
-          <Link href="/" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">홈</Link>
-          <Link href="/app" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">워크스페이스</Link>
           <Link href="/platform-admin" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">개요</Link>
-          <Link href="/platform-admin/churches" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">교회 목록</Link>
+          <Link href="/platform-admin/churches" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">교회</Link>
+          <Link href="/platform-admin/users" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">사용자</Link>
           <Link href="/platform-admin/subscriptions" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">구독</Link>
-          <Link href="/platform-admin/provisioning" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">워크스페이스 생성</Link>
+          <Link href="/platform-admin/provisioning" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">생성</Link>
+          <Link href="/ai-guides" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">블로그</Link>
+          <Link href="/" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">홈</Link>
         </nav>
       </header>
       <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">{children}</main>
