@@ -19,7 +19,7 @@ const workspaceFeatures = [
   },
 ];
 
-const blogHighlights = ["목회와 운영 인사이트", "AI 활용 가이드", "실행형 콘텐츠 아카이브"];
+const blogHighlights = ["운영 인사이트", "AI 활용 가이드", "실행형 콘텐츠"];
 
 export default async function HomePage() {
   const loggedIn = await isLoggedIn();
@@ -77,9 +77,11 @@ export default async function HomePage() {
             <div>
               <p className="text-[11px] tracking-[0.24em] text-[#9a8b7a]">BLOG</p>
               <h2 className="mt-4 text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#111111] sm:text-[3.9rem]">
-                교회 운영은 워크스페이스로 정리하고
+                운영은 가볍게
                 <br />
-                콘텐츠와 전달은 필요한 순간에 실행하세요.
+                콘텐츠는 빠르게
+                <br />
+                전달은 정확하게
               </h2>
               <div className="mt-6 flex flex-wrap gap-2">
                 {blogHighlights.map((item) => (
