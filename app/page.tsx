@@ -41,7 +41,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.34)_0%,rgba(5,11,22,0.4)_28%,rgba(5,11,22,0.92)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.24)_0%,rgba(5,11,22,0.34)_28%,rgba(5,11,22,0.88)_100%)]" />
 
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-6 pt-3 sm:min-h-screen sm:px-8 lg:px-10">
-          <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="무료로 시작하기" loggedIn={loggedIn} adminMode={adminMode} />
+          <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="회원가입" loggedIn={loggedIn} adminMode={adminMode} />
 
           <div className="flex flex-1 items-center justify-center py-16 sm:py-24 lg:py-28">
             <div className="max-w-5xl text-center">
