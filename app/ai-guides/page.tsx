@@ -36,15 +36,14 @@ export default async function GuidesPage() {
             <div className="absolute inset-0 bg-[#05070b]" />
             <div className="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,rgba(5,7,11,0.34)_0%,rgba(5,7,11,0.16)_18%,rgba(5,7,11,0.08)_34%,rgba(5,7,11,0.08)_66%,rgba(5,7,11,0.16)_82%,rgba(5,7,11,0.34)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(5,7,11,0)_0%,rgba(5,7,11,0.22)_50%,rgba(5,7,11,0.68)_100%)] sm:h-44" />
-            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute left-[32%] top-[72px] h-[calc(100%-72px)] w-auto max-w-none -translate-x-1/2 object-contain object-top opacity-100 sm:left-[2%] sm:top-[92px] sm:h-[calc(100%-92px)] sm:translate-x-0 lg:left-[1%] lg:top-[96px] lg:h-[calc(100%-96px)]" />
+            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute left-[29%] top-[88px] h-[calc(100%-88px)] w-auto max-w-none -translate-x-1/2 object-contain object-top opacity-100 sm:left-[-1%] sm:top-[108px] sm:h-[calc(100%-108px)] sm:translate-x-0 lg:left-[-2%] lg:top-[118px] lg:h-[calc(100%-118px)]" />
 
             <div className="relative z-10 flex min-h-[620px] flex-col justify-between px-5 py-6 sm:min-h-[700px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
-              <div className="flex justify-center sm:justify-start">
-                <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
-              </div>
+              <div />
 
-              <div className="mx-auto flex w-full max-w-[360px] flex-col items-center justify-end pb-3 text-center select-none cursor-default sm:max-w-[1240px] sm:items-center sm:pb-0 sm:text-center lg:max-w-[1320px] xl:max-w-[1380px]">
-                <h1 className="text-[2.2rem] font-light leading-[1.06] tracking-[-0.058em] text-white sm:text-[5.1rem] lg:text-[6.8rem] xl:text-[7.6rem] drop-shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
+              <div className="mx-auto flex w-full max-w-[360px] translate-x-0 flex-col items-center justify-end pb-3 text-center select-none cursor-default sm:max-w-[1240px] sm:translate-x-6 sm:items-center sm:pb-0 sm:text-center lg:max-w-[1320px] lg:translate-x-8 xl:max-w-[1380px] xl:translate-x-10">
+                <div className="mb-4 inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm sm:mb-5">SOOM BLOG</div>
+                <h1 className="text-[2rem] font-light leading-[1.06] tracking-[-0.058em] text-white sm:text-[4.6rem] lg:text-[6.1rem] xl:text-[6.85rem] drop-shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
                   교회와 사역을 위한
                   <br />
                   인사이트 아카이브
