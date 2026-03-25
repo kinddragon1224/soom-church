@@ -32,7 +32,7 @@ export default async function HomePage() {
   const adminMode = isPlatformAdminEmail(currentUser?.email);
 
   return (
-    <main className="min-h-screen bg-[#050b16] text-white">
+    <main className="min-h-screen cursor-default select-none bg-[#050b16] text-white">
       <section className="relative overflow-hidden border-b border-white/10 bg-[#050b16]">
         <div
           className="absolute inset-0 bg-cover bg-center"
