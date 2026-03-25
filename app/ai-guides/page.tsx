@@ -36,7 +36,7 @@ export default async function GuidesPage() {
             <div className="absolute inset-0 bg-[#05070b]" />
             <div className="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,rgba(5,7,11,0.34)_0%,rgba(5,7,11,0.16)_18%,rgba(5,7,11,0.08)_34%,rgba(5,7,11,0.08)_66%,rgba(5,7,11,0.16)_82%,rgba(5,7,11,0.34)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(5,7,11,0)_0%,rgba(5,7,11,0.22)_50%,rgba(5,7,11,0.68)_100%)] sm:h-44" />
-            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute left-[38%] top-[72px] h-[calc(100%-72px)] w-auto max-w-none -translate-x-1/2 object-contain object-top opacity-100 sm:left-[8%] sm:top-[92px] sm:h-[calc(100%-92px)] sm:translate-x-0 lg:left-[6%] lg:top-[96px] lg:h-[calc(100%-96px)]" />
+            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute left-[32%] top-[72px] h-[calc(100%-72px)] w-auto max-w-none -translate-x-1/2 object-contain object-top opacity-100 sm:left-[2%] sm:top-[92px] sm:h-[calc(100%-92px)] sm:translate-x-0 lg:left-[1%] lg:top-[96px] lg:h-[calc(100%-96px)]" />
 
             <div className="relative z-10 flex min-h-[620px] flex-col justify-between px-5 py-6 sm:min-h-[700px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
               <div className="flex justify-center sm:justify-start">
