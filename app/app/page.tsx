@@ -8,10 +8,14 @@ export const preferredRegion = "icn1";
 
 export default async function AppEntryPage() {
   const userId = await getCurrentUserOrRedirect();
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
 
-  if (isPlatformAdminEmail(user?.email)) {
-    redirect("/platform-admin");
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } });
+    if (isPlatformAdminEmail(user?.email)) {
+      redirect("/platform-admin");
+    }
+  } catch {
+    // Keep app entry alive even if user lookup fails in production.
   }
 
   const memberships = await getAccessibleChurchesByUserId(userId);
