@@ -3,7 +3,6 @@ import SiteHeader from "@/components/site-header";
 import { getCurrentUserId, isLoggedIn } from "@/lib/auth";
 import { isPlatformAdminEmail } from "@/lib/admin";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 
 const painPoints = [
   "메시지는 있는데 전달이 약할 때",
@@ -82,10 +81,6 @@ export default async function HomePage() {
   const currentUserId = loggedIn ? await getCurrentUserId() : null;
   const currentUser = currentUserId ? await prisma.user.findUnique({ where: { id: currentUserId }, select: { email: true } }) : null;
   const adminMode = isPlatformAdminEmail(currentUser?.email);
-
-  if (adminMode) {
-    redirect("/platform-admin");
-  }
 
   return (
     <main className="min-h-screen bg-[#050b16] text-white">
