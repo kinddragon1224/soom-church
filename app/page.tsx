@@ -43,7 +43,7 @@ export default async function HomePage() {
             <div className="max-w-5xl text-center">
               <p className="text-[10px] tracking-[0.22em] text-white/52 sm:text-xs sm:tracking-[0.28em]">SOOM WORKSPACE FOR CHURCHES</p>
               <h1 className="mt-5 text-[3.2rem] font-light leading-[0.9] tracking-[-0.08em] text-white sm:text-[6.4rem] lg:text-[8.4rem]">
-                교회를 돕다
+                교회를 위한 워크스페이스
               </h1>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
