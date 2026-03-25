@@ -10,12 +10,20 @@ export default async function PlatformAdminLayout({ children }: { children: Reac
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card px-4 py-3 sm:px-6">
-        <div className="inline-flex items-center">
-          <Image src="/soom-logo-main.svg" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-3">
-          <h1 className="text-lg font-semibold">숨 플랫폼 운영 콘솔</h1>
-          <span className="text-xs text-muted-foreground">{user.name}</span>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center">
+              <Image src="/soom-logo-main.svg" alt="SOOM" width={220} height={60} className="h-8 w-auto" />
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <h1 className="text-lg font-semibold">숨 플랫폼 운영 콘솔</h1>
+              <span className="text-xs text-muted-foreground">{user.name}</span>
+              <span className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground">platform only</span>
+            </div>
+          </div>
+          <form action="/api/logout" method="post">
+            <button type="submit" className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">로그아웃</button>
+          </form>
         </div>
         <nav className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm">
           <Link href="/platform-admin" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">개요</Link>
@@ -24,7 +32,6 @@ export default async function PlatformAdminLayout({ children }: { children: Reac
           <Link href="/platform-admin/subscriptions" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">구독</Link>
           <Link href="/platform-admin/provisioning" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">생성</Link>
           <Link href="/ai-guides" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">블로그</Link>
-          <Link href="/" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">홈</Link>
         </nav>
       </header>
       <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">{children}</main>

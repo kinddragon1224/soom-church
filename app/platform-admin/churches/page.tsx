@@ -114,7 +114,6 @@ export default async function PlatformAdminChurchesPage() {
       planStatusLabel: planStatusLabel(planStatus),
       isActive: church.isActive,
       needsAttention,
-      workspaceHref: `/app/${church.slug}/dashboard`,
       membersHref: `/app/${church.slug}/members`,
     };
   });
@@ -138,8 +137,8 @@ export default async function PlatformAdminChurchesPage() {
           label: "방금 온보딩",
           title: latestOnboarded.name,
           note: `${latestOnboarded.ownerName} · ${latestOnboarded.team} · ${latestOnboarded.createdAtLabel}`,
-          href: latestOnboarded.workspaceHref,
-          cta: "대시보드",
+          href: `/platform-admin/churches/${latestOnboarded.id}`,
+          cta: "상세 보기",
         }
       : {
           label: "방금 온보딩",
@@ -153,8 +152,8 @@ export default async function PlatformAdminChurchesPage() {
           label: "체험중 확인",
           title: `${trialWorkspace.name} · ${trialWorkspace.plan}`,
           note: `${trialWorkspace.goal} · 사람 ${trialWorkspace.members}명`,
-          href: trialWorkspace.workspaceHref,
-          cta: "열기",
+          href: `/platform-admin/churches/${trialWorkspace.id}`,
+          cta: "상세 보기",
         }
       : {
           label: "체험중 확인",
@@ -183,8 +182,8 @@ export default async function PlatformAdminChurchesPage() {
           label: "지금 열어볼 곳",
           title: attentionWorkspace.name,
           note: `${attentionWorkspace.planStatusLabel} · ${attentionWorkspace.members === 0 ? "교인 데이터 없음" : `교인 ${attentionWorkspace.members}명`} · ${attentionWorkspace.isActive ? "운영중" : "비활성"}`,
-          href: attentionWorkspace.workspaceHref,
-          cta: "바로 열기",
+          href: `/platform-admin/churches/${attentionWorkspace.id}`,
+          cta: "상세 보기",
         }
       : {
           label: "지금 열어볼 곳",
@@ -368,12 +367,6 @@ export default async function PlatformAdminChurchesPage() {
                       className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
                     >
                       상세
-                    </Link>
-                    <Link
-                      href={row.workspaceHref}
-                      className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#6a5e51] transition hover:border-[#d8c8af] hover:text-[#8C6A2E]"
-                    >
-                      대시보드
                     </Link>
                     <Link
                       href={row.membersHref}
