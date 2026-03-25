@@ -4,6 +4,7 @@ import { MembershipRole, Plan, SubscriptionStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { signIn, getPostLoginPath } from "@/auth";
+import { isPlatformAdminEmail } from "@/lib/admin";
 
 const DEV_USER_EMAIL = "dev@soom.church";
 const DEV_USER_PASSWORD = "1234";
@@ -12,6 +13,7 @@ const DEV_CHURCH_NAME = "숨 개발용 워크스페이스";
 
 const PLATFORM_ADMIN_EMAIL = "platform-admin@soom.church";
 const PLATFORM_ADMIN_PASSWORD = "1234";
+const PLATFORM_ADMIN_NAME = "숨 플랫폼 관리자";
 
 async function ensureDevWorkspaceAccount() {
   const church = await prisma.church.upsert({
@@ -62,13 +64,13 @@ async function ensureDevWorkspaceAccount() {
   return user;
 }
 
-async function ensurePlatformAdminAccount() {
+async function ensurePlatformAdminAccount(email: string) {
   return prisma.user.upsert({
-    where: { email: PLATFORM_ADMIN_EMAIL },
-    update: { name: "숨 플랫폼 관리자", passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD), isActive: true },
+    where: { email },
+    update: { name: PLATFORM_ADMIN_NAME, passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD), isActive: true },
     create: {
-      email: PLATFORM_ADMIN_EMAIL,
-      name: "숨 플랫폼 관리자",
+      email,
+      name: PLATFORM_ADMIN_NAME,
       passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD),
       isActive: true,
     },
@@ -84,8 +86,8 @@ export async function POST(request: Request) {
 
   const user = email === DEV_USER_EMAIL
     ? await ensureDevWorkspaceAccount()
-    : email === PLATFORM_ADMIN_EMAIL
-      ? await ensurePlatformAdminAccount()
+    : isPlatformAdminEmail(email)
+      ? await ensurePlatformAdminAccount(email)
       : await prisma.user.findUnique({ where: { email }, select: { id: true } });
 
   const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/app";
