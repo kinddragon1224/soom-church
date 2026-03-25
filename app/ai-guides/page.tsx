@@ -32,15 +32,15 @@ export default async function GuidesPage() {
 
       <section className="overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_top,#161f33_0%,#0b1018_40%,#05070b_100%)]">
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
-          <div className="grid items-center gap-4 lg:grid-cols-[0.78fr_1.22fr] lg:gap-0">
+          <div className="grid items-center gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:gap-0">
             <div className="relative min-h-[420px] sm:min-h-[560px] lg:min-h-[700px]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_22%,rgba(137,168,255,0.1),transparent_34%),radial-gradient(circle_at_72%_68%,rgba(214,169,255,0.06),transparent_28%)]" />
-              <div className="absolute inset-y-0 left-[-8%] right-[8%] bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_100%)] blur-3xl" />
-              <div className="absolute inset-y-0 left-0 right-[-10%] bg-[linear-gradient(90deg,rgba(5,7,11,0.08)_0%,rgba(5,7,11,0.12)_24%,rgba(5,7,11,0.72)_62%,rgba(5,7,11,0.96)_100%)]" />
-              <img src="/blog-hero-person.png" alt="Soom blog hero person" className="absolute bottom-0 left-[-12%] h-full w-auto max-w-none object-contain object-bottom opacity-80 saturate-[0.92]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_22%,rgba(137,168,255,0.08),transparent_30%),radial-gradient(circle_at_78%_68%,rgba(214,169,255,0.05),transparent_25%)]" />
+              <div className="absolute inset-y-0 left-[-4%] right-[4%] bg-[linear-gradient(180deg,rgba(255,255,255,0.015)_0%,rgba(255,255,255,0)_100%)] blur-3xl" />
+              <div className="absolute inset-y-0 left-0 right-[-4%] bg-[linear-gradient(90deg,rgba(5,7,11,0.02)_0%,rgba(5,7,11,0.12)_28%,rgba(5,7,11,0.72)_66%,rgba(5,7,11,0.96)_100%)]" />
+              <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-0 h-full w-auto max-w-none object-contain object-bottom opacity-88" />
             </div>
 
-            <div className="relative z-10 lg:-ml-2 lg:pl-14 xl:pl-24">
+            <div className="relative z-10 lg:-ml-2 lg:pl-16 xl:pl-28">
               <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
               <h1 className="mt-6 text-[2.8rem] font-semibold leading-[1.08] tracking-[-0.08em] text-white sm:mt-8 sm:text-[4.8rem] xl:text-[5.6rem]">
                 교회와 사역을 위한
