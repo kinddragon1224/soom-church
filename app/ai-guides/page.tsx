@@ -31,9 +31,12 @@ export default async function GuidesPage() {
 
       <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,#161f33_0%,#0b1018_40%,#05070b_100%)]">
         <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[0.72fr_1.28fr]">
-            <div className="overflow-hidden rounded-[34px] border border-white/10 bg-[#0b1018] shadow-[0_30px_90px_rgba(2,6,23,0.45)]">
-              <img src="/blog-hero.jpg" alt="Soom blog hero" className="h-[420px] w-full object-cover object-center sm:h-[560px] lg:h-[680px]" />
+          <div className="grid items-center gap-8 lg:grid-cols-[0.76fr_1.24fr]">
+            <div className="relative overflow-hidden rounded-[34px] border border-white/10 bg-[radial-gradient(circle_at_30%_20%,rgba(70,88,125,0.36),transparent_40%),linear-gradient(180deg,#0c1017_0%,#05070b_100%)] shadow-[0_30px_90px_rgba(2,6,23,0.45)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,rgba(137,168,255,0.12),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(214,169,255,0.08),transparent_28%)]" />
+              <div className="relative flex h-[420px] items-end justify-center sm:h-[560px] lg:h-[680px]">
+                <img src="/blog-hero-person.png" alt="Soom blog hero person" className="h-full w-auto object-contain object-bottom" />
+              </div>
             </div>
 
             <div className="lg:pl-10 xl:pl-16">
