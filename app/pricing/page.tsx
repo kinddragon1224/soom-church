@@ -56,20 +56,21 @@ export default function PricingPage() {
 
       <section className="overflow-hidden border-b border-[#e6dfd5] bg-[#f3f1ec]">
         <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
-          <div className="relative min-[320px]:min-h-[560px] overflow-hidden bg-[#f3f1ec] sm:min-h-[640px] lg:min-h-[760px]">
-            <div className="absolute inset-0 bg-[#f3f1ec]" />
+          <div className="relative min-[320px]:min-h-[560px] overflow-hidden bg-[#0b0d12] sm:min-h-[640px] lg:min-h-[760px]">
+            <div className="absolute inset-0 bg-[#0b0d12]" />
             <img src="/content-studio-hero.jpg" alt="콘텐츠 스튜디오" className="absolute inset-x-0 top-[84px] mx-auto h-[calc(100%-84px)] w-auto max-w-[min(100%,1280px)] object-contain object-top sm:top-[96px] sm:h-[calc(100%-96px)] lg:top-[110px] lg:h-[calc(100%-110px)]" />
+            <div className="absolute inset-x-0 top-[84px] mx-auto h-[calc(100%-84px)] w-full max-w-[min(100%,1280px)] bg-[linear-gradient(180deg,rgba(7,9,14,0.08)_0%,rgba(7,9,14,0.18)_42%,rgba(7,9,14,0.74)_100%)] sm:top-[96px] sm:h-[calc(100%-96px)] lg:top-[110px] lg:h-[calc(100%-110px)]" />
 
             <div className="relative z-10 flex min-h-[560px] flex-col justify-between px-5 py-6 sm:min-h-[640px] sm:px-8 sm:py-10 lg:min-h-[760px] lg:px-12 lg:py-12 xl:px-16">
               <div className="flex justify-center sm:justify-start">
-                <div className="inline-flex rounded-full border border-[#ddd2c3] bg-white/80 px-3 py-1.5 text-[11px] tracking-[0.28em] text-[#7a6f67] backdrop-blur-sm">CONTENT STUDIO</div>
+                <div className="inline-flex rounded-full border border-white/18 bg-black/18 px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/82 backdrop-blur-sm">CONTENT STUDIO</div>
               </div>
 
               <div className="mx-auto flex w-full max-w-[360px] flex-col items-center justify-start pb-0 pt-8 text-center select-none cursor-default sm:max-w-[1240px] sm:pt-10 lg:max-w-[1320px] xl:max-w-[1380px]">
-                <h1 className="text-[2.4rem] font-light leading-[1.04] tracking-[-0.06em] text-[#111827] sm:text-[5rem] lg:text-[6.8rem] xl:text-[7.4rem]">
+                <h1 className="text-[2.4rem] font-light leading-[1.04] tracking-[-0.06em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.32)] sm:text-[5rem] lg:text-[6.8rem] xl:text-[7.4rem]">
                   콘텐츠 스튜디오
                 </h1>
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-[#5d667d] sm:text-base sm:leading-8">
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/86 drop-shadow-[0_6px_20px_rgba(0,0,0,0.24)] sm:text-base sm:leading-8">
                   교회 운영은 워크스페이스로 정리하고<br className="hidden sm:block" />
                   콘텐츠와 전달은 필요한 순간에 실행하세요.
                 </p>
