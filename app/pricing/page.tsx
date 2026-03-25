@@ -58,7 +58,7 @@ export default function PricingPage() {
         <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
           <div className="relative min-[320px]:min-h-[560px] overflow-hidden bg-[#f3f1ec] sm:min-h-[640px] lg:min-h-[760px]">
             <div className="absolute inset-0 bg-[#f3f1ec]" />
-            <img src="/content-studio-hero.png" alt="콘텐츠 스튜디오" className="absolute inset-x-0 top-[84px] mx-auto h-[calc(100%-84px)] w-auto max-w-[min(100%,1280px)] object-contain object-top sm:top-[96px] sm:h-[calc(100%-96px)] lg:top-[110px] lg:h-[calc(100%-110px)]" />
+            <img src="/content-studio-hero.jpg" alt="콘텐츠 스튜디오" className="absolute inset-x-0 top-[84px] mx-auto h-[calc(100%-84px)] w-auto max-w-[min(100%,1280px)] object-contain object-top sm:top-[96px] sm:h-[calc(100%-96px)] lg:top-[110px] lg:h-[calc(100%-110px)]" />
 
             <div className="relative z-10 flex min-h-[560px] flex-col justify-between px-5 py-6 sm:min-h-[640px] sm:px-8 sm:py-10 lg:min-h-[760px] lg:px-12 lg:py-12 xl:px-16">
               <div className="flex justify-center sm:justify-start">
