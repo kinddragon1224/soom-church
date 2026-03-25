@@ -45,10 +45,6 @@ export default async function HomePage() {
               <h1 className="mt-5 text-[3.2rem] font-light leading-[0.9] tracking-[-0.08em] text-white sm:text-[6.4rem] lg:text-[8.4rem]">
                 교회를 돕다
               </h1>
-              <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/76 sm:text-base sm:leading-8">
-                교회 운영은 워크스페이스로 정리하고,
-                콘텐츠와 전달은 필요한 순간에 실행으로 연결합니다.
-              </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
                   무료로 시작하기
@@ -94,11 +90,6 @@ export default async function HomePage() {
                     {item}
                   </span>
                 ))}
-              </div>
-              <div className="mt-8">
-                <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
-                  블로그 보기
-                </Link>
               </div>
             </div>
 

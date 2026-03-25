@@ -69,6 +69,10 @@ export default function PricingPage() {
                 <h1 className="text-[2.4rem] font-light leading-[1.04] tracking-[-0.06em] text-[#111827] sm:text-[5rem] lg:text-[6.8rem] xl:text-[7.4rem]">
                   콘텐츠 스튜디오
                 </h1>
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-[#5d667d] sm:text-base sm:leading-8">
+                  교회 운영은 워크스페이스로 정리하고<br className="hidden sm:block" />
+                  콘텐츠와 전달은 필요한 순간에 실행하세요.
+                </p>
               </div>
             </div>
           </div>
