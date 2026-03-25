@@ -123,7 +123,13 @@ export async function getPostLoginPath(userId: string) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return "/app";
   if (isPlatformAdminEmail(user.email)) return "/platform-admin";
+
   const church = await getFirstChurchByUserId(user.id);
   if (church) return `/app/${church.slug}/dashboard`;
+
+  if (user.email === "dev@soom.church") {
+    return "/app/soom-dev/dashboard";
+  }
+
   return "/app";
 }
