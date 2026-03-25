@@ -62,23 +62,29 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <section>
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <p className="text-xs tracking-[0.24em] text-[#7a6f67]">SERVICES</p>
-          <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-            지금 교회가 바로 맡기기 쉬운
-            <br />
-            핵심 상품만 남겼습니다
-          </h1>
-          <p className="mt-6 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-            숨은 복잡한 플랫폼 설명보다, 교회가 당장 필요를 느끼는 실행형 서비스를 먼저 제공합니다.
-            쇼츠, 유튜브 운영, 행사 안내 제작처럼 바로 결과물이 나오는 상품부터 시작합니다.
-          </p>
+      <section className="overflow-hidden border-b border-[#e6dfd5] bg-[#f3f1ec]">
+        <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
+          <div className="relative min-[320px]:min-h-[560px] overflow-hidden bg-[#f3f1ec] sm:min-h-[640px] lg:min-h-[760px]">
+            <div className="absolute inset-0 bg-[#f3f1ec]" />
+            <img src="/content-studio-hero.png" alt="콘텐츠 스튜디오" className="absolute inset-x-0 top-[84px] mx-auto h-[calc(100%-84px)] w-auto max-w-[min(100%,1280px)] object-contain object-top sm:top-[96px] sm:h-[calc(100%-96px)] lg:top-[110px] lg:h-[calc(100%-110px)]" />
+
+            <div className="relative z-10 flex min-h-[560px] flex-col justify-between px-5 py-6 sm:min-h-[640px] sm:px-8 sm:py-10 lg:min-h-[760px] lg:px-12 lg:py-12 xl:px-16">
+              <div className="flex justify-center sm:justify-start">
+                <div className="inline-flex rounded-full border border-[#ddd2c3] bg-white/80 px-3 py-1.5 text-[11px] tracking-[0.28em] text-[#7a6f67] backdrop-blur-sm">CONTENT STUDIO</div>
+              </div>
+
+              <div className="mx-auto flex w-full max-w-[360px] flex-col items-center justify-start pb-0 pt-8 text-center select-none cursor-default sm:max-w-[1240px] sm:pt-10 lg:max-w-[1320px] xl:max-w-[1380px]">
+                <h1 className="text-[2.4rem] font-light leading-[1.04] tracking-[-0.06em] text-[#111827] sm:text-[5rem] lg:text-[6.8rem] xl:text-[7.4rem]">
+                  콘텐츠 스튜디오
+                </h1>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       <section>
-        <div className="mx-auto max-w-7xl px-5 pb-12 sm:px-8 lg:px-10 lg:pb-16">
+        <div className="mx-auto max-w-7xl px-5 pb-12 pt-12 sm:px-8 lg:px-10 lg:pb-16 lg:pt-16">
           <div className="grid gap-5 lg:grid-cols-3">
             {services.map((service) => (
               <article key={service.title} className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
