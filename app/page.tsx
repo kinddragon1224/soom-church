@@ -39,13 +39,15 @@ export default async function HomePage() {
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-6 pt-3 sm:min-h-screen sm:px-8 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="회원가입" loggedIn={loggedIn} adminMode={adminMode} />
 
-          <div className="flex flex-1 items-center justify-center py-16 sm:py-24 lg:py-28">
+          <div className="flex flex-1 items-center justify-center py-14 sm:py-20 lg:py-24">
             <div className="max-w-5xl text-center">
               <p className="text-[10px] tracking-[0.22em] text-white/52 sm:text-xs sm:tracking-[0.28em]">SOOM WORKSPACE FOR CHURCHES</p>
-              <h1 className="mt-5 text-[3.2rem] font-light leading-[0.9] tracking-[-0.08em] text-white sm:text-[6.4rem] lg:text-[8.4rem]">
-                교회를 위한 워크스페이스
+              <h1 className="mt-3 text-[2.8rem] font-light leading-[0.98] tracking-[-0.075em] text-white sm:text-[5.6rem] lg:text-[7.2rem]">
+                교회를 위한
+                <br />
+                워크스페이스
               </h1>
-              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
                   무료로 시작하기
                 </Link>
