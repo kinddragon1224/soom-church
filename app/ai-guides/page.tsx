@@ -30,12 +30,11 @@ export default async function GuidesPage() {
         </div>
       </section>
 
-      <section className="overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#050b16_0%,#0a1222_48%,#121a2c_100%)]">
+      <section className="overflow-hidden border-b border-white/10 bg-[#05070b]">
         <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
-          <div className="relative overflow-hidden bg-[#030508] min-[320px]:min-h-[600px] sm:min-h-[680px] lg:min-h-[860px]">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.22)_0%,rgba(0,0,0,0.42)_26%,rgba(0,0,0,0.76)_58%,rgba(0,0,0,0.96)_100%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.2)_34%,rgba(0,0,0,0.84)_68%,rgba(0,0,0,0.96)_100%)]" />
-            <div className="absolute inset-x-0 top-0 h-[42%] bg-[radial-gradient(circle_at_50%_18%,rgba(88,105,142,0.12),transparent_48%)] sm:inset-y-0 sm:left-0 sm:right-auto sm:h-auto sm:w-[56%] sm:bg-[radial-gradient(circle_at_32%_30%,rgba(88,105,142,0.16),transparent_40%)]" />
-            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-1/2 h-[64%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom opacity-92 sm:left-0 sm:h-full sm:translate-x-0" />
+          <div className="relative overflow-hidden bg-[#05070b] min-[320px]:min-h-[600px] sm:min-h-[680px] lg:min-h-[860px]">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.16)_0%,rgba(0,0,0,0.36)_24%,rgba(0,0,0,0.72)_62%,rgba(0,0,0,0.94)_100%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.08)_32%,rgba(0,0,0,0.58)_68%,rgba(0,0,0,0.88)_100%)]" />
+            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-1/2 h-[66%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom opacity-96 sm:left-0 sm:h-full sm:translate-x-0" />
 
             <div className="relative z-10 flex min-h-[600px] flex-col justify-between px-5 py-6 sm:min-h-[680px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
               <div className="flex justify-center sm:justify-start">
