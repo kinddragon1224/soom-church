@@ -18,7 +18,8 @@ export default async function GuidesPage() {
   const loggedIn = await isLoggedIn();
   const posts = await listNotionBlogPosts();
   const featured = posts[0] ?? null;
-  const latest = posts.slice(1);
+  const latest = posts.slice(1, 5);
+  const archive = posts.slice(5);
   const topics = ["목회", "운영", "AI 활용", "콘텐츠", "전달 구조"];
 
   return (
@@ -66,46 +67,82 @@ export default async function GuidesPage() {
               <p className="mt-5 text-sm leading-7 text-white/60 sm:text-base">노션에서 글을 발행하면 이 공간이 브랜드형 아카이브로 채워집니다.</p>
             </div>
           ) : (
-            <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-              {featured ? (
-                <Link href={`/ai-guides/${featured.slug}`} className="group overflow-hidden rounded-[34px] border border-white/10 bg-[#0b1018] shadow-[0_28px_90px_rgba(2,6,23,0.45)] transition hover:-translate-y-1">
-                  <div className="relative h-[360px] overflow-hidden sm:h-[460px]">
-                    {featured.coverImageUrl ? (
-                      <img src={featured.coverImageUrl} alt={featured.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
-                    ) : (
-                      <div className="h-full w-full bg-[linear-gradient(135deg,#17233d_0%,#243252_50%,#3b4f74_100%)]" />
-                    )}
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,8,12,0.04)_0%,rgba(6,8,12,0.3)_36%,rgba(6,8,12,0.92)_100%)]" />
-                    <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
-                      <div className="flex flex-wrap items-center gap-2 text-[11px] text-white/70">
-                        <span className="rounded-full border border-white/12 bg-white/10 px-2.5 py-1">FEATURED</span>
-                        {formatDate(featured.publishedAt) ? <span>{formatDate(featured.publishedAt)}</span> : null}
+            <>
+              <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+                {featured ? (
+                  <Link href={`/ai-guides/${featured.slug}`} className="group overflow-hidden rounded-[34px] border border-white/10 bg-[#0b1018] shadow-[0_28px_90px_rgba(2,6,23,0.45)] transition hover:-translate-y-1">
+                    <div className="relative h-[360px] overflow-hidden sm:h-[460px]">
+                      {featured.coverImageUrl ? (
+                        <img src={featured.coverImageUrl} alt={featured.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                      ) : (
+                        <div className="h-full w-full bg-[linear-gradient(135deg,#17233d_0%,#243252_50%,#3b4f74_100%)]" />
+                      )}
+                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,8,12,0.04)_0%,rgba(6,8,12,0.3)_36%,rgba(6,8,12,0.92)_100%)]" />
+                      <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-white/70">
+                          <span className="rounded-full border border-white/12 bg-white/10 px-2.5 py-1">FEATURED</span>
+                          {formatDate(featured.publishedAt) ? <span>{formatDate(featured.publishedAt)}</span> : null}
+                        </div>
+                        <h2 className="mt-4 max-w-3xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[3.6rem]">{featured.title}</h2>
+                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72 sm:text-base">
+                          {featured.excerpt ?? "대표 글로 먼저 읽어볼 수 있는 인사이트입니다."}
+                        </p>
                       </div>
-                      <h2 className="mt-4 max-w-3xl text-[2rem] font-semibold leading-[1.02] tracking-[-0.06em] text-white sm:text-[3.6rem]">{featured.title}</h2>
-                      <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72 sm:text-base">
-                        {featured.excerpt ?? "대표 글로 먼저 읽어볼 수 있는 인사이트입니다."}
-                      </p>
                     </div>
-                  </div>
-                </Link>
-              ) : null}
+                  </Link>
+                ) : null}
 
-              <div className="rounded-[30px] border border-white/10 bg-[#0b1018] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.34)]">
-                <p className="text-[11px] tracking-[0.24em] text-white/40">LATEST</p>
-                <div className="mt-5 grid gap-4">
-                  {latest.slice(0, 4).map((post) => (
-                    <Link key={post.id} href={`/ai-guides/${post.slug}`} className="group rounded-[22px] border border-white/10 bg-white/[0.03] p-4 transition hover:border-white/18 hover:bg-white/[0.05]">
-                      <div className="flex items-center justify-between gap-3 text-[11px] text-white/42">
-                        <span>ARTICLE</span>
-                        {formatDate(post.publishedAt) ? <span>{formatDate(post.publishedAt)}</span> : null}
-                      </div>
-                      <h3 className="mt-3 text-[1.18rem] font-semibold leading-[1.12] tracking-[-0.03em] text-white">{post.title}</h3>
-                      <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/58">{post.excerpt ?? "노션에서 작성한 본문이 연결된 글입니다."}</p>
-                    </Link>
-                  ))}
+                <div className="rounded-[30px] border border-white/10 bg-[#0b1018] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.34)]">
+                  <p className="text-[11px] tracking-[0.24em] text-white/40">LATEST</p>
+                  <div className="mt-5 grid gap-4">
+                    {latest.map((post) => (
+                      <Link key={post.id} href={`/ai-guides/${post.slug}`} className="group rounded-[22px] border border-white/10 bg-white/[0.03] p-4 transition hover:border-white/18 hover:bg-white/[0.05]">
+                        <div className="flex items-center justify-between gap-3 text-[11px] text-white/42">
+                          <span>ARTICLE</span>
+                          {formatDate(post.publishedAt) ? <span>{formatDate(post.publishedAt)}</span> : null}
+                        </div>
+                        <h3 className="mt-3 text-[1.18rem] font-semibold leading-[1.12] tracking-[-0.03em] text-white">{post.title}</h3>
+                        <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/58">{post.excerpt ?? "노션에서 작성한 본문이 연결된 글입니다."}</p>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+
+              {archive.length > 0 ? (
+                <div className="mt-14 border-t border-white/8 pt-12">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <p className="text-[11px] tracking-[0.24em] text-white/40">ARCHIVE</p>
+                      <h2 className="mt-3 text-[2rem] font-semibold tracking-[-0.05em] text-white">이전 글</h2>
+                    </div>
+                    <p className="max-w-xl text-sm leading-7 text-white/56">위쪽은 공지형 최신 섹션으로 두고, 아래는 이전 버전처럼 계속 쌓이는 아카이브 흐름으로 분리한다.</p>
+                  </div>
+
+                  <div className="mt-8 grid gap-4">
+                    {archive.map((post, index) => (
+                      <Link key={post.id} href={`/ai-guides/${post.slug}`} className="group rounded-[24px] border border-white/10 bg-[#0b1018] px-5 py-5 shadow-[0_18px_50px_rgba(2,6,23,0.22)] transition hover:-translate-y-0.5 hover:border-white/18">
+                        <div className="grid gap-4 md:grid-cols-[90px_minmax(0,1fr)_120px] md:items-start">
+                          <div>
+                            <p className="text-[11px] tracking-[0.18em] text-white/34">NO.</p>
+                            <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-white/86">{String(index + 1).padStart(2, "0")}</p>
+                          </div>
+                          <div>
+                            <p className="text-[11px] tracking-[0.18em] text-white/34">ARTICLE</p>
+                            <h3 className="mt-3 text-[1.35rem] font-semibold leading-[1.14] tracking-[-0.04em] text-white">{post.title}</h3>
+                            <p className="mt-3 line-clamp-2 text-sm leading-7 text-white/56">{post.excerpt ?? "노션에서 작성한 본문이 연결된 글입니다."}</p>
+                          </div>
+                          <div className="md:text-right">
+                            {formatDate(post.publishedAt) ? <p className="text-[11px] tracking-[0.18em] text-white/42">{formatDate(post.publishedAt)}</p> : null}
+                            <p className="mt-3 text-sm text-white/58">읽으러 가기</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       </section>
