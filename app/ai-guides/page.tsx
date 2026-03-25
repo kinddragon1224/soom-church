@@ -33,8 +33,10 @@ export default async function GuidesPage() {
       <section className="overflow-hidden border-b border-white/10 bg-[#05070b]">
         <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
           <div className="relative min-[320px]:min-h-[620px] overflow-hidden bg-[#05070b] sm:min-h-[700px] lg:min-h-[860px]">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.22)_24%,rgba(0,0,0,0.64)_62%,rgba(0,0,0,0.92)_100%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.06)_30%,rgba(0,0,0,0.4)_60%,rgba(0,0,0,0.86)_100%)]" />
-            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute inset-0 h-full w-full object-contain object-center opacity-100 sm:object-left-bottom" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,#040507_0%,#05070b_48%,#06080d_100%)]" />
+            <div className="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,rgba(4,5,7,0.96)_0%,rgba(4,5,7,0.82)_18%,rgba(4,5,7,0.18)_34%,rgba(4,5,7,0.08)_52%,rgba(4,5,7,0.78)_76%,rgba(4,5,7,0.96)_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,rgba(5,7,11,0)_0%,rgba(5,7,11,0.56)_42%,rgba(5,7,11,0.94)_100%)] sm:h-56" />
+            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute inset-y-0 left-1/2 h-full w-auto max-w-none -translate-x-[58%] object-contain object-left-bottom opacity-100 sm:left-[18%] sm:-translate-x-0 lg:left-[16%]" />
 
             <div className="relative z-10 flex min-h-[620px] flex-col justify-between px-5 py-6 sm:min-h-[700px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
               <div className="flex justify-center sm:justify-start">
@@ -42,12 +44,12 @@ export default async function GuidesPage() {
               </div>
 
               <div className="mx-auto flex w-full max-w-[360px] flex-col items-center justify-end pb-3 text-center select-none cursor-default sm:max-w-[1240px] sm:items-center sm:pb-0 sm:text-center lg:max-w-[1320px] xl:max-w-[1380px]">
-                <h1 className="text-[2.2rem] font-light leading-[1.06] tracking-[-0.058em] text-white sm:text-[5.1rem] lg:text-[6.8rem] xl:text-[7.6rem]">
+                <h1 className="text-[2.2rem] font-light leading-[1.06] tracking-[-0.058em] text-white sm:text-[5.1rem] lg:text-[6.8rem] xl:text-[7.6rem] drop-shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
                   교회와 사역을 위한
                   <br />
                   인사이트 아카이브
                 </h1>
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/66 sm:text-base sm:leading-8">
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/72 sm:text-base sm:leading-8">
                   목회, 운영, AI 활용, 전달 구조까지 실제 현장에 바로 적용할 수 있는 글을 정리합니다.
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-8 sm:gap-3">
