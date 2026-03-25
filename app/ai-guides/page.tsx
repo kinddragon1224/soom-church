@@ -40,7 +40,7 @@ export default async function GuidesPage() {
 
             <div className="relative z-10 lg:-ml-10 xl:-ml-16">
               <p className="text-[11px] tracking-[0.28em] text-white/42">SOOM BLOG</p>
-              <h1 className="mt-5 text-[2.8rem] font-semibold leading-[0.94] tracking-[-0.08em] text-white sm:text-[4.8rem] xl:text-[5.6rem]">
+              <h1 className="mt-6 text-[2.8rem] font-semibold leading-[1.06] tracking-[-0.08em] text-white sm:mt-7 sm:text-[4.8rem] xl:text-[5.6rem]">
                 교회와 사역을 위한
                 <br />
                 인사이트 아카이브
