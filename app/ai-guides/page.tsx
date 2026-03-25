@@ -49,9 +49,6 @@ export default async function GuidesPage() {
                   <br />
                   인사이트 아카이브
                 </h1>
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/72 sm:text-base sm:leading-8">
-                  목회, 운영, AI 활용, 전달 구조까지 실제 현장에 바로 적용할 수 있는 글을 정리합니다.
-                </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-8 sm:gap-3">
                   {topics.map((topic) => (
                     <span key={topic} className="rounded-full border border-white/14 bg-black/12 px-3 py-1.5 text-[12px] text-white/82 backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
