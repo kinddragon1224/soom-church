@@ -64,7 +64,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-18">
           <div className="grid gap-4 lg:grid-cols-3">
             {workspaceFeatures.map((item) => (
-              <article key={item.title} className="rounded-[28px] border border-white/8 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(2,6,23,0.24)]">
+              <article key={item.title} className="rounded-[28px] border border-white/12 bg-white/[0.02] p-6 shadow-[0_10px_24px_rgba(2,6,23,0.12)] backdrop-blur-sm">
                 <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-white">{item.title}</h2>
                 <p className="mt-3 text-sm leading-7 text-white/62">{item.desc}</p>
               </article>
@@ -73,18 +73,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#f7f4ee] text-[#111111]">
+      <section className="bg-[#f2eee7] text-[#111111]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
+          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
             <div>
-              <h2 className="text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#111111] sm:text-[3.9rem]">
-                교회와 사역을 위한
-                <br />
-                실행형 인사이트 아카이브
+              <h2 className="text-[2.2rem] font-semibold leading-[1.04] tracking-[-0.055em] text-[#111111] sm:text-[3.35rem] lg:max-w-[520px]">
+                교회와 사역을 위한 인사이트 아카이브
               </h2>
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-2">
                 {blogHighlights.map((item) => (
-                  <span key={item} className="rounded-full border border-[#e2d6c7] bg-white px-3 py-1.5 text-xs text-[#8C6A2E]">
+                  <span key={item} className="rounded-full border border-[#ddd3c5] bg-white/78 px-2.5 py-1 text-[11px] text-[#8C6A2E] backdrop-blur-sm">
                     {item}
                   </span>
                 ))}
@@ -97,7 +95,6 @@ export default async function HomePage() {
                   <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
-                    <p className="text-[11px] tracking-[0.18em] text-white/56">SOOM BLOG</p>
                     <p className="mt-3 text-[1.7rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">인사이트 아카이브</p>
                   </div>
                 </div>
@@ -108,8 +105,7 @@ export default async function HomePage() {
                     <img src="/home-workspace-card.jpg" alt="Soom workspace" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
-                      <p className="text-[11px] tracking-[0.18em] text-white/56">WORKSPACE</p>
-                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">무료 워크스페이스</p>
+                      <p className="mt-2 text-[1.18rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">워크스페이스 체험</p>
                     </div>
                   </div>
                 </Link>
@@ -118,8 +114,7 @@ export default async function HomePage() {
                     <img src="/home-studio-card.jpg" alt="Soom studio" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
-                      <p className="text-[11px] tracking-[0.18em] text-white/56">STUDIO</p>
-                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">콘텐츠 스튜디오 연결</p>
+                      <p className="mt-2 text-[1.18rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">스튜디오 연결</p>
                     </div>
                   </div>
                 </Link>
