@@ -6,24 +6,20 @@ import { prisma } from "@/lib/prisma";
 
 const workspaceFeatures = [
   {
-    title: "교회 운영 흐름 정리",
-    desc: "사람, 공지, 작업, 기록을 한 워크스페이스에서 본다.",
+    title: "교회 운영 흐름을 한곳에서",
+    desc: "사람, 공지, 작업, 기록을 흩어지지 않게 정리합니다.",
   },
   {
     title: "무료로 먼저 시작",
-    desc: "큰 결제보다 실제 사용 경험을 먼저 확인한다.",
+    desc: "큰 결정보다 실제 사용 경험을 먼저 확인합니다.",
   },
   {
-    title: "필요할 때 실행 연결",
-    desc: "콘텐츠 제작과 운영 확장은 필요한 순간에만 붙인다.",
+    title: "필요할 때만 실행 연결",
+    desc: "콘텐츠 제작과 운영 확장은 필요한 순간에만 이어집니다.",
   },
 ];
 
-const blogHighlights = [
-  "목회와 운영 인사이트",
-  "AI 활용 가이드",
-  "실행형 콘텐츠 아카이브",
-];
+const blogHighlights = ["목회와 운영 인사이트", "AI 활용 가이드", "실행형 콘텐츠 아카이브"];
 
 export default async function HomePage() {
   const loggedIn = await isLoggedIn();
@@ -66,13 +62,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#0a1222]">
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+      <section className="bg-[#08111f]">
+        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-18">
           <div className="grid gap-4 lg:grid-cols-3">
             {workspaceFeatures.map((item) => (
-              <article key={item.title} className="rounded-[28px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_24px_80px_rgba(2,6,23,0.28)]">
-                <h2 className="text-[1.5rem] font-semibold tracking-[-0.04em] text-white">{item.title}</h2>
-                <p className="mt-4 text-sm leading-7 text-white/64">{item.desc}</p>
+              <article key={item.title} className="rounded-[28px] border border-white/8 bg-white/[0.03] p-6 shadow-[0_18px_50px_rgba(2,6,23,0.24)]">
+                <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-white">{item.title}</h2>
+                <p className="mt-3 text-sm leading-7 text-white/62">{item.desc}</p>
               </article>
             ))}
           </div>
@@ -81,10 +77,10 @@ export default async function HomePage() {
 
       <section className="bg-[#f7f4ee] text-[#111111]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
             <div>
               <p className="text-[11px] tracking-[0.24em] text-[#9a8b7a]">BLOG</p>
-              <h2 className="mt-4 text-[2.3rem] font-semibold leading-[1.04] tracking-[-0.05em] text-[#111111] sm:text-[3.8rem]">
+              <h2 className="mt-4 text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#111111] sm:text-[3.9rem]">
                 블로그와 콘텐츠를
                 <br />
                 신뢰 자산으로 쌓습니다
@@ -104,26 +100,38 @@ export default async function HomePage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Link href="/ai-guides" className="group overflow-hidden rounded-[28px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
-                <div className="relative h-72 overflow-hidden">
+              <Link href="/ai-guides" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
+                <div className="relative h-[380px] overflow-hidden">
                   <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
-                  <div className="absolute inset-x-0 bottom-0 p-5">
+                  <div className="absolute inset-x-0 bottom-0 p-6">
                     <p className="text-[11px] tracking-[0.18em] text-white/56">SOOM BLOG</p>
-                    <p className="mt-3 text-[1.5rem] font-semibold leading-[1.1] tracking-[-0.04em] text-white">목회와 운영 인사이트</p>
+                    <p className="mt-3 text-[1.7rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">목회와 운영 인사이트</p>
                   </div>
                 </div>
               </Link>
-              <Link href="/ai-guides" className="group overflow-hidden rounded-[28px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
-                <div className="relative h-72 overflow-hidden">
-                  <img src="/hero-church-main.png" alt="Soom workspace" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
-                  <div className="absolute inset-x-0 bottom-0 p-5">
-                    <p className="text-[11px] tracking-[0.18em] text-white/56">WORKSPACE</p>
-                    <p className="mt-3 text-[1.5rem] font-semibold leading-[1.1] tracking-[-0.04em] text-white">무료로 먼저 시작하는 교회 워크스페이스</p>
+              <div className="grid gap-4">
+                <Link href="/ai-guides" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
+                  <div className="relative h-[182px] overflow-hidden">
+                    <img src="/hero-church-main.png" alt="Soom workspace" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
+                    <div className="absolute inset-x-0 bottom-0 p-5">
+                      <p className="text-[11px] tracking-[0.18em] text-white/56">WORKSPACE</p>
+                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">무료로 시작하는 교회 워크스페이스</p>
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+                <Link href="/pricing" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
+                  <div className="relative h-[182px] overflow-hidden">
+                    <img src="/hero-church-main.png" alt="Soom studio" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
+                    <div className="absolute inset-x-0 bottom-0 p-5">
+                      <p className="text-[11px] tracking-[0.18em] text-white/56">STUDIO</p>
+                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">필요할 때 연결되는 콘텐츠 스튜디오</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
