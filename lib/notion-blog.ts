@@ -29,6 +29,12 @@ export type NotionBlogPostDetail = NotionBlogPostSummary & {
   blocks: NotionBlogContentBlock[];
 };
 
+function buildPostSlug(title: string, id: string) {
+  const base = normalizeSlug(title);
+  const shortId = id.replaceAll("-", "").slice(0, 8);
+  return base ? `${base}-${shortId}` : shortId;
+}
+
 const NOTION_VERSION = "2026-03-11";
 const ROOT_PAGE_ID = process.env.NOTION_BLOG_ROOT_PAGE_ID;
 const TOKEN = process.env.NOTION_API_KEY;
@@ -160,7 +166,7 @@ export const listNotionBlogPosts = cache(async (): Promise<NotionBlogPostSummary
       const title = getTitleFromProperties(row.properties);
       return {
         id: row.id,
-        slug: normalizeSlug(title) || row.id.replaceAll("-", ""),
+        slug: buildPostSlug(title, row.id),
         title,
         excerpt: getExcerptFromProperties(row.properties),
         coverImageUrl: null,
@@ -174,7 +180,8 @@ export const getNotionBlogPostBySlug = cache(async (slug: string): Promise<Notio
   if (!isConfigured()) return null;
 
   const posts = await listNotionBlogPosts();
-  const matched = posts.find((post) => post.slug === slug);
+  const slugTail = slug.split("-").pop() ?? "";
+  const matched = posts.find((post) => post.slug === slug || post.id.replaceAll("-", "").startsWith(slugTail));
   if (!matched) return null;
 
   const [page, blocks] = await Promise.all([getPage(matched.id), getBlockChildren(matched.id)]);
