@@ -45,14 +45,6 @@ const services: Service[] = [
   },
 ];
 
-const compareRows = [
-  { label: "시작가", values: ["30만 원부터", "80만 원부터", "120만 원부터"] },
-  { label: "가장 잘 맞는 상황", values: ["콘텐츠가 급할 때", "채널이 안 굴러갈 때", "행사 준비가 몰릴 때"] },
-  { label: "핵심 결과물", values: ["쇼츠·홍보영상", "운영 가능한 유튜브 구조", "행사 페이지·안내 흐름"] },
-  { label: "구매 이유", values: ["빠르게 결과물이 필요함", "담당자 없이도 시작해야 함", "등록·안내를 한 번에 정리해야 함"] },
-  { label: "다음 단계", values: ["월 콘텐츠 운영", "업로드·리포트 운영형", "후속 콘텐츠·행사 패키지"] },
-];
-
 export default function PricingPage() {
   return (
     <main className="min-h-screen bg-[#f3f1ec] text-[#0c1220]">
@@ -115,72 +107,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <section>
-        <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-10 lg:pb-24">
-          <div className="overflow-hidden rounded-[34px] border border-[#e6dfd5] bg-white shadow-[0_16px_40px_rgba(16,24,40,0.05)]">
-            <div className="border-b border-[#eee7dd] px-6 py-6 sm:px-8">
-              <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">COMPARE</p>
-              <h2 className="mt-3 font-display text-[2rem] tracking-[-0.04em]">어떤 상품이 더 맞을까?</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5d667d]">
-                교회마다 먼저 필요한 것이 다릅니다. 지금 가장 급한 실행 과제를 기준으로 시작 상품을 정하면 됩니다.
-              </p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead>
-                  <tr>
-                    <th className="px-6 py-4 text-left text-[#7a6f67]">항목</th>
-                    <th className="px-6 py-4 text-left text-[#7a6f67]">쇼츠 · 홍보영상</th>
-                    <th className="px-6 py-4 text-left text-[#7a6f67]">유튜브 운영 세팅</th>
-                    <th className="px-6 py-4 text-left text-[#7a6f67]">행사 랜딩 · 안내 제작</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {compareRows.map((row) => (
-                    <tr key={row.label} className="border-t border-[#eee7dd]">
-                      <td className="px-6 py-4 font-medium text-[#0c1220]">{row.label}</td>
-                      {row.values.map((value, index) => (
-                        <td key={`${row.label}-${index}`} className="px-6 py-4 text-[#475069]">
-                          {value}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <div className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-10 lg:pb-28">
-          <div className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-10">
-            <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-              <div>
-                <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">NEXT STEP</p>
-                <h2 className="mt-4 font-display text-[2rem] leading-[1.08] tracking-[-0.05em] sm:text-[3rem]">
-                  지금 가장 급한 실행부터
-                  <br />
-                  함께 정리하면 됩니다
-                </h2>
-                <p className="mt-5 max-w-3xl text-sm leading-7 text-[#5d667d] sm:text-base">
-                  쇼츠가 필요한지, 유튜브 운영이 막혀 있는지, 행사 안내가 급한지 아직 애매해도 괜찮습니다.
-                  교회 상황을 기준으로 가장 현실적인 시작 상품부터 제안해드릴게요.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-                <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#111827] px-6 text-sm font-semibold text-white">
-                  문의하기
-                </Link>
-                <Link href="/ai-guides" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#ddd2c3] px-6 text-sm font-medium text-[#0c1220]">
-                  블로그 보기
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
