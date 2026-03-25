@@ -109,14 +109,14 @@ export default async function HomePage() {
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
                     <p className="text-[11px] tracking-[0.18em] text-white/56">SOOM BLOG</p>
-                    <p className="mt-3 text-[1.7rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">목회와 운영 인사이트</p>
+                    <p className="mt-3 text-[1.7rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">인사이트 아카이브</p>
                   </div>
                 </div>
               </Link>
               <div className="grid gap-4">
                 <Link href="/workspace" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
                   <div className="relative h-[202px] overflow-hidden">
-                    <img src="/hero-church-main.png" alt="Soom workspace" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                    <img src="/home-workspace-card.jpg" alt="Soom workspace" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
                       <p className="text-[11px] tracking-[0.18em] text-white/56">WORKSPACE</p>
@@ -126,7 +126,7 @@ export default async function HomePage() {
                 </Link>
                 <Link href="/pricing" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
                   <div className="relative h-[202px] overflow-hidden">
-                    <img src="/hero-church-main.png" alt="Soom studio" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                    <img src="/home-studio-card.jpg" alt="Soom studio" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
                       <p className="text-[11px] tracking-[0.18em] text-white/56">STUDIO</p>
