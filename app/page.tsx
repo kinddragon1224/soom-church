@@ -6,20 +6,20 @@ import { prisma } from "@/lib/prisma";
 
 const workspaceFeatures = [
   {
-    title: "교회 운영 흐름을 한곳에서",
+    title: "운영을 한곳에",
     desc: "사람, 공지, 작업, 기록을 흩어지지 않게 정리합니다.",
   },
   {
-    title: "무료로 먼저 시작",
+    title: "부담 없이 시작",
     desc: "큰 결정보다 실제 사용 경험을 먼저 확인합니다.",
   },
   {
-    title: "필요할 때만 실행 연결",
+    title: "필요할 때 실행 연결",
     desc: "콘텐츠 제작과 운영 확장은 필요한 순간에만 이어집니다.",
   },
 ];
 
-const blogHighlights = ["운영 인사이트", "AI 활용 가이드", "실행형 콘텐츠"];
+const blogHighlights = ["운영 인사이트", "AI 가이드", "실행형 콘텐츠"];
 
 export default async function HomePage() {
   const loggedIn = await isLoggedIn();
@@ -77,13 +77,10 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
             <div>
-              <p className="text-[11px] tracking-[0.24em] text-[#9a8b7a]">BLOG</p>
-              <h2 className="mt-4 text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#111111] sm:text-[3.9rem]">
-                운영은 가볍게
+              <h2 className="text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#111111] sm:text-[3.9rem]">
+                교회와 사역을 위한
                 <br />
-                콘텐츠는 빠르게
-                <br />
-                전달은 정확하게
+                실행형 인사이트 아카이브
               </h2>
               <div className="mt-6 flex flex-wrap gap-2">
                 {blogHighlights.map((item) => (
@@ -112,7 +109,7 @@ export default async function HomePage() {
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
                       <p className="text-[11px] tracking-[0.18em] text-white/56">WORKSPACE</p>
-                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">무료로 시작하는 교회 워크스페이스</p>
+                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">무료 워크스페이스</p>
                     </div>
                   </div>
                 </Link>
@@ -122,7 +119,7 @@ export default async function HomePage() {
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
                       <p className="text-[11px] tracking-[0.18em] text-white/56">STUDIO</p>
-                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">필요할 때 연결되는 콘텐츠 스튜디오</p>
+                      <p className="mt-2 text-[1.25rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">콘텐츠 스튜디오 연결</p>
                     </div>
                   </div>
                 </Link>
