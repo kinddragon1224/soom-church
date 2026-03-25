@@ -8,6 +8,7 @@ type NotionPage = {
   created_time?: string;
   last_edited_time?: string;
   properties?: Record<string, any>;
+  cover?: { type?: string; file?: { url?: string }; external?: { url?: string } } | null;
 };
 
 export type NotionBlogPostSummary = {
@@ -94,6 +95,10 @@ function getExcerptFromProperties(properties?: Record<string, any>) {
   return excerpt || null;
 }
 
+function getPageCoverUrl(page?: NotionPage | null) {
+  return page?.cover?.file?.url ?? page?.cover?.external?.url ?? null;
+}
+
 function getPublishedAt(properties?: Record<string, any>, fallback?: string | null) {
   const value = properties?.Published?.date?.start;
   return value ?? fallback ?? null;
@@ -123,6 +128,11 @@ async function getPage(pageId: string) {
 async function getBlockChildren(blockId: string) {
   const result = await notion(`/blocks/${blockId}/children?page_size=100`);
   return result.results as NotionBlock[];
+}
+
+function getBlockImageUrl(block: NotionBlock) {
+  if (block.type !== "image") return null;
+  return block.image?.file?.url ?? block.image?.external?.url ?? null;
 }
 
 function blockToContent(block: NotionBlock): NotionBlogContentBlock | null {
@@ -159,21 +169,26 @@ export const listNotionBlogPosts = cache(async (): Promise<NotionBlogPostSummary
   if (!isConfigured()) return [];
 
   const rows = await queryDataSource();
+  const publishedRows = rows.filter((row) => isPublished(row.properties));
 
-  return rows
-    .filter((row) => isPublished(row.properties))
-    .map((row) => {
+  const summaries = await Promise.all(
+    publishedRows.map(async (row) => {
       const title = getTitleFromProperties(row.properties);
+      const blocks = await getBlockChildren(row.id).catch(() => [] as NotionBlock[]);
+      const firstImage = blocks.map(getBlockImageUrl).find(Boolean) ?? null;
+
       return {
         id: row.id,
         slug: buildPostSlug(title, row.id),
         title,
         excerpt: getExcerptFromProperties(row.properties),
-        coverImageUrl: null,
+        coverImageUrl: getPageCoverUrl(row) ?? firstImage,
         publishedAt: getPublishedAt(row.properties, row.last_edited_time ?? row.created_time ?? null),
       };
-    })
-    .filter((row) => row.title !== "제목 없음");
+    }),
+  );
+
+  return summaries.filter((row) => row.title !== "제목 없음");
 });
 
 export const getNotionBlogPostBySlug = cache(async (slug: string): Promise<NotionBlogPostDetail | null> => {
@@ -186,10 +201,12 @@ export const getNotionBlogPostBySlug = cache(async (slug: string): Promise<Notio
 
   const [page, blocks] = await Promise.all([getPage(matched.id), getBlockChildren(matched.id)]);
   const contentBlocks = blocks.map(blockToContent).filter(Boolean) as NotionBlogContentBlock[];
+  const firstImage = blocks.map(getBlockImageUrl).find(Boolean) ?? null;
 
   return {
     ...matched,
     title: getTitleFromProperties(page.properties) || matched.title,
+    coverImageUrl: getPageCoverUrl(page) ?? firstImage,
     blocks: contentBlocks,
   };
 });
