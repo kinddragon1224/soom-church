@@ -31,14 +31,14 @@ export default async function GuidesPage() {
       </section>
 
       <section className="overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#050b16_0%,#0a1222_48%,#121a2c_100%)]">
-        <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
-          <div className="relative min-h-[520px] overflow-hidden rounded-[36px] border border-white/8 bg-[#030508] sm:min-h-[640px] lg:min-h-[760px]">
+        <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
+          <div className="relative min-h-[560px] overflow-hidden bg-[#030508] sm:min-h-[680px] lg:min-h-[860px]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_30%,rgba(77,96,137,0.14),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.3)_100%)]" />
             <div className="absolute inset-y-0 left-0 w-[58%] bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.62)_48%,rgba(0,0,0,0.08)_100%)]" />
             <div className="absolute inset-y-0 right-0 w-[44%] bg-[linear-gradient(270deg,rgba(0,0,0,0.36)_0%,rgba(0,0,0,0.02)_100%)]" />
-            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 right-[-2%] h-full w-auto max-w-none object-contain object-bottom opacity-92" />
+            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 right-[-1%] h-full w-auto max-w-none object-contain object-bottom opacity-92" />
 
-            <div className="relative z-10 flex min-h-[520px] flex-col justify-between p-6 sm:min-h-[640px] sm:p-8 lg:min-h-[760px] lg:p-10">
+            <div className="relative z-10 flex min-h-[560px] flex-col justify-between px-6 py-8 sm:min-h-[680px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
               <div>
                 <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
               </div>
