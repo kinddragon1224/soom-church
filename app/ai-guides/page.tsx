@@ -31,28 +31,32 @@ export default async function GuidesPage() {
       </section>
 
       <section className="overflow-hidden border-b border-white/10 bg-[linear-gradient(135deg,#050b16_0%,#0a1222_48%,#121a2c_100%)]">
-        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
-          <div className="grid items-center gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:gap-0">
-            <div className="relative min-h-[420px] sm:min-h-[560px] lg:min-h-[700px]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_22%,rgba(78,94,128,0.1),transparent_30%),radial-gradient(circle_at_78%_68%,rgba(26,34,55,0.22),transparent_28%)]" />
-              <div className="absolute inset-y-0 left-[-4%] right-[4%] bg-[linear-gradient(180deg,rgba(255,255,255,0.012)_0%,rgba(255,255,255,0)_100%)] blur-3xl" />
-              <div className="absolute inset-y-0 left-0 right-[-4%] bg-[linear-gradient(90deg,rgba(5,11,22,0.02)_0%,rgba(5,11,22,0.12)_24%,rgba(5,11,22,0.76)_62%,rgba(5,11,22,0.98)_100%)]" />
-              <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-[-2%] h-full w-auto max-w-none object-contain object-bottom opacity-90" />
-            </div>
+        <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
+          <div className="relative min-h-[520px] overflow-hidden rounded-[36px] border border-white/8 bg-[#030508] sm:min-h-[640px] lg:min-h-[760px]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_30%,rgba(77,96,137,0.14),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.3)_100%)]" />
+            <div className="absolute inset-y-0 left-0 w-[58%] bg-[linear-gradient(90deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.62)_48%,rgba(0,0,0,0.08)_100%)]" />
+            <div className="absolute inset-y-0 right-0 w-[44%] bg-[linear-gradient(270deg,rgba(0,0,0,0.36)_0%,rgba(0,0,0,0.02)_100%)]" />
 
-            <div className="relative z-10 lg:-ml-2 lg:pl-20 xl:pl-32">
-              <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
-              <h1 className="mt-6 max-w-[7.2em] text-[2.7rem] font-semibold leading-[1.12] tracking-[-0.08em] text-white sm:mt-8 sm:max-w-[7.4em] sm:text-[4.4rem] xl:text-[5.1rem]">
-                교회와 사역을 위한
-                <br />
-                인사이트 아카이브
-              </h1>
-              <div className="mt-8 flex flex-wrap gap-2">
-                {topics.map((topic) => (
-                  <span key={topic} className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-xs text-white/78 backdrop-blur-sm">
-                    {topic}
-                  </span>
-                ))}
+            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 right-[-2%] h-full w-auto max-w-none object-contain object-bottom opacity-92" />
+
+            <div className="relative z-10 flex min-h-[520px] flex-col justify-between p-6 sm:min-h-[640px] sm:p-8 lg:min-h-[760px] lg:p-10">
+              <div>
+                <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
+              </div>
+
+              <div className="max-w-[980px]">
+                <h1 className="text-[3.3rem] font-light leading-[0.92] tracking-[-0.08em] text-white sm:text-[5.4rem] lg:text-[7.8rem] xl:text-[8.8rem]">
+                  교회와 사역을 위한
+                  <br />
+                  인사이트 아카이브
+                </h1>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  {topics.map((topic) => (
+                    <span key={topic} className="rounded-full border border-white/14 bg-black/12 px-4 py-2 text-sm text-white/82 backdrop-blur-sm">
+                      {topic}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
