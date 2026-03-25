@@ -32,21 +32,24 @@ export default async function GuidesPage() {
 
       <section className="overflow-hidden border-b border-white/10 bg-[#05070b]">
         <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
-          <div className="relative overflow-hidden bg-[#05070b] min-[320px]:min-h-[600px] sm:min-h-[680px] lg:min-h-[860px]">
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.16)_0%,rgba(0,0,0,0.36)_24%,rgba(0,0,0,0.72)_62%,rgba(0,0,0,0.94)_100%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.08)_32%,rgba(0,0,0,0.58)_68%,rgba(0,0,0,0.88)_100%)]" />
-            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-1/2 h-[66%] w-auto max-w-none -translate-x-1/2 object-contain object-bottom opacity-96 sm:left-0 sm:h-full sm:translate-x-0" />
+          <div className="relative min-[320px]:min-h-[620px] overflow-hidden bg-[#05070b] sm:min-h-[700px] lg:min-h-[860px]">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.22)_24%,rgba(0,0,0,0.64)_62%,rgba(0,0,0,0.92)_100%)] sm:bg-[linear-gradient(90deg,rgba(0,0,0,0.02)_0%,rgba(0,0,0,0.06)_30%,rgba(0,0,0,0.4)_60%,rgba(0,0,0,0.86)_100%)]" />
+            <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute inset-0 h-full w-full object-contain object-center opacity-100 sm:object-left-bottom" />
 
-            <div className="relative z-10 flex min-h-[600px] flex-col justify-between px-5 py-6 sm:min-h-[680px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
+            <div className="relative z-10 flex min-h-[620px] flex-col justify-between px-5 py-6 sm:min-h-[700px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
               <div className="flex justify-center sm:justify-start">
                 <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
               </div>
 
-              <div className="mx-auto flex w-full max-w-[360px] flex-col items-center justify-end pb-3 text-center select-none cursor-default sm:max-w-[1240px] sm:items-center sm:pb-0 sm:text-center lg:max-w-[1180px] xl:max-w-[1320px]">
-                <h1 className="text-[2.2rem] font-light leading-[1.08] tracking-[-0.055em] text-white sm:text-[5.1rem] lg:text-[7rem] xl:text-[7.8rem]">
+              <div className="mx-auto flex w-full max-w-[360px] flex-col items-center justify-end pb-3 text-center select-none cursor-default sm:max-w-[1240px] sm:items-center sm:pb-0 sm:text-center lg:max-w-[1320px] xl:max-w-[1380px]">
+                <h1 className="text-[2.2rem] font-light leading-[1.06] tracking-[-0.058em] text-white sm:text-[5.1rem] lg:text-[6.8rem] xl:text-[7.6rem]">
                   교회와 사역을 위한
                   <br />
                   인사이트 아카이브
                 </h1>
+                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/66 sm:text-base sm:leading-8">
+                  목회, 운영, AI 활용, 전달 구조까지 실제 현장에 바로 적용할 수 있는 글을 정리합니다.
+                </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-8 sm:gap-3">
                   {topics.map((topic) => (
                     <span key={topic} className="rounded-full border border-white/14 bg-black/12 px-3 py-1.5 text-[12px] text-white/82 backdrop-blur-sm sm:px-4 sm:py-2 sm:text-sm">
@@ -71,7 +74,7 @@ export default async function GuidesPage() {
             <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
               {featured ? (
                 <Link href={`/ai-guides/${featured.slug}`} className="group overflow-hidden rounded-[34px] bg-[#111111] shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition hover:-translate-y-1">
-                  <div className="relative h-[420px] overflow-hidden sm:h-[520px]">
+                  <div className="relative h-[420px] overflow-hidden sm:h-[540px]">
                     {featured.coverImageUrl ? (
                       <img src={featured.coverImageUrl} alt={featured.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                     ) : (
@@ -92,7 +95,7 @@ export default async function GuidesPage() {
               <div className="grid gap-5">
                 {sidePosts.map((post) => (
                   <Link key={post.id} href={`/ai-guides/${post.slug}`} className="group overflow-hidden rounded-[30px] bg-[#111111] shadow-[0_18px_50px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
-                    <div className="relative h-[248px] overflow-hidden">
+                    <div className="relative h-[260px] overflow-hidden">
                       {post.coverImageUrl ? (
                         <img src={post.coverImageUrl} alt={post.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                       ) : (
