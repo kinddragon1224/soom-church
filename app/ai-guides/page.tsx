@@ -34,7 +34,7 @@ export default async function GuidesPage() {
         <div className="mx-auto w-full max-w-[1600px] px-0 py-0">
           <div className="relative min-[320px]:min-h-[620px] overflow-hidden bg-[#05070b] sm:min-h-[700px] lg:min-h-[860px]">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,#040507_0%,#05070b_48%,#06080d_100%)]" />
-            <div className="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,rgba(4,5,7,0.96)_0%,rgba(4,5,7,0.82)_18%,rgba(4,5,7,0.18)_34%,rgba(4,5,7,0.08)_52%,rgba(4,5,7,0.78)_76%,rgba(4,5,7,0.96)_100%)]" />
+            <div className="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,rgba(4,5,7,0.78)_0%,rgba(4,5,7,0.44)_16%,rgba(4,5,7,0.1)_34%,rgba(4,5,7,0.1)_66%,rgba(4,5,7,0.44)_84%,rgba(4,5,7,0.78)_100%)]" />
             <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,rgba(5,7,11,0)_0%,rgba(5,7,11,0.56)_42%,rgba(5,7,11,0.94)_100%)] sm:h-56" />
             <img src="/blog-hero-person.png" alt="Soom blog hero portrait" className="absolute inset-y-0 left-1/2 h-full w-auto max-w-none -translate-x-[58%] object-contain object-left-bottom opacity-100 sm:left-[18%] sm:-translate-x-0 lg:left-[16%]" />
 
