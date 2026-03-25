@@ -19,12 +19,6 @@ const workspaceFeatures = [
   },
 ];
 
-const workspaceMetrics = [
-  { label: "정리되는 운영 축", value: "공지 · 사람 · 작업" },
-  { label: "시작 방식", value: "무료 워크스페이스" },
-  { label: "확장 방식", value: "필요 시 실행 연결" },
-];
-
 const blogHighlights = ["목회와 운영 인사이트", "AI 활용 가이드", "실행형 콘텐츠 아카이브"];
 
 export default async function HomePage() {
@@ -40,40 +34,28 @@ export default async function HomePage() {
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/hero-church-main.png')" }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.4)_0%,rgba(5,11,22,0.44)_24%,rgba(5,11,22,0.72)_56%,rgba(5,11,22,0.96)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.26)_0%,rgba(5,11,22,0.34)_24%,rgba(5,11,22,0.68)_58%,rgba(5,11,22,0.94)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(circle_at_bottom,rgba(125,211,252,0.18),rgba(5,11,22,0)_72%)] sm:h-56" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.34)_0%,rgba(5,11,22,0.4)_28%,rgba(5,11,22,0.92)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.24)_0%,rgba(5,11,22,0.34)_28%,rgba(5,11,22,0.88)_100%)]" />
 
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-6 pt-3 sm:min-h-screen sm:px-8 lg:px-10">
           <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="회원가입" loggedIn={loggedIn} adminMode={adminMode} />
 
-          <div className="flex flex-1 items-center py-16 sm:py-24 lg:py-28">
-            <div className="grid w-full gap-10 lg:grid-cols-[minmax(0,1.1fr)_360px] lg:items-end lg:gap-12">
-              <div className="max-w-4xl text-center lg:text-left">
-                <p className="text-[10px] tracking-[0.22em] text-white/52 sm:text-xs sm:tracking-[0.28em]">SOOM WORKSPACE FOR CHURCHES</p>
-                <h1 className="mt-5 text-[3.15rem] font-light leading-[0.9] tracking-[-0.08em] text-white sm:text-[6.2rem] lg:text-[7.4rem] xl:text-[8.2rem]">
-                  교회를 돕다
-                </h1>
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-white/76 sm:text-base sm:leading-8 lg:max-w-3xl">
-                  교회 운영은 워크스페이스로 정리하고,
-                  콘텐츠와 전달은 필요한 순간에 실행으로 연결합니다.
-                </p>
-                <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start">
-                  <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
-                    무료로 시작하기
-                  </Link>
-                  <Link href="/workspace" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-medium text-white backdrop-blur-sm">
-                    워크스페이스 보기
-                  </Link>
-                </div>
-              </div>
-
-              <div className="grid gap-3 rounded-[30px] border border-white/10 bg-white/[0.05] p-4 backdrop-blur-md sm:p-5 lg:self-end">
-                {workspaceMetrics.map((item) => (
-                  <div key={item.label} className="rounded-[24px] border border-white/8 bg-black/10 px-4 py-4">
-                    <p className="text-[11px] tracking-[0.2em] text-white/42">{item.label}</p>
-                    <p className="mt-2 text-sm font-medium leading-6 text-white/88">{item.value}</p>
-                  </div>
-                ))}
+          <div className="flex flex-1 items-center justify-center py-16 sm:py-24 lg:py-28">
+            <div className="max-w-5xl text-center">
+              <p className="text-[10px] tracking-[0.22em] text-white/52 sm:text-xs sm:tracking-[0.28em]">SOOM WORKSPACE FOR CHURCHES</p>
+              <h1 className="mt-5 text-[3.2rem] font-light leading-[0.9] tracking-[-0.08em] text-white sm:text-[6.4rem] lg:text-[8.4rem]">
+                교회를 돕다
+              </h1>
+              <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/76 sm:text-base sm:leading-8">
+                교회 운영은 워크스페이스로 정리하고,
+                콘텐츠와 전달은 필요한 순간에 실행으로 연결합니다.
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
+                  무료로 시작하기
+                </Link>
+                <Link href="/workspace" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-medium text-white">
+                  워크스페이스 보기
+                </Link>
               </div>
             </div>
           </div>
