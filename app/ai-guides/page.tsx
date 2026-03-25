@@ -29,26 +29,25 @@ export default async function GuidesPage() {
         </div>
       </section>
 
-      <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,#161f33_0%,#0b1018_40%,#05070b_100%)]">
-        <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10 lg:py-16">
-          <div className="grid items-center gap-8 lg:grid-cols-[0.76fr_1.24fr]">
-            <div className="relative overflow-hidden rounded-[34px] border border-white/10 bg-[radial-gradient(circle_at_30%_20%,rgba(70,88,125,0.36),transparent_40%),linear-gradient(180deg,#0c1017_0%,#05070b_100%)] shadow-[0_30px_90px_rgba(2,6,23,0.45)]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_25%,rgba(137,168,255,0.12),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(214,169,255,0.08),transparent_28%)]" />
-              <div className="relative flex h-[420px] items-end justify-center sm:h-[560px] lg:h-[680px]">
-                <img src="/blog-hero-person.png" alt="Soom blog hero person" className="h-full w-auto object-contain object-bottom" />
-              </div>
+      <section className="overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_top,#161f33_0%,#0b1018_40%,#05070b_100%)]">
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10 lg:py-14">
+          <div className="grid items-center gap-4 lg:grid-cols-[0.78fr_1.22fr] lg:gap-0">
+            <div className="relative min-h-[420px] sm:min-h-[560px] lg:min-h-[700px]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_22%,rgba(137,168,255,0.12),transparent_34%),radial-gradient(circle_at_72%_68%,rgba(214,169,255,0.08),transparent_28%)]" />
+              <div className="absolute inset-y-0 left-[-8%] right-[8%] bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_100%)] blur-3xl" />
+              <img src="/blog-hero-person.png" alt="Soom blog hero person" className="absolute bottom-0 left-0 h-full w-auto max-w-none object-contain object-bottom" />
             </div>
 
-            <div className="lg:pl-10 xl:pl-16">
+            <div className="relative z-10 lg:-ml-10 xl:-ml-16">
               <p className="text-[11px] tracking-[0.28em] text-white/42">SOOM BLOG</p>
-              <h1 className="mt-5 text-[2.8rem] font-semibold leading-[0.94] tracking-[-0.08em] text-white sm:text-[4.8rem]">
+              <h1 className="mt-5 text-[2.8rem] font-semibold leading-[0.94] tracking-[-0.08em] text-white sm:text-[4.8rem] xl:text-[5.6rem]">
                 교회와 사역을 위한
                 <br />
                 인사이트 아카이브
               </h1>
               <div className="mt-8 flex flex-wrap gap-2">
                 {topics.map((topic) => (
-                  <span key={topic} className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-xs text-white/78">
+                  <span key={topic} className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-xs text-white/78 backdrop-blur-sm">
                     {topic}
                   </span>
                 ))}
