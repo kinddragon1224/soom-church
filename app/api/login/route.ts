@@ -78,6 +78,13 @@ async function ensurePlatformAdminAccount(email: string) {
   });
 }
 
+function buildLoginErrorRedirect(request: Request, next: string) {
+  const loginUrl = new URL("/login", request.url);
+  if (next.startsWith("/")) loginUrl.searchParams.set("next", next);
+  loginUrl.searchParams.set("error", "credentials");
+  return NextResponse.redirect(loginUrl);
+}
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
@@ -93,18 +100,17 @@ export async function POST(request: Request) {
   const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/app";
 
   try {
-    return await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
-      redirectTo,
+      redirect: false,
     });
+
+    return NextResponse.redirect(new URL(redirectTo, request.url));
   } catch (error) {
     if (error instanceof AuthError) {
-      const loginUrl = new URL("/login", request.url);
-      if (next.startsWith("/")) loginUrl.searchParams.set("next", next);
-      loginUrl.searchParams.set("error", "credentials");
-      return NextResponse.redirect(loginUrl);
+      return buildLoginErrorRedirect(request, next);
     }
-    throw error;
+    return buildLoginErrorRedirect(request, next);
   }
 }
