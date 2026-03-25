@@ -123,8 +123,8 @@ export default async function HomePage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <Link href="/ai-guides" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
                 <div className="relative h-[420px] overflow-hidden sm:h-[460px]">
-                  <img src="/blog-hero-person.png" alt="Soom blog" className="h-full w-full object-cover object-[center_22%] transition duration-500 group-hover:scale-[1.01]" />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,7,11,0.04)_0%,rgba(5,7,11,0.14)_34%,rgba(5,7,11,0.86)_100%)]" />
+                  <img src="/blog-hero-person.png" alt="Soom blog" className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.01]" />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
                     <p className="text-[11px] tracking-[0.18em] text-white/56">SOOM BLOG</p>
                     <p className="mt-3 text-[1.7rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">목회와 운영 인사이트</p>
