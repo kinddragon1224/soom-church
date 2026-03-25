@@ -35,20 +35,20 @@ export default async function GuidesPage() {
           <div className="relative min-h-[560px] overflow-hidden bg-[#030508] sm:min-h-[680px] lg:min-h-[860px]">
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.2)_34%,rgba(0,0,0,0.84)_68%,rgba(0,0,0,0.96)_100%)]" />
             <div className="absolute inset-y-0 left-0 w-[56%] bg-[radial-gradient(circle_at_32%_30%,rgba(88,105,142,0.16),transparent_40%)]" />
-            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-0 h-full w-auto max-w-none object-contain object-bottom opacity-92" />
+            <img src="/blog-hero-portrait-dark.jpg" alt="Soom blog hero portrait" className="absolute bottom-0 left-[4%] h-full w-auto max-w-none object-contain object-bottom opacity-92" />
 
             <div className="relative z-10 flex min-h-[560px] flex-col justify-between px-6 py-8 sm:min-h-[680px] sm:px-8 sm:py-10 lg:min-h-[860px] lg:px-12 lg:py-12 xl:px-16">
               <div>
                 <div className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm">SOOM BLOG</div>
               </div>
 
-              <div className="max-w-[980px] lg:max-w-[920px] xl:max-w-[980px]">
+              <div className="mx-auto max-w-[980px] text-center lg:max-w-[920px] xl:max-w-[980px]">
                 <h1 className="text-[3.15rem] font-light leading-[1.02] tracking-[-0.065em] text-white sm:text-[5.1rem] lg:text-[7rem] xl:text-[7.8rem]">
                   교회와 사역을 위한
                   <br />
                   인사이트 아카이브
                 </h1>
-                <div className="mt-8 flex flex-wrap gap-3">
+                <div className="mt-8 flex flex-wrap justify-center gap-3">
                   {topics.map((topic) => (
                     <span key={topic} className="rounded-full border border-white/14 bg-black/12 px-4 py-2 text-sm text-white/82 backdrop-blur-sm">
                       {topic}
