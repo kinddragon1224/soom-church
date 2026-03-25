@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 
@@ -51,11 +52,15 @@ const team = [
     role: "운영 구조 설계 · 기획 · 제품 방향",
     name: "김선용",
     desc: "숨의 방향을 설계합니다. 교회 운영에서 무엇이 먼저 정리되어야 하는지, 어떤 흐름이 실제로 필요한지, 그것이 어떻게 제품 구조로 이어져야 하는지를 고민합니다.",
+    image: "/team/kim-sunyong.png",
+    imageAlt: "김선용 프로필 이미지",
   },
   {
     role: "기술 개발 · 구현",
     name: "최재성",
     desc: "숨의 구조를 실제 서비스로 구현합니다. 기획된 흐름이 화면과 기능 안에서 자연스럽게 작동하도록 웹 개발과 구현을 맡고 있습니다.",
+    image: null,
+    imageAlt: "최재성 프로필 이미지 자리",
   },
 ];
 
@@ -201,6 +206,21 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-5 lg:grid-cols-2">
             {team.map((member) => (
               <article key={member.name} className="rounded-[34px] border border-[#e6dfd5] bg-white p-7 shadow-[0_16px_40px_rgba(16,24,40,0.05)] sm:p-8">
+                <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#201c21_0%,#4a2530_45%,#131b2b_100%)]">
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt={member.imageAlt}
+                      fill
+                      className="object-cover object-center scale-[0.82]"
+                      sizes="(min-width: 1024px) 40vw, 100vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-sm tracking-[0.18em] text-white/48">
+                      IMAGE PLACEHOLDER
+                    </div>
+                  )}
+                </div>
                 <p className="text-sm tracking-[0.18em] text-[#8a7d72]">{member.role}</p>
                 <h3 className="mt-3 text-[1.9rem] font-semibold tracking-[-0.04em] text-[#0c1220]">{member.name}</h3>
                 <p className="mt-5 text-sm leading-8 text-[#44506d] sm:text-base">{member.desc}</p>
