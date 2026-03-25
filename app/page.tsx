@@ -77,13 +77,10 @@ export default async function HomePage() {
             <div>
               <p className="text-[11px] tracking-[0.24em] text-[#9a8b7a]">BLOG</p>
               <h2 className="mt-4 text-[2.35rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#111111] sm:text-[3.9rem]">
-                블로그와 콘텐츠를
+                교회 운영은 워크스페이스로 정리하고
                 <br />
-                신뢰 자산으로 쌓습니다
+                콘텐츠와 전달은 필요한 순간에 실행하세요.
               </h2>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-[#5f5a52] sm:text-base sm:leading-8">
-                글을 쌓는 데서 끝나지 않고, 교회가 실제로 참고하고 공유할 수 있는 인사이트 구조로 정리합니다.
-              </p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {blogHighlights.map((item) => (
                   <span key={item} className="rounded-full border border-[#e2d6c7] bg-white px-3 py-1.5 text-xs text-[#8C6A2E]">
