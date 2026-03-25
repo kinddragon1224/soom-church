@@ -6,6 +6,7 @@ import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import { getFirstChurchByUserId } from "@/lib/church-context";
 import { hashPassword, isHashedPassword, verifyPassword } from "@/lib/password";
+import { isPlatformAdminEmail, PLATFORM_ADMIN_EMAILS } from "@/lib/admin";
 
 const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me";
 
@@ -119,10 +120,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 });
 
 export async function getPostLoginPath(userId: string) {
-  const PLATFORM_ADMIN_EMAILS = ["platform-admin@soom.church", "admin@soom.church"];
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return "/app";
-  if (PLATFORM_ADMIN_EMAILS.includes(user.email)) return "/platform-admin";
+  if (isPlatformAdminEmail(user.email)) return "/platform-admin";
   const church = await getFirstChurchByUserId(user.id);
   if (church) return `/app/${church.slug}/dashboard`;
   return "/app";

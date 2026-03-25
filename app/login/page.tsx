@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { isLoggedIn } from "@/lib/auth";
+import { isLoggedIn, getCurrentUserId } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { signIn } from "@/auth";
+import { signIn, getPostLoginPath } from "@/auth";
 
 export default async function LoginPage({
   searchParams,
@@ -13,7 +13,10 @@ export default async function LoginPage({
   const next = searchParams?.next;
   const error = searchParams?.error;
 
-  if (await isLoggedIn()) redirect(next || "/app");
+  if (await isLoggedIn()) {
+    const userId = await getCurrentUserId();
+    if (userId) redirect(next || (await getPostLoginPath(userId)));
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
