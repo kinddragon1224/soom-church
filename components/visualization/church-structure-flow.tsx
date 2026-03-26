@@ -87,7 +87,7 @@ function FamilyNode({ data, selected }: { data: FamilyNodeData; selected?: boole
 
 const nodeTypes = { groupNode: GroupNode, familyNode: FamilyNode };
 
-export default function ChurchStructureFlow({ structure }: { structure: District[] }) {
+export default function ChurchStructureFlow({ structure, churchSlug }: { structure: District[]; churchSlug: string }) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   const { nodes, edges, nodeLookup } = useMemo(() => {
@@ -183,6 +183,28 @@ export default function ChurchStructureFlow({ structure }: { structure: District
               <div className="rounded-[14px] border border-[#efe7da] bg-[#fcfbf8] px-3 py-3"><p className="text-[11px] text-[#9a8b7a]">심방</p><p className="mt-1 font-semibold">{selected.group.visitCount}</p></div>
             </div>
             <div>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-semibold text-[#8c7a5b]">후속 우선 대상</p>
+                <span className="text-[11px] text-[#8c7a5b]">목장 기준</span>
+              </div>
+              <div className="mt-2 grid gap-2">
+                {selected.group.families.flatMap((family) => family.members.filter((member) => member.requiresFollowUp).map((member) => ({ familyName: family.name, ...member }))).slice(0, 5).map((member) => (
+                  <a key={member.id} href={`/app/${churchSlug}/members/${member.id}`} className="rounded-[14px] border border-[#efe7da] bg-[#fff8ef] px-3 py-3 transition hover:bg-white">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-medium text-[#111111]">{member.name}</p>
+                        <p className="mt-1 text-xs text-[#7b6f61]">{member.familyName} · {member.position ?? "직분 미정"}</p>
+                      </div>
+                      <span className={`rounded-full border px-2.5 py-1 text-[11px] ${badge(member.statusTag)}`}>{member.statusTag}</span>
+                    </div>
+                  </a>
+                ))}
+                {selected.group.followUpCount === 0 ? (
+                  <div className="rounded-[14px] border border-[#efe7da] bg-[#fcfbf8] px-3 py-3 text-sm text-[#7b6f61]">지금 바로 챙길 후속 대상은 없어.</div>
+                ) : null}
+              </div>
+            </div>
+            <div>
               <p className="text-xs font-semibold text-[#8c7a5b]">가정 목록</p>
               <div className="mt-2 grid gap-2">
                 {selected.group.families.map((family) => (
@@ -203,7 +225,7 @@ export default function ChurchStructureFlow({ structure }: { structure: District
             </div>
             <div className="grid gap-2">
               {selected.family.members.map((member) => (
-                <div key={member.id} className="rounded-[14px] border border-[#efe7da] bg-[#fcfbf8] px-3 py-3">
+                <a key={member.id} href={`/app/${churchSlug}/members/${member.id}`} className="rounded-[14px] border border-[#efe7da] bg-[#fcfbf8] px-3 py-3 transition hover:bg-white">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-sm font-medium text-[#111111]">{member.name}</p>
@@ -211,7 +233,7 @@ export default function ChurchStructureFlow({ structure }: { structure: District
                     </div>
                     <span className={`rounded-full border px-2.5 py-1 text-[11px] ${badge(member.statusTag)}`}>{member.statusTag}</span>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>

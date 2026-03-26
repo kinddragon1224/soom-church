@@ -108,7 +108,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
           <div className="p-5">
             <ChurchStructureMobile structure={structure} />
             <div className="hidden lg:block">
-              <ChurchStructureFlow structure={structure} />
+              <ChurchStructureFlow structure={structure} churchSlug={church.slug} />
             </div>
           </div>
         </section>
