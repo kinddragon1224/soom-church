@@ -10,7 +10,6 @@ const DEV_USER_PASSWORD = "1224";
 const DEV_CHURCH_SLUG = "soom-dev";
 const DEV_CHURCH_NAME = "숨 개발용 워크스페이스";
 
-const PLATFORM_ADMIN_EMAIL = "platform-admin@soom.church";
 const PLATFORM_ADMIN_PASSWORD = "1234";
 const PLATFORM_ADMIN_NAME = "숨 플랫폼 관리자";
 
@@ -77,16 +76,10 @@ async function ensurePlatformAdminAccount(email: string) {
   });
 }
 
-function buildLoginErrorRedirect(request: Request, next: string) {
-  const loginUrl = new URL("/login", request.url);
-  if (next.startsWith("/")) loginUrl.searchParams.set("next", next);
-  loginUrl.searchParams.set("error", "credentials");
-  return NextResponse.redirect(loginUrl);
-}
-
 export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "");
 
   const user = email === DEV_USER_EMAIL
@@ -101,33 +94,9 @@ export async function POST(request: Request) {
   callbackUrl.searchParams.set("callbackUrl", redirectTo);
 
   const body = new URLSearchParams();
-  for (const [key, value] of formData.entries()) {
-    body.set(key, String(value));
-  }
   body.set("email", email);
+  body.set("password", password);
   body.set("callbackUrl", redirectTo);
-  body.set("json", "true");
 
-  const authResponse = await fetch(callbackUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      cookie: request.headers.get("cookie") ?? "",
-    },
-    body,
-    redirect: "manual",
-  });
-
-  if (authResponse.status >= 400) {
-    return buildLoginErrorRedirect(request, next);
-  }
-
-  const response = NextResponse.redirect(new URL(redirectTo, request.url));
-
-  const setCookie = authResponse.headers.get("set-cookie");
-  if (setCookie) {
-    response.headers.append("set-cookie", setCookie);
-  }
-
-  return response;
+  return NextResponse.redirect(callbackUrl, { status: 307 });
 }
