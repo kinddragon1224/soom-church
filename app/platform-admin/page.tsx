@@ -24,7 +24,7 @@ export default async function PlatformAdminPage() {
     ["교회", snapshot.churchCount, "/platform-admin/churches", "교회 워크스페이스 운영 상태"],
     ["구독", snapshot.subscriptionCount, "/platform-admin/subscriptions", "플랜과 결제 상태"],
     ["사용자", snapshot.activeUserCount, "/platform-admin/users", "활성 사용자 현황"],
-    ["블로그", "Notion", "/ai-guides", "공개 블로그 연결 상태"],
+    ["블로그", "Notion", "/blog", "공개 블로그 연결 상태"],
   ] as const;
 
   return (
@@ -39,7 +39,7 @@ export default async function PlatformAdminPage() {
           <div className="flex flex-wrap gap-2">
             <Link href="/platform-admin/churches" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">교회 관리</Link>
             <Link href="/platform-admin/subscriptions" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">구독 관리</Link>
-            <Link href="/ai-guides" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">블로그 보기</Link>
+            <Link href="/blog" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">블로그 보기</Link>
           </div>
         </div>
       </section>

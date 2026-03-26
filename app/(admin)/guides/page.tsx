@@ -20,7 +20,7 @@ export default async function GuidesAdminPage({ searchParams }: { searchParams?:
             <p className="mt-3 max-w-2xl text-sm leading-7 text-white/66">제목 영역, 본문 캔버스, 우측 설정 패널 구조로 재구성한 블로그 관리자 화면.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link href="/ai-guides" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">공개 블로그 보기</Link>
+            <Link href="/blog" className="rounded-[14px] border border-white/12 bg-white/8 px-4 py-2 text-sm font-medium text-white">공개 블로그 보기</Link>
           </div>
         </div>
       </section>
@@ -49,7 +49,7 @@ export default async function GuidesAdminPage({ searchParams }: { searchParams?:
                   </div>
                   <div className="flex gap-2">
                     <Link href={`/guides?updated=${post.id}`} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-sm font-medium text-[#111111]">수정</Link>
-                    <Link href={`/ai-guides/${post.slug}`} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-sm font-medium text-[#111111]">열기</Link>
+                    <Link href={`/blog/${post.slug}`} className="rounded-[12px] border border-[#d9d2c7] bg-white px-3 py-2 text-sm font-medium text-[#111111]">열기</Link>
                   </div>
                 </div>
               </div>

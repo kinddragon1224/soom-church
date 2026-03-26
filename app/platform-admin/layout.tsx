@@ -31,7 +31,7 @@ export default async function PlatformAdminLayout({ children }: { children: Reac
           <Link href="/platform-admin/users" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">사용자</Link>
           <Link href="/platform-admin/subscriptions" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">구독</Link>
           <Link href="/platform-admin/provisioning" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">생성</Link>
-          <Link href="/ai-guides" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">블로그</Link>
+          <Link href="/blog" className="rounded-md border border-border px-2.5 py-1.5 hover:bg-muted">블로그</Link>
         </nav>
       </header>
       <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">{children}</main>

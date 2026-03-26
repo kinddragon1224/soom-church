@@ -14,7 +14,7 @@ type SiteHeaderProps = {
 };
 
 const navItems = [
-  { href: "/ai-guides", label: "블로그", key: "guides" },
+  { href: "/blog", label: "블로그", key: "guides" },
   { href: "/pricing", label: "콘텐츠 스튜디오", key: "pricing" },
   { href: "/about", label: "About", key: "about" },
   { href: "/contact", label: "Q&A", key: "contact" },

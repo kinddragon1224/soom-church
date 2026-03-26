@@ -23,7 +23,7 @@ const navSections = [
 const utilityLinks = [
   { href: "/pricing", label: "상품 구조" },
   { href: "/contact", label: "도입 문의" },
-  { href: "/ai-guides", label: "블로그" },
+  { href: "/blog", label: "블로그" },
 ];
 
 const pulseItems = [

@@ -26,7 +26,7 @@ const menuGroups: MenuGroup[] = [
     title: "콘텐츠",
     items: [
       { href: "/guides", label: "AI 안내서", icon: Newspaper },
-      { href: "/ai-guides", label: "공개 페이지", icon: ClipboardList },
+      { href: "/blog", label: "공개 페이지", icon: ClipboardList },
     ],
   },
 ];

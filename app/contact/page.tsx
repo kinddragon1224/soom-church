@@ -203,7 +203,7 @@ export default function ContactPage() {
                 <Link href="/pricing" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
                   핵심 상품 보기
                 </Link>
-                <Link href="/ai-guides" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
+                <Link href="/blog" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
                   블로그 보기
                 </Link>
               </div>
