@@ -7,7 +7,7 @@ import { signIn, getPostLoginPath } from "@/auth";
 import { isPlatformAdminEmail } from "@/lib/admin";
 
 const DEV_USER_EMAIL = "dev@soom.church";
-const DEV_USER_PASSWORD = "1234";
+const DEV_USER_PASSWORD = "1224";
 const DEV_CHURCH_SLUG = "soom-dev";
 const DEV_CHURCH_NAME = "숨 개발용 워크스페이스";
 
