@@ -12,7 +12,7 @@ const navSections = [
       { key: "applications", label: "신청", href: "applications", hint: "접수와 처리" },
       { key: "organizations", label: "조직", href: "organizations", hint: "교구와 부서" },
       { key: "notices", label: "공지", href: "notices", hint: "전달 흐름" },
-      { key: "records", label: "기록", href: "blog", hint: "심방과 사역 메모" },
+      { key: "records", label: "기록", href: "records", hint: "심방과 사역 메모" },
     ],
   },
   {
@@ -96,7 +96,7 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
       { label: "홈", href: `${base}/dashboard` },
     ],
     records: [
-      { label: "기록 보기", href: `${base}/blog`, primary: true },
+      { label: "기록 보기", href: `${base}/records`, primary: true },
       { label: "사람 보기", href: `${base}/members` },
       { label: "홈", href: `${base}/dashboard` },
     ],

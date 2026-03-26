@@ -50,7 +50,7 @@ export function BlogEditorForm({
   value?: BlogEditorValue;
 }) {
   const content = parseContent(value?.contentJson);
-  const previewHref = value?.id ? `/app/${churchSlug}/blog/${value.id}/preview` : null;
+  const previewHref = value?.id ? `/app/${churchSlug}/records/${value.id}/preview` : null;
 
   return (
     <form action={action} className="grid gap-4">
