@@ -3,8 +3,7 @@ import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
 import { getChurchGraphWorkspace } from "@/lib/graph-workspace-data";
-import ChurchGraphWorkspace from "@/components/visualization/church-graph-workspace";
-import ChurchStructureFlow from "@/components/visualization/church-structure-flow";
+import ChurchForceGraph from "@/components/visualization/church-force-graph";
 import ChurchStructureMobile from "@/components/visualization/church-structure-mobile";
 
 const statusTone: Record<string, string> = {
@@ -110,7 +109,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
           <div className="p-5">
             <div className="hidden lg:block">
-              <ChurchGraphWorkspace graph={graph} />
+              <ChurchForceGraph graph={graph} />
             </div>
             <div className="lg:hidden">
               <ChurchStructureMobile structure={structure} />
