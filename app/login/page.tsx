@@ -9,10 +9,12 @@ import LoginForm from "@/components/auth/login-form";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: { next?: string; error?: string };
+  searchParams?: { next?: string; error?: string; legacy?: string };
 }) {
   const next = searchParams?.next;
   const error = searchParams?.error;
+  const legacy = searchParams?.legacy;
+  const defaultCallbackUrl = "/app/soom-dev/dashboard";
 
   if (await isLoggedIn()) {
     const userId = await getCurrentUserId();
@@ -34,6 +36,11 @@ export default async function LoginPage({
         <Card className="w-full p-6">
         <h1 className="text-2xl font-bold">숨 워크스페이스 로그인</h1>
         <p className="mt-1 text-sm text-muted-foreground">로그인하고 교회와 사역팀을 위한 워크스페이스로 들어가세요. 무료로 시작한 뒤 필요할 때 확장할 수 있습니다.</p>
+        {legacy ? (
+          <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            이전 로그인 경로는 정리되었어. 이 화면에서 다시 로그인하면 돼.
+          </div>
+        ) : null}
         {error ? (
           <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {error === "credentials"
@@ -41,7 +48,7 @@ export default async function LoginPage({
               : "로그인에 실패했습니다. 계정 상태나 연동 설정을 확인해 주세요."}
           </div>
         ) : null}
-        <LoginForm next={next} />
+        <LoginForm next={next} defaultCallbackUrl={defaultCallbackUrl} />
 
         <div className="mt-6 space-y-2">
           <form
