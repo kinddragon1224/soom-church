@@ -2,6 +2,8 @@ import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
+import { getChurchGraphWorkspace } from "@/lib/graph-workspace-data";
+import ChurchGraphWorkspace from "@/components/visualization/church-graph-workspace";
 import ChurchStructureFlow from "@/components/visualization/church-structure-flow";
 import ChurchStructureMobile from "@/components/visualization/church-structure-mobile";
 
@@ -24,9 +26,10 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
   const church = membership.church;
   const base = `/app/${church.slug}`;
-  const [summary, structure] = await Promise.all([
+  const [summary, structure, graph] = await Promise.all([
     getWorkspaceDashboardData(church.id),
     getChurchStructureMap(church.id),
+    getChurchGraphWorkspace(church.id),
   ]);
 
   const totalGroups = structure.reduce((acc, district) => acc + district.groups.length, 0);
@@ -41,30 +44,30 @@ export default async function ChurchDashboardPage({ params }: { params: { church
         <div className="grid gap-px bg-white/10 xl:grid-cols-[minmax(0,1.2fr)_420px]">
           <div className="p-5 sm:p-6">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[11px] tracking-[0.2em] text-white/46">STRUCTURE HOME</p>
-              <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">VISUAL MVP</span>
+              <p className="text-[11px] tracking-[0.2em] text-white/46">GRAPH WORKSPACE</p>
+              <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] text-white/70">OBSIDIAN MODE</span>
             </div>
             <h1 className="mt-3 text-[2.1rem] font-semibold leading-[0.98] tracking-[-0.06em] text-white sm:text-[2.8rem]">
-              교구와 목장 구조를
+              교회의 연결 구조를
               <br />
-              한눈에 읽는다
+              그래프로 읽는다
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-white/66">
-              전교인 교적을 리스트가 아니라 구조로 읽는다. 목장 단위로 보고, 가족과 개인 상태를 내려가며 확인하는 구조 홈 1차 버전이다.
+              전교인을 리스트가 아니라 그래프로 읽는다. 개인, 가족, 목장, 교구, 사역 연결이 군집으로 보이고 후속 상태는 오버레이처럼 읽히는 그래프 워크스페이스 프로토타입이다.
             </p>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-                <p className="text-[11px] tracking-[0.16em] text-white/42">교구</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{structure.length}</p>
+                <p className="text-[11px] tracking-[0.16em] text-white/42">그래프 노드</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{graph.nodes.length}</p>
               </div>
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-                <p className="text-[11px] tracking-[0.16em] text-white/42">목장</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{totalGroups}</p>
+                <p className="text-[11px] tracking-[0.16em] text-white/42">그래프 연결</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{graph.edges.length}</p>
               </div>
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-                <p className="text-[11px] tracking-[0.16em] text-white/42">가정</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{totalFamilies}</p>
+                <p className="text-[11px] tracking-[0.16em] text-white/42">군집</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{structure.length + totalGroups}</p>
               </div>
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
                 <p className="text-[11px] tracking-[0.16em] text-white/42">전체 인원</p>
@@ -99,16 +102,18 @@ export default async function ChurchDashboardPage({ params }: { params: { church
         <section className="overflow-hidden rounded-[24px] border border-[#e6dfd5] bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between border-b border-[#efe7da] px-5 py-4">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">GROUP MAP</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">교구 / 목장 노드 맵</h2>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">GRAPH VIEW</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">교회 그래프 워크스페이스</h2>
             </div>
-            <span className="text-xs text-[#8C7A5B]">시각화 1차</span>
+            <span className="text-xs text-[#8C7A5B]">옵시디언 감각 프로토타입</span>
           </div>
 
           <div className="p-5">
-            <ChurchStructureMobile structure={structure} />
             <div className="hidden lg:block">
-              <ChurchStructureFlow structure={structure} churchSlug={church.slug} />
+              <ChurchGraphWorkspace graph={graph} />
+            </div>
+            <div className="lg:hidden">
+              <ChurchStructureMobile structure={structure} />
             </div>
           </div>
         </section>
@@ -139,10 +144,10 @@ export default async function ChurchDashboardPage({ params }: { params: { church
               </div>
             </div>
             <div className="grid gap-2 p-5 text-sm text-[#5F564B]">
-              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">1. React Flow 기반 구조 맵으로 교체</div>
-              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">2. 목장 클릭 시 가족/개인 패널 drill-down</div>
-              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">3. 심방/후속/출석 오버레이 추가</div>
-              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">4. 온보딩 입력 후 구조 자동 생성 연결</div>
+              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">1. force-directed 그래프 레이아웃으로 전환</div>
+              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">2. 노드 선택 시 우측 상세 패널 연결</div>
+              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">3. 후속 / 심방 / 부서 오버레이 강화</div>
+              <div className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">4. 온보딩 입력 후 그래프 자동 생성 연결</div>
             </div>
           </section>
         </div>
