@@ -114,8 +114,8 @@ export default function SiteHeader({
       </header>
 
       {open && (
-        <div className={`fixed inset-0 z-[100] md:hidden ${mobileSurfaceClass}`}>
-          <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6 sm:px-8">
+        <div className={`fixed inset-0 z-[100] overflow-y-auto md:hidden ${mobileSurfaceClass}`}>
+          <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-8">
             <div className="flex items-center justify-between gap-4">
               <Link
                 href="/"
@@ -147,7 +147,7 @@ export default function SiteHeader({
               ))}
             </div>
 
-            <div className="mt-auto grid gap-3 pt-10">
+            <div className="mt-8 grid gap-3 pb-4 pt-10">
               {loggedIn ? (
                 adminMode ? (
                   <Link
