@@ -168,21 +168,32 @@ export default function SiteHeader({
                   </form>
                 )
               ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setOpen(false)}
-                  className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-medium ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
-                >
-                  로그인
-                </Link>
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-medium ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setOpen(false)}
+                    className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-semibold ${buttonClass}`}
+                  >
+                    회원가입
+                  </Link>
+                </>
               )}
-              <Link
-                href={ctaHref}
-                onClick={() => setOpen(false)}
-                className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-semibold ${buttonClass}`}
-              >
-                {ctaLabel}
-              </Link>
+              {loggedIn ? (
+                <Link
+                  href={ctaHref}
+                  onClick={() => setOpen(false)}
+                  className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-semibold ${buttonClass}`}
+                >
+                  {ctaLabel}
+                </Link>
+              ) : null}
             </div>
           </div>
         </div>
