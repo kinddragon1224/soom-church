@@ -1,9 +1,8 @@
-import { AuthError } from "next-auth";
 import { NextResponse } from "next/server";
 import { MembershipRole, Plan, SubscriptionStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
-import { signIn, getPostLoginPath } from "@/auth";
+import { getPostLoginPath } from "@/auth";
 import { isPlatformAdminEmail } from "@/lib/admin";
 
 const DEV_USER_EMAIL = "dev@soom.church";
@@ -88,7 +87,6 @@ function buildLoginErrorRedirect(request: Request, next: string) {
 export async function POST(request: Request) {
   const formData = await request.formData();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "");
 
   const user = email === DEV_USER_EMAIL
@@ -97,20 +95,39 @@ export async function POST(request: Request) {
       ? await ensurePlatformAdminAccount(email)
       : await prisma.user.findUnique({ where: { email }, select: { id: true } });
 
-  const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/workspace";
+  const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/app";
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+  const callbackUrl = new URL("/api/auth/callback/credentials", request.url);
+  callbackUrl.searchParams.set("callbackUrl", redirectTo);
 
-    return NextResponse.redirect(new URL(redirectTo, request.url));
-  } catch (error) {
-    if (error instanceof AuthError) {
-      return buildLoginErrorRedirect(request, next);
-    }
+  const body = new URLSearchParams();
+  for (const [key, value] of formData.entries()) {
+    body.set(key, String(value));
+  }
+  body.set("email", email);
+  body.set("callbackUrl", redirectTo);
+  body.set("json", "true");
+
+  const authResponse = await fetch(callbackUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      cookie: request.headers.get("cookie") ?? "",
+    },
+    body,
+    redirect: "manual",
+  });
+
+  if (authResponse.status >= 400) {
     return buildLoginErrorRedirect(request, next);
   }
+
+  const response = NextResponse.redirect(new URL(redirectTo, request.url));
+
+  const setCookie = authResponse.headers.get("set-cookie");
+  if (setCookie) {
+    response.headers.append("set-cookie", setCookie);
+  }
+
+  return response;
 }
