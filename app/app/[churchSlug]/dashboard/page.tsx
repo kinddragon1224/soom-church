@@ -3,6 +3,7 @@ import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
 import ChurchStructureFlow from "@/components/visualization/church-structure-flow";
+import ChurchStructureMobile from "@/components/visualization/church-structure-mobile";
 
 const statusTone: Record<string, string> = {
   새가족: "bg-[#E8F1FF] text-[#295FA8] border-[#C9DCF8]",
@@ -105,7 +106,10 @@ export default async function ChurchDashboardPage({ params }: { params: { church
           </div>
 
           <div className="p-5">
-            <ChurchStructureFlow structure={structure} />
+            <ChurchStructureMobile structure={structure} />
+            <div className="hidden lg:block">
+              <ChurchStructureFlow structure={structure} />
+            </div>
           </div>
         </section>
 
