@@ -12,7 +12,7 @@ const navSections = [
       { key: "applications", label: "신청", href: "applications", hint: "접수와 처리" },
       { key: "organizations", label: "조직", href: "organizations", hint: "교구와 부서" },
       { key: "notices", label: "공지", href: "notices", hint: "전달 흐름" },
-      { key: "blog", label: "블로그", href: "blog", hint: "글 작성과 발행" },
+      { key: "records", label: "기록", href: "blog", hint: "심방과 사역 메모" },
     ],
   },
   {
@@ -95,9 +95,9 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
       { label: "사람 보기", href: `${base}/members` },
       { label: "홈", href: `${base}/dashboard` },
     ],
-    blog: [
-      { label: "새 글 작성", href: `${base}/blog/new`, primary: true },
-      { label: "글 목록", href: `${base}/blog` },
+    records: [
+      { label: "기록 보기", href: `${base}/blog`, primary: true },
+      { label: "사람 보기", href: `${base}/members` },
       { label: "홈", href: `${base}/dashboard` },
     ],
     settings: [
@@ -133,10 +133,10 @@ export function WorkspaceShell({ church, role, summary, children }: WorkspaceShe
       { label: "후속 필요", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명` : "없음" },
       { label: "전체 사람", value: `${summary.totalMembers}명` },
     ],
-    blog: [
-      { label: "작성 준비", value: "에디터 사용 가능" },
-      { label: "발행 기준", value: "초안 / 발행 / 보관" },
-      { label: "연결", value: "대표 이미지 / 요약문" },
+    records: [
+      { label: "기록 공간", value: "심방 / 사역 / 운영 메모" },
+      { label: "기록 기준", value: "사람별 / 팀별 / 최근순" },
+      { label: "연결", value: "사람 흐름과 후속 연결" },
     ],
     settings: [
       { label: "후속 기본값", value: summary.followUpMembers > 0 ? `${summary.followUpMembers}명 영향` : "안정" },
