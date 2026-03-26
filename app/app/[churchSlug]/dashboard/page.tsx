@@ -109,7 +109,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
           <div className="p-5">
             <div className="hidden lg:block">
-              <ChurchForceGraph graph={graph} />
+              <ChurchForceGraph graph={graph} churchSlug={church.slug} />
             </div>
             <div className="lg:hidden">
               <ChurchStructureMobile structure={structure} />
