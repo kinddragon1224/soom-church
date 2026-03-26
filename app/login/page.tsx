@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { isLoggedIn, getCurrentUserId } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { signIn, getPostLoginPath } from "@/auth";
-import { headers } from "next/headers";
+import LoginForm from "@/components/auth/login-form";
 
 export default async function LoginPage({
   searchParams,
@@ -13,18 +13,6 @@ export default async function LoginPage({
 }) {
   const next = searchParams?.next;
   const error = searchParams?.error;
-
-  const headerStore = headers();
-  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
-  const proto = headerStore.get("x-forwarded-proto") ?? "https";
-  const baseUrl = host ? `${proto}://${host}` : "http://localhost:3000";
-  const csrfResponse = await fetch(`${baseUrl}/api/auth/csrf`, {
-    headers: {
-      cookie: headerStore.get("cookie") ?? "",
-    },
-    cache: "no-store",
-  });
-  const { csrfToken } = (await csrfResponse.json()) as { csrfToken?: string };
 
   if (await isLoggedIn()) {
     const userId = await getCurrentUserId();
@@ -53,13 +41,7 @@ export default async function LoginPage({
               : "로그인에 실패했습니다. 계정 상태나 연동 설정을 확인해 주세요."}
           </div>
         ) : null}
-        <form action="/api/auth/callback/credentials" method="post" className="mt-5 space-y-3">
-          <input type="hidden" name="csrfToken" value={csrfToken ?? ""} />
-          <input type="hidden" name="callbackUrl" value={next?.startsWith("/") ? next : "/app/soom-dev/dashboard"} />
-          <input name="email" type="email" required placeholder="admin@soom.church" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
-          <input name="password" type="password" required placeholder="••••" className="w-full rounded-md border border-border px-3 py-2 text-sm" />
-          <Button className="w-full" type="submit">이메일로 로그인</Button>
-        </form>
+        <LoginForm next={next} />
 
         <div className="mt-6 space-y-2">
           <form
