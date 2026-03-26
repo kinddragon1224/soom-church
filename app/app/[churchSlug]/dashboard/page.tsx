@@ -2,8 +2,7 @@ import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
-import { getChurchGraphWorkspace } from "@/lib/graph-workspace-data";
-import ChurchForceGraph from "@/components/visualization/church-force-graph";
+import ChurchStructureFlow from "@/components/visualization/church-structure-flow";
 import ChurchStructureMobile from "@/components/visualization/church-structure-mobile";
 
 const statusTone: Record<string, string> = {
@@ -25,10 +24,9 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
   const church = membership.church;
   const base = `/app/${church.slug}`;
-  const [summary, structure, graph] = await Promise.all([
+  const [summary, structure] = await Promise.all([
     getWorkspaceDashboardData(church.id),
     getChurchStructureMap(church.id),
-    getChurchGraphWorkspace(church.id),
   ]);
 
   const totalGroups = structure.reduce((acc, district) => acc + district.groups.length, 0);
@@ -57,16 +55,16 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-                <p className="text-[11px] tracking-[0.16em] text-white/42">그래프 노드</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{graph.nodes.length}</p>
+                <p className="text-[11px] tracking-[0.16em] text-white/42">교구</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{structure.length}</p>
               </div>
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-                <p className="text-[11px] tracking-[0.16em] text-white/42">그래프 연결</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{graph.edges.length}</p>
+                <p className="text-[11px] tracking-[0.16em] text-white/42">목장</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{totalGroups}</p>
               </div>
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
-                <p className="text-[11px] tracking-[0.16em] text-white/42">군집</p>
-                <p className="mt-2 text-2xl font-semibold text-white">{structure.length + totalGroups}</p>
+                <p className="text-[11px] tracking-[0.16em] text-white/42">가정</p>
+                <p className="mt-2 text-2xl font-semibold text-white">{totalFamilies}</p>
               </div>
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
                 <p className="text-[11px] tracking-[0.16em] text-white/42">전체 인원</p>
@@ -109,7 +107,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
           <div className="p-5">
             <div className="hidden lg:block">
-              <ChurchForceGraph graph={graph} churchSlug={church.slug} />
+              <ChurchStructureFlow structure={structure} churchSlug={church.slug} />
             </div>
             <div className="lg:hidden">
               <ChurchStructureMobile structure={structure} />
