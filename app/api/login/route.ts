@@ -1,79 +1,12 @@
 import { NextResponse } from "next/server";
-import { MembershipRole, Plan, SubscriptionStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { hashPassword } from "@/lib/password";
 import { getPostLoginPath } from "@/auth";
-import { isPlatformAdminEmail } from "@/lib/admin";
 
-const DEV_USER_EMAIL = "dev@soom.church";
-const DEV_USER_PASSWORD = "1224";
-const DEV_CHURCH_SLUG = "soom-dev";
-const DEV_CHURCH_NAME = "숨 개발용 워크스페이스";
-
-const PLATFORM_ADMIN_PASSWORD = "1234";
-const PLATFORM_ADMIN_NAME = "숨 플랫폼 관리자";
-
-async function ensureDevWorkspaceAccount() {
-  const church = await prisma.church.upsert({
-    where: { slug: DEV_CHURCH_SLUG },
-    update: { name: DEV_CHURCH_NAME, timezone: "Asia/Seoul", isActive: true },
-    create: { slug: DEV_CHURCH_SLUG, name: DEV_CHURCH_NAME, timezone: "Asia/Seoul", isActive: true },
-  });
-
-  const user = await prisma.user.upsert({
-    where: { email: DEV_USER_EMAIL },
-    update: { name: "숨 개발용 운영자", passwordHash: await hashPassword(DEV_USER_PASSWORD), isActive: true },
-    create: {
-      email: DEV_USER_EMAIL,
-      name: "숨 개발용 운영자",
-      passwordHash: await hashPassword(DEV_USER_PASSWORD),
-      isActive: true,
-    },
-  });
-
-  const subscription = await prisma.subscription.findFirst({ where: { churchId: church.id } });
-  if (!subscription) {
-    await prisma.subscription.create({
-      data: {
-        churchId: church.id,
-        plan: Plan.FREE,
-        status: SubscriptionStatus.TRIALING,
-        trialEndsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
-      },
-    });
-  }
-
-  const membership = await prisma.churchMembership.findUnique({
-    where: { userId_churchId: { userId: user.id, churchId: church.id } },
-    select: { id: true },
-  });
-
-  if (!membership) {
-    await prisma.churchMembership.create({
-      data: {
-        userId: user.id,
-        churchId: church.id,
-        role: MembershipRole.OWNER,
-        isActive: true,
-      },
-    });
-  }
-
-  return user;
-}
-
-async function ensurePlatformAdminAccount(email: string) {
-  return prisma.user.upsert({
-    where: { email },
-    update: { name: PLATFORM_ADMIN_NAME, passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD), isActive: true },
-    create: {
-      email,
-      name: PLATFORM_ADMIN_NAME,
-      passwordHash: await hashPassword(PLATFORM_ADMIN_PASSWORD),
-      isActive: true,
-    },
-    select: { id: true },
-  });
+function buildLoginRedirect(request: Request, path: string, next?: string, error?: string) {
+  const url = new URL(path, request.url);
+  if (next && next.startsWith("/")) url.searchParams.set("next", next);
+  if (error) url.searchParams.set("error", error);
+  return url;
 }
 
 export async function POST(request: Request) {
@@ -82,12 +15,11 @@ export async function POST(request: Request) {
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "");
 
-  const user = email === DEV_USER_EMAIL
-    ? await ensureDevWorkspaceAccount()
-    : isPlatformAdminEmail(email)
-      ? await ensurePlatformAdminAccount(email)
-      : await prisma.user.findUnique({ where: { email }, select: { id: true } });
+  if (!email || !password) {
+    return NextResponse.redirect(buildLoginRedirect(request, "/login", next, "credentials"), { status: 303 });
+  }
 
+  const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
   const redirectTo = next.startsWith("/") ? next : user ? await getPostLoginPath(user.id) : "/app";
 
   const callbackUrl = new URL("/api/auth/callback/credentials", request.url);
@@ -98,5 +30,24 @@ export async function POST(request: Request) {
   body.set("password", password);
   body.set("callbackUrl", redirectTo);
 
-  return NextResponse.redirect(callbackUrl, { status: 307 });
+  const response = await fetch(callbackUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      cookie: request.headers.get("cookie") ?? "",
+    },
+    body,
+    redirect: "manual",
+  });
+
+  const location = response.headers.get("location");
+  const destination = location
+    ? new URL(location, request.url)
+    : buildLoginRedirect(request, "/login", next, "credentials");
+
+  const nextResponse = NextResponse.redirect(destination, { status: 303 });
+  const setCookie = response.headers.get("set-cookie");
+  if (setCookie) nextResponse.headers.append("set-cookie", setCookie);
+
+  return nextResponse;
 }
