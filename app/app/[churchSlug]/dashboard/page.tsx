@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
+import ChurchStructureFlow from "@/components/visualization/church-structure-flow";
 
 const statusTone: Record<string, string> = {
   새가족: "bg-[#E8F1FF] text-[#295FA8] border-[#C9DCF8]",
@@ -98,63 +99,13 @@ export default async function ChurchDashboardPage({ params }: { params: { church
           <div className="flex items-center justify-between border-b border-[#efe7da] px-5 py-4">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">GROUP MAP</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">교구 / 목장 구조</h2>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">교구 / 목장 노드 맵</h2>
             </div>
-            <span className="text-xs text-[#8C7A5B]">목장 중심 보기</span>
+            <span className="text-xs text-[#8C7A5B]">시각화 1차</span>
           </div>
 
-          <div className="grid gap-4 p-5">
-            {structure.map((district) => (
-              <div key={district.id} className="rounded-[22px] border border-[#E7E0D4] bg-[#FCFBF8] p-4">
-                <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[#ECE4D8] pb-3">
-                  <div>
-                    <p className="text-[11px] tracking-[0.18em] text-[#9A8B7A]">DISTRICT</p>
-                    <h3 className="mt-2 text-xl font-semibold text-[#111111]">{district.name}</h3>
-                  </div>
-                  <p className="text-xs text-[#8C7A5B]">목장 {district.groups.length}개</p>
-                </div>
-
-                <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                  {district.groups.map((group) => (
-                    <div key={group.id} className="rounded-[18px] border border-[#E7E0D4] bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.03)]">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-sm font-semibold text-[#111111]">{group.name}</p>
-                          <p className="mt-1 text-xs text-[#8C7A5B]">가정 {group.familyCount} · 인원 {group.memberCount}</p>
-                        </div>
-                        <div className="flex flex-wrap justify-end gap-1.5 text-[11px]">
-                          <span className="rounded-full border border-[#E7E0D4] bg-[#FBF9F4] px-2.5 py-1">후속 {group.followUpCount}</span>
-                          <span className="rounded-full border border-[#E7E0D4] bg-[#FBF9F4] px-2.5 py-1">심방 {group.visitCount}</span>
-                          <span className="rounded-full border border-[#E7E0D4] bg-[#FBF9F4] px-2.5 py-1">새가족 {group.newCount}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 grid gap-2">
-                        {group.families.slice(0, 4).map((family) => (
-                          <div key={family.id} className="rounded-[14px] border border-[#EFE7DA] bg-[#FCFBF8] px-3 py-3">
-                            <div className="flex items-center justify-between gap-3">
-                              <p className="text-sm font-medium text-[#111111]">{family.name}</p>
-                              <span className="text-[11px] text-[#8C7A5B]">{family.members.length}명</span>
-                            </div>
-                            <div className="mt-2 flex flex-wrap gap-1.5">
-                              {family.members.map((member) => (
-                                <Link
-                                  key={member.id}
-                                  href={`${base}/members/${member.id}`}
-                                  className={`rounded-full border px-2.5 py-1 text-[11px] ${badgeClass(member.statusTag)}`}
-                                >
-                                  {member.name}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div className="p-5">
+            <ChurchStructureFlow structure={structure} />
           </div>
         </section>
 
