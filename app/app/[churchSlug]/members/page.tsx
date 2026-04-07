@@ -4,13 +4,14 @@ import { requireWorkspaceMembership } from "@/lib/church-context";
 import { startOfMonth, formatDate } from "@/lib/date";
 import { getStatusMeta } from "@/lib/member-status";
 import { getWorkspaceMembers } from "@/lib/workspace-data";
+import GidoMembersPage from "./gido-members-page";
 
 export default async function ChurchMembersPage({
   params,
   searchParams,
 }: {
   params: { churchSlug: string };
-  searchParams?: { filter?: string };
+  searchParams?: { filter?: string; q?: string };
 }) {
   const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) {
@@ -25,9 +26,13 @@ export default async function ChurchMembersPage({
   const church = membership.church;
   const filter = searchParams?.filter ?? "all";
   const members = await getWorkspaceMembers(church.id, {
-    followUpOnly: filter === "followup",
+    followUpOnly: filter === "followup" && church.slug !== "gido",
     registeredFrom: filter === "new" ? startOfMonth(new Date()) : undefined,
   });
+
+  if (church.slug === "gido") {
+    return <GidoMembersPage churchSlug={church.slug} members={members} filter={filter} q={searchParams?.q} />;
+  }
 
   const counts = {
     all: members.length,

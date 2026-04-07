@@ -109,7 +109,7 @@ export async function getWorkspaceMembers(
           ...(followUpOnly ? { requiresFollowUp: true } : {}),
           ...(options?.registeredFrom ? { registeredAt: { gte: options.registeredFrom } } : {}),
         },
-        include: { district: true, group: true },
+        include: { district: true, group: true, household: true },
         orderBy: { createdAt: "desc" },
         take: 50,
       }),

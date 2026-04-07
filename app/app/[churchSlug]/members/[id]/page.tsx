@@ -18,6 +18,7 @@ import { requireWorkspaceMembership } from "@/lib/church-context";
 import { formatDate } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
 import { getWorkspaceMemberRecord } from "@/lib/workspace-data";
+import GidoMemberRecord from "../gido-member-record";
 
 const RELATIONSHIP_OPTIONS = [
   { value: RelationshipType.SPOUSE, label: "배우자" },
@@ -52,7 +53,7 @@ export default async function ChurchMemberRecordPage({
   if (!membership) notFound();
 
   const church = membership.church;
-  const [member, memberOptions, organizationOptions] = await Promise.all([
+  const [member, memberOptions] = await Promise.all([
     getWorkspaceMemberRecord(church.id, params.id),
     prisma.member.findMany({
       where: { churchId: church.id, isDeleted: false, NOT: { id: params.id } },
@@ -60,14 +61,19 @@ export default async function ChurchMemberRecordPage({
       orderBy: { name: "asc" },
       take: 200,
     }),
-    prisma.organizationUnit.findMany({
-      where: { churchId: church.id },
-      select: { id: true, name: true, type: true },
-      orderBy: [{ type: "asc" }, { name: "asc" }],
-      take: 200,
-    }),
   ]);
   if (!member) notFound();
+
+  if (church.slug === "gido") {
+    return <GidoMemberRecord churchSlug={church.slug} member={member} memberOptions={memberOptions} />;
+  }
+
+  const organizationOptions = await prisma.organizationUnit.findMany({
+    where: { churchId: church.id },
+    select: { id: true, name: true, type: true },
+    orderBy: [{ type: "asc" }, { name: "asc" }],
+    take: 200,
+  });
 
   const familyLinks = [
     ...member.relationshipsFrom.map((item) => ({
