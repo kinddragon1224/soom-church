@@ -27,7 +27,7 @@ export default async function GidoDashboardPage({
   const steps = [
     { label: "목원 상태 확인", action: "보기", href: `${base}/members`, done: data.members.length > 0 },
     { label: "이번 주 후속 정리", action: "열기", href: `${base}/followups`, done: data.followUps.length > 0 || data.members.some((member) => member.requiresFollowUp) },
-    { label: "근황 기록 확인", action: "열기", href: `${base}/dashboard#updates`, done: data.updates.length > 0 },
+    { label: "근황 기록 확인", action: "열기", href: `${base}/updates`, done: data.updates.length > 0 },
     { label: "새 목원 등록", action: "추가", href: `${base}/members/new`, done: false },
   ];
 
@@ -83,7 +83,7 @@ export default async function GidoDashboardPage({
               </p>
             </div>
             <div className="mt-8">
-              <Link href={`${base}/dashboard#households`} className="inline-flex rounded-[14px] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827]">
+              <Link href={`${base}/households`} className="inline-flex rounded-[14px] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827]">
                 가정별 중보 보기
               </Link>
             </div>
@@ -91,7 +91,7 @@ export default async function GidoDashboardPage({
         </article>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MiniCard
           title="목원 보기"
           desc="등록된 목원과 가정을 한 번에 보고 상태를 정리해."
@@ -105,11 +105,16 @@ export default async function GidoDashboardPage({
         <MiniCard
           title="가정별 중보"
           desc="가정별 기도제목과 함께 품는 이름을 한 화면에서 봐."
-          href={`${base}/dashboard#households`}
+          href={`${base}/households`}
+        />
+        <MiniCard
+          title="근황 기록"
+          desc="최근 근황과 메모를 한 피드에서 보고 바로 챙길 사람으로 이어가."
+          href={`${base}/updates`}
         />
       </section>
 
-      <section id="followups" className="grid gap-4 xl:grid-cols-[0.98fr_1.02fr]">
+      <section className="grid gap-4 xl:grid-cols-[0.98fr_1.02fr]">
         <section className="rounded-[28px] border border-[#ebe4d8] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
           <Header title="후속 미리보기" count={`${data.followUps.length}건`} actionHref={`${base}/followups`} actionLabel="전체 보기" />
           <div className="mt-4 space-y-3">
@@ -129,10 +134,10 @@ export default async function GidoDashboardPage({
           </div>
         </section>
 
-        <section id="updates" className="rounded-[28px] border border-[#ebe4d8] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
-          <Header title="최근 근황 기록" count={`${data.updates.length}건`} />
+        <section className="rounded-[28px] border border-[#ebe4d8] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
+          <Header title="근황 미리보기" count={`${data.updates.length}건`} actionHref={`${base}/updates`} actionLabel="전체 보기" />
           <div className="mt-4 space-y-3">
-            {data.updates.map((item) => (
+            {data.updates.slice(0, 4).map((item) => (
               <article key={`${item.title}-${item.due ?? "x"}`} className="rounded-[18px] border border-[#eee8de] bg-[#fcfbf8] p-4">
                 <p className="text-sm font-semibold text-[#171717]">{item.title}</p>
                 <p className="mt-2 text-sm leading-6 text-[#5f564b]">{item.body}</p>
@@ -143,10 +148,10 @@ export default async function GidoDashboardPage({
         </section>
       </section>
 
-      <section id="households" className="rounded-[28px] border border-[#ebe4d8] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
-        <Header title="가정별 중보" count={`${data.households.length}가정`} />
+      <section className="rounded-[28px] border border-[#ebe4d8] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
+        <Header title="중보 미리보기" count={`${data.households.length}가정`} actionHref={`${base}/households`} actionLabel="전체 보기" />
         <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          {data.households.map((household) => (
+          {data.households.slice(0, 4).map((household) => (
             <article key={household.id} className="rounded-[20px] border border-[#eee8de] bg-[#fcfbf8] p-4">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-sm font-semibold text-[#171717]">{household.title}</p>

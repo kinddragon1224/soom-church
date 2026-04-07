@@ -15,8 +15,8 @@ const sidebarItems = (base: string) => [
   { label: "홈", href: `${base}/dashboard` },
   { label: "목원", href: `${base}/members` },
   { label: "후속", href: `${base}/followups` },
-  { label: "중보", href: `${base}/dashboard#households` },
-  { label: "근황", href: `${base}/dashboard#updates` },
+  { label: "중보", href: `${base}/households` },
+  { label: "근황", href: `${base}/updates` },
 ];
 
 export default function GidoWorkspaceShell({ base, church, role, currentUserName, children }: GidoWorkspaceShellProps) {
