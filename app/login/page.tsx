@@ -14,7 +14,7 @@ export default async function LoginPage({
   const next = searchParams?.next;
   const error = searchParams?.error;
   const legacy = searchParams?.legacy;
-  const defaultCallbackUrl = "/app/soom-dev/dashboard";
+  const defaultCallbackUrl = "/app";
 
   if (await isLoggedIn()) {
     const userId = await getCurrentUserId();
