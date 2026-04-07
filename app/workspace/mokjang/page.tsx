@@ -2,9 +2,9 @@ import { getMokjangStats, loadMokjangPilotData } from "@/lib/mokjang-pilot-data"
 
 const weeklyChecklist = [
   "이번 주 중보 제목을 공유하고 함께 읽기",
-  "결석자와 오랜만에 안 보인 사람 먼저 확인하기",
-  "긴급한 건강/치료 일정은 날짜 기준으로 따로 빼기",
+  "오랜만에 안 보인 가정과 치료 일정 먼저 확인하기",
   "전도 대상자 근황은 다음 행동과 함께 남기기",
+  "긴급한 일정은 날짜 기준으로 후속 큐에 따로 빼기",
 ];
 
 const priorityTone = {
@@ -30,18 +30,18 @@ export default function WorkspaceMokjangPage() {
               <h1 className="mt-3 text-[2.1rem] font-semibold leading-[0.96] tracking-[-0.06em] text-white sm:text-[2.8rem]">
                 {data.groupName}
                 <br />
-                기도와 후속 흐름을 한 화면에 모읍니다
+                기도와 후속 흐름을 한 화면에서 봅니다
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-7 text-white/66 sm:text-base">
                 {data.prayerTitle} · {data.meetingDate}
                 <br />
-                가정별 중보, 함께 품는 이름, 근황 메모, 당장 챙길 일을 따로 흩어놓지 않고 목장 운영 흐름으로 묶습니다.
+                가정별 중보, 함께 품는 이름, 근황 메모, 후속 연락을 흩어놓지 않고 목장 운영 흐름으로 묶습니다.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 lg:max-w-[280px] lg:justify-end">
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">가정 {data.households.length}</span>
               <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">후속 {data.followUps.length}</span>
-              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">업데이트 {data.updates.length}</span>
+              <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">근황 {data.updates.length}</span>
             </div>
           </div>
 
@@ -89,9 +89,7 @@ export default function WorkspaceMokjangPage() {
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7a6d5c]">
                   <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-2.5 py-1">기한 {item.due}</span>
-                  {item.owner ? (
-                    <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-2.5 py-1">담당 {item.owner}</span>
-                  ) : null}
+                  {item.owner ? <span className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-2.5 py-1">담당 {item.owner}</span> : null}
                 </div>
               </div>
             ))}
@@ -131,6 +129,17 @@ export default function WorkspaceMokjangPage() {
                     </span>
                   ))}
                 </div>
+
+                {household.members?.length ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {household.members.map((member) => (
+                      <span key={`${household.id}-${member.name}`} className="rounded-full border border-[#e6dfd5] bg-[#fcfbf8] px-3 py-1 text-[11px] text-[#6b5f50]">
+                        {member.name}
+                        {member.birthYear ? ` · ${member.birthYear}` : ""}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
 
                 <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_220px]">
                   <div>
@@ -172,7 +181,7 @@ export default function WorkspaceMokjangPage() {
             {data.updates.map((item) => (
               <article key={item.title} className="rounded-[18px] border border-[#ECE5D8] bg-white p-4">
                 <p className="text-sm font-semibold text-[#121212]">{item.title}</p>
-                <p className="mt-2 text-sm leading-6 text-[#5F564B] whitespace-pre-line">{item.body}</p>
+                <p className="mt-2 whitespace-pre-line text-sm leading-6 text-[#5F564B]">{item.body}</p>
                 {item.note ? <p className="mt-3 text-sm leading-6 text-[#5F564B]">{item.note}</p> : null}
                 {item.due ? (
                   <div className="mt-3">

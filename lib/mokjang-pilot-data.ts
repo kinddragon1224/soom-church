@@ -1,9 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
+export type MokjangMember = {
+  name: string;
+  birthYear?: string;
+};
+
 export type MokjangHousehold = {
   id: string;
   title: string;
+  members?: MokjangMember[];
   prayers: string[];
   contacts?: string[];
   tags?: string[];
@@ -41,10 +47,11 @@ const fallbackData: MokjangPilotData = {
     {
       id: "sample-1",
       title: "샘플 가정",
-      prayers: [
-        "예배와 일상의 균형이 회복되도록",
-        "가정 안에 평안과 건강이 있도록",
+      members: [
+        { name: "샘플 형제", birthYear: "86" },
+        { name: "샘플 자매", birthYear: "89" },
       ],
+      prayers: ["예배와 일상의 균형이 회복되도록", "가정 안에 평안과 건강이 있도록"],
       contacts: ["가족 중보"],
       tags: ["샘플"],
     },
@@ -85,13 +92,14 @@ export function loadMokjangPilotData(): MokjangPilotData {
 }
 
 export function getMokjangStats(data: MokjangPilotData) {
+  const memberCount = data.households.reduce((sum, household) => sum + (household.members?.length ?? 0), 0);
   const prayerCount = data.households.reduce((sum, household) => sum + household.prayers.length, 0);
   const contactCount = data.households.reduce((sum, household) => sum + (household.contacts?.length ?? 0), 0);
 
   return [
     { label: "가정 수", value: String(data.households.length), delta: "이번 주 기준" },
+    { label: "목장 멤버", value: String(memberCount), delta: "부부 기준" },
     { label: "중보 요청", value: String(prayerCount), delta: "가정별 기도제목" },
     { label: "함께 품는 이름", value: String(contactCount), delta: "가족·전도 대상" },
-    { label: "바로 챙길 일", value: String(data.followUps.length), delta: "후속 큐" },
   ] as const;
 }
