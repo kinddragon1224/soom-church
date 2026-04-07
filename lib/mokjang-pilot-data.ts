@@ -40,36 +40,18 @@ export type MokjangPilotData = {
 };
 
 const fallbackData: MokjangPilotData = {
-  groupName: "우리 목장",
-  prayerTitle: "이번 주 중보",
+  groupName: "G.I.D.O 목장",
+  prayerTitle: "이번 주 워크스페이스",
   meetingDate: "2026-04-07",
-  households: [
-    {
-      id: "sample-1",
-      title: "샘플 가정",
-      members: [
-        { name: "샘플 형제", birthYear: "86" },
-        { name: "샘플 자매", birthYear: "89" },
-      ],
-      prayers: ["예배와 일상의 균형이 회복되도록", "가정 안에 평안과 건강이 있도록"],
-      contacts: ["가족 중보"],
-      tags: ["샘플"],
-    },
-  ],
-  updates: [
-    {
-      title: "근황 메모를 아직 넣지 않았습니다",
-      body: "data/private/mokjang-pilot.json 파일을 두면 실제 목장 데이터가 여기에 반영됩니다.",
-      note: "개인 중보 내용은 로컬 전용 파일로 관리합니다.",
-    },
-  ],
+  households: [],
+  updates: [],
   followUps: [
     {
-      title: "실제 목장 데이터 연결",
-      note: "개인 중보 내용을 로컬 파일로 넣으면 후속 연락 큐도 같이 살아납니다.",
+      title: "첫 목원 등록 시작",
+      note: "목원 등록 섹션부터 채우고, 이어서 후속 관리와 가정별 중보를 연결합니다.",
       due: "오늘",
       priority: "중간",
-      owner: "리더",
+      owner: "목장",
     },
   ],
 };
