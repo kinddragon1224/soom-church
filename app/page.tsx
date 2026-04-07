@@ -26,12 +26,15 @@ export default async function HomePage() {
   const currentUserId = loggedIn ? await getCurrentUserId() : null;
   const currentUser = currentUserId ? await prisma.user.findUnique({ where: { id: currentUserId }, select: { email: true } }) : null;
   const adminMode = isPlatformAdminEmail(currentUser?.email);
+  const appLoginHref = "/login?next=%2Fapp";
   const headerCtaHref = loggedIn ? "/app" : "/signup";
   const headerCtaLabel = loggedIn ? "워크스페이스" : "회원가입";
   const heroPrimaryHref = loggedIn ? "/app" : "/signup";
   const heroPrimaryLabel = loggedIn ? "워크스페이스 열기" : "무료로 시작하기";
-  const workspaceCardHref = loggedIn ? "/app" : "/workspace";
-  const workspaceCardLabel = loggedIn ? "내 워크스페이스" : "워크스페이스 체험";
+  const heroSecondaryHref = loggedIn ? "/app" : appLoginHref;
+  const heroSecondaryLabel = loggedIn ? "내 워크스페이스" : "로그인 후 워크스페이스";
+  const workspaceCardHref = loggedIn ? "/app" : appLoginHref;
+  const workspaceCardLabel = loggedIn ? "내 워크스페이스" : "로그인 후 워크스페이스";
 
   return (
     <main className="min-h-screen cursor-default select-none bg-[#050b16] text-white">
@@ -58,8 +61,8 @@ export default async function HomePage() {
                   {heroPrimaryLabel}
                 </Link>
                 {!loggedIn ? (
-                  <Link href="/workspace" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-medium text-white">
-                    워크스페이스 보기
+                  <Link href={heroSecondaryHref} className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-medium text-white">
+                    {heroSecondaryLabel}
                   </Link>
                 ) : null}
               </div>
