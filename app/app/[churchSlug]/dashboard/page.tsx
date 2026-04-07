@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
+import GidoDashboardPage from "./gido-dashboard";
 
 const statusTone: Record<string, string> = {
   새가족: "bg-[#E8F1FF] text-[#295FA8] border-[#C9DCF8]",
@@ -21,6 +22,10 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   if (!membership) return null;
 
   const church = membership.church;
+  if (church.slug === "gido") {
+    return <GidoDashboardPage />;
+  }
+
   const base = `/app/${church.slug}`;
   const [summary, structure] = await Promise.all([
     getWorkspaceDashboardData(church.id),
