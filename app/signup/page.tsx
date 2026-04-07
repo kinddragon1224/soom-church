@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { isLoggedIn } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { isLoggedIn } from "@/lib/auth";
+import SignupForm from "@/components/auth/signup-form";
 
 export default async function SignupPage({
   searchParams,
@@ -14,52 +13,48 @@ export default async function SignupPage({
   const error = searchParams?.error;
 
   return (
-    <main className="mx-auto flex min-h-[70vh] w-full max-w-2xl flex-col justify-center px-4 py-10 sm:px-6">
-      <Card className="p-5">
-        <h1 className="text-2xl font-bold">무료로 워크스페이스 시작하기</h1>
-        <p className="mt-2 text-sm text-muted-foreground">기본 계정을 만들고 로그인한 뒤, 교회와 사역팀을 위한 워크스페이스를 무료로 시작하세요.</p>
+    <main className="relative min-h-screen overflow-hidden bg-[#fbfaf7] text-[#171717]">
+      <div className="absolute left-5 top-5 text-[1.05rem] font-medium tracking-[-0.04em] text-[#2a2a2a] sm:left-7 sm:top-6">
+        soom workspace
+      </div>
 
-        {error === "required" ? (
-          <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            이름, 이메일, 비밀번호를 모두 입력해 주세요.
+      <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4 py-16">
+        <div className="w-full max-w-[440px]">
+          <div className="mb-6 text-center">
+            <h1 className="text-[1.8rem] font-semibold tracking-[-0.06em] text-[#1d1d1d]">워크스페이스 시작하기</h1>
+            <p className="mt-2 text-sm leading-6 text-[#857b71]">기본 계정을 만들고 바로 목장과 교회 운영 화면으로 들어가.</p>
+            <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-[#8a8177]">
+              <span className="rounded-full border border-[#ece4d7] bg-white px-2.5 py-1">무료 시작</span>
+              <span className="rounded-full border border-[#ece4d7] bg-white px-2.5 py-1">바로 워크스페이스 생성</span>
+            </div>
           </div>
-        ) : null}
-        {error === "exists" ? (
-          <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            이미 가입된 이메일입니다. 로그인하거나 다른 이메일을 사용해 주세요.
-          </div>
-        ) : null}
-        {error === "weak_password" ? (
-          <div className="mt-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            비밀번호는 8자 이상으로 입력해 주세요.
-          </div>
-        ) : null}
 
-        <form action="/api/signup" method="post" className="mt-5 grid gap-3 sm:grid-cols-2">
-          <input name="name" required placeholder="이름" className="rounded-md border border-border px-3 py-2 text-sm" />
-          <input name="email" type="email" required placeholder="이메일" className="rounded-md border border-border px-3 py-2 text-sm" />
-          <input name="churchName" required placeholder="교회 이름" className="rounded-md border border-border px-3 py-2 text-sm sm:col-span-2" />
-          <select name="role" defaultValue="" className="rounded-md border border-border px-3 py-2 text-sm">
-            <option value="" disabled>직분 / 역할</option>
-            <option value="PASTOR">목회자</option>
-            <option value="ADMIN">행정 / 사무국</option>
-            <option value="LEADER">리더 / 사역자</option>
-            <option value="VIEWER">기타</option>
-          </select>
-          <input name="ministry" placeholder="부서 또는 팀 (선택)" className="rounded-md border border-border px-3 py-2 text-sm" />
-          <input name="password" type="password" required placeholder="비밀번호" className="rounded-md border border-border px-3 py-2 text-sm sm:col-span-2" />
-          <Button type="submit" className="sm:col-span-2">회원가입하고 워크스페이스 만들기</Button>
-        </form>
+          <section className="rounded-[28px] border border-[#ece4d7] bg-white px-6 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-7">
+            <SignupForm error={error} />
 
-        <div className="mt-4 rounded-md border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
-          가입하면 바로 기본 워크스페이스가 만들어지고, 사람·신청·공지 흐름부터 시작할 수 있어요.
+            <div className="mt-4 rounded-[16px] border border-[#ebe3d8] bg-[#faf7f2] px-4 py-3 text-sm leading-6 text-[#6f6458]">
+              가입하면 첫 워크스페이스가 바로 만들어지고, 로그인 없이 바로 들어가게 연결할게.
+            </div>
+
+            <div className="mt-5 text-center text-[11px] text-[#8e867c]">
+              <span>이미 계정이 있다면 </span>
+              <Link href="/login" className="font-medium text-[#2a2a2a] underline underline-offset-4">
+                로그인
+              </Link>
+            </div>
+          </section>
         </div>
+      </div>
 
-        <div className="mt-4 flex flex-wrap gap-2 text-sm">
-          <Link href="/login" className="rounded-md border border-border px-3 py-2">이미 계정이 있다면 로그인</Link>
-          <Link href="/app/soom-dev/dashboard" className="rounded-md border border-border px-3 py-2">개발용 워크스페이스 보기</Link>
-        </div>
-      </Card>
+      <div className="absolute bottom-5 left-0 right-0 text-center text-[11px] text-[#9d948a]">
+        <Link href="/terms" className="hover:text-[#2a2a2a]">
+          서비스 약관
+        </Link>
+        <span className="mx-1.5">및</span>
+        <Link href="/privacy" className="hover:text-[#2a2a2a]">
+          개인정보처리방침
+        </Link>
+      </div>
     </main>
   );
 }
