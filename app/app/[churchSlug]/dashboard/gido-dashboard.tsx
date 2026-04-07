@@ -26,7 +26,7 @@ export default async function GidoDashboardPage({
 
   const steps = [
     { label: "목원 상태 확인", action: "보기", href: `${base}/members`, done: data.members.length > 0 },
-    { label: "이번 주 후속 정리", action: "열기", href: `${base}/dashboard#followups`, done: data.followUps.length > 0 },
+    { label: "이번 주 후속 정리", action: "열기", href: `${base}/followups`, done: data.followUps.length > 0 || data.members.some((member) => member.requiresFollowUp) },
     { label: "근황 기록 확인", action: "열기", href: `${base}/dashboard#updates`, done: data.updates.length > 0 },
     { label: "새 목원 등록", action: "추가", href: `${base}/members/new`, done: false },
   ];
@@ -100,7 +100,7 @@ export default async function GidoDashboardPage({
         <MiniCard
           title="후속 확인"
           desc="이번 주 챙겨야 하는 사람과 일정만 따로 모아서 봐."
-          href={`${base}/dashboard#followups`}
+          href={`${base}/followups`}
         />
         <MiniCard
           title="가정별 중보"
@@ -111,7 +111,7 @@ export default async function GidoDashboardPage({
 
       <section id="followups" className="grid gap-4 xl:grid-cols-[0.98fr_1.02fr]">
         <section className="rounded-[28px] border border-[#ebe4d8] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
-          <Header title="이번 주 챙길 사람" count={`${data.followUps.length}건`} />
+          <Header title="후속 미리보기" count={`${data.followUps.length}건`} actionHref={`${base}/followups`} actionLabel="전체 보기" />
           <div className="mt-4 space-y-3">
             {urgentFollowUps.map((item) => (
               <article key={`${item.title}-${item.due}`} className="rounded-[18px] border border-[#eee8de] bg-[#fcfbf8] p-4">
@@ -184,11 +184,24 @@ export default async function GidoDashboardPage({
   );
 }
 
-function Header({ title, count }: { title: string; count?: string }) {
+function Header({
+  title,
+  count,
+  actionHref,
+  actionLabel,
+}: {
+  title: string;
+  count?: string;
+  actionHref?: string;
+  actionLabel?: string;
+}) {
   return (
     <div className="flex items-center justify-between gap-3">
       <h2 className="text-[1.25rem] font-semibold tracking-[-0.04em] text-[#111111]">{title}</h2>
-      {count ? <span className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">{count}</span> : null}
+      <div className="flex items-center gap-2">
+        {count ? <span className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">{count}</span> : null}
+        {actionHref && actionLabel ? <Link href={actionHref} className="rounded-full border border-[#ebe2d5] bg-white px-3 py-1 text-[11px] text-[#6f6256]">{actionLabel}</Link> : null}
+      </div>
     </div>
   );
 }

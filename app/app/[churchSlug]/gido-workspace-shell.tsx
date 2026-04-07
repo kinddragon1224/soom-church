@@ -14,7 +14,7 @@ type GidoWorkspaceShellProps = {
 const sidebarItems = (base: string) => [
   { label: "홈", href: `${base}/dashboard` },
   { label: "목원", href: `${base}/members` },
-  { label: "후속", href: `${base}/dashboard#followups` },
+  { label: "후속", href: `${base}/followups` },
   { label: "중보", href: `${base}/dashboard#households` },
   { label: "근황", href: `${base}/dashboard#updates` },
 ];
