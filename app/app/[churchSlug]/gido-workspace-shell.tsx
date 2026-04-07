@@ -34,13 +34,15 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
     <main className="min-h-screen bg-[#f6f4ef] text-[#171717]">
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[248px] shrink-0 flex-col bg-[#0b0b0c] px-4 py-5 text-white lg:flex">
-          <div className="flex items-center justify-between px-1">
+          <div className="px-1">
             <Link href={base} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
               soom workspace
             </Link>
-            <div className="flex items-center gap-2 text-white/36">
-              <SidebarGlyph name="bell" compact />
-              <SidebarGlyph name="spark" compact />
+            <div className="mt-2 flex items-center gap-2">
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] tracking-[0.16em] text-white/42">
+                G.I.D.O
+              </span>
+              <span className="text-[11px] text-white/34">목장 운영</span>
             </div>
           </div>
 
@@ -144,7 +146,7 @@ function SidebarGlyph({
   name,
   compact = false,
 }: {
-  name: "home" | "dashboard" | "members" | "followups" | "households" | "updates" | "bell" | "spark" | "profile" | "help";
+  name: "home" | "dashboard" | "members" | "followups" | "households" | "updates" | "spark" | "profile" | "help";
   compact?: boolean;
 }) {
   const size = compact ? 12 : 14;
@@ -172,8 +174,6 @@ function SidebarGlyph({
       return <svg {...common}><path d="M4 11.5 12 5l8 6.5" /><path d="M6 10.5V20h12v-9.5" /><path d="M10 20v-5h4v5" /></svg>;
     case "updates":
       return <svg {...common}><path d="M14 3h7v7" /><path d="M10 14 21 3" /><path d="M21 14v7h-7" /><path d="M3 10 14 21" /></svg>;
-    case "bell":
-      return <svg {...common}><path d="M15 17H5.5c1.2-1.1 2-2.7 2-4.5V10a4.5 4.5 0 1 1 9 0v2.5c0 1.8.8 3.4 2 4.5H15" /><path d="M10 20a2 2 0 0 0 4 0" /></svg>;
     case "spark":
       return <svg {...common}><path d="m12 3 1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7z" /></svg>;
     case "profile":
