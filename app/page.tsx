@@ -26,6 +26,12 @@ export default async function HomePage() {
   const currentUserId = loggedIn ? await getCurrentUserId() : null;
   const currentUser = currentUserId ? await prisma.user.findUnique({ where: { id: currentUserId }, select: { email: true } }) : null;
   const adminMode = isPlatformAdminEmail(currentUser?.email);
+  const headerCtaHref = loggedIn ? "/app" : "/signup";
+  const headerCtaLabel = loggedIn ? "워크스페이스" : "회원가입";
+  const heroPrimaryHref = loggedIn ? "/app" : "/signup";
+  const heroPrimaryLabel = loggedIn ? "워크스페이스 열기" : "무료로 시작하기";
+  const workspaceCardHref = loggedIn ? "/app" : "/workspace";
+  const workspaceCardLabel = loggedIn ? "내 워크스페이스" : "워크스페이스 체험";
 
   return (
     <main className="min-h-screen cursor-default select-none bg-[#050b16] text-white">
@@ -37,7 +43,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,11,22,0.34)_0%,rgba(5,11,22,0.4)_28%,rgba(5,11,22,0.92)_100%)] sm:bg-[linear-gradient(180deg,rgba(5,11,22,0.24)_0%,rgba(5,11,22,0.34)_28%,rgba(5,11,22,0.88)_100%)]" />
 
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-5 pb-6 pt-3 sm:min-h-screen sm:px-8 lg:px-10">
-          <SiteHeader theme="dark" current="home" ctaHref="/signup" ctaLabel="회원가입" loggedIn={loggedIn} adminMode={adminMode} />
+          <SiteHeader theme="dark" current="home" ctaHref={headerCtaHref} ctaLabel={headerCtaLabel} loggedIn={loggedIn} adminMode={adminMode} />
 
           <div className="flex flex-1 items-center justify-center py-14 sm:py-20 lg:py-24">
             <div className="max-w-5xl text-center">
@@ -48,12 +54,14 @@ export default async function HomePage() {
                 워크스페이스
               </h1>
               <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link href="/signup" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
-                  무료로 시작하기
+                <Link href={heroPrimaryHref} className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
+                  {heroPrimaryLabel}
                 </Link>
-                <Link href="/workspace" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-medium text-white">
-                  워크스페이스 보기
-                </Link>
+                {!loggedIn ? (
+                  <Link href="/workspace" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-6 text-sm font-medium text-white">
+                    워크스페이스 보기
+                  </Link>
+                ) : null}
               </div>
             </div>
           </div>
@@ -100,12 +108,12 @@ export default async function HomePage() {
                 </div>
               </Link>
               <div className="grid gap-4">
-                <Link href="/workspace" className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
+                <Link href={workspaceCardHref} className="group overflow-hidden rounded-[32px] bg-[#111111] shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5">
                   <div className="relative h-[202px] overflow-hidden">
                     <img src="/home-workspace-card.jpg" alt="Soom workspace" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,17,0.04)_0%,rgba(17,17,17,0.18)_35%,rgba(17,17,17,0.9)_100%)]" />
                     <div className="absolute inset-x-0 bottom-0 p-5">
-                      <p className="mt-2 text-[1.18rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">워크스페이스 체험</p>
+                      <p className="mt-2 text-[1.18rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">{workspaceCardLabel}</p>
                     </div>
                   </div>
                 </Link>
