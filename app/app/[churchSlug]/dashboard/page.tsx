@@ -23,7 +23,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
   const church = membership.church;
   if (church.slug === "gido") {
-    return <GidoDashboardPage />;
+    return <GidoDashboardPage churchId={church.id} />;
   }
 
   const base = `/app/${church.slug}`;
