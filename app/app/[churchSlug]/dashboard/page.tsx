@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { prisma } from "@/lib/prisma";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
 import GidoDashboardPage from "./gido-dashboard";
@@ -18,12 +19,13 @@ function badgeClass(statusTag: string) {
 }
 
 export default async function ChurchDashboardPage({ params }: { params: { churchSlug: string } }) {
-  const { membership } = await requireWorkspaceMembership(params.churchSlug);
+  const { userId, membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) return null;
 
   const church = membership.church;
   if (church.slug === "gido") {
-    return <GidoDashboardPage churchId={church.id} />;
+    const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
+    return <GidoDashboardPage churchId={church.id} base={`/app/${church.slug}`} currentUserName={currentUser?.name ?? undefined} />;
   }
 
   const base = `/app/${church.slug}`;

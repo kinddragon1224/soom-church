@@ -32,6 +32,7 @@ type NavItem = {
 type WorkspaceShellProps = {
   church: { name: string; slug: string };
   role: string;
+  currentUserName?: string;
   summary: {
     totalMembers: number;
     newThisMonth: number;
@@ -42,13 +43,13 @@ type WorkspaceShellProps = {
   children: React.ReactNode;
 };
 
-export function WorkspaceShell({ church, role, summary, children }: WorkspaceShellProps) {
+export function WorkspaceShell({ church, role, currentUserName, summary, children }: WorkspaceShellProps) {
   const pathname = usePathname();
   const base = `/app/${church.slug}`;
 
   if (church.slug === "gido") {
     return (
-      <GidoWorkspaceShell base={base} church={church} role={role} summary={summary}>
+      <GidoWorkspaceShell base={base} church={church} role={role} currentUserName={currentUserName}>
         {children}
       </GidoWorkspaceShell>
     );

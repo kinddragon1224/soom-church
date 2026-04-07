@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { prisma } from "@/lib/prisma";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { WorkspaceShell } from "./workspace-shell";
 
@@ -13,7 +14,7 @@ export default async function ChurchWorkspaceLayout({
   children: React.ReactNode;
   params: { churchSlug: string };
 }) {
-  const { membership } = await requireWorkspaceMembership(params.churchSlug);
+  const { userId, membership } = await requireWorkspaceMembership(params.churchSlug);
 
   if (!membership) {
     return (
@@ -30,12 +31,16 @@ export default async function ChurchWorkspaceLayout({
     );
   }
 
-  const summary = await getWorkspaceDashboardData(membership.church.id);
+  const [summary, currentUser] = await Promise.all([
+    getWorkspaceDashboardData(membership.church.id),
+    prisma.user.findUnique({ where: { id: userId }, select: { name: true } }),
+  ]);
 
   return (
     <WorkspaceShell
       church={membership.church}
       role={membership.role}
+      currentUserName={currentUser?.name ?? undefined}
       summary={{
         totalMembers: summary.totalMembers,
         newThisMonth: summary.newThisMonth,
