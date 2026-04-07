@@ -16,22 +16,38 @@ type Props = {
   filter?: string;
 };
 
+type DecoratedMember = GidoMemberRow & {
+  leadership: ReturnType<typeof getGidoLeadershipProfile>;
+};
+
 export default function GidoMembersPage({ churchSlug, members, q = "", filter = "all" }: Props) {
   const query = q.trim().toLowerCase();
 
-  const decoratedMembers = members.map((member) => {
+  const decoratedMembers: DecoratedMember[] = members.map((member) => {
     const leadership = getGidoLeadershipProfile(member.name, member.household?.name);
     return { ...member, leadership };
   });
 
+  const rankedMembers = [...decoratedMembers].sort((a, b) => {
+    const scoreDiff = getPriorityScore(b) - getPriorityScore(a);
+    if (scoreDiff !== 0) return scoreDiff;
+    if (a.requiresFollowUp !== b.requiresFollowUp) return a.requiresFollowUp ? -1 : 1;
+    if (a.leadership.isActiveLeader !== b.leadership.isActiveLeader) return a.leadership.isActiveLeader ? -1 : 1;
+    if (a.leadership.isRotationHousehold !== b.leadership.isRotationHousehold) return a.leadership.isRotationHousehold ? -1 : 1;
+    return a.name.localeCompare(b.name, "ko-KR");
+  });
+
+  const priorityMembers = rankedMembers.filter((member) => getPriorityScore(member) > 0);
+
   const counts = {
     all: decoratedMembers.length,
+    priority: priorityMembers.length,
     leaders: decoratedMembers.filter((member) => member.leadership.isActiveLeader).length,
     rotation: decoratedMembers.filter((member) => member.leadership.isRotationHousehold).length,
     followup: decoratedMembers.filter((member) => member.requiresFollowUp).length,
   };
 
-  const filteredMembers = decoratedMembers.filter((member) => {
+  const filteredMembers = rankedMembers.filter((member) => {
     const matchesQuery =
       !query ||
       [member.name, member.phone, member.email ?? "", member.household?.name ?? "", member.statusTag]
@@ -40,13 +56,15 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
         .includes(query);
 
     const matchesFilter =
-      filter === "leaders"
-        ? member.leadership.isActiveLeader
-        : filter === "rotation"
-          ? member.leadership.isRotationHousehold
-          : filter === "followup"
-            ? member.requiresFollowUp
-            : true;
+      filter === "priority"
+        ? getPriorityScore(member) > 0
+        : filter === "leaders"
+          ? member.leadership.isActiveLeader
+          : filter === "rotation"
+            ? member.leadership.isRotationHousehold
+            : filter === "followup"
+              ? member.requiresFollowUp
+              : true;
 
     return matchesQuery && matchesFilter;
   });
@@ -59,12 +77,14 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
   const filterItems = [
     { key: "all", label: "전체", value: counts.all },
+    { key: "priority", label: "운영 우선", value: counts.priority },
     { key: "leaders", label: "현 목자", value: counts.leaders },
     { key: "rotation", label: "순환 진행", value: counts.rotation },
     { key: "followup", label: "후속 필요", value: counts.followup },
   ];
 
   const qParam = q ? `&q=${encodeURIComponent(q)}` : "";
+  const priorityQueue = (filter === "priority" ? filteredMembers : priorityMembers).slice(0, filter === "priority" ? 6 : 4);
 
   return (
     <div className="flex flex-col gap-5 text-[#111111]">
@@ -111,6 +131,65 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
           </div>
         </div>
       </section>
+
+      {priorityQueue.length > 0 ? (
+        <section className={`rounded-[24px] border bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] ${filter === "priority" ? "border-[#d9cfbf]" : "border-[#e6dfd5]"}`}>
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY QUEUE</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 볼 목원</h2>
+              <p className="mt-2 text-sm leading-6 text-[#5f564b]">후속, 현 목자, 순환 진행 가정을 먼저 올려서 오늘 운영 흐름이 바로 보이게 했어.</p>
+            </div>
+            <span className="inline-flex h-9 items-center rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 text-[11px] text-[#6f6256]">
+              {filter === "priority" ? `운영 우선 ${filteredMembers.length}명` : `지금 먼저 볼 사람 ${priorityMembers.length}명`}
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
+            {priorityQueue.map((member) => {
+              const reason = getPriorityReason(member);
+              const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
+              const secondaryLabel = member.requiresFollowUp ? "후속 보드" : "가정 흐름";
+
+              return (
+                <article key={`priority-${member.id}`} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-base font-semibold text-[#111111]">{member.name}</p>
+                      <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "가정 연결 전"} · {member.statusTag}</p>
+                    </div>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(reason.tone)}`}>{reason.title}</span>
+                  </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7d705f]">
+                    {member.leadership.tags.length > 0 ? (
+                      member.leadership.tags.map((tag) => (
+                        <span key={`${member.id}-${tag}`} className={`rounded-full px-2.5 py-1 ${tag === "현 목자" ? "bg-[#111827] text-white" : "border border-[#e4dbc9] bg-white text-[#6f6256]"}`}>
+                          {tag}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[#6f6256]">목원</span>
+                    )}
+                    {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[#8C6A2E]">후속 필요</span> : null}
+                  </div>
+
+                  <p className="mt-3 text-sm leading-6 text-[#5f564b]">{reason.body}</p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link href={`/app/${churchSlug}/members/${member.id}`} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                      상세 관리
+                    </Link>
+                    <Link href={secondaryHref} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
+                      {secondaryLabel}
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
         <article className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
@@ -259,4 +338,60 @@ function MetricCard({ label, value, tone = "neutral" }: { label: string; value: 
       <p className="mt-2 text-lg font-semibold text-[#111111]">{value}</p>
     </div>
   );
+}
+
+function getPriorityScore(member: DecoratedMember) {
+  let score = 0;
+  if (member.requiresFollowUp) score += 100;
+  if (member.leadership.isActiveLeader) score += 40;
+  if (member.leadership.isRotationHousehold) score += 20;
+  if (!member.household?.name) score += 10;
+  return score;
+}
+
+function getPriorityReason(member: DecoratedMember) {
+  if (member.requiresFollowUp && member.leadership.isActiveLeader) {
+    return {
+      title: "후속 + 리더",
+      body: "지금 목장 흐름을 맡고 있으면서 후속도 필요한 상태야. 오늘 제일 먼저 확인하는 게 좋아.",
+      tone: "alert" as const,
+    };
+  }
+
+  if (member.requiresFollowUp) {
+    return {
+      title: "오늘 후속",
+      body: "연락이나 체크인을 바로 남겨야 흐름이 이어져. 상세 화면에서 다음 액션까지 바로 정리하면 돼.",
+      tone: "alert" as const,
+    };
+  }
+
+  if (member.leadership.isActiveLeader) {
+    return {
+      title: "현 목자",
+      body: "지금 목장을 직접 맡고 있는 사람이라 전체 운영 흐름을 볼 때 먼저 체크하는 편이 좋아.",
+      tone: "dark" as const,
+    };
+  }
+
+  if (member.leadership.isRotationHousehold) {
+    return {
+      title: "순환 진행",
+      body: "올해 모임 진행 흐름 안에 들어가 있는 가정이야. 가정 메모와 상태를 같이 보는 게 좋아.",
+      tone: "warm" as const,
+    };
+  }
+
+  return {
+    title: "가정 연결",
+    body: "가정 연결부터 잡아두면 뒤에서 후속과 중보 흐름이 덜 꼬여.",
+    tone: "neutral" as const,
+  };
+}
+
+function getPriorityToneClasses(tone: "alert" | "dark" | "warm" | "neutral") {
+  if (tone === "alert") return "bg-[#fff4df] text-[#8C6A2E]";
+  if (tone === "dark") return "bg-[#111827] text-white";
+  if (tone === "warm") return "border border-[#e6d8bf] bg-white text-[#6f6256]";
+  return "border border-[#e4dbc9] bg-white text-[#6f6256]";
 }

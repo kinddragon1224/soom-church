@@ -132,7 +132,7 @@ export default async function GidoDashboardPage({
         </div>
         <div className="flex flex-wrap gap-2">
           <HeaderButton href={todayPrayer ? `${base}/members/${todayPrayer.id}` : `${base}/households`} tone="secondary">오늘의 중보</HeaderButton>
-          <HeaderButton href={`${base}/members`} tone="primary">목원 관리</HeaderButton>
+          <HeaderButton href={`${base}/members?filter=priority`} tone="primary">운영 우선 목원</HeaderButton>
         </div>
       </header>
 
@@ -205,7 +205,7 @@ export default async function GidoDashboardPage({
         <ActionCard title="후속 관리" desc="이번 주 먼저 연락할 사람과 후속 카드를 모아서 봐." href={`${base}/followups`} meta={`${urgentMemberCount}명`} />
         <ActionCard title="가정별 중보" desc="가정 단위 기도제목과 연락 메모를 같이 확인해." href={`${base}/households`} meta={`${data.stats.householdCount}가정`} />
         <ActionCard title="최근 근황" desc="모임 전에 공유할 소식과 메모를 여기서 정리해." href={`${base}/updates`} meta={`${data.updates.length}건`} />
-        <ActionCard title="목원 보기" desc="사람별 상세 화면으로 바로 들어가 상태를 관리해." href={`${base}/members`} meta={`${data.stats.memberCount}명`} />
+        <ActionCard title="운영 우선 목원" desc="후속, 현 목자, 순환 진행 가정을 먼저 올려서 바로 관리해." href={`${base}/members?filter=priority`} meta={`${urgentMemberCount}명 후속`} />
       </section>
     </div>
   );
