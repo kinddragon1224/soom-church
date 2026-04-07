@@ -117,30 +117,45 @@ export default function GidoMemberRecord({
       ? "순환 진행 가정"
       : "일반 목원";
 
+  const overviewItems = [
+    { label: "후속 기록", value: `${careRecords.length}건` },
+    { label: "출석 흐름", value: `${attendanceRecords.length}건` },
+    { label: "삶 상태", value: `${member.lifeStatuses.length}건` },
+    { label: "사역 이력", value: `${ministryRecords.length}건` },
+  ];
+
   return (
     <div className="flex flex-col gap-4 text-[#111111]">
       <section className="rounded-[30px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-6">
         <div className="grid gap-4 xl:grid-cols-[1.08fr_0.92fr]">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE DETAIL</p>
-            <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">{member.name}</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">
-              사람 한 명의 상태, 후속, 가정 연결, 리더 구별을 한 화면에서 바로 정리하는 G.I.D.O 전용 상세 화면이야.
-            </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[20px] bg-[#111827] text-[1.4rem] font-semibold text-white shadow-[0_12px_24px_rgba(17,24,39,0.18)]">
+                {member.name.slice(0, 1)}
+              </div>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              {leadership.tags.length > 0 ? (
-                leadership.tags.map((tag) => (
-                  <Tag key={tag} strong={tag === "현 목자"}>
-                    {tag}
-                  </Tag>
-                ))
-              ) : (
-                <Tag>목원</Tag>
-              )}
-              {member.requiresFollowUp ? <Tag tone="alert">후속 필요</Tag> : null}
-              <Tag>{member.statusTag}</Tag>
-              {member.household?.name ? <Tag>{member.household.name}</Tag> : null}
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE DETAIL</p>
+                <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">{member.name}</h1>
+                <p className="mt-2 text-sm leading-6 text-[#5f564b]">
+                  사람 한 명의 상태, 후속, 가정 연결, 리더 구별을 한 화면에서 바로 정리하는 G.I.D.O 전용 상세 화면이야.
+                </p>
+
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {leadership.tags.length > 0 ? (
+                    leadership.tags.map((tag) => (
+                      <Tag key={tag} strong={tag === "현 목자"}>
+                        {tag}
+                      </Tag>
+                    ))
+                  ) : (
+                    <Tag>목원</Tag>
+                  )}
+                  {member.requiresFollowUp ? <Tag tone="alert">후속 필요</Tag> : null}
+                  <Tag>{member.statusTag}</Tag>
+                  {member.household?.name ? <Tag>{member.household.name}</Tag> : null}
+                </div>
+              </div>
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -151,6 +166,12 @@ export default function GidoMemberRecord({
                 value={latestTouch ? formatDate(latestTouch.happenedAt) : "기록 없음"}
                 sub={latestTouch?.title ?? "후속 메모부터 시작"}
               />
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {overviewItems.map((item) => (
+                <OverviewMetric key={item.label} label={item.label} value={item.value} />
+              ))}
             </div>
           </div>
 
@@ -197,9 +218,28 @@ export default function GidoMemberRecord({
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
-        <aside className="grid gap-4">
+        <aside className="grid gap-4 xl:sticky xl:top-6 xl:self-start">
           <SurfaceCard>
             <Header title="사람 카드" caption="기본 프로필" />
+            <div className="mt-4 rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-[16px] bg-[#111827] text-lg font-semibold text-white">
+                  {member.name.slice(0, 1)}
+                </div>
+                <div>
+                  <p className="text-base font-semibold text-[#111111]">{member.name}</p>
+                  <p className="mt-1 text-xs text-[#6f6256]">{roleSummary} · {member.statusTag}</p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
+                <CompactStat label="후속 상태" value={member.requiresFollowUp ? "바로 체크" : "안정"} />
+                <CompactStat label="가족 연결" value={`${familyLinks.length}건`} />
+                <CompactStat label="기도제목" value={householdMeta.prayers?.length ? `${householdMeta.prayers.length}개` : "없음"} />
+                <CompactStat label="최근 접점" value={latestTouch ? formatDate(latestTouch.happenedAt) : "없음"} />
+              </div>
+            </div>
+
             <div className="mt-4 grid gap-3">
               <InfoRow label="전화번호" value={member.phone ?? "-"} />
               <InfoRow label="이메일" value={member.email ?? "-"} />
@@ -477,6 +517,15 @@ function HeroMetric({ label, value, sub }: { label: string; value: string; sub?:
   );
 }
 
+function OverviewMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[16px] border border-[#ece4d8] bg-white px-4 py-3">
+      <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">{label}</p>
+      <p className="mt-1.5 text-sm font-semibold text-[#111111]">{value}</p>
+    </div>
+  );
+}
+
 function FocusRow({ label, text }: { label: string; text: string }) {
   return (
     <div className="rounded-[18px] border border-[#ece4d8] bg-white p-4">
@@ -495,6 +544,15 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function CompactStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-[16px] border border-[#e7dfd3] bg-white px-3 py-2.5">
+      <p className="text-[11px] tracking-[0.14em] text-[#9a8b7a]">{label}</p>
+      <p className="mt-1 text-sm font-semibold text-[#111111]">{value}</p>
+    </div>
+  );
+}
+
 function TimelineCard({
   label,
   title,
@@ -508,12 +566,17 @@ function TimelineCard({
 }) {
   return (
     <article className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-[#111111]">{title}</p>
-        <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{label}</span>
+      <div className="flex gap-3">
+        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#111827]" />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-[#111111]">{title}</p>
+            <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">{label}</span>
+          </div>
+          <p className="mt-2 text-sm leading-6 text-[#5f564b]">{body}</p>
+          <p className="mt-2 text-[11px] text-[#8c7a5b]">{date}</p>
+        </div>
       </div>
-      <p className="mt-2 text-sm leading-6 text-[#5f564b]">{body}</p>
-      <p className="mt-2 text-[11px] text-[#8c7a5b]">{date}</p>
     </article>
   );
 }
