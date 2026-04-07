@@ -138,3 +138,7 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vercel
+
+# Private local data for church/mokjang pilot
+/data/private/
+/.local/
