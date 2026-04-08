@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS } from "@/lib/gido-leadership";
 import { buildGidoMembersView } from "@/lib/gido-members-view";
-import { getDailyPrayerTargets } from "@/lib/gido-prayer-rotation";
+import { getDailyPrayerHouseholds } from "@/lib/gido-prayer-rotation";
 import { getGidoWorkspaceData } from "@/lib/gido-workspace-data";
 import GidoHomeFeedPanel, { type GidoHomePanelItem } from "./gido-home-feed-panel";
 
@@ -18,12 +18,15 @@ export default async function GidoDashboardPage({
   const data = await getGidoWorkspaceData(churchId);
   const workspaceLabel = data.groupName;
   const urgentMemberCount = data.members.filter((member) => member.requiresFollowUp).length;
-  const dailyPrayerTargets = getDailyPrayerTargets(data.members, 2);
+  const dailyPrayerTargets = getDailyPrayerHouseholds(
+    data.households.filter((household) => household.members.length > 0),
+    2,
+  );
   const todayPrayer = dailyPrayerTargets[0] ?? null;
   const nextPrayer = dailyPrayerTargets[1] ?? null;
-  const todayPrayerHousehold = todayPrayer ? data.households.find((household) => household.title === todayPrayer.householdName) : null;
-  const prayerLead = todayPrayerHousehold?.prayers[0] ?? "오늘의 중보 메모 없음";
-  const todayPrayerHref = todayPrayer ? `${base}/members/${todayPrayer.id}?filter=priority#household-prayer` : `${base}/households`;
+  const prayerLead = todayPrayer?.prayers[0] ?? "오늘의 중보 메모 없음";
+  const todayPrayerHref = `${base}/households`;
+  const todayPrayerMembers = todayPrayer?.members.slice(0, 4).map((member) => member.name).join(", ") ?? "";
   const operationsQueue = buildGidoMembersView(
     data.members.map((member) => ({
       ...member,
@@ -59,12 +62,12 @@ export default async function GidoDashboardPage({
   const notificationItemsBase: Array<GidoHomePanelItem | null> = [
     todayPrayer
       ? {
-          key: `prayer-${todayPrayer.id}`,
+          key: `prayer-${todayPrayer.title}`,
           label: "오늘의 중보",
-          title: todayPrayer.name,
-          body: `${todayPrayer.householdName} 순서`,
+          title: todayPrayer.title,
+          body: todayPrayerMembers || "가정 구성원 확인",
           href: todayPrayerHref,
-          meta: todayPrayer.householdName,
+          meta: `${todayPrayer.members.length}명`,
           tone: "green" as const,
         }
       : null,
@@ -107,7 +110,7 @@ export default async function GidoDashboardPage({
           <p className="mt-1 text-[13px] leading-6 text-[#6f6458]">{currentUserName ? `${currentUserName} 계정` : "워크스페이스"}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <HeaderButton href={todayPrayerHref} tone="secondary">오늘의 중보</HeaderButton>
+          <HeaderButton href={todayPrayerHref} tone="secondary">오늘의 중보 가정</HeaderButton>
           <HeaderButton href={`${base}/members?filter=priority`} tone="primary">운영 우선 목원</HeaderButton>
         </div>
       </header>
@@ -162,21 +165,22 @@ export default async function GidoDashboardPage({
             <div>
               <p className="text-[10px] tracking-[0.16em] text-white/68">TODAY PRAYER</p>
               <h2 className="mt-3 text-[1.75rem] font-semibold leading-[1.06] tracking-[-0.05em]">
-                {todayPrayer ? todayPrayer.name : workspaceLabel}
+                {todayPrayer ? todayPrayer.title : workspaceLabel}
               </h2>
-              <p className="mt-2 text-[12px] text-white/74">{todayPrayer ? todayPrayer.householdName : "오늘 중보 대상 없음"}</p>
+              <p className="mt-2 text-[12px] text-white/74">{todayPrayer ? `${todayPrayer.members.length}명 가정` : "오늘 중보 가정 없음"}</p>
               <p className="mt-4 text-[13px] leading-6 text-white/84">{prayerLead}</p>
+              {todayPrayerMembers ? <p className="mt-3 text-[12px] text-white/68">구성원 {todayPrayerMembers}</p> : null}
             </div>
 
             <div className="mt-6 grid gap-2 text-[11px] text-white/82">
               <span className="rounded-full border border-white/14 bg-white/10 px-2.5 py-1">전체 {data.stats.memberCount}명 순환</span>
               <span className="rounded-full border border-white/14 bg-white/10 px-2.5 py-1">현 목자 {GIDO_ACTIVE_LEADER_NAMES.length}명 포함</span>
-              {nextPrayer ? <span className="rounded-full border border-white/14 bg-white/10 px-2.5 py-1">다음 순서 {nextPrayer.name}</span> : null}
+              {nextPrayer ? <span className="rounded-full border border-white/14 bg-white/10 px-2.5 py-1">다음 순서 {nextPrayer.title}</span> : null}
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
               <Link href={todayPrayerHref} className="inline-flex h-10 items-center rounded-[12px] bg-white px-4 text-[13px] font-medium text-[#111827]">
-                오늘 중보 보기
+                오늘 중보 가정
               </Link>
               <Link href={`${base}/households`} className="inline-flex h-10 items-center rounded-[12px] border border-white/18 bg-white/10 px-4 text-[13px] font-medium text-white">
                 중보 보기

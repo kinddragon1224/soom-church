@@ -3,6 +3,10 @@ export type GidoPrayerRotationMember = {
   householdName: string;
 };
 
+export type GidoPrayerRotationHousehold = {
+  title: string;
+};
+
 export function getDailyPrayerTargets<T extends GidoPrayerRotationMember>(members: T[], count: number) {
   if (members.length === 0) return [] as T[];
 
@@ -17,6 +21,17 @@ export function getDailyPrayerTargets<T extends GidoPrayerRotationMember>(member
   const startIndex = seed % sortedMembers.length;
 
   return Array.from({ length: Math.min(count, sortedMembers.length) }, (_, index) => sortedMembers[(startIndex + index) % sortedMembers.length]);
+}
+
+export function getDailyPrayerHouseholds<T extends GidoPrayerRotationHousehold>(households: T[], count: number) {
+  if (households.length === 0) return [] as T[];
+
+  const sortedHouseholds = [...households].sort((a, b) => a.title.localeCompare(b.title, "ko-KR"));
+  const dateKey = getSeoulDateKey();
+  const seed = Number(dateKey.replace(/-/g, ""));
+  const startIndex = seed % sortedHouseholds.length;
+
+  return Array.from({ length: Math.min(count, sortedHouseholds.length) }, (_, index) => sortedHouseholds[(startIndex + index) % sortedHouseholds.length]);
 }
 
 export function getSeoulDateKey(date = new Date()) {
