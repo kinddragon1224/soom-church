@@ -57,6 +57,12 @@ function parseJson<T>(value?: string | null): T | null {
   }
 }
 
+type QuickJumpItem = {
+  label: string;
+  href: string;
+  tone?: "primary" | "secondary";
+};
+
 export default function GidoMemberRecord({
   churchSlug,
   member,
@@ -136,6 +142,22 @@ export default function GidoMemberRecord({
     { label: "사역 이력", value: `${ministryRecords.length}건` },
   ];
 
+  const quickJumpItems: QuickJumpItem[] = [
+    {
+      label: member.requiresFollowUp ? "후속 기록" : "메모 남기기",
+      href: "#care-log",
+      tone: "primary",
+    },
+    {
+      label: !member.household?.name || familyLinks.length === 0 ? "가족 연결" : "가족 보기",
+      href: "#family-links",
+    },
+    {
+      label: householdMeta.prayers?.length ? "가정 중보" : "출석 확인",
+      href: householdMeta.prayers?.length ? "#household-prayer" : "#attendance-log",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-4 text-[#111111]">
       <section className="rounded-[30px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-6">
@@ -187,7 +209,7 @@ export default function GidoMemberRecord({
             </div>
           </div>
 
-          <div className="rounded-[24px] border border-[#ece4d8] bg-[#fbfaf7] p-5">
+          <div id="today-check" className="rounded-[24px] border border-[#ece4d8] bg-[#fbfaf7] p-5 scroll-mt-6">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">TODAY CHECK</p>
@@ -227,6 +249,22 @@ export default function GidoMemberRecord({
             <div className="mt-4 grid gap-3">
               {focusItems.map((item) => (
                 <FocusRow key={`${item.label}-${item.text}`} label={item.label} text={item.text} />
+              ))}
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {quickJumpItems.map((item) => (
+                <Link
+                  key={`${item.label}-${item.href}`}
+                  href={item.href}
+                  className={`rounded-[12px] px-3.5 py-2 text-sm font-medium ${
+                    item.tone === "primary"
+                      ? "bg-[#111827] text-white"
+                      : "border border-[#E7E0D4] bg-white text-[#121212]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
               ))}
             </div>
 
@@ -330,7 +368,7 @@ export default function GidoMemberRecord({
 
         <div className="grid gap-4">
           <section className="grid gap-4 2xl:grid-cols-[1.02fr_0.98fr]">
-            <SurfaceCard>
+            <SurfaceCard id="care-log">
               <Header title="후속 / 메모" caption="바로 기록" />
               <form action={addCareRecord.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[140px_minmax(0,1fr)_140px_auto]">
                 <select name="category" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
@@ -364,7 +402,7 @@ export default function GidoMemberRecord({
               </div>
             </SurfaceCard>
 
-            <SurfaceCard>
+            <SurfaceCard id="family-links">
               <Header title="가족 / 연결" caption="가정 안에서 보기" />
               <form action={createFamilyLink.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 lg:grid-cols-[minmax(0,1.2fr)_170px_1fr_auto]">
                 <select name="relatedMemberId" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" defaultValue="">
@@ -410,7 +448,7 @@ export default function GidoMemberRecord({
           </section>
 
           <section className="grid gap-4 2xl:grid-cols-[0.92fr_1.08fr]">
-            <SurfaceCard>
+            <SurfaceCard id="attendance-log">
               <Header title="출석 관리" caption="예배와 모임" />
               <form action={addAttendanceRecord.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[150px_130px_minmax(0,1fr)_140px_auto]">
                 <select name="attendanceType" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
@@ -449,7 +487,7 @@ export default function GidoMemberRecord({
             </SurfaceCard>
 
             <div className="grid gap-4">
-              <SurfaceCard>
+              <SurfaceCard id="household-prayer">
                 <Header title="가정별 중보" caption="같이 챙길 것" />
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <InfoRow label="가정 이름" value={member.household?.name ?? "미분류"} />
@@ -488,7 +526,7 @@ export default function GidoMemberRecord({
                 </div>
               </SurfaceCard>
 
-              <SurfaceCard>
+              <SurfaceCard id="life-status">
                 <Header title="삶 상태 / 사역" caption="깊은 관리" />
                 <div className="grid gap-3 lg:grid-cols-2">
                   <div className="grid gap-3">
@@ -534,8 +572,12 @@ export default function GidoMemberRecord({
   );
 }
 
-function SurfaceCard({ children }: { children: ReactNode }) {
-  return <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">{children}</section>;
+function SurfaceCard({ children, id }: { children: ReactNode; id?: string }) {
+  return (
+    <section id={id} className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] scroll-mt-6">
+      {children}
+    </section>
+  );
 }
 
 function Header({ title, caption }: { title: string; caption?: string }) {

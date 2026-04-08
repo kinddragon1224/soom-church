@@ -31,11 +31,40 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
     q,
   });
 
-  const buildMemberHref = (memberId: string, nextFilter = activeFilter) => {
+  const buildMemberHref = (memberId: string, nextFilter = activeFilter, hash?: string) => {
     const params = new URLSearchParams();
     params.set("filter", nextFilter);
     if (q) params.set("q", q);
-    return `/app/${churchSlug}/members/${memberId}?${params.toString()}`;
+    const href = `/app/${churchSlug}/members/${memberId}?${params.toString()}`;
+    return hash ? `${href}#${hash}` : href;
+  };
+
+  const getPrimaryAction = (member: typeof decoratedMembers[number], nextFilter = activeFilter) => {
+    if (!member.household?.name) {
+      return {
+        href: buildMemberHref(member.id, nextFilter, "family-links"),
+        label: "가정 연결",
+      };
+    }
+
+    if (member.requiresFollowUp) {
+      return {
+        href: buildMemberHref(member.id, nextFilter, "care-log"),
+        label: "후속 정리",
+      };
+    }
+
+    if (member.leadership.isActiveLeader || member.leadership.isRotationHousehold) {
+      return {
+        href: buildMemberHref(member.id, nextFilter, "household-prayer"),
+        label: "중보 보기",
+      };
+    }
+
+    return {
+      href: buildMemberHref(member.id, nextFilter, "today-check"),
+      label: "상세 관리",
+    };
   };
 
   const currentLeaders = decoratedMembers.filter((member) => member.leadership.isActiveLeader);
@@ -133,10 +162,10 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   </span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Link href={buildMemberHref(member.id)} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                    상세 관리
+                  <Link href={buildMemberHref(member.id, activeFilter, "household-prayer")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                    중보 보기
                   </Link>
-                  <Link href={`/app/${churchSlug}/members/${member.id}?filter=${activeFilter}#care-log`} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
+                  <Link href={buildMemberHref(member.id, activeFilter, "care-log")} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
                     메모 바로가기
                   </Link>
                 </div>
@@ -171,7 +200,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   </div>
                   <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={buildMemberHref(member.id, "followup")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                    <Link href={buildMemberHref(member.id, "followup", "care-log")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
                       후속 정리
                     </Link>
                     <Link href={`/app/${churchSlug}/followups`} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
@@ -210,8 +239,8 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   </div>
                   <p className="mt-3 text-sm leading-6 text-[#5f564b]">가정만 연결해도 중보, 후속, 순환 흐름이 덜 꼬여. 먼저 관계를 잡는 게 좋아.</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={buildMemberHref(member.id, "unassigned")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                      상세 관리
+                    <Link href={buildMemberHref(member.id, "unassigned", "family-links")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                      가정 연결
                     </Link>
                     <Link href={`/app/${churchSlug}/households`} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
                       가정 화면
@@ -241,6 +270,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
             {priorityQueue.map((member) => {
               const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
               const secondaryLabel = member.requiresFollowUp ? "후속 보드" : "가정 흐름";
+              const primaryAction = getPrimaryAction(member, "priority");
 
               return (
                 <article key={`priority-${member.id}`} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
@@ -259,8 +289,8 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={buildMemberHref(member.id, "priority")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                      상세 관리
+                    <Link href={primaryAction.href} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                      {primaryAction.label}
                     </Link>
                     <Link href={secondaryHref} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
                       {secondaryLabel}
@@ -285,7 +315,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {currentLeaders.map((member) => (
-              <Link key={member.id} href={buildMemberHref(member.id, "leaders")} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4 transition hover:border-[#d8ccba]">
+              <Link key={member.id} href={buildMemberHref(member.id, "leaders", "household-prayer")} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4 transition hover:border-[#d8ccba]">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-base font-semibold text-[#111111]">{member.name}</p>
@@ -338,11 +368,14 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {household.members.slice(0, 5).map((member) => (
-                    <Link key={`${household.name}-${member.id}`} href={buildMemberHref(member.id)} className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[11px] text-[#6f6256]">
-                      {member.name}
-                    </Link>
-                  ))}
+                  {household.members.slice(0, 5).map((member) => {
+                    const primaryAction = getPrimaryAction(member);
+                    return (
+                      <Link key={`${household.name}-${member.id}`} href={primaryAction.href} className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[11px] text-[#6f6256]">
+                        {member.name}
+                      </Link>
+                    );
+                  })}
                 </div>
               </article>
             ))}
@@ -395,12 +428,13 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                 {filteredMembers.map((member) => {
                   const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
                   const secondaryLabel = member.requiresFollowUp ? "후속" : "가정";
+                  const primaryAction = getPrimaryAction(member);
 
                   return (
                     <tr key={member.id} className="border-t border-[#f1eadf] text-[#111111] align-top">
                       <td className="px-4 py-4">
                         <div>
-                          <Link href={buildMemberHref(member.id)} className="font-semibold hover:text-[#8C6A2E]">
+                          <Link href={primaryAction.href} className="font-semibold hover:text-[#8C6A2E]">
                             {member.name}
                           </Link>
                           <p className="mt-1 text-xs text-[#8C7A5B]">{member.group?.name ?? "G.I.D.O 목장"}</p>
@@ -424,8 +458,8 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                       <td className="px-4 py-4 text-[#5f564b]">{formatDate(member.registeredAt)}</td>
                       <td className="px-4 py-4">
                         <div className="flex flex-col gap-2">
-                          <Link href={buildMemberHref(member.id)} className="rounded-[10px] border border-[#111827] bg-[#111827] px-3 py-1.5 text-center text-xs font-medium text-white">
-                            관리
+                          <Link href={primaryAction.href} className="rounded-[10px] border border-[#111827] bg-[#111827] px-3 py-1.5 text-center text-xs font-medium text-white">
+                            {primaryAction.label}
                           </Link>
                           <Link href={secondaryHref} className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#121212]">
                             {secondaryLabel}

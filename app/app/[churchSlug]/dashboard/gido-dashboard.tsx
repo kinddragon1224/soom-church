@@ -22,12 +22,13 @@ export default async function GidoDashboardPage({
   const nextPrayer = dailyPrayerTargets[1] ?? null;
   const todayPrayerHousehold = todayPrayer ? data.households.find((household) => household.title === todayPrayer.householdName) : null;
   const prayerLead = todayPrayerHousehold?.prayers[0] ?? "오늘은 이 사람의 삶과 마음, 가정의 흐름을 차분히 함께 품어보자.";
+  const todayPrayerHref = todayPrayer ? `${base}/members/${todayPrayer.id}?filter=priority#household-prayer` : `${base}/households`;
 
   const startSteps = [
     {
       step: "Step 1",
       label: "오늘의 중보 대상 확인",
-      href: todayPrayer ? `${base}/members/${todayPrayer.id}` : `${base}/households`,
+      href: todayPrayerHref,
       action: "보기",
       done: Boolean(todayPrayer),
     },
@@ -85,7 +86,7 @@ export default async function GidoDashboardPage({
           label: "오늘의 중보",
           title: todayPrayer.name,
           body: `${todayPrayer.householdName} 흐름 안에서 함께 기도할 차례야.`,
-          href: `${base}/members/${todayPrayer.id}`,
+          href: todayPrayerHref,
           meta: todayPrayer.statusTag,
           tone: "green" as const,
         }
@@ -132,7 +133,7 @@ export default async function GidoDashboardPage({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <HeaderButton href={todayPrayer ? `${base}/members/${todayPrayer.id}` : `${base}/households`} tone="secondary">오늘의 중보</HeaderButton>
+          <HeaderButton href={todayPrayerHref} tone="secondary">오늘의 중보</HeaderButton>
           <HeaderButton href={`${base}/members?filter=priority`} tone="primary">운영 우선 목원</HeaderButton>
         </div>
       </header>
@@ -191,7 +192,7 @@ export default async function GidoDashboardPage({
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
-              <Link href={todayPrayer ? `${base}/members/${todayPrayer.id}` : `${base}/households`} className="inline-flex h-10 items-center rounded-[12px] bg-white px-4 text-[13px] font-medium text-[#111827]">
+              <Link href={todayPrayerHref} className="inline-flex h-10 items-center rounded-[12px] bg-white px-4 text-[13px] font-medium text-[#111827]">
                 오늘 중보 보기
               </Link>
               <Link href={`${base}/households`} className="inline-flex h-10 items-center rounded-[12px] border border-white/18 bg-white/10 px-4 text-[13px] font-medium text-white">
