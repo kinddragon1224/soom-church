@@ -24,7 +24,7 @@ export default function GidoHomeFeedPanel({
   const [tab, setTab] = useState<"feed" | "notifications">(feedItems.length > 0 ? "feed" : "notifications");
 
   const items = useMemo(() => (tab === "feed" ? feedItems : notificationItems), [feedItems, notificationItems, tab]);
-  const emptyText = tab === "feed" ? "최근 공유할 흐름이 아직 없어." : "지금 띄울 알림이 아직 없어.";
+  const emptyText = tab === "feed" ? "표시할 피드 없음" : "표시할 알림 없음";
 
   return (
     <article className="rounded-[26px] border border-[#eee7dc] bg-white p-5 shadow-[0_6px_18px_rgba(15,23,42,0.03)] lg:p-6">

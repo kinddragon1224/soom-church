@@ -105,7 +105,7 @@ export default function GidoMemberRecord({
     member.requiresFollowUp
       ? {
           label: "후속",
-          text: "연락이나 체크인이 필요한 상태야. 오늘 바로 다음 액션을 남기는 게 좋아.",
+          text: "후속 기록 필요",
         }
       : null,
     latestTouch
@@ -115,7 +115,7 @@ export default function GidoMemberRecord({
         }
       : {
           label: "최근 접점",
-          text: "아직 기록이 없어. 첫 후속 메모부터 남기면 흐름이 살아나.",
+          text: "최근 기록 없음",
         },
     householdMeta.prayers?.[0]
       ? {
@@ -174,7 +174,7 @@ export default function GidoMemberRecord({
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE DETAIL</p>
                 <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">{member.name}</h1>
                 <p className="mt-2 text-sm leading-6 text-[#5f564b]">
-                  사람 한 명의 상태, 후속, 가정 연결, 리더 구별을 한 화면에서 바로 정리하는 G.I.D.O 전용 상세 화면이야.
+                  상태, 후속, 가정 연결, 리더 구별
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -188,7 +188,6 @@ export default function GidoMemberRecord({
                     <Tag>목원</Tag>
                   )}
                   {member.requiresFollowUp ? <Tag tone="alert">후속 필요</Tag> : null}
-                  <Tag>{member.statusTag}</Tag>
                   {member.household?.name ? <Tag>{member.household.name}</Tag> : null}
                 </div>
               </div>
@@ -324,7 +323,7 @@ export default function GidoMemberRecord({
                 </div>
                 <div>
                   <p className="text-base font-semibold text-[#111111]">{member.name}</p>
-                  <p className="mt-1 text-xs text-[#6f6256]">{roleSummary} · {member.statusTag}</p>
+                  <p className="mt-1 text-xs text-[#6f6256]">{roleSummary}</p>
                 </div>
               </div>
 
@@ -355,10 +354,10 @@ export default function GidoMemberRecord({
                 title={leadership.isActiveLeader ? "현 목자" : leadership.rotationTrack ? "순환 진행 가정" : "일반 목원"}
                 body={
                   leadership.isActiveLeader
-                    ? "지금 목장을 직접 맡고 있는 핵심 리더야. 후속과 흐름 카드에서 우선적으로 보여야 해."
+                    ? "현재 목장 운영 리더"
                     : leadership.rotationTrack
-                      ? `${leadership.rotationTrack.label} 기준으로 올해 모임 진행 흐름 안에 들어가 있어.`
-                      : "기본 목원 흐름으로 관리하면 돼. 상태, 후속, 가정 연결 중심으로 보면 돼."
+                      ? `${leadership.rotationTrack.label} 순환 진행 대상`
+                      : "일반 목원"
                 }
               />
               <InfoRow label="가정" value={member.household?.name ?? "미분류"} />
@@ -405,7 +404,7 @@ export default function GidoMemberRecord({
 
               <div className="mt-4 grid gap-3">
                 {careRecords.length === 0 ? (
-                  <EmptyBox text="아직 기록이 없어. 후속이나 심방 메모를 남기면 여기서 흐름이 바로 보여." />
+                  <EmptyBox text="기록 없음" />
                 ) : (
                   careRecords.slice(0, 8).map((record) => (
                     <TimelineCard
@@ -441,7 +440,7 @@ export default function GidoMemberRecord({
 
               <div className="mt-4 grid gap-3">
                 {familyLinks.length === 0 ? (
-                  <EmptyBox text="아직 연결된 가족 정보가 없어." />
+                  <EmptyBox text="가족 연결 없음" />
                 ) : (
                   familyLinks.map((item) => (
                     <article key={item.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
@@ -489,7 +488,7 @@ export default function GidoMemberRecord({
 
               <div className="mt-4 grid gap-3">
                 {attendanceRecords.length === 0 ? (
-                  <EmptyBox text="아직 출석 기록이 없어." />
+                  <EmptyBox text="출석 기록 없음" />
                 ) : (
                   attendanceRecords.slice(0, 8).map((record) => (
                     <TimelineCard
@@ -526,7 +525,7 @@ export default function GidoMemberRecord({
                       </ul>
                     </article>
                   ) : (
-                    <EmptyBox text="기도제목이 아직 없어." />
+                    <EmptyBox text="기도제목 없음" />
                   )}
 
                   {householdMeta.contacts?.length ? (
@@ -539,7 +538,7 @@ export default function GidoMemberRecord({
                       </div>
                     </article>
                   ) : (
-                    <EmptyBox text="연락 메모가 아직 없어." />
+                    <EmptyBox text="연락 메모 없음" />
                   )}
                 </div>
               </SurfaceCard>
@@ -560,7 +559,7 @@ export default function GidoMemberRecord({
                         />
                       ))
                     ) : (
-                      <EmptyBox text="삶 상태 기록이 아직 없어." />
+                      <EmptyBox text="삶 상태 기록 없음" />
                     )}
                   </div>
 
@@ -577,7 +576,7 @@ export default function GidoMemberRecord({
                         />
                       ))
                     ) : (
-                      <EmptyBox text="사역 기록이 아직 없어." />
+                      <EmptyBox text="사역 기록 없음" />
                     )}
                   </div>
                 </div>

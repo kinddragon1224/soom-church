@@ -22,7 +22,7 @@ export default async function GidoDashboardPage({
   const todayPrayer = dailyPrayerTargets[0] ?? null;
   const nextPrayer = dailyPrayerTargets[1] ?? null;
   const todayPrayerHousehold = todayPrayer ? data.households.find((household) => household.title === todayPrayer.householdName) : null;
-  const prayerLead = todayPrayerHousehold?.prayers[0] ?? "오늘은 이 사람의 삶과 마음, 가정의 흐름을 차분히 함께 품어보자.";
+  const prayerLead = todayPrayerHousehold?.prayers[0] ?? "오늘의 중보 메모 없음";
   const todayPrayerHref = todayPrayer ? `${base}/members/${todayPrayer.id}?filter=priority#household-prayer` : `${base}/households`;
   const operationsQueue = buildGidoMembersView(
     data.members.map((member) => ({
@@ -62,9 +62,9 @@ export default async function GidoDashboardPage({
           key: `prayer-${todayPrayer.id}`,
           label: "오늘의 중보",
           title: todayPrayer.name,
-          body: `${todayPrayer.householdName} 흐름 안에서 함께 기도할 차례야.`,
+          body: `${todayPrayer.householdName} 순서`,
           href: todayPrayerHref,
-          meta: todayPrayer.statusTag,
+          meta: todayPrayer.householdName,
           tone: "green" as const,
         }
       : null,
@@ -72,7 +72,7 @@ export default async function GidoDashboardPage({
       key: "followup-alert",
       label: "후속",
       title: urgentMemberCount > 0 ? `후속 필요한 목원 ${urgentMemberCount}명` : "급한 후속 없음",
-      body: urgentMemberCount > 0 ? "이번 주에 먼저 연락할 사람부터 확인하면 돼." : "지금은 새로운 후속 알림이 없어.",
+      body: urgentMemberCount > 0 ? "확인할 후속 대상 있음" : "새 후속 알림 없음",
       href: `${base}/followups`,
       meta: "운영 알림",
       tone: urgentMemberCount > 0 ? ("amber" as const) : ("navy" as const),
@@ -81,7 +81,7 @@ export default async function GidoDashboardPage({
       key: "updates-alert",
       label: "근황",
       title: data.updates.length > 0 ? `공유할 근황 ${data.updates.length}건` : "새 근황 없음",
-      body: data.updates.length > 0 ? "모임 전에 읽어둘 근황이 있어." : "지금은 새로 정리된 근황이 없어.",
+      body: data.updates.length > 0 ? "확인할 근황 있음" : "새 근황 없음",
       href: `${base}/updates`,
       meta: "공유 준비",
       tone: "purple" as const,
@@ -90,7 +90,7 @@ export default async function GidoDashboardPage({
       key: "rotation-alert",
       label: "진행",
       title: `순환 진행 가정 ${GIDO_ROTATION_TRACKS.length}가정`,
-      body: "올해 순환 흐름 안에서 어느 가정이 진행을 맡는지 바로 확인할 수 있어.",
+      body: "순환 진행 가정 현황",
       href: `${base}/households`,
       meta: "운영 기준",
       tone: "navy" as const,
@@ -104,10 +104,7 @@ export default async function GidoDashboardPage({
       <header className="flex flex-col gap-4 rounded-[26px] border border-[#eee7dc] bg-white px-6 py-5 shadow-[0_6px_18px_rgba(15,23,42,0.03)] lg:flex-row lg:items-center lg:justify-between lg:px-7 lg:py-6">
         <div>
           <h1 className="text-[1.85rem] font-semibold tracking-[-0.05em] text-[#111111]">Welcome, {workspaceLabel}</h1>
-          <p className="mt-1 text-[13px] leading-6 text-[#6f6458]">
-            {currentUserName ? `${currentUserName} 계정으로 들어왔어. ` : ""}
-            목장 운영에 필요한 화면만 남겼어.
-          </p>
+          <p className="mt-1 text-[13px] leading-6 text-[#6f6458]">{currentUserName ? `${currentUserName} 계정` : "워크스페이스"}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <HeaderButton href={todayPrayerHref} tone="secondary">오늘의 중보</HeaderButton>
@@ -128,7 +125,7 @@ export default async function GidoDashboardPage({
           <div className="mt-5 space-y-2.5">
             {operationsQueue.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-[#d9cfbf] bg-[#fcfbf8] px-4 py-5 text-[13px] leading-6 text-[#5f564b]">
-                지금 바로 밀어야 할 운영 우선 목원이 없어. 전체 members에서 흐름만 가볍게 확인하면 돼.
+                운영 우선 목원 없음
               </div>
             ) : (
               operationsQueue.map((member, index) => (
@@ -167,9 +164,7 @@ export default async function GidoDashboardPage({
               <h2 className="mt-3 text-[1.75rem] font-semibold leading-[1.06] tracking-[-0.05em]">
                 {todayPrayer ? todayPrayer.name : workspaceLabel}
               </h2>
-              <p className="mt-2 text-[12px] text-white/74">
-                {todayPrayer ? `${todayPrayer.householdName} · ${todayPrayer.statusTag}` : "오늘 함께 품을 중보 대상을 아직 정하지 못했어."}
-              </p>
+              <p className="mt-2 text-[12px] text-white/74">{todayPrayer ? todayPrayer.householdName : "오늘 중보 대상 없음"}</p>
               <p className="mt-4 text-[13px] leading-6 text-white/84">{prayerLead}</p>
             </div>
 
@@ -184,7 +179,7 @@ export default async function GidoDashboardPage({
                 오늘 중보 보기
               </Link>
               <Link href={`${base}/households`} className="inline-flex h-10 items-center rounded-[12px] border border-white/18 bg-white/10 px-4 text-[13px] font-medium text-white">
-                중보 흐름 보기
+                중보 보기
               </Link>
             </div>
           </div>
@@ -192,10 +187,10 @@ export default async function GidoDashboardPage({
       </section>
 
       <section className="grid gap-4 lg:grid-cols-4">
-        <ActionCard title="후속 관리" desc="이번 주 먼저 연락할 사람과 후속 카드를 모아서 봐." href={`${base}/followups`} meta={`${urgentMemberCount}명`} />
-        <ActionCard title="가정별 중보" desc="가정 단위 기도제목과 연락 메모를 같이 확인해." href={`${base}/households`} meta={`${data.stats.householdCount}가정`} />
-        <ActionCard title="최근 근황" desc="모임 전에 공유할 소식과 메모를 여기서 정리해." href={`${base}/updates`} meta={`${data.updates.length}건`} />
-        <ActionCard title="운영 우선 목원" desc="후속, 현 목자, 순환 진행 가정을 먼저 올려서 바로 관리해." href={`${base}/members?filter=priority`} meta={`${urgentMemberCount}명 후속`} />
+        <ActionCard title="후속 관리" desc="후속 대상과 카드 확인" href={`${base}/followups`} meta={`${urgentMemberCount}명`} />
+        <ActionCard title="가정별 중보" desc="가정별 기도제목과 연락 메모" href={`${base}/households`} meta={`${data.stats.householdCount}가정`} />
+        <ActionCard title="최근 근황" desc="공유할 근황과 메모" href={`${base}/updates`} meta={`${data.updates.length}건`} />
+        <ActionCard title="운영 우선 목원" desc="후속, 현 목자, 순환 진행 가정 목록" href={`${base}/members?filter=priority`} meta={`${urgentMemberCount}명 후속`} />
       </section>
     </div>
   );

@@ -72,7 +72,7 @@ export default function GidoFollowupsPage({
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O FOLLOW-UP</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">후속 관리</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">이번 주 챙길 사람과 가정, 실제 후속 메모를 한 페이지에서 정리해.</p>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">후속 대상, 후속 메모, 순환 진행 가정</p>
           </div>
 
           <div className="flex flex-wrap gap-2 xl:justify-end">
@@ -123,7 +123,7 @@ export default function GidoFollowupsPage({
 
           <div className="mt-4 grid gap-3">
             {followUps.length === 0 ? (
-              <EmptyBox text="아직 기록된 후속 카드가 없어. 가정 메타에 후속 내용을 넣으면 여기에 모여." />
+              <EmptyBox text="기록된 후속 카드 없음" />
             ) : (
               followUps.map((item) => (
                 <article key={`${item.title}-${item.due}-${item.note}`} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
@@ -167,7 +167,7 @@ export default function GidoFollowupsPage({
                   <p className="mt-1 text-sm leading-6 text-[#5f564b]">{item.body}</p>
                 </article>
               ))}
-              {updates.length === 0 ? <EmptyBox text="최근 근황 기록이 아직 없어." compact /> : null}
+              {updates.length === 0 ? <EmptyBox text="최근 근황 기록 없음" compact /> : null}
             </div>
           </div>
         </section>
@@ -198,7 +198,7 @@ export default function GidoFollowupsPage({
         {filteredMembers.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <p className="text-base font-semibold text-[#111111]">후속이 필요한 목원이 없어</p>
-            <p className="mt-2 text-sm text-[#5f564b]">좋아, 지금은 큐가 비어 있어.</p>
+            <p className="mt-2 text-sm text-[#5f564b]">현재 후속 대상 없음</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -208,7 +208,6 @@ export default function GidoFollowupsPage({
                   <th className="px-4 py-3 text-left font-medium">이름</th>
                   <th className="px-4 py-3 text-left font-medium">구별</th>
                   <th className="px-4 py-3 text-left font-medium">가정</th>
-                  <th className="px-4 py-3 text-left font-medium">상태</th>
                   <th className="px-4 py-3 text-left font-medium">연락처</th>
                   <th className="px-4 py-3 text-left font-medium">등록일</th>
                   <th className="px-4 py-3 text-left font-medium">관리</th>
@@ -232,7 +231,6 @@ export default function GidoFollowupsPage({
                       </div>
                     </td>
                     <td className="px-4 py-4 text-[#5f564b]">{member.household?.name ?? "미분류"}</td>
-                    <td className="px-4 py-4 text-[#5f564b]">{member.statusTag}</td>
                     <td className="px-4 py-4 text-[#5f564b]">{member.phone || member.email || "-"}</td>
                     <td className="px-4 py-4 text-[#5f564b]">{formatDate(member.registeredAt)}</td>
                     <td className="px-4 py-4">

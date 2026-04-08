@@ -75,7 +75,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목원 관리</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">사람 목록이 아니라, 오늘 먼저 볼 사람과 가정 연결 흐름이 같이 보이는 운영 화면으로 정리했어.</p>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">우선 확인 대상, 후속, 가정 연결</p>
           </div>
 
           <div className="flex flex-wrap gap-2 xl:justify-end">
@@ -134,7 +134,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <div>
                     <p className="text-[11px] tracking-[0.14em] text-[#9a8b7a]">DAY {index + 1}</p>
                     <p className="mt-2 text-base font-semibold text-[#111111]">{member.name}</p>
-                    <p className="mt-1 text-sm text-[#6d6259]">{member.householdName} · {member.statusTag}</p>
+                    <p className="mt-1 text-sm text-[#6d6259]">{member.householdName}</p>
                   </div>
                   <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(member.priorityReason.tone)}`}>
                     {member.priorityReason.title}
@@ -166,14 +166,14 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
           <div className="mt-4 grid gap-3">
             {followupLane.length === 0 ? (
-              <EmptyBox text="지금 바로 띄울 후속 대상이 없어. 안정 상태야." compact />
+              <EmptyBox text="표시할 후속 대상 없음" compact />
             ) : (
               followupLane.map((member) => (
                 <article key={`followup-${member.id}`} className="rounded-[18px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
-                      <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "미분류"} · {member.statusTag}</p>
+                      <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "미분류"}</p>
                     </div>
                     <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속 필요</span>
                   </div>
@@ -205,18 +205,18 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
           <div className="mt-4 grid gap-3">
             {unassignedMembers.length === 0 ? (
-              <EmptyBox text="지금은 미분류 목원이 없어. 가정 연결이 잘 잡혀 있어." compact />
+              <EmptyBox text="미분류 목원 없음" compact />
             ) : (
               unassignedMembers.slice(0, 4).map((member) => (
                 <article key={`unassigned-${member.id}`} className="rounded-[18px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
-                      <p className="mt-1 text-sm text-[#6d6259]">가정 연결 전 · {member.statusTag}</p>
+                      <p className="mt-1 text-sm text-[#6d6259]">가정 연결 전</p>
                     </div>
                     <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[11px] text-[#6f6256]">미분류</span>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-[#5f564b]">가정만 연결해도 중보, 후속, 순환 흐름이 덜 꼬여. 먼저 관계를 잡는 게 좋아.</p>
+                  <p className="mt-3 text-sm leading-6 text-[#5f564b]">가정 연결이 필요한 목원</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link href={buildMemberHref(member.id, "unassigned", "family-links")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
                       가정 연결
@@ -238,7 +238,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY QUEUE</p>
               <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 볼 목원</h2>
-              <p className="mt-2 text-sm leading-6 text-[#5f564b]">후속, 현 목자, 순환 진행 가정을 먼저 올려서 오늘 운영 흐름이 바로 보이게 했어.</p>
+              <p className="mt-2 text-sm leading-6 text-[#5f564b]">운영 우선 순서</p>
             </div>
             <span className="inline-flex h-9 items-center rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 text-[11px] text-[#6f6256]">
               {activeFilter === "priority" ? `운영 우선 ${filteredMembers.length}명` : `지금 먼저 볼 사람 ${priorityMembers.length}명`}
@@ -256,7 +256,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
-                      <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "가정 연결 전"} · {member.statusTag}</p>
+                      <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "가정 연결 전"}</p>
                     </div>
                     <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(member.priorityReason.tone)}`}>{member.priorityReason.title}</span>
                   </div>
@@ -309,7 +309,6 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <span className="rounded-full bg-[#111827] px-2.5 py-1 text-[11px] font-semibold text-white">현 목자</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7d705f]">
-                  <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1">상태 {member.statusTag}</span>
                   {member.requiresFollowUp ? <span className="rounded-full border border-[#f0ddae] bg-[#fff8e8] px-2.5 py-1 text-[#8c6a2e]">후속 필요</span> : null}
                 </div>
               </Link>
@@ -393,7 +392,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
         {filteredMembers.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <p className="text-base font-semibold text-[#111111]">조건에 맞는 목원이 없어</p>
-            <p className="mt-2 text-sm text-[#5f564b]">검색어나 필터를 바꾸거나 새 목원을 추가해봐.</p>
+            <p className="mt-2 text-sm text-[#5f564b]">검색어나 필터 조건을 확인해줘.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
