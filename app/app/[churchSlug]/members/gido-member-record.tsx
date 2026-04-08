@@ -28,6 +28,16 @@ type HouseholdMeta = {
   tags?: string[];
 };
 
+type QueueContext = {
+  label: string;
+  helper: string;
+  index: number;
+  total: number;
+  listHref: string;
+  prev?: { href: string; name: string };
+  next?: { href: string; name: string };
+};
+
 const RELATIONSHIP_OPTIONS = [
   { value: RelationshipType.SPOUSE, label: "배우자" },
   { value: RelationshipType.PARENT, label: "부모" },
@@ -51,10 +61,12 @@ export default function GidoMemberRecord({
   churchSlug,
   member,
   memberOptions,
+  queueContext,
 }: {
   churchSlug: string;
   member: MemberRecord;
   memberOptions: MemberOption[];
+  queueContext?: QueueContext;
 }) {
   const leadership = getGidoLeadershipProfile(member.name, member.household?.name);
   const familyLinks = [
@@ -183,6 +195,34 @@ export default function GidoMemberRecord({
               </div>
               <span className="rounded-full border border-[#e6dfd5] bg-white px-3 py-1 text-[11px] text-[#6f6256]">people</span>
             </div>
+
+            {queueContext ? (
+              <div className="mt-4 rounded-[18px] border border-[#e6d8bf] bg-white p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">WORK QUEUE</p>
+                    <p className="mt-2 text-sm font-semibold text-[#111111]">{queueContext.label}</p>
+                    <p className="mt-1 text-xs text-[#8C7A5B]">{queueContext.index} / {queueContext.total}</p>
+                  </div>
+                  <Link href={queueContext.listHref} className="rounded-[12px] border border-[#E7E0D4] bg-[#fcfaf6] px-3 py-2 text-xs font-medium text-[#121212]">
+                    목록 보기
+                  </Link>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-[#5f564b]">{queueContext.helper}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {queueContext.prev ? (
+                    <Link href={queueContext.prev.href} className="rounded-[12px] border border-[#E7E0D4] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
+                      이전 {queueContext.prev.name}
+                    </Link>
+                  ) : null}
+                  {queueContext.next ? (
+                    <Link href={queueContext.next.href} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                      다음 {queueContext.next.name}
+                    </Link>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
 
             <div className="mt-4 grid gap-3">
               {focusItems.map((item) => (

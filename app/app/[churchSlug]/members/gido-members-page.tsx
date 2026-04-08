@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { District, Group, Household, Member } from "@prisma/client";
 import { formatDate } from "@/lib/date";
-import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS, getGidoLeadershipProfile } from "@/lib/gido-leadership";
+import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS } from "@/lib/gido-leadership";
+import { buildGidoMembersView } from "@/lib/gido-members-view";
 
 type GidoMemberRow = Member & {
   district: District | null;
@@ -16,58 +17,18 @@ type Props = {
   filter?: string;
 };
 
-type DecoratedMember = GidoMemberRow & {
-  leadership: ReturnType<typeof getGidoLeadershipProfile>;
-};
-
 export default function GidoMembersPage({ churchSlug, members, q = "", filter = "all" }: Props) {
-  const query = q.trim().toLowerCase();
-
-  const decoratedMembers: DecoratedMember[] = members.map((member) => {
-    const leadership = getGidoLeadershipProfile(member.name, member.household?.name);
-    return { ...member, leadership };
+  const { filter: activeFilter, decoratedMembers, priorityMembers, counts, filteredMembers } = buildGidoMembersView(members, {
+    filter,
+    q,
   });
 
-  const rankedMembers = [...decoratedMembers].sort((a, b) => {
-    const scoreDiff = getPriorityScore(b) - getPriorityScore(a);
-    if (scoreDiff !== 0) return scoreDiff;
-    if (a.requiresFollowUp !== b.requiresFollowUp) return a.requiresFollowUp ? -1 : 1;
-    if (a.leadership.isActiveLeader !== b.leadership.isActiveLeader) return a.leadership.isActiveLeader ? -1 : 1;
-    if (a.leadership.isRotationHousehold !== b.leadership.isRotationHousehold) return a.leadership.isRotationHousehold ? -1 : 1;
-    return a.name.localeCompare(b.name, "ko-KR");
-  });
-
-  const priorityMembers = rankedMembers.filter((member) => getPriorityScore(member) > 0);
-
-  const counts = {
-    all: decoratedMembers.length,
-    priority: priorityMembers.length,
-    leaders: decoratedMembers.filter((member) => member.leadership.isActiveLeader).length,
-    rotation: decoratedMembers.filter((member) => member.leadership.isRotationHousehold).length,
-    followup: decoratedMembers.filter((member) => member.requiresFollowUp).length,
+  const buildMemberHref = (memberId: string, nextFilter = activeFilter) => {
+    const params = new URLSearchParams();
+    params.set("filter", nextFilter);
+    if (q) params.set("q", q);
+    return `/app/${churchSlug}/members/${memberId}?${params.toString()}`;
   };
-
-  const filteredMembers = rankedMembers.filter((member) => {
-    const matchesQuery =
-      !query ||
-      [member.name, member.phone, member.email ?? "", member.household?.name ?? "", member.statusTag]
-        .join(" ")
-        .toLowerCase()
-        .includes(query);
-
-    const matchesFilter =
-      filter === "priority"
-        ? getPriorityScore(member) > 0
-        : filter === "leaders"
-          ? member.leadership.isActiveLeader
-          : filter === "rotation"
-            ? member.leadership.isRotationHousehold
-            : filter === "followup"
-              ? member.requiresFollowUp
-              : true;
-
-    return matchesQuery && matchesFilter;
-  });
 
   const currentLeaders = decoratedMembers.filter((member) => member.leadership.isActiveLeader);
   const rotationGroups = GIDO_ROTATION_TRACKS.map((track) => ({
@@ -84,7 +45,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
   ];
 
   const qParam = q ? `&q=${encodeURIComponent(q)}` : "";
-  const priorityQueue = (filter === "priority" ? filteredMembers : priorityMembers).slice(0, filter === "priority" ? 6 : 4);
+  const priorityQueue = (activeFilter === "priority" ? filteredMembers : priorityMembers).slice(0, activeFilter === "priority" ? 6 : 4);
 
   return (
     <div className="flex flex-col gap-5 text-[#111111]">
@@ -108,7 +69,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
         <div className="mt-5 grid gap-3 lg:grid-cols-[1.15fr_0.85fr]">
           <form className="rounded-[22px] border border-[#ece4d8] bg-[#fbfaf7] p-4" method="get">
-            <input type="hidden" name="filter" value={filter} />
+            <input type="hidden" name="filter" value={activeFilter} />
             <label className="grid gap-3">
               <span className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SEARCH PEOPLE</span>
               <div className="flex items-center gap-3 rounded-[16px] border border-[#e7dfd3] bg-white px-4 py-3">
@@ -133,7 +94,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
       </section>
 
       {priorityQueue.length > 0 ? (
-        <section className={`rounded-[24px] border bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] ${filter === "priority" ? "border-[#d9cfbf]" : "border-[#e6dfd5]"}`}>
+        <section className={`rounded-[24px] border bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] ${activeFilter === "priority" ? "border-[#d9cfbf]" : "border-[#e6dfd5]"}`}>
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY QUEUE</p>
@@ -141,13 +102,12 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
               <p className="mt-2 text-sm leading-6 text-[#5f564b]">후속, 현 목자, 순환 진행 가정을 먼저 올려서 오늘 운영 흐름이 바로 보이게 했어.</p>
             </div>
             <span className="inline-flex h-9 items-center rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 text-[11px] text-[#6f6256]">
-              {filter === "priority" ? `운영 우선 ${filteredMembers.length}명` : `지금 먼저 볼 사람 ${priorityMembers.length}명`}
+              {activeFilter === "priority" ? `운영 우선 ${filteredMembers.length}명` : `지금 먼저 볼 사람 ${priorityMembers.length}명`}
             </span>
           </div>
 
           <div className="mt-4 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
             {priorityQueue.map((member) => {
-              const reason = getPriorityReason(member);
               const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
               const secondaryLabel = member.requiresFollowUp ? "후속 보드" : "가정 흐름";
 
@@ -158,7 +118,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
                       <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "가정 연결 전"} · {member.statusTag}</p>
                     </div>
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(reason.tone)}`}>{reason.title}</span>
+                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(member.priorityReason.tone)}`}>{member.priorityReason.title}</span>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7d705f]">
@@ -174,10 +134,10 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                     {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[#8C6A2E]">후속 필요</span> : null}
                   </div>
 
-                  <p className="mt-3 text-sm leading-6 text-[#5f564b]">{reason.body}</p>
+                  <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={`/app/${churchSlug}/members/${member.id}`} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                    <Link href={buildMemberHref(member.id, "priority")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
                       상세 관리
                     </Link>
                     <Link href={secondaryHref} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
@@ -203,7 +163,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {currentLeaders.map((member) => (
-              <Link key={member.id} href={`/app/${churchSlug}/members/${member.id}`} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4 transition hover:border-[#d8ccba]">
+              <Link key={member.id} href={buildMemberHref(member.id, "leaders")} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4 transition hover:border-[#d8ccba]">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-base font-semibold text-[#111111]">{member.name}</p>
@@ -258,7 +218,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                 key={item.key}
                 href={`?filter=${item.key}${qParam}`}
                 className={`rounded-full px-3 py-2 text-sm transition ${
-                  filter === item.key ? "bg-[#111827] text-white" : "border border-[#E7E0D4] bg-white text-[#5f564b]"
+                  activeFilter === item.key ? "bg-[#111827] text-white" : "border border-[#E7E0D4] bg-white text-[#5f564b]"
                 }`}
               >
                 {item.label} {item.value}
@@ -291,7 +251,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <tr key={member.id} className="border-t border-[#f1eadf] text-[#111111]">
                     <td className="px-4 py-4">
                       <div>
-                        <Link href={`/app/${churchSlug}/members/${member.id}`} className="font-semibold hover:text-[#8C6A2E]">
+                        <Link href={buildMemberHref(member.id)} className="font-semibold hover:text-[#8C6A2E]">
                           {member.name}
                         </Link>
                         <p className="mt-1 text-xs text-[#8C7A5B]">{member.group?.name ?? "G.I.D.O 목장"}</p>
@@ -316,7 +276,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                     <td className="px-4 py-4 text-[#5f564b]">{member.phone || member.email || "-"}</td>
                     <td className="px-4 py-4 text-[#5f564b]">{formatDate(member.registeredAt)}</td>
                     <td className="px-4 py-4">
-                      <Link href={`/app/${churchSlug}/members/${member.id}`} className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-1.5 text-xs font-medium text-[#121212]">
+                      <Link href={buildMemberHref(member.id)} className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-1.5 text-xs font-medium text-[#121212]">
                         관리
                       </Link>
                     </td>
@@ -338,55 +298,6 @@ function MetricCard({ label, value, tone = "neutral" }: { label: string; value: 
       <p className="mt-2 text-lg font-semibold text-[#111111]">{value}</p>
     </div>
   );
-}
-
-function getPriorityScore(member: DecoratedMember) {
-  let score = 0;
-  if (member.requiresFollowUp) score += 100;
-  if (member.leadership.isActiveLeader) score += 40;
-  if (member.leadership.isRotationHousehold) score += 20;
-  if (!member.household?.name) score += 10;
-  return score;
-}
-
-function getPriorityReason(member: DecoratedMember) {
-  if (member.requiresFollowUp && member.leadership.isActiveLeader) {
-    return {
-      title: "후속 + 리더",
-      body: "지금 목장 흐름을 맡고 있으면서 후속도 필요한 상태야. 오늘 제일 먼저 확인하는 게 좋아.",
-      tone: "alert" as const,
-    };
-  }
-
-  if (member.requiresFollowUp) {
-    return {
-      title: "오늘 후속",
-      body: "연락이나 체크인을 바로 남겨야 흐름이 이어져. 상세 화면에서 다음 액션까지 바로 정리하면 돼.",
-      tone: "alert" as const,
-    };
-  }
-
-  if (member.leadership.isActiveLeader) {
-    return {
-      title: "현 목자",
-      body: "지금 목장을 직접 맡고 있는 사람이라 전체 운영 흐름을 볼 때 먼저 체크하는 편이 좋아.",
-      tone: "dark" as const,
-    };
-  }
-
-  if (member.leadership.isRotationHousehold) {
-    return {
-      title: "순환 진행",
-      body: "올해 모임 진행 흐름 안에 들어가 있는 가정이야. 가정 메모와 상태를 같이 보는 게 좋아.",
-      tone: "warm" as const,
-    };
-  }
-
-  return {
-    title: "가정 연결",
-    body: "가정 연결부터 잡아두면 뒤에서 후속과 중보 흐름이 덜 꼬여.",
-    tone: "neutral" as const,
-  };
 }
 
 function getPriorityToneClasses(tone: "alert" | "dark" | "warm" | "neutral") {

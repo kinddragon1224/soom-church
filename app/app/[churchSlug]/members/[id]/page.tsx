@@ -17,7 +17,8 @@ import {
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { formatDate } from "@/lib/date";
 import { prisma } from "@/lib/prisma";
-import { getWorkspaceMemberRecord } from "@/lib/workspace-data";
+import { buildGidoMembersView } from "@/lib/gido-members-view";
+import { getWorkspaceMemberRecord, getWorkspaceMembers } from "@/lib/workspace-data";
 import GidoMemberRecord from "../gido-member-record";
 
 const RELATIONSHIP_OPTIONS = [
@@ -44,10 +45,36 @@ const MEMBER_ORG_ROLE_OPTIONS = [
   { value: MemberOrgRole.CUSTOM, label: "직접 입력" },
 ] as const;
 
+const GIDO_QUEUE_LABELS = {
+  all: "전체 목록",
+  priority: "운영 우선 큐",
+  leaders: "현 목자 목록",
+  rotation: "순환 진행 목록",
+  followup: "후속 필요 목록",
+} as const;
+
+function buildGidoMemberHref(churchSlug: string, memberId: string, filter?: string, q?: string) {
+  const params = new URLSearchParams();
+  params.set("filter", filter || "all");
+  if (q) params.set("q", q);
+  return `/app/${churchSlug}/members/${memberId}?${params.toString()}`;
+}
+
+function getGidoQueueDescription(filter: keyof typeof GIDO_QUEUE_LABELS, q: string | undefined, reasonBody: string) {
+  if (q) return `검색 결과 안에서 이어서 볼 수 있어. ${reasonBody}`;
+  if (filter === "priority") return reasonBody;
+  if (filter === "leaders") return "현 목자 흐름을 이어서 보면서 바로 다음 리더까지 넘길 수 있어.";
+  if (filter === "rotation") return "올해 순환 진행 가정을 한 흐름으로 이어서 확인하면 돼.";
+  if (filter === "followup") return "후속 필요한 사람만 이어서 보면서 연락과 메모를 정리하면 돼.";
+  return "지금 보고 있는 목록 기준으로 앞뒤 사람을 바로 넘길 수 있어.";
+}
+
 export default async function ChurchMemberRecordPage({
   params,
+  searchParams,
 }: {
   params: { churchSlug: string; id: string };
+  searchParams?: { filter?: string; q?: string };
 }) {
   const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) notFound();
@@ -65,7 +92,54 @@ export default async function ChurchMemberRecordPage({
   if (!member) notFound();
 
   if (church.slug === "gido") {
-    return <GidoMemberRecord churchSlug={church.slug} member={member} memberOptions={memberOptions} />;
+    const shouldShowQueue = Boolean(searchParams?.filter || searchParams?.q);
+    let queueContext: {
+      label: string;
+      helper: string;
+      index: number;
+      total: number;
+      listHref: string;
+      prev?: { href: string; name: string };
+      next?: { href: string; name: string };
+    } | undefined;
+
+    if (shouldShowQueue) {
+      const queueMembers = await getWorkspaceMembers(church.id);
+      const queueView = buildGidoMembersView(queueMembers, {
+        filter: searchParams?.filter,
+        q: searchParams?.q,
+      });
+      const currentIndex = queueView.filteredMembers.findIndex((item) => item.id === member.id);
+      const currentMember = currentIndex >= 0 ? queueView.filteredMembers[currentIndex] : null;
+      const prevMember = currentIndex > 0 ? queueView.filteredMembers[currentIndex - 1] : null;
+      const nextMember = currentIndex >= 0 && currentIndex < queueView.filteredMembers.length - 1 ? queueView.filteredMembers[currentIndex + 1] : null;
+      const filter = queueView.filter;
+      const trimmedQuery = searchParams?.q?.trim() || undefined;
+
+      if (currentMember) {
+        queueContext = {
+          label: `${GIDO_QUEUE_LABELS[filter]}${trimmedQuery ? " · 검색 결과" : ""}`,
+          helper: getGidoQueueDescription(filter, trimmedQuery, currentMember.priorityReason.body),
+          index: currentIndex + 1,
+          total: queueView.filteredMembers.length,
+          listHref: `/app/${church.slug}/members?filter=${filter}${trimmedQuery ? `&q=${encodeURIComponent(trimmedQuery)}` : ""}`,
+          prev: prevMember
+            ? {
+                href: buildGidoMemberHref(church.slug, prevMember.id, filter, trimmedQuery),
+                name: prevMember.name,
+              }
+            : undefined,
+          next: nextMember
+            ? {
+                href: buildGidoMemberHref(church.slug, nextMember.id, filter, trimmedQuery),
+                name: nextMember.name,
+              }
+            : undefined,
+        };
+      }
+    }
+
+    return <GidoMemberRecord churchSlug={church.slug} member={member} memberOptions={memberOptions} queueContext={queueContext} />;
   }
 
   const organizationOptions = await prisma.organizationUnit.findMany({
