@@ -25,7 +25,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
   const church = membership.church;
   if (church.slug === "gido") {
     const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
-    return <GidoDashboardPage churchId={church.id} base={`/app/${church.slug}`} currentUserName={currentUser?.name ?? undefined} />;
+    return <GidoDashboardPage churchId={church.id} churchSlug={church.slug} base={`/app/${church.slug}`} currentUserName={currentUser?.name ?? undefined} />;
   }
 
   const base = `/app/${church.slug}`;

@@ -5,7 +5,10 @@ export type GidoPrayerRotationMember = {
 
 export type GidoPrayerRotationHousehold = {
   title: string;
+  prayerOrder?: number;
 };
+
+const GIDO_PRAYER_ROTATION_ANCHOR = "2026-04-02";
 
 export function getDailyPrayerTargets<T extends GidoPrayerRotationMember>(members: T[], count: number) {
   if (members.length === 0) return [] as T[];
@@ -26,12 +29,25 @@ export function getDailyPrayerTargets<T extends GidoPrayerRotationMember>(member
 export function getDailyPrayerHouseholds<T extends GidoPrayerRotationHousehold>(households: T[], count: number) {
   if (households.length === 0) return [] as T[];
 
-  const sortedHouseholds = [...households].sort((a, b) => a.title.localeCompare(b.title, "ko-KR"));
-  const dateKey = getSeoulDateKey();
-  const seed = Number(dateKey.replace(/-/g, ""));
-  const startIndex = seed % sortedHouseholds.length;
+  const sortedHouseholds = [...households].sort((a, b) => {
+    const orderDiff = (a.prayerOrder ?? Number.MAX_SAFE_INTEGER) - (b.prayerOrder ?? Number.MAX_SAFE_INTEGER);
+    if (orderDiff !== 0) return orderDiff;
+    return a.title.localeCompare(b.title, "ko-KR");
+  });
+  const startIndex = mod(getSeoulDayDiffFromAnchor(), sortedHouseholds.length);
 
   return Array.from({ length: Math.min(count, sortedHouseholds.length) }, (_, index) => sortedHouseholds[(startIndex + index) % sortedHouseholds.length]);
+}
+
+function getSeoulDayDiffFromAnchor(date = new Date()) {
+  const current = getSeoulDateKey(date);
+  const currentUtc = Date.parse(`${current}T00:00:00Z`);
+  const anchorUtc = Date.parse(`${GIDO_PRAYER_ROTATION_ANCHOR}T00:00:00Z`);
+  return Math.floor((currentUtc - anchorUtc) / 86400000);
+}
+
+function mod(value: number, divisor: number) {
+  return ((value % divisor) + divisor) % divisor;
 }
 
 export function getSeoulDateKey(date = new Date()) {

@@ -1,3 +1,4 @@
+import { getGidoPrayerOrder, parseGidoHouseholdMeta, parseGidoMemberMeta } from "@/lib/gido-home-config";
 import { prisma } from "@/lib/prisma";
 
 export type GidoMemberView = {
@@ -7,6 +8,8 @@ export type GidoMemberView = {
   householdName: string;
   statusTag: string;
   requiresFollowUp: boolean;
+  homePinned: boolean;
+  homePinnedAt: string | null;
 };
 
 export type GidoFollowUpView = {
@@ -31,6 +34,7 @@ export type GidoHouseholdView = {
   tags: string[];
   prayers: string[];
   contacts: string[];
+  prayerOrder: number;
 };
 
 export type GidoWorkspaceData = {
@@ -47,30 +51,9 @@ export type GidoWorkspaceData = {
   };
 };
 
-type HouseholdMeta = {
-  prayers?: string[];
-  contacts?: string[];
-  tags?: string[];
-  followUps?: GidoFollowUpView[];
-  updates?: GidoUpdateView[];
-};
-
-type MemberMeta = {
-  birthLabel?: string;
-};
-
-function parseJson<T>(value?: string | null): T | null {
-  if (!value) return null;
-  try {
-    return JSON.parse(value) as T;
-  } catch {
-    return null;
-  }
-}
-
 function toBirthLabel(birthDate: Date, notes?: string | null) {
-  const meta = parseJson<MemberMeta>(notes);
-  if (meta?.birthLabel) return meta.birthLabel;
+  const meta = parseGidoMemberMeta(notes);
+  if (meta.birthLabel) return meta.birthLabel;
   return String(birthDate.getFullYear()).slice(-2);
 }
 
@@ -102,6 +85,7 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
   const memberViews: GidoMemberView[] = members.map((member) => {
     const birthLabel = toBirthLabel(member.birthDate, member.notes);
     const householdName = member.household?.name ?? "미분류";
+    const memberMeta = parseGidoMemberMeta(member.notes);
     const item = { name: member.name, birthLabel };
     if (member.householdId) {
       const bucket = membersByHousehold.get(member.householdId) ?? [];
@@ -115,6 +99,8 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
       householdName,
       statusTag: member.statusTag,
       requiresFollowUp: member.requiresFollowUp,
+      homePinned: Boolean(memberMeta.homePinned),
+      homePinnedAt: memberMeta.homePinnedAt ?? null,
     };
   });
 
@@ -122,9 +108,9 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
   const updates: GidoUpdateView[] = [];
 
   const householdViews: GidoHouseholdView[] = households.map((household) => {
-    const meta = parseJson<HouseholdMeta>(household.notes) ?? {};
-    if (meta.followUps?.length) followUps.push(...meta.followUps);
-    if (meta.updates?.length) updates.push(...meta.updates);
+    const meta = parseGidoHouseholdMeta(household.notes);
+    if (meta.followUps?.length) followUps.push(...(meta.followUps as GidoFollowUpView[]));
+    if (meta.updates?.length) updates.push(...(meta.updates as GidoUpdateView[]));
 
     return {
       id: household.id,
@@ -133,6 +119,7 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
       tags: meta.tags ?? [],
       prayers: meta.prayers ?? [],
       contacts: meta.contacts ?? [],
+      prayerOrder: getGidoPrayerOrder(household.name, household.notes),
     };
   });
 

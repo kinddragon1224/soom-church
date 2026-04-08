@@ -4,14 +4,17 @@ import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS } from "@/lib/gido-leade
 import { buildGidoMembersView } from "@/lib/gido-members-view";
 import { getDailyPrayerHouseholds } from "@/lib/gido-prayer-rotation";
 import { getGidoWorkspaceData } from "@/lib/gido-workspace-data";
+import { pinDashboardMember, unpinDashboardMember } from "./actions";
 import GidoHomeFeedPanel, { type GidoHomePanelItem } from "./gido-home-feed-panel";
 
 export default async function GidoDashboardPage({
   churchId,
+  churchSlug,
   base,
   currentUserName,
 }: {
   churchId: string;
+  churchSlug: string;
   base: string;
   currentUserName?: string;
 }) {
@@ -27,16 +30,25 @@ export default async function GidoDashboardPage({
   const prayerLead = todayPrayer?.prayers[0] ?? "오늘의 중보 메모 없음";
   const todayPrayerHref = `${base}/households`;
   const todayPrayerMembers = todayPrayer?.members.slice(0, 4).map((member) => member.name).join(", ") ?? "";
-  const operationsQueue = buildGidoMembersView(
+  const dashboardPath = `${base}/dashboard`;
+  const decoratedMembers = buildGidoMembersView(
     data.members.map((member) => ({
       ...member,
       phone: null,
       household: member.householdName === "미분류" ? null : { name: member.householdName },
     })),
     { filter: "priority" },
-  ).priorityMembers.slice(0, 4);
+  ).decoratedMembers;
+  const homePinnedMembers = [...decoratedMembers]
+    .filter((member) => member.homePinned)
+    .sort((a, b) => {
+      const pinnedAtDiff = (a.homePinnedAt ?? "").localeCompare(b.homePinnedAt ?? "");
+      if (pinnedAtDiff !== 0) return pinnedAtDiff;
+      return a.name.localeCompare(b.name, "ko-KR");
+    })
+    .slice(0, 6);
+  const homePinCandidates = decoratedMembers.filter((member) => !member.homePinned);
 
-  const buildMemberActionHref = (memberId: string, filter: string, section: string) => `${base}/members/${memberId}?filter=${filter}#${section}`;
 
   const feedItems: GidoHomePanelItem[] = [
     ...data.updates.slice(0, 3).map((item, index) => ({
@@ -119,39 +131,54 @@ export default async function GidoDashboardPage({
         <article className="rounded-[26px] border border-[#eee7dc] bg-white p-5 shadow-[0_6px_18px_rgba(15,23,42,0.03)] lg:p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[10px] tracking-[0.16em] text-[#95897b]">TODAY ACTIONS</p>
+              <p className="text-[10px] tracking-[0.16em] text-[#95897b]">HOME PICKS</p>
               <h2 className="mt-2 text-[1.2rem] font-semibold tracking-[-0.03em] text-[#111111]">지금 바로 볼 목원</h2>
             </div>
-            <span className="rounded-full border border-[#ece4d8] bg-[#faf7f2] px-2.5 py-1 text-[10px] text-[#8f8478]">운영 우선 {operationsQueue.length}명</span>
+            <span className="rounded-full border border-[#ece4d8] bg-[#faf7f2] px-2.5 py-1 text-[10px] text-[#8f8478]">선택 {homePinnedMembers.length}명</span>
           </div>
 
           <div className="mt-5 space-y-2.5">
-            {operationsQueue.length === 0 ? (
+            {homePinnedMembers.length === 0 ? (
               <div className="rounded-[16px] border border-dashed border-[#d9cfbf] bg-[#fcfbf8] px-4 py-5 text-[13px] leading-6 text-[#5f564b]">
-                운영 우선 목원 없음
+                홈에 고정된 목원 없음
               </div>
             ) : (
-              operationsQueue.map((member, index) => (
+              homePinnedMembers.map((member, index) => (
                 <div key={member.id} className="flex items-center justify-between gap-3 rounded-[16px] border border-[#f0ebe3] bg-[#fcfbf8] px-4 py-3.5">
                   <div className="flex min-w-0 items-center gap-3">
                     <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#d9cfbf] bg-white text-[11px] font-semibold text-[#111827]">
                       {index + 1}
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate text-[13px] font-semibold text-[#1a1a1a]">{member.name} · {member.actionPlan.title}</p>
-                      <p className="mt-1 truncate text-[12px] text-[#6f6458]">{member.household?.name ?? "미분류"} · {member.actionPlan.body}</p>
+                      <p className="truncate text-[13px] font-semibold text-[#1a1a1a]">{member.name}</p>
+                      <p className="mt-1 truncate text-[12px] text-[#6f6458]">{member.household?.name ?? "미분류"}</p>
                     </div>
                   </div>
-                  <ActionButton href={buildMemberActionHref(member.id, member.actionPlan.queueFilter, member.actionPlan.section)}>{member.actionPlan.shortLabel}</ActionButton>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ActionButton href={`${base}/members/${member.id}?filter=priority`}>상세</ActionButton>
+                    <form action={unpinDashboardMember.bind(null, churchSlug, dashboardPath)}>
+                      <input type="hidden" name="memberId" value={member.id} />
+                      <button className="inline-flex h-9 items-center rounded-[11px] border border-[#e7e0d4] bg-white px-3 text-[12px] font-medium text-[#171717]">
+                        해제
+                      </button>
+                    </form>
+                  </div>
                 </div>
               ))
             )}
           </div>
 
+          <form action={pinDashboardMember.bind(null, churchSlug, dashboardPath)} className="mt-4 grid gap-3 rounded-[16px] border border-[#ece4d8] bg-[#fbfaf7] p-4 lg:grid-cols-[minmax(0,1fr)_auto]">
+            <select name="memberId" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" defaultValue="">
+              <option value="">홈에 추가할 목원 선택</option>
+              {homePinCandidates.map((member) => (
+                <option key={member.id} value={member.id}>{member.name} · {member.household?.name ?? "미분류"}</option>
+              ))}
+            </select>
+            <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">추가</button>
+          </form>
+
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link href={`${base}/members?filter=priority`} className="inline-flex h-9 items-center rounded-[11px] border border-[#e7e0d4] bg-white px-3 text-[12px] font-medium text-[#171717]">
-              운영 우선 전체 보기
-            </Link>
             <Link href={`${base}/members`} className="inline-flex h-9 items-center rounded-[11px] border border-[#e7e0d4] bg-white px-3 text-[12px] font-medium text-[#171717]">
               전체 members
             </Link>
