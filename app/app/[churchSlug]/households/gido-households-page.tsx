@@ -117,7 +117,6 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                       <div key={`${selectedHousehold.id}-${member.name}-${index}`} className="flex items-center justify-between rounded-[16px] border border-[#ece4d8] bg-[#fbfaf7] px-4 py-3">
                         <div>
                           <p className="text-sm font-semibold text-[#111111]">{member.name}</p>
-                          <p className="mt-1 text-[12px] text-[#6d6259]">{member.birthLabel}</p>
                         </div>
                         <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[10px] text-[#6f6256]">구성원</span>
                       </div>
