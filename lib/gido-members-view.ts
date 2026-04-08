@@ -9,6 +9,15 @@ export type GidoPriorityReason = {
   tone: GidoPriorityTone;
 };
 
+export type GidoMemberActionPlan = {
+  title: string;
+  body: string;
+  shortLabel: string;
+  section: "today-check" | "care-log" | "family-links" | "attendance-log" | "household-prayer";
+  queueFilter: GidoMembersFilter;
+  laneLabel: string;
+};
+
 export type GidoMemberViewInput = {
   id: string;
   name: string;
@@ -25,6 +34,7 @@ export type DecoratedGidoMember<T extends GidoMemberViewInput> = T & {
   leadership: ReturnType<typeof getGidoLeadershipProfile>;
   priorityScore: number;
   priorityReason: GidoPriorityReason;
+  actionPlan: GidoMemberActionPlan;
 };
 
 export function buildGidoMembersView<T extends GidoMemberViewInput>(
@@ -101,12 +111,84 @@ export function decorateGidoMember<T extends GidoMemberViewInput>(member: T): De
     isActiveLeader: leadership.isActiveLeader,
     isRotationHousehold: leadership.isRotationHousehold,
   });
+  const actionPlan = getGidoMemberActionPlan({
+    requiresFollowUp: member.requiresFollowUp,
+    hasHousehold: Boolean(member.household?.name),
+    isActiveLeader: leadership.isActiveLeader,
+    isRotationHousehold: leadership.isRotationHousehold,
+  });
 
   return {
     ...member,
     leadership,
     priorityScore,
     priorityReason,
+    actionPlan,
+  };
+}
+
+function getGidoMemberActionPlan({
+  requiresFollowUp,
+  hasHousehold,
+  isActiveLeader,
+  isRotationHousehold,
+}: {
+  requiresFollowUp: boolean;
+  hasHousehold: boolean;
+  isActiveLeader: boolean;
+  isRotationHousehold: boolean;
+}): GidoMemberActionPlan {
+  if (!hasHousehold) {
+    return {
+      title: "가정 연결 먼저",
+      body: "가정 연결부터 잡아야 중보와 후속 흐름이 덜 꼬여. 가족/가정 관계를 먼저 정리해.",
+      shortLabel: "가정 연결",
+      section: "family-links",
+      queueFilter: "unassigned",
+      laneLabel: "가정 연결",
+    };
+  }
+
+  if (requiresFollowUp) {
+    return {
+      title: "오늘 연락 남기기",
+      body: "후속 기록에 오늘 연락이나 체크인 한 줄만 남겨도 다음 흐름이 이어져.",
+      shortLabel: "후속 정리",
+      section: "care-log",
+      queueFilter: "followup",
+      laneLabel: "후속",
+    };
+  }
+
+  if (isActiveLeader) {
+    return {
+      title: "리더 흐름 점검",
+      body: "현 목자라 가정 중보와 진행 흐름을 먼저 확인하는 편이 좋아.",
+      shortLabel: "중보 보기",
+      section: "household-prayer",
+      queueFilter: "leaders",
+      laneLabel: "리더",
+    };
+  }
+
+  if (isRotationHousehold) {
+    return {
+      title: "순환 진행 체크",
+      body: "올해 순환 진행 가정이라 가정 메모와 중보 흐름을 같이 보는 게 좋아.",
+      shortLabel: "진행 점검",
+      section: "household-prayer",
+      queueFilter: "rotation",
+      laneLabel: "순환 진행",
+    };
+  }
+
+  return {
+    title: "최근 흐름 확인",
+    body: "최근 접점이나 출석 흐름을 한 번 보고 필요한 메모를 남기면 돼.",
+    shortLabel: "출석 확인",
+    section: "attendance-log",
+    queueFilter: "all",
+    laneLabel: "흐름 확인",
   };
 }
 

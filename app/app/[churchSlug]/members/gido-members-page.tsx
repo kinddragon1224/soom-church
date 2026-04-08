@@ -40,30 +40,9 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
   };
 
   const getPrimaryAction = (member: typeof decoratedMembers[number], nextFilter = activeFilter) => {
-    if (!member.household?.name) {
-      return {
-        href: buildMemberHref(member.id, nextFilter, "family-links"),
-        label: "가정 연결",
-      };
-    }
-
-    if (member.requiresFollowUp) {
-      return {
-        href: buildMemberHref(member.id, nextFilter, "care-log"),
-        label: "후속 정리",
-      };
-    }
-
-    if (member.leadership.isActiveLeader || member.leadership.isRotationHousehold) {
-      return {
-        href: buildMemberHref(member.id, nextFilter, "household-prayer"),
-        label: "중보 보기",
-      };
-    }
-
     return {
-      href: buildMemberHref(member.id, nextFilter, "today-check"),
-      label: "상세 관리",
+      href: buildMemberHref(member.id, nextFilter, member.actionPlan.section),
+      label: member.actionPlan.shortLabel,
     };
   };
 
@@ -288,8 +267,14 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
 
                   <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
 
+                  <div className="mt-3 rounded-[16px] border border-[#e7ddcf] bg-white px-3.5 py-3">
+                    <p className="text-[10px] tracking-[0.14em] text-[#9a8b7a]">NEXT ACTION</p>
+                    <p className="mt-1 text-sm font-semibold text-[#111111]">{member.actionPlan.title}</p>
+                    <p className="mt-1 text-sm leading-6 text-[#5f564b]">{member.actionPlan.body}</p>
+                  </div>
+
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={primaryAction.href} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                    <Link href={getPrimaryAction(member, member.actionPlan.queueFilter).href} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
                       {primaryAction.label}
                     </Link>
                     <Link href={secondaryHref} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
@@ -429,6 +414,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
                   const secondaryLabel = member.requiresFollowUp ? "후속" : "가정";
                   const primaryAction = getPrimaryAction(member);
+                  const actionFilter = activeFilter === "all" ? member.actionPlan.queueFilter : activeFilter;
 
                   return (
                     <tr key={member.id} className="border-t border-[#f1eadf] text-[#111111] align-top">
@@ -441,11 +427,16 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="max-w-[280px]">
+                        <div className="max-w-[320px]">
                           <span className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(member.priorityReason.tone)}`}>
                             {member.priorityReason.title}
                           </span>
                           <p className="mt-2 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
+                          <div className="mt-3 rounded-[14px] border border-[#e7ddcf] bg-[#fcfbf8] px-3 py-2.5">
+                            <p className="text-[10px] tracking-[0.14em] text-[#9a8b7a]">NEXT ACTION</p>
+                            <p className="mt-1 text-sm font-semibold text-[#111111]">{member.actionPlan.title}</p>
+                            <p className="mt-1 text-sm leading-6 text-[#5f564b]">{member.actionPlan.body}</p>
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
@@ -458,7 +449,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                       <td className="px-4 py-4 text-[#5f564b]">{formatDate(member.registeredAt)}</td>
                       <td className="px-4 py-4">
                         <div className="flex flex-col gap-2">
-                          <Link href={primaryAction.href} className="rounded-[10px] border border-[#111827] bg-[#111827] px-3 py-1.5 text-center text-xs font-medium text-white">
+                          <Link href={getPrimaryAction(member, actionFilter).href} className="rounded-[10px] border border-[#111827] bg-[#111827] px-3 py-1.5 text-center text-xs font-medium text-white">
                             {primaryAction.label}
                           </Link>
                           <Link href={secondaryHref} className="rounded-[10px] border border-[#E7E0D4] bg-white px-3 py-1.5 text-center text-xs font-medium text-[#121212]">

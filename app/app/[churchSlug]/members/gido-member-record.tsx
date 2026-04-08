@@ -11,6 +11,7 @@ import {
 } from "./actions";
 import { formatDate } from "@/lib/date";
 import { getGidoLeadershipProfile } from "@/lib/gido-leadership";
+import { decorateGidoMember } from "@/lib/gido-members-view";
 import { getWorkspaceMemberRecord } from "@/lib/workspace-data";
 
 type MemberRecord = NonNullable<Awaited<ReturnType<typeof getWorkspaceMemberRecord>>>;
@@ -75,6 +76,7 @@ export default function GidoMemberRecord({
   queueContext?: QueueContext;
 }) {
   const leadership = getGidoLeadershipProfile(member.name, member.household?.name);
+  const memberView = decorateGidoMember(member);
   const familyLinks = [
     ...member.relationshipsFrom.map((item) => ({
       id: item.id,
@@ -144,9 +146,9 @@ export default function GidoMemberRecord({
 
   const quickJumpItems: QuickJumpItem[] = [
     {
-      label: member.requiresFollowUp ? "후속 기록" : "메모 남기기",
-      href: "#care-log",
-      tone: "primary",
+      label: memberView.actionPlan.shortLabel,
+      href: `#${memberView.actionPlan.section}`,
+      tone: "primary" as const,
     },
     {
       label: !member.household?.name || familyLinks.length === 0 ? "가족 연결" : "가족 보기",
@@ -156,7 +158,7 @@ export default function GidoMemberRecord({
       label: householdMeta.prayers?.length ? "가정 중보" : "출석 확인",
       href: householdMeta.prayers?.length ? "#household-prayer" : "#attendance-log",
     },
-  ];
+  ].filter((item, index, list) => list.findIndex((candidate) => candidate.href === item.href) === index);
 
   return (
     <div className="flex flex-col gap-4 text-[#111111]">
@@ -245,6 +247,22 @@ export default function GidoMemberRecord({
                 </div>
               </div>
             ) : null}
+
+            <div className="mt-4 rounded-[18px] border border-[#e7ddcf] bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">NEXT ACTION</p>
+                  <p className="mt-2 text-sm font-semibold text-[#111111]">{memberView.actionPlan.title}</p>
+                </div>
+                <span className="rounded-full border border-[#e7ddcf] bg-[#fcfaf6] px-2.5 py-1 text-[11px] text-[#6f6256]">{memberView.actionPlan.laneLabel}</span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-[#5f564b]">{memberView.actionPlan.body}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link href={`#${memberView.actionPlan.section}`} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                  {memberView.actionPlan.shortLabel}
+                </Link>
+              </div>
+            </div>
 
             <div className="mt-4 grid gap-3">
               {focusItems.map((item) => (

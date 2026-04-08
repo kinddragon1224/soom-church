@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS } from "@/lib/gido-leadership";
+import { buildGidoMembersView } from "@/lib/gido-members-view";
 import { getDailyPrayerTargets } from "@/lib/gido-prayer-rotation";
 import { getGidoWorkspaceData } from "@/lib/gido-workspace-data";
 import GidoHomeFeedPanel, { type GidoHomePanelItem } from "./gido-home-feed-panel";
@@ -23,40 +24,16 @@ export default async function GidoDashboardPage({
   const todayPrayerHousehold = todayPrayer ? data.households.find((household) => household.title === todayPrayer.householdName) : null;
   const prayerLead = todayPrayerHousehold?.prayers[0] ?? "오늘은 이 사람의 삶과 마음, 가정의 흐름을 차분히 함께 품어보자.";
   const todayPrayerHref = todayPrayer ? `${base}/members/${todayPrayer.id}?filter=priority#household-prayer` : `${base}/households`;
+  const operationsQueue = buildGidoMembersView(
+    data.members.map((member) => ({
+      ...member,
+      phone: null,
+      household: member.householdName === "미분류" ? null : { name: member.householdName },
+    })),
+    { filter: "priority" },
+  ).priorityMembers.slice(0, 4);
 
-  const startSteps = [
-    {
-      step: "Step 1",
-      label: "오늘의 중보 대상 확인",
-      href: todayPrayerHref,
-      action: "보기",
-      done: Boolean(todayPrayer),
-    },
-    {
-      step: "Step 2",
-      label: "후속 필요한 목원 확인",
-      href: `${base}/followups`,
-      action: "열기",
-      done: urgentMemberCount > 0,
-    },
-    {
-      step: "Step 3",
-      label: "이번 모임 전할 근황 확인",
-      href: `${base}/updates`,
-      action: "열기",
-      done: data.updates.length > 0,
-    },
-    {
-      step: "Step 4",
-      label: "가정별 메모 확인",
-      href: `${base}/households`,
-      action: "열기",
-      done: data.stats.contactCount > 0 || data.stats.prayerCount > 0,
-    },
-  ];
-
-  const completedSteps = startSteps.filter((step) => step.done).length;
-  const progress = Math.round((completedSteps / startSteps.length) * 100);
+  const buildMemberActionHref = (memberId: string, filter: string, section: string) => `${base}/members/${memberId}?filter=${filter}#${section}`;
 
   const feedItems: GidoHomePanelItem[] = [
     ...data.updates.slice(0, 3).map((item, index) => ({
@@ -142,31 +119,42 @@ export default async function GidoDashboardPage({
         <article className="rounded-[26px] border border-[#eee7dc] bg-white p-5 shadow-[0_6px_18px_rgba(15,23,42,0.03)] lg:p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[10px] tracking-[0.16em] text-[#95897b]">MOKJANG HOME</p>
-              <h2 className="mt-2 text-[1.2rem] font-semibold tracking-[-0.03em] text-[#111111]">오늘 목장 체크</h2>
+              <p className="text-[10px] tracking-[0.16em] text-[#95897b]">TODAY ACTIONS</p>
+              <h2 className="mt-2 text-[1.2rem] font-semibold tracking-[-0.03em] text-[#111111]">지금 바로 볼 목원</h2>
             </div>
-            <span className="rounded-full border border-[#ece4d8] bg-[#faf7f2] px-2.5 py-1 text-[10px] text-[#8f8478]">{progress}% complete</span>
-          </div>
-
-          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#f2ede5]">
-            <div className="h-full rounded-full bg-[#111827]" style={{ width: `${progress}%` }} />
+            <span className="rounded-full border border-[#ece4d8] bg-[#faf7f2] px-2.5 py-1 text-[10px] text-[#8f8478]">운영 우선 {operationsQueue.length}명</span>
           </div>
 
           <div className="mt-5 space-y-2.5">
-            {startSteps.map((step) => (
-              <div key={step.label} className="flex items-center justify-between gap-3 rounded-[16px] border border-[#f0ebe3] bg-[#fcfbf8] px-4 py-3.5">
-                <div className="flex min-w-0 items-center gap-3">
-                  <span className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] ${step.done ? "border-[#111827] bg-[#111827] text-white" : "border-[#d9cfbf] text-[#95897b]"}`}>
-                    •
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-[10px] tracking-[0.08em] text-[#95897b]">{step.step}</p>
-                    <p className="truncate text-[13px] font-medium text-[#1a1a1a]">{step.label}</p>
-                  </div>
-                </div>
-                <ActionButton href={step.href}>{step.action}</ActionButton>
+            {operationsQueue.length === 0 ? (
+              <div className="rounded-[16px] border border-dashed border-[#d9cfbf] bg-[#fcfbf8] px-4 py-5 text-[13px] leading-6 text-[#5f564b]">
+                지금 바로 밀어야 할 운영 우선 목원이 없어. 전체 members에서 흐름만 가볍게 확인하면 돼.
               </div>
-            ))}
+            ) : (
+              operationsQueue.map((member, index) => (
+                <div key={member.id} className="flex items-center justify-between gap-3 rounded-[16px] border border-[#f0ebe3] bg-[#fcfbf8] px-4 py-3.5">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#d9cfbf] bg-white text-[11px] font-semibold text-[#111827]">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-[13px] font-semibold text-[#1a1a1a]">{member.name} · {member.actionPlan.title}</p>
+                      <p className="mt-1 truncate text-[12px] text-[#6f6458]">{member.household?.name ?? "미분류"} · {member.actionPlan.body}</p>
+                    </div>
+                  </div>
+                  <ActionButton href={buildMemberActionHref(member.id, member.actionPlan.queueFilter, member.actionPlan.section)}>{member.actionPlan.shortLabel}</ActionButton>
+                </div>
+              ))
+            )}
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link href={`${base}/members?filter=priority`} className="inline-flex h-9 items-center rounded-[11px] border border-[#e7e0d4] bg-white px-3 text-[12px] font-medium text-[#171717]">
+              운영 우선 전체 보기
+            </Link>
+            <Link href={`${base}/members`} className="inline-flex h-9 items-center rounded-[11px] border border-[#e7e0d4] bg-white px-3 text-[12px] font-medium text-[#171717]">
+              전체 members
+            </Link>
           </div>
         </article>
 
