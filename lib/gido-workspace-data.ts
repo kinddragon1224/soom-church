@@ -34,7 +34,7 @@ export type GidoHouseholdView = {
   tags: string[];
   prayers: string[];
   contacts: string[];
-  prayerOrder: number;
+  prayerOrder: number | null;
 };
 
 export type GidoWorkspaceData = {

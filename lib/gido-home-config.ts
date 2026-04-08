@@ -12,20 +12,8 @@ type GidoHouseholdMeta = {
   tags?: string[];
   followUps?: unknown[];
   updates?: unknown[];
-  prayerOrder?: number;
+  prayerOrder?: number | null;
 };
-
-const GIDO_PRAYER_ORDER_KEYWORDS = [
-  "문일선",
-  "심상욱",
-  "오상준",
-  "윤현석",
-  "정기창",
-  "조성진",
-  "채석민",
-  "김선용",
-  "가정 C",
-] as const;
 
 function parseJson(value?: string | null): GidoParsedJson | null {
   if (!value) return null;
@@ -87,12 +75,37 @@ export function parseGidoHouseholdMeta(notes?: string | null): GidoHouseholdMeta
   };
 }
 
-export function getGidoPrayerOrder(title: string, notes?: string | null) {
+export function updateGidoHouseholdMeta(
+  notes: string | null | undefined,
+  updates: Partial<Pick<GidoHouseholdMeta, "prayers" | "contacts" | "tags" | "prayerOrder">>,
+) {
+  const parsed = parseJson(notes) ?? {};
+  const next: GidoParsedJson = { ...parsed };
+
+  if (updates.prayers !== undefined) {
+    if (updates.prayers.length > 0) next.prayers = updates.prayers;
+    else delete next.prayers;
+  }
+
+  if (updates.contacts !== undefined) {
+    if (updates.contacts.length > 0) next.contacts = updates.contacts;
+    else delete next.contacts;
+  }
+
+  if (updates.tags !== undefined) {
+    if (updates.tags.length > 0) next.tags = updates.tags;
+    else delete next.tags;
+  }
+
+  if (updates.prayerOrder !== undefined) {
+    if (typeof updates.prayerOrder === "number" && Number.isFinite(updates.prayerOrder)) next.prayerOrder = updates.prayerOrder;
+    else delete next.prayerOrder;
+  }
+
+  return Object.keys(next).length > 0 ? JSON.stringify(next) : null;
+}
+
+export function getGidoPrayerOrder(_title: string, notes?: string | null) {
   const meta = parseGidoHouseholdMeta(notes);
-  if (typeof meta.prayerOrder === "number") return meta.prayerOrder;
-
-  const matchedIndex = GIDO_PRAYER_ORDER_KEYWORDS.findIndex((keyword) => title.includes(keyword));
-  if (matchedIndex >= 0) return matchedIndex;
-
-  return GIDO_PRAYER_ORDER_KEYWORDS.length + 100;
+  return typeof meta.prayerOrder === "number" ? meta.prayerOrder : null;
 }

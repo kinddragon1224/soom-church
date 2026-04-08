@@ -6,10 +6,8 @@ import { getWorkspaceMembers } from "@/lib/workspace-data";
 
 export default async function ChurchHouseholdsPage({
   params,
-  searchParams,
 }: {
   params: { churchSlug: string };
-  searchParams?: { q?: string; focus?: string };
 }) {
   const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) return null;
@@ -17,20 +15,9 @@ export default async function ChurchHouseholdsPage({
   const church = membership.church;
 
   if (church.slug === "gido") {
-    const [members, data] = await Promise.all([
-      getWorkspaceMembers(church.id),
-      getGidoWorkspaceData(church.id),
-    ]);
+    const data = await getGidoWorkspaceData(church.id);
 
-    return (
-      <GidoHouseholdsPage
-        churchSlug={church.slug}
-        households={data.households}
-        members={members}
-        q={searchParams?.q}
-        focus={searchParams?.focus}
-      />
-    );
+    return <GidoHouseholdsPage churchSlug={church.slug} households={data.households} />;
   }
 
   const members = await getWorkspaceMembers(church.id);

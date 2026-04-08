@@ -5,7 +5,7 @@ export type GidoPrayerRotationMember = {
 
 export type GidoPrayerRotationHousehold = {
   title: string;
-  prayerOrder?: number;
+  prayerOrder?: number | null;
 };
 
 const GIDO_PRAYER_ROTATION_ANCHOR = "2026-04-02";
