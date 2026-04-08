@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS } from "@/lib/gido-leadership";
-import { type GidoMemberView, getGidoWorkspaceData } from "@/lib/gido-workspace-data";
+import { getDailyPrayerTargets } from "@/lib/gido-prayer-rotation";
+import { getGidoWorkspaceData } from "@/lib/gido-workspace-data";
 import GidoHomeFeedPanel, { type GidoHomePanelItem } from "./gido-home-feed-panel";
 
 export default async function GidoDashboardPage({
@@ -209,34 +210,6 @@ export default async function GidoDashboardPage({
       </section>
     </div>
   );
-}
-
-function getDailyPrayerTargets(members: GidoMemberView[], count: number) {
-  if (members.length === 0) return [];
-
-  const sortedMembers = [...members].sort((a, b) => {
-    const householdCompare = a.householdName.localeCompare(b.householdName, "ko-KR");
-    if (householdCompare !== 0) return householdCompare;
-    return a.name.localeCompare(b.name, "ko-KR");
-  });
-
-  const dateKey = getSeoulDateKey();
-  const seed = Number(dateKey.replace(/-/g, ""));
-  const startIndex = seed % sortedMembers.length;
-
-  return Array.from({ length: Math.min(count, sortedMembers.length) }, (_, index) => sortedMembers[(startIndex + index) % sortedMembers.length]);
-}
-
-function getSeoulDateKey(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(date);
-
-  const get = (type: "year" | "month" | "day") => parts.find((part) => part.type === type)?.value ?? "00";
-  return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
 function HeaderButton({ href, tone, children }: { href: string; tone: "primary" | "secondary"; children: ReactNode }) {

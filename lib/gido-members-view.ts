@@ -1,6 +1,6 @@
 import { getGidoLeadershipProfile } from "@/lib/gido-leadership";
 
-export type GidoMembersFilter = "all" | "priority" | "leaders" | "rotation" | "followup";
+export type GidoMembersFilter = "all" | "priority" | "leaders" | "rotation" | "followup" | "unassigned";
 export type GidoPriorityTone = "alert" | "dark" | "warm" | "neutral";
 
 export type GidoPriorityReason = {
@@ -46,6 +46,7 @@ export function buildGidoMembersView<T extends GidoMemberViewInput>(
   });
 
   const priorityMembers = rankedMembers.filter((member) => member.priorityScore > 0);
+  const unassignedMembers = rankedMembers.filter((member) => !member.household?.name);
 
   const counts = {
     all: decoratedMembers.length,
@@ -53,6 +54,7 @@ export function buildGidoMembersView<T extends GidoMemberViewInput>(
     leaders: decoratedMembers.filter((member) => member.leadership.isActiveLeader).length,
     rotation: decoratedMembers.filter((member) => member.leadership.isRotationHousehold).length,
     followup: decoratedMembers.filter((member) => member.requiresFollowUp).length,
+    unassigned: unassignedMembers.length,
   };
 
   const filteredMembers = rankedMembers.filter((member) => {
@@ -72,7 +74,9 @@ export function buildGidoMembersView<T extends GidoMemberViewInput>(
             ? member.leadership.isRotationHousehold
             : filter === "followup"
               ? member.requiresFollowUp
-              : true;
+              : filter === "unassigned"
+                ? !member.household?.name
+                : true;
 
     return matchesQuery && matchesFilter;
   });
@@ -83,6 +87,7 @@ export function buildGidoMembersView<T extends GidoMemberViewInput>(
     decoratedMembers,
     rankedMembers,
     priorityMembers,
+    unassignedMembers,
     counts,
     filteredMembers,
   };
@@ -106,7 +111,7 @@ export function decorateGidoMember<T extends GidoMemberViewInput>(member: T): De
 }
 
 function normalizeFilter(filter?: string): GidoMembersFilter {
-  if (filter === "priority" || filter === "leaders" || filter === "rotation" || filter === "followup") {
+  if (filter === "priority" || filter === "leaders" || filter === "rotation" || filter === "followup" || filter === "unassigned") {
     return filter;
   }
 

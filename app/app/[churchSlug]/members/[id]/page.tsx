@@ -51,6 +51,7 @@ const GIDO_QUEUE_LABELS = {
   leaders: "현 목자 목록",
   rotation: "순환 진행 목록",
   followup: "후속 필요 목록",
+  unassigned: "미분류 목록",
 } as const;
 
 function buildGidoMemberHref(churchSlug: string, memberId: string, filter?: string, q?: string) {
@@ -66,6 +67,7 @@ function getGidoQueueDescription(filter: keyof typeof GIDO_QUEUE_LABELS, q: stri
   if (filter === "leaders") return "현 목자 흐름을 이어서 보면서 바로 다음 리더까지 넘길 수 있어.";
   if (filter === "rotation") return "올해 순환 진행 가정을 한 흐름으로 이어서 확인하면 돼.";
   if (filter === "followup") return "후속 필요한 사람만 이어서 보면서 연락과 메모를 정리하면 돼.";
+  if (filter === "unassigned") return "가정 연결이 안 된 사람만 이어서 보면서 관계와 가정을 먼저 정리하면 돼.";
   return "지금 보고 있는 목록 기준으로 앞뒤 사람을 바로 넘길 수 있어.";
 }
 
