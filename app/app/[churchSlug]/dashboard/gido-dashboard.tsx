@@ -172,7 +172,7 @@ export default async function GidoDashboardPage({
             <select name="memberId" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" defaultValue="">
               <option value="">홈에 추가할 목원 선택</option>
               {homePinCandidates.map((member) => (
-                <option key={member.id} value={member.id}>{member.name} · {member.household?.name ?? "미분류"}</option>
+                <option key={member.id} value={member.id}>{member.name}{"birthLabel" in member && typeof member.birthLabel === "string" ? ` · ${member.birthLabel}` : ""}</option>
               ))}
             </select>
             <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">추가</button>
