@@ -22,7 +22,6 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
   const {
     filter: activeFilter,
     decoratedMembers,
-    priorityMembers,
     unassignedMembers,
     counts,
     filteredMembers,
@@ -52,12 +51,16 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
     { key: "priority", label: "운영 우선", value: counts.priority },
     { key: "leaders", label: "현 목자", value: counts.leaders },
     { key: "rotation", label: "순환 진행", value: counts.rotation },
-    { key: "followup", label: "후속 필요", value: counts.followup },
+    { key: "followup", label: "돌봄 필요", value: counts.followup },
     { key: "unassigned", label: "미분류", value: counts.unassigned },
   ];
 
   const qParam = q ? `&q=${encodeURIComponent(q)}` : "";
-  const priorityQueue = (activeFilter === "priority" ? filteredMembers : priorityMembers).slice(0, activeFilter === "priority" ? 6 : 4);
+  const compositionQueue = decoratedMembers
+    .map((member) => ({ member, issues: getCompositionIssues(member) }))
+    .filter((item) => item.issues.length > 0)
+    .sort((a, b) => b.issues.length - a.issues.length || a.member.name.localeCompare(b.member.name, "ko-KR"))
+    .slice(0, 6);
   const prayerTargets = getDailyPrayerTargets(
     decoratedMembers.map((member) => ({
       ...member,
@@ -65,7 +68,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
     })),
     3,
   );
-  const followupLane = (activeFilter === "followup" ? filteredMembers : decoratedMembers.filter((member) => member.requiresFollowUp)).slice(0, 4);
+  const careLane = (activeFilter === "followup" ? filteredMembers : decoratedMembers.filter((member) => member.requiresFollowUp)).slice(0, 4);
   const householdBoards = buildHouseholdBoards(decoratedMembers).slice(0, 6);
 
   return (
@@ -75,7 +78,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목원 관리</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">우선 확인 대상, 후속, 가정 연결</p>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">우선 확인 대상, 돌봄, 가정 연결</p>
           </div>
 
           <div className="flex flex-wrap gap-2 xl:justify-end">
@@ -109,7 +112,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
             <MetricCard label="전체 목원" value={`${counts.all}명`} />
             <MetricCard label="현 목자" value={`${GIDO_ACTIVE_LEADER_NAMES.length}명`} />
             <MetricCard label="순환 진행" value={`${GIDO_ROTATION_TRACKS.length}가정`} />
-            <MetricCard label="후속 필요" value={`${counts.followup}명`} tone={counts.followup > 0 ? "alert" : "neutral"} />
+            <MetricCard label="돌봄 필요" value={`${counts.followup}명`} tone={counts.followup > 0 ? "alert" : "neutral"} />
             <MetricCard label="미분류" value={`${counts.unassigned}명`} tone={counts.unassigned > 0 ? "alert" : "neutral"} />
           </div>
         </div>
@@ -157,33 +160,33 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FOLLOW-UP LANE</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">이번 주 먼저 연락할 사람</h2>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 돌봐야 할 사람</h2>
             </div>
             <Link href={`?filter=followup${qParam}`} className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">
-              후속 {counts.followup}명
+              돌봄 {counts.followup}명
             </Link>
           </div>
 
           <div className="mt-4 grid gap-3">
-            {followupLane.length === 0 ? (
-              <EmptyBox text="표시할 후속 대상 없음" compact />
+            {careLane.length === 0 ? (
+              <EmptyBox text="표시할 돌봄 대상 없음" compact />
             ) : (
-              followupLane.map((member) => (
+              careLane.map((member) => (
                 <article key={`followup-${member.id}`} className="rounded-[18px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
                       <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "미분류"}</p>
                     </div>
-                    <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속 필요</span>
+                    <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">돌봄 필요</span>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link href={buildMemberHref(member.id, "followup", "care-log")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                      후속 정리
+                      돌봄 정리
                     </Link>
                     <Link href={`/app/${churchSlug}/followups`} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
-                      후속 보드
+                      돌봄 보드
                     </Link>
                   </div>
                 </article>
@@ -232,50 +235,52 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
         </article>
       </section>
 
-      {priorityQueue.length > 0 ? (
-        <section className={`rounded-[24px] border bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] ${activeFilter === "priority" ? "border-[#d9cfbf]" : "border-[#e6dfd5]"}`}>
+      {compositionQueue.length > 0 ? (
+        <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PRIORITY QUEUE</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 바로 볼 목원</h2>
-              <p className="mt-2 text-sm leading-6 text-[#5f564b]">운영 우선 순서</p>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">COMPOSITION CHECK</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">가정 구성 보완</h2>
+              <p className="mt-2 text-sm leading-6 text-[#5f564b]">가정 연결, 연락처, 소속 정보 확인</p>
             </div>
             <span className="inline-flex h-9 items-center rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 text-[11px] text-[#6f6256]">
-              {activeFilter === "priority" ? `운영 우선 ${filteredMembers.length}명` : `지금 먼저 볼 사람 ${priorityMembers.length}명`}
+              구조 보완 {compositionQueue.length}명
             </span>
           </div>
 
           <div className="mt-4 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-            {priorityQueue.map((member) => {
-              const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
-              const secondaryLabel = member.requiresFollowUp ? "후속 보드" : "가정 흐름";
-              const primaryAction = getPrimaryAction(member, "priority");
+            {compositionQueue.map(({ member, issues }) => {
+              const primaryHref = buildMemberHref(member.id, !member.household?.name ? "unassigned" : "all", "quick-info");
+              const secondaryHref = !member.household?.name ? `/app/${churchSlug}/households` : buildMemberHref(member.id, "all", "quick-info");
+              const secondaryLabel = !member.household?.name ? "가정 화면" : "기본 정보";
 
               return (
-                <article key={`priority-${member.id}`} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
+                <article key={`composition-${member.id}`} className="rounded-[20px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
                       <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "가정 연결 전"}</p>
                     </div>
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${getPriorityToneClasses(member.priorityReason.tone)}`}>{member.priorityReason.title}</span>
+                    <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[11px] font-medium text-[#6f6256]">보완 {issues.length}</span>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7d705f]">
-                    <RoleTags member={member} />
+                    {issues.map((issue) => (
+                      <span key={`${member.id}-${issue}`} className="rounded-full border border-[#E7E0D4] bg-white px-2.5 py-1 text-[11px] text-[#5f564b]">
+                        {issue}
+                      </span>
+                    ))}
                   </div>
 
-                  <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
-
                   <div className="mt-3 rounded-[16px] border border-[#e7ddcf] bg-white px-3.5 py-3">
-                    <p className="text-[10px] tracking-[0.14em] text-[#9a8b7a]">NEXT ACTION</p>
-                    <p className="mt-1 text-sm font-semibold text-[#111111]">{member.actionPlan.title}</p>
-                    <p className="mt-1 text-sm leading-6 text-[#5f564b]">{member.actionPlan.body}</p>
+                    <p className="text-[10px] tracking-[0.14em] text-[#9a8b7a]">CHECK</p>
+                    <p className="mt-1 text-sm font-semibold text-[#111111]">{issues[0]} 확인</p>
+                    <p className="mt-1 text-sm leading-6 text-[#5f564b]">{getCompositionIssueSummary(issues)}</p>
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={getPrimaryAction(member, member.actionPlan.queueFilter).href} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                      {primaryAction.label}
+                    <Link href={primaryHref} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                      상세 관리
                     </Link>
                     <Link href={secondaryHref} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
                       {secondaryLabel}
@@ -309,7 +314,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <span className="rounded-full bg-[#111827] px-2.5 py-1 text-[11px] font-semibold text-white">현 목자</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7d705f]">
-                  {member.requiresFollowUp ? <span className="rounded-full border border-[#f0ddae] bg-[#fff8e8] px-2.5 py-1 text-[#8c6a2e]">후속 필요</span> : null}
+                  {member.requiresFollowUp ? <span className="rounded-full border border-[#f0ddae] bg-[#fff8e8] px-2.5 py-1 text-[#8c6a2e]">돌봄 필요</span> : null}
                 </div>
               </Link>
             ))}
@@ -344,7 +349,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold text-[#111111]">{household.name}</p>
-                    <p className="mt-1 text-xs text-[#8C7A5B]">목원 {household.memberCount}명 · 후속 {household.followupCount}명</p>
+                    <p className="mt-1 text-xs text-[#8C7A5B]">목원 {household.memberCount}명 · 돌봄 {household.followupCount}명</p>
                   </div>
                   <div className="flex flex-wrap justify-end gap-1.5 text-[11px]">
                     {household.leaderCount > 0 ? <span className="rounded-full bg-[#111827] px-2.5 py-1 text-white">목자 {household.leaderCount}</span> : null}
@@ -411,7 +416,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
               <tbody>
                 {filteredMembers.map((member) => {
                   const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
-                  const secondaryLabel = member.requiresFollowUp ? "후속" : "가정";
+                  const secondaryLabel = member.requiresFollowUp ? "돌봄" : "가정";
                   const primaryAction = getPrimaryAction(member);
                   const actionFilter = activeFilter === "all" ? member.actionPlan.queueFilter : activeFilter;
 
@@ -537,10 +542,26 @@ function RoleTags({ member }: { member: ReturnType<typeof buildGidoMembersView<G
       ) : (
         <span className="rounded-full border border-[#E7E0D4] bg-white px-2.5 py-1 text-[11px] text-[#5f564b]">목원</span>
       )}
-      {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속 필요</span> : null}
+      {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">돌봄 필요</span> : null}
       {!member.household?.name ? <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[11px] text-[#6f6256]">미분류</span> : null}
     </>
   );
+}
+
+function getCompositionIssues(
+  member: ReturnType<typeof buildGidoMembersView<GidoMemberRow>>["decoratedMembers"][number],
+) {
+  const issues: string[] = [];
+  if (!member.household?.name) issues.push("가정 연결");
+  if (!member.phone && !member.email) issues.push("연락처");
+  if (!member.group?.name) issues.push("목장 소속");
+  if (!member.district?.name) issues.push("교구 소속");
+  return issues;
+}
+
+function getCompositionIssueSummary(issues: string[]) {
+  if (issues.length === 0) return "구조 보완 항목 없음";
+  return `${issues.join(", ")} 확인`;
 }
 
 function getPriorityToneClasses(tone: "alert" | "dark" | "warm" | "neutral") {

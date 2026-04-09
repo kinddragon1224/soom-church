@@ -63,7 +63,7 @@ export default function GidoFollowupsPage({
   const highPriorityCards = followUps.filter((item) => item.priority === "높음").length;
   const filterItems = [
     { key: "all", label: "실행 전체", value: counts.all },
-    { key: "followup", label: "후속", value: counts.followup },
+    { key: "followup", label: "돌봄", value: counts.followup },
     { key: "leaders", label: "현 목자", value: counts.leaders },
     { key: "rotation", label: "순환 진행", value: counts.rotation },
   ];
@@ -79,9 +79,9 @@ export default function GidoFollowupsPage({
       <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O FOLLOW-UPS</p>
-            <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">후속</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">실행 대상, 후속 카드, 순환 진행 체크</p>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O CARE</p>
+            <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">돌봄</h1>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">실행 대상, 돌봄 카드, 순환 진행 체크</p>
           </div>
 
           <form className="w-full max-w-[420px] rounded-[22px] border border-[#ece4d8] bg-[#fbfaf7] p-4" method="get">
@@ -102,8 +102,8 @@ export default function GidoFollowupsPage({
         </div>
 
         <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <MetricCard label="후속 대상" value={`${counts.followup}명`} tone={counts.followup > 0 ? "alert" : "neutral"} />
-          <MetricCard label="후속 카드" value={`${followUps.length}건`} />
+          <MetricCard label="돌봄 대상" value={`${counts.followup}명`} tone={counts.followup > 0 ? "alert" : "neutral"} />
+          <MetricCard label="돌봄 카드" value={`${followUps.length}건`} />
           <MetricCard label="높은 우선순위" value={`${highPriorityCards}건`} tone={highPriorityCards > 0 ? "alert" : "neutral"} />
           <MetricCard label="순환 진행" value={`${counts.rotation}명`} />
         </div>
@@ -113,15 +113,15 @@ export default function GidoFollowupsPage({
         <article className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FOLLOW-UP CARDS</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">기록된 후속 카드</h2>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">CARE CARDS</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">기록된 돌봄 카드</h2>
             </div>
             <span className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">{followUps.length}건</span>
           </div>
 
           <div className="mt-4 grid gap-3">
             {followUps.length === 0 ? (
-              <EmptyBox text="기록된 후속 카드 없음" />
+              <EmptyBox text="기록된 돌봄 카드 없음" />
             ) : (
               followUps.map((item, index) => (
                 <article key={`${item.title}-${index}`} className="rounded-[18px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
@@ -260,7 +260,7 @@ export default function GidoFollowupsPage({
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">ACTION BOARD</p>
-            <h2 className="mt-2 text-lg font-semibold text-[#111111]">후속 대상 보드</h2>
+            <h2 className="mt-2 text-lg font-semibold text-[#111111]">돌봄 대상 보드</h2>
           </div>
           <span className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">{executionMembers.length}명</span>
         </div>
@@ -284,7 +284,7 @@ export default function GidoFollowupsPage({
                         {tag}
                       </span>
                     ))}
-                    {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[#8C6A2E]">후속 필요</span> : null}
+                    {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[#8C6A2E]">돌봄 필요</span> : null}
                   </div>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>

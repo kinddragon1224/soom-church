@@ -62,7 +62,7 @@ export default async function GidoDashboardPage({
     })),
     ...data.followUps.slice(0, 3).map((item, index) => ({
       key: `followup-${index}-${item.title}`,
-      label: "후속",
+      label: "돌봄",
       title: item.title,
       body: item.note,
       href: `${base}/followups`,
@@ -85,9 +85,9 @@ export default async function GidoDashboardPage({
       : null,
     {
       key: "followup-alert",
-      label: "후속",
-      title: urgentMemberCount > 0 ? `후속 필요한 목원 ${urgentMemberCount}명` : "급한 후속 없음",
-      body: urgentMemberCount > 0 ? "확인할 후속 대상 있음" : "새 후속 알림 없음",
+      label: "돌봄",
+      title: urgentMemberCount > 0 ? `돌봄 필요한 목원 ${urgentMemberCount}명` : "급한 돌봄 없음",
+      body: urgentMemberCount > 0 ? "확인할 돌봄 대상 있음" : "새 돌봄 알림 없음",
       href: `${base}/followups`,
       meta: "운영 알림",
       tone: urgentMemberCount > 0 ? ("amber" as const) : ("navy" as const),
@@ -218,10 +218,10 @@ export default async function GidoDashboardPage({
       </section>
 
       <section className="grid gap-4 lg:grid-cols-4">
-        <ActionCard title="후속 관리" desc="후속 대상과 카드 확인" href={`${base}/followups`} meta={`${urgentMemberCount}명`} />
+        <ActionCard title="돌봄 관리" desc="돌봄 대상과 카드 확인" href={`${base}/followups`} meta={`${urgentMemberCount}명`} />
         <ActionCard title="가정별 중보" desc="가정별 기도제목과 연락 메모" href={`${base}/households`} meta={`${data.stats.householdCount}가정`} />
         <ActionCard title="최근 근황" desc="공유할 근황과 메모" href={`${base}/updates`} meta={`${data.updates.length}건`} />
-        <ActionCard title="운영 우선 목원" desc="후속, 현 목자, 순환 진행 가정 목록" href={`${base}/members?filter=priority`} meta={`${urgentMemberCount}명 후속`} />
+        <ActionCard title="운영 우선 목원" desc="돌봄, 현 목자, 순환 진행 가정 목록" href={`${base}/members?filter=priority`} meta={`${urgentMemberCount}명 돌봄`} />
       </section>
     </div>
   );

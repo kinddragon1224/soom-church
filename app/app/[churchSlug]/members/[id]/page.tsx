@@ -50,7 +50,7 @@ const GIDO_QUEUE_LABELS = {
   priority: "운영 우선 큐",
   leaders: "현 목자 목록",
   rotation: "순환 진행 목록",
-  followup: "후속 필요 목록",
+  followup: "돌봄 필요 목록",
   unassigned: "미분류 목록",
 } as const;
 
@@ -66,7 +66,7 @@ function getGidoQueueDescription(filter: keyof typeof GIDO_QUEUE_LABELS, q: stri
   if (filter === "priority") return reasonBody;
   if (filter === "leaders") return "현 목자 흐름을 이어서 보면서 바로 다음 리더까지 넘길 수 있어.";
   if (filter === "rotation") return "올해 순환 진행 가정을 한 흐름으로 이어서 확인하면 돼.";
-  if (filter === "followup") return "후속 필요한 사람만 이어서 보면서 연락과 메모를 정리하면 돼.";
+  if (filter === "followup") return "돌봄이 필요한 사람 목록이야.";
   if (filter === "unassigned") return "가정 연결이 안 된 사람만 이어서 보면서 관계와 가정을 먼저 정리하면 돼.";
   return "지금 보고 있는 목록 기준으로 앞뒤 사람을 바로 넘길 수 있어.";
 }
@@ -187,7 +187,7 @@ export default async function ChurchMemberRecordPage({
             <div className="flex flex-wrap gap-2 lg:justify-end">
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{member.position ?? "직분 미정"}</span>
               <span className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs text-white/76">{member.statusTag}</span>
-              {member.requiresFollowUp ? <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">후속 연락 필요</span> : null}
+              {member.requiresFollowUp ? <span className="rounded-full border border-[#d4af37]/25 bg-[#d4af37]/12 px-3 py-1.5 text-xs text-[#f1dfb2]">돌봄 연락 필요</span> : null}
               {member.isDeleted ? <span className="rounded-full border border-[#f0c9c9] bg-[#fff2f2] px-3 py-1.5 text-xs text-[#9a4a4a]">삭제됨</span> : null}
               <Link href={`/app/${church.slug}/members/${member.id}/edit`} className="rounded-[12px] border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-medium text-white">수정</Link>
             </div>
@@ -364,7 +364,7 @@ export default async function ChurchMemberRecordPage({
               <input name="ministryRole" placeholder="예: 리더, 교사, 봉사" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
               <input name="happenedAt" type="date" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
               <button className="rounded-[12px] bg-[#0F172A] px-4 py-2 text-sm font-semibold text-white">사역 기록</button>
-              <textarea name="summary" placeholder="맡은 역할, 후속 메모, 평가" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+              <textarea name="summary" placeholder="맡은 역할, 돌봄 메모, 평가" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
             </form>
             <div className="mt-4 grid gap-3">
               {ministryRecords.length === 0 ? (
