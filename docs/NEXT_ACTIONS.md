@@ -22,6 +22,7 @@
 ### 기준 문서
 - `docs/SOOM_V2_CHAT_FIRST_PLAN_2026-04-09.md`
 - `docs/SOOM_V2_IA_2026-04-09.md`
+- `docs/SOOM_V2_REVIEW_SCHEMA_2026-04-09.md`
 
 ### 바로 다음에 할 것
 1. `chat -> extracted update -> review -> record` 흐름 스키마 설계
