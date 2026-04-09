@@ -24,20 +24,27 @@ export default function GidoHomeFeedPanel({
   const [tab, setTab] = useState<"feed" | "notifications">(feedItems.length > 0 ? "feed" : "notifications");
 
   const items = useMemo(() => (tab === "feed" ? feedItems : notificationItems), [feedItems, notificationItems, tab]);
-  const emptyText = tab === "feed" ? "표시할 피드 없음" : "표시할 알림 없음";
+  const emptyText = tab === "feed" ? "표시할 업데이트 없음" : "표시할 알림 없음";
 
   return (
     <article className="rounded-[26px] border border-[#eee7dc] bg-white p-5 shadow-[0_6px_18px_rgba(15,23,42,0.03)] lg:p-6">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[10px] tracking-[0.16em] text-[#95897b]">UPDATES & ALERTS</p>
+          <h2 className="mt-2 text-[1.2rem] font-semibold tracking-[-0.03em] text-[#111111]">업데이트 / 알림</h2>
+        </div>
+        <span className="rounded-full border border-[#ece4d8] bg-[#faf7f2] px-2.5 py-1 text-[10px] text-[#8f8478]">{items.length}건</span>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-3">
         <div className="inline-flex rounded-full border border-[#ece5db] bg-[#f7f5f0] p-1">
           <TabButton active={tab === "feed"} onClick={() => setTab("feed")}>
-            Feed
+            업데이트
           </TabButton>
           <TabButton active={tab === "notifications"} onClick={() => setTab("notifications")}>
-            Notifications
+            알림
           </TabButton>
         </div>
-        <span className="text-[11px] text-[#8f8478]">{items.length} items</span>
       </div>
 
       <div className="mt-4 space-y-2.5">
