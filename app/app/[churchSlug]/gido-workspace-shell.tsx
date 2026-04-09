@@ -35,7 +35,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[248px] shrink-0 flex-col bg-[#0b0b0c] px-4 py-5 text-white lg:flex">
           <div className="px-1">
-            <Link href={base} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
+            <Link href={`${base}/dashboard`} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
               soom workspace
             </Link>
             <div className="mt-2 flex items-center gap-2">
