@@ -19,7 +19,8 @@ export default async function NewWorkspaceMemberPage({ params }: { params: { chu
     <div className="space-y-4 text-[#111111]">
       <div>
         <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">NEW MEMBER</p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-[-0.04em]">교인 등록</h1>
+        <h1 className="mt-2 text-2xl font-semibold tracking-[-0.04em]">상세 등록</h1>
+        <p className="mt-2 text-sm text-[#5f564b]">간단 등록은 목원 관리 화면에서 바로 할 수 있어.</p>
       </div>
       <WorkspaceMemberForm
         action={createWorkspaceMember.bind(null, params.churchSlug)}

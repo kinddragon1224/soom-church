@@ -1,4 +1,4 @@
-import { getGidoPrayerOrder, parseGidoHouseholdMeta, parseGidoMemberMeta } from "@/lib/gido-home-config";
+import { type GidoFamilyRole, getGidoPrayerOrder, parseGidoHouseholdMeta, parseGidoMemberMeta } from "@/lib/gido-home-config";
 import { prisma } from "@/lib/prisma";
 
 export type GidoMemberView = {
@@ -30,7 +30,7 @@ export type GidoUpdateView = {
 export type GidoHouseholdView = {
   id: string;
   title: string;
-  members: { name: string; birthLabel: string }[];
+  members: { id: string; name: string; birthLabel: string; familyRole?: GidoFamilyRole }[];
   tags: string[];
   prayers: string[];
   contacts: string[];
@@ -86,7 +86,12 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
     const birthLabel = toBirthLabel(member.birthDate, member.notes);
     const householdName = member.household?.name ?? "미분류";
     const memberMeta = parseGidoMemberMeta(member.notes);
-    const item = { name: member.name, birthLabel };
+    const item = {
+      id: member.id,
+      name: member.name,
+      birthLabel,
+      familyRole: memberMeta.familyRole,
+    };
     if (member.householdId) {
       const bucket = membersByHousehold.get(member.householdId) ?? [];
       bucket.push(item);

@@ -21,7 +21,7 @@ type SidebarItem = {
 const sidebarItems = (base: string): SidebarItem[] => [
   { key: "dashboard", label: "홈", href: `${base}/dashboard`, tone: "#f3f4f6" },
   { key: "members", label: "목원", href: `${base}/members`, tone: "#7dd3a7" },
-  { key: "followups", label: "돌봄", href: `${base}/followups`, tone: "#7cc6ff" },
+  { key: "followups", label: "관리", href: `${base}/followups`, tone: "#7cc6ff" },
   { key: "households", label: "중보", href: `${base}/households`, tone: "#d2a8ff" },
   { key: "updates", label: "근황", href: `${base}/updates`, tone: "#8be9d5" },
 ];

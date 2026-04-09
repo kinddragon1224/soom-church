@@ -1,9 +1,12 @@
 type GidoParsedJson = Record<string, unknown>;
 
+export type GidoFamilyRole = "SELF" | "SPOUSE" | "CHILD" | "FAMILY";
+
 type GidoMemberMeta = {
   birthLabel?: string;
   homePinned?: boolean;
   homePinnedAt?: string | null;
+  familyRole?: GidoFamilyRole;
 };
 
 type GidoHouseholdMeta = {
@@ -27,10 +30,20 @@ function parseJson(value?: string | null): GidoParsedJson | null {
 export function parseGidoMemberMeta(notes?: string | null): GidoMemberMeta {
   const parsed = parseJson(notes);
   if (!parsed) return {};
+
+  const familyRole =
+    parsed.familyRole === "SELF" ||
+    parsed.familyRole === "SPOUSE" ||
+    parsed.familyRole === "CHILD" ||
+    parsed.familyRole === "FAMILY"
+      ? parsed.familyRole
+      : undefined;
+
   return {
     birthLabel: typeof parsed.birthLabel === "string" ? parsed.birthLabel : undefined,
     homePinned: parsed.homePinned === true,
     homePinnedAt: typeof parsed.homePinnedAt === "string" ? parsed.homePinnedAt : undefined,
+    familyRole,
   };
 }
 
@@ -42,6 +55,14 @@ export function updateGidoMemberMeta(
   const next: GidoParsedJson = { ...parsed };
 
   if (updates.birthLabel !== undefined) next.birthLabel = updates.birthLabel;
+
+  if (updates.familyRole === undefined) {
+    // keep existing
+  } else if (updates.familyRole) {
+    next.familyRole = updates.familyRole;
+  } else {
+    delete next.familyRole;
+  }
 
   if (updates.homePinned === undefined) {
     // keep existing
@@ -108,4 +129,12 @@ export function updateGidoHouseholdMeta(
 export function getGidoPrayerOrder(_title: string, notes?: string | null) {
   const meta = parseGidoHouseholdMeta(notes);
   return typeof meta.prayerOrder === "number" ? meta.prayerOrder : null;
+}
+
+export function getGidoFamilyRoleLabel(role?: GidoFamilyRole) {
+  if (role === "SELF") return "가정 대표";
+  if (role === "SPOUSE") return "배우자";
+  if (role === "CHILD") return "자녀";
+  if (role === "FAMILY") return "가족";
+  return null;
 }

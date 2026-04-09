@@ -30,7 +30,7 @@ export function WorkspaceMemberForm({ member, action, districts, groups, househo
       <label className="text-sm font-medium text-[#3f3528]">이전 신앙<input name="previousFaith" defaultValue={member?.previousFaith ?? ""} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111] outline-none transition focus:border-[#d6c3a1] focus:bg-white" /></label>
       <label className="text-sm font-medium text-[#3f3528]">침례/세례<input name="baptismStatus" defaultValue={member?.baptismStatus ?? ""} className="mt-1 w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111] outline-none transition focus:border-[#d6c3a1] focus:bg-white" /></label>
       <label className="text-sm font-medium text-[#3f3528] lg:col-span-2">메모<textarea name="notes" defaultValue={member?.notes ?? ""} className="mt-1 min-h-[120px] w-full rounded-[14px] border border-[#E7E0D4] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111] outline-none transition focus:border-[#d6c3a1] focus:bg-white" /></label>
-      <label className="flex items-center gap-2 text-sm font-medium text-[#5f564b]"><input name="requiresFollowUp" type="checkbox" defaultChecked={member?.requiresFollowUp} /> 후속관리 필요</label>
+      <label className="flex items-center gap-2 text-sm font-medium text-[#5f564b]"><input name="requiresFollowUp" type="checkbox" defaultChecked={member?.requiresFollowUp} /> 관리 필요</label>
       <div className="lg:col-span-2"><Button type="submit">저장</Button></div>
     </form>
   );

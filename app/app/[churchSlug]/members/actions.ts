@@ -3,6 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { CareCategory, MemberOrgRole, RelationshipType } from "@prisma/client";
+import { updateGidoMemberMeta } from "@/lib/gido-home-config";
 import { getStatusUpdatePatch } from "@/lib/member-status";
 import { prisma } from "@/lib/prisma";
 import { requireWorkspaceMembership } from "@/lib/church-context";
@@ -15,6 +16,12 @@ function asOptionalString(value: FormDataEntryValue | null) {
 function parseDate(value: FormDataEntryValue | null, fallback = new Date()) {
   const text = String(value || "").trim();
   return text ? new Date(text) : fallback;
+}
+
+function asFamilyRole(value: FormDataEntryValue | null) {
+  const role = String(value || "").trim();
+  if (role === "SELF" || role === "SPOUSE" || role === "CHILD" || role === "FAMILY") return role;
+  return undefined;
 }
 
 async function getScopedMember(churchSlug: string, memberId: string) {
@@ -60,6 +67,65 @@ async function refreshMemberView(churchId: string, memberId: string) {
   revalidateTag(`church:${churchId}:organizations`);
 }
 
+async function inferPlacementFromGroupAndHousehold(
+  churchId: string,
+  {
+    householdId,
+    groupId,
+    districtId,
+  }: {
+    householdId: string | null;
+    groupId: string | null;
+    districtId: string | null;
+  },
+) {
+  let nextGroupId = groupId;
+  let nextDistrictId = districtId;
+
+  if (nextGroupId) {
+    const group = await prisma.group.findFirst({
+      where: { id: nextGroupId, churchId },
+      select: { id: true, districtId: true },
+    });
+
+    if (group) {
+      nextGroupId = group.id;
+      nextDistrictId = group.districtId;
+    } else {
+      nextGroupId = null;
+    }
+  }
+
+  if (householdId && (!nextGroupId || !nextDistrictId)) {
+    const sampleMember = await prisma.member.findFirst({
+      where: {
+        churchId,
+        householdId,
+        isDeleted: false,
+        OR: [{ groupId: { not: null } }, { districtId: { not: null } }],
+      },
+      orderBy: [{ createdAt: "asc" }],
+      select: { groupId: true, districtId: true },
+    });
+
+    if (!nextGroupId) nextGroupId = sampleMember?.groupId ?? null;
+    if (!nextDistrictId) nextDistrictId = sampleMember?.districtId ?? null;
+  }
+
+  if (nextGroupId && !nextDistrictId) {
+    const group = await prisma.group.findFirst({
+      where: { id: nextGroupId, churchId },
+      select: { districtId: true },
+    });
+    nextDistrictId = group?.districtId ?? null;
+  }
+
+  return {
+    groupId: nextGroupId,
+    districtId: nextDistrictId,
+  };
+}
+
 export async function createWorkspaceMember(churchSlug: string, formData: FormData) {
   const { membership, userId } = await requireWorkspaceMembership(churchSlug);
   if (!membership) return;
@@ -81,6 +147,65 @@ export async function createWorkspaceMember(churchSlug: string, formData: FormDa
 
   await refreshMemberView(membership.church.id, created.id);
   redirect(`/app/${churchSlug}/members/${created.id}/summary`);
+}
+
+export async function createQuickWorkspaceMember(churchSlug: string, returnPath: string, formData: FormData) {
+  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
+  if (!membership) redirect(returnPath);
+
+  const name = String(formData.get("name") || "").trim();
+  const birthDateInput = String(formData.get("birthDate") || "").trim();
+  const householdId = asOptionalString(formData.get("householdId"));
+  const groupIdInput = asOptionalString(formData.get("groupId"));
+  const phone = String(formData.get("phone") || "").trim();
+  const familyRole = asFamilyRole(formData.get("familyRole"));
+
+  if (!name || !birthDateInput) redirect(returnPath);
+
+  const placement = await inferPlacementFromGroupAndHousehold(membership.church.id, {
+    householdId,
+    groupId: groupIdInput,
+    districtId: null,
+  });
+
+  const created = await prisma.member.create({
+    data: {
+      churchId: membership.church.id,
+      name,
+      gender: String(formData.get("gender") || "OTHER").trim() as any,
+      birthDate: parseDate(formData.get("birthDate")),
+      phone,
+      email: null,
+      address: null,
+      householdId,
+      districtId: placement.districtId,
+      groupId: placement.groupId,
+      registeredAt: new Date(),
+      position: asOptionalString(formData.get("position")),
+      statusTag: "등록대기",
+      requiresFollowUp: formData.get("requiresFollowUp") === "on",
+      notes: familyRole ? updateGidoMemberMeta(null, { familyRole }) : null,
+      currentJob: null,
+      previousChurch: null,
+      previousFaith: null,
+      baptismStatus: null,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_CREATED",
+      targetType: "Member",
+      targetId: created.id,
+      memberId: created.id,
+      metadata: JSON.stringify({ mode: "quick" }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, created.id);
+  redirect(returnPath);
 }
 
 export async function updateWorkspaceMember(churchSlug: string, memberId: string, formData: FormData) {

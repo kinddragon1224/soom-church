@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/date";
 import { GIDO_ACTIVE_LEADER_NAMES, GIDO_ROTATION_TRACKS } from "@/lib/gido-leadership";
 import { buildGidoMembersView } from "@/lib/gido-members-view";
 import { getDailyPrayerTargets } from "@/lib/gido-prayer-rotation";
+import { createQuickWorkspaceMember } from "./actions";
 
 type GidoMemberRow = Member & {
   district: District | null;
@@ -14,11 +15,13 @@ type GidoMemberRow = Member & {
 type Props = {
   churchSlug: string;
   members: GidoMemberRow[];
+  groups: { id: string; name: string }[];
+  households: { id: string; name: string }[];
   q?: string;
   filter?: string;
 };
 
-export default function GidoMembersPage({ churchSlug, members, q = "", filter = "all" }: Props) {
+export default function GidoMembersPage({ churchSlug, members, groups, households, q = "", filter = "all" }: Props) {
   const {
     filter: activeFilter,
     decoratedMembers,
@@ -51,11 +54,12 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
     { key: "priority", label: "운영 우선", value: counts.priority },
     { key: "leaders", label: "현 목자", value: counts.leaders },
     { key: "rotation", label: "순환 진행", value: counts.rotation },
-    { key: "followup", label: "돌봄 필요", value: counts.followup },
+    { key: "followup", label: "관리 필요", value: counts.followup },
     { key: "unassigned", label: "미분류", value: counts.unassigned },
   ];
 
   const qParam = q ? `&q=${encodeURIComponent(q)}` : "";
+  const listPath = `/app/${churchSlug}/members?filter=${activeFilter}${qParam}`;
   const compositionQueue = decoratedMembers
     .map((member) => ({ member, issues: getCompositionIssues(member) }))
     .filter((item) => item.issues.length > 0)
@@ -78,15 +82,18 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목원 관리</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">우선 확인 대상, 돌봄, 가정 연결</p>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">우선 확인 대상, 관리, 가정 연결</p>
           </div>
 
           <div className="flex flex-wrap gap-2 xl:justify-end">
             <Link href={`/app/${churchSlug}/members/import`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">
               CSV 등록
             </Link>
-            <Link href={`/app/${churchSlug}/members/new`} className="rounded-[14px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">
-              새 목원 추가
+            <Link href="#quick-add" className="rounded-[14px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">
+              간단 추가
+            </Link>
+            <Link href={`/app/${churchSlug}/members/new`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">
+              상세 등록
             </Link>
           </div>
         </div>
@@ -112,10 +119,59 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
             <MetricCard label="전체 목원" value={`${counts.all}명`} />
             <MetricCard label="현 목자" value={`${GIDO_ACTIVE_LEADER_NAMES.length}명`} />
             <MetricCard label="순환 진행" value={`${GIDO_ROTATION_TRACKS.length}가정`} />
-            <MetricCard label="돌봄 필요" value={`${counts.followup}명`} tone={counts.followup > 0 ? "alert" : "neutral"} />
+            <MetricCard label="관리 필요" value={`${counts.followup}명`} tone={counts.followup > 0 ? "alert" : "neutral"} />
             <MetricCard label="미분류" value={`${counts.unassigned}명`} tone={counts.unassigned > 0 ? "alert" : "neutral"} />
           </div>
         </div>
+      </section>
+
+      <section id="quick-add" className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] scroll-mt-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">QUICK ADD</p>
+            <h2 className="mt-2 text-lg font-semibold text-[#111111]">간단 목원 추가</h2>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">이름, 생년월일, 연락처, 가정, 목장만 넣고 바로 등록. 나머지는 상세 화면에서 정리.</p>
+          </div>
+          <Link href={`/app/${churchSlug}/members/new`} className="inline-flex h-10 items-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
+            상세 입력 열기
+          </Link>
+        </div>
+
+        <form action={createQuickWorkspaceMember.bind(null, churchSlug, listPath)} className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1.2fr)_180px_180px_180px_180px_auto]">
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium text-[#5f564b]">이름</span>
+            <input name="name" required placeholder="이름 입력" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+          </label>
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium text-[#5f564b]">생년월일</span>
+            <input name="birthDate" type="date" required className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+          </label>
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium text-[#5f564b]">연락처</span>
+            <input name="phone" placeholder="없으면 비워도 됨" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+          </label>
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium text-[#5f564b]">가정</span>
+            <select name="householdId" defaultValue="" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+              <option value="">선택 안함</option>
+              {households.map((household) => (
+                <option key={household.id} value={household.id}>{household.name}</option>
+              ))}
+            </select>
+          </label>
+          <label className="grid gap-2">
+            <span className="text-[12px] font-medium text-[#5f564b]">목장</span>
+            <select name="groupId" defaultValue="" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+              <option value="">선택 안함</option>
+              {groups.map((group) => (
+                <option key={group.id} value={group.id}>{group.name}</option>
+              ))}
+            </select>
+          </label>
+          <div className="flex items-end">
+            <button className="h-[42px] rounded-[12px] bg-[#111827] px-4 text-sm font-semibold text-white">등록</button>
+          </div>
+        </form>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1fr_1fr_0.9fr]">
@@ -143,15 +199,15 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                     {member.priorityReason.title}
                   </span>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link href={buildMemberHref(member.id, activeFilter, "household-prayer")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                    중보 보기
-                  </Link>
-                  <Link href={buildMemberHref(member.id, activeFilter, "care-log")} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
-                    메모 바로가기
-                  </Link>
-                </div>
-              </article>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link href={buildMemberHref(member.id, activeFilter, "household-prayer")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
+                  중보 보기
+                </Link>
+                <Link href={buildMemberHref(member.id, activeFilter, "care-log")} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
+                    기록 바로가기
+                </Link>
+              </div>
+            </article>
             ))}
           </div>
         </article>
@@ -159,17 +215,17 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
         <article className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FOLLOW-UP LANE</p>
-              <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 돌봐야 할 사람</h2>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">MANAGEMENT LANE</p>
+              <h2 className="mt-2 text-lg font-semibold text-[#111111]">지금 관리할 사람</h2>
             </div>
             <Link href={`?filter=followup${qParam}`} className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">
-              돌봄 {counts.followup}명
+              관리 {counts.followup}명
             </Link>
           </div>
 
           <div className="mt-4 grid gap-3">
             {careLane.length === 0 ? (
-              <EmptyBox text="표시할 돌봄 대상 없음" compact />
+              <EmptyBox text="표시할 관리 대상 없음" compact />
             ) : (
               careLane.map((member) => (
                 <article key={`followup-${member.id}`} className="rounded-[18px] border border-[#ece4d8] bg-[#fbfaf7] p-4">
@@ -178,15 +234,15 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                       <p className="text-base font-semibold text-[#111111]">{member.name}</p>
                       <p className="mt-1 text-sm text-[#6d6259]">{member.household?.name ?? "미분류"}</p>
                     </div>
-                    <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">돌봄 필요</span>
+                    <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">관리 필요</span>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-[#5f564b]">{member.priorityReason.body}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link href={buildMemberHref(member.id, "followup", "care-log")} className="rounded-[12px] bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white">
-                      돌봄 정리
+                      기록 정리
                     </Link>
                     <Link href={`/app/${churchSlug}/followups`} className="rounded-[12px] border border-[#e4dbc9] bg-white px-3.5 py-2 text-sm font-medium text-[#121212]">
-                      돌봄 보드
+                      관리 보드
                     </Link>
                   </div>
                 </article>
@@ -314,7 +370,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                   <span className="rounded-full bg-[#111827] px-2.5 py-1 text-[11px] font-semibold text-white">현 목자</span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-[#7d705f]">
-                  {member.requiresFollowUp ? <span className="rounded-full border border-[#f0ddae] bg-[#fff8e8] px-2.5 py-1 text-[#8c6a2e]">돌봄 필요</span> : null}
+                  {member.requiresFollowUp ? <span className="rounded-full border border-[#f0ddae] bg-[#fff8e8] px-2.5 py-1 text-[#8c6a2e]">관리 필요</span> : null}
                 </div>
               </Link>
             ))}
@@ -349,7 +405,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold text-[#111111]">{household.name}</p>
-                    <p className="mt-1 text-xs text-[#8C7A5B]">목원 {household.memberCount}명 · 돌봄 {household.followupCount}명</p>
+                    <p className="mt-1 text-xs text-[#8C7A5B]">목원 {household.memberCount}명 · 관리 {household.followupCount}명</p>
                   </div>
                   <div className="flex flex-wrap justify-end gap-1.5 text-[11px]">
                     {household.leaderCount > 0 ? <span className="rounded-full bg-[#111827] px-2.5 py-1 text-white">목자 {household.leaderCount}</span> : null}
@@ -416,7 +472,7 @@ export default function GidoMembersPage({ churchSlug, members, q = "", filter = 
               <tbody>
                 {filteredMembers.map((member) => {
                   const secondaryHref = member.requiresFollowUp ? `/app/${churchSlug}/followups` : `/app/${churchSlug}/households`;
-                  const secondaryLabel = member.requiresFollowUp ? "돌봄" : "가정";
+                  const secondaryLabel = member.requiresFollowUp ? "관리" : "가정";
                   const primaryAction = getPrimaryAction(member);
                   const actionFilter = activeFilter === "all" ? member.actionPlan.queueFilter : activeFilter;
 
@@ -542,7 +598,7 @@ function RoleTags({ member }: { member: ReturnType<typeof buildGidoMembersView<G
       ) : (
         <span className="rounded-full border border-[#E7E0D4] bg-white px-2.5 py-1 text-[11px] text-[#5f564b]">목원</span>
       )}
-      {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">돌봄 필요</span> : null}
+      {member.requiresFollowUp ? <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">관리 필요</span> : null}
       {!member.household?.name ? <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[11px] text-[#6f6256]">미분류</span> : null}
     </>
   );

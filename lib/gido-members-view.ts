@@ -152,11 +152,11 @@ function getGidoMemberActionPlan({
   if (requiresFollowUp) {
     return {
       title: "오늘 연락 남기기",
-      body: "돌봄 기록 필요",
-      shortLabel: "돌봄",
+      body: "관리 기록 필요",
+      shortLabel: "관리",
       section: "care-log",
       queueFilter: "followup",
-      laneLabel: "돌봄",
+      laneLabel: "관리",
     };
   }
 
@@ -225,16 +225,16 @@ function getGidoPriorityReason({
 }): GidoPriorityReason {
   if (requiresFollowUp && isActiveLeader) {
     return {
-      title: "돌봄 + 리더",
-      body: "돌봄 기록과 리더 확인 필요",
+      title: "관리 + 리더",
+      body: "관리 기록과 리더 확인 필요",
       tone: "alert",
     };
   }
 
   if (requiresFollowUp) {
     return {
-      title: "오늘 돌봄",
-      body: "돌봄 기록 필요",
+      title: "오늘 관리",
+      body: "관리 기록 필요",
       tone: "alert",
     };
   }

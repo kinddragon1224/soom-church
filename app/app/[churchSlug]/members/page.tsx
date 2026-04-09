@@ -3,6 +3,7 @@ import { advanceMemberStatus } from "./actions";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { startOfMonth, formatDate } from "@/lib/date";
 import { getStatusMeta } from "@/lib/member-status";
+import { prisma } from "@/lib/prisma";
 import { getWorkspaceMembers } from "@/lib/workspace-data";
 import GidoMembersPage from "./gido-members-page";
 
@@ -31,7 +32,12 @@ export default async function ChurchMembersPage({
   });
 
   if (church.slug === "gido") {
-    return <GidoMembersPage churchSlug={church.slug} members={members} filter={filter} q={searchParams?.q} />;
+    const [groups, households] = await Promise.all([
+      prisma.group.findMany({ where: { churchId: church.id }, orderBy: [{ name: "asc" }], select: { id: true, name: true } }),
+      prisma.household.findMany({ where: { churchId: church.id }, orderBy: [{ name: "asc" }], select: { id: true, name: true } }),
+    ]);
+
+    return <GidoMembersPage churchSlug={church.slug} members={members} filter={filter} q={searchParams?.q} groups={groups} households={households} />;
   }
 
   const counts = {

@@ -10,6 +10,7 @@ import {
   softDeleteMember,
 } from "./actions";
 import { formatDate } from "@/lib/date";
+import { getGidoFamilyRoleLabel, parseGidoMemberMeta } from "@/lib/gido-home-config";
 import { getGidoLeadershipProfile } from "@/lib/gido-leadership";
 import { decorateGidoMember } from "@/lib/gido-members-view";
 import { getWorkspaceMemberRecord } from "@/lib/workspace-data";
@@ -45,7 +46,7 @@ const RELATIONSHIP_OPTIONS = [
   { value: RelationshipType.CHILD, label: "자녀" },
   { value: RelationshipType.SIBLING, label: "형제자매" },
   { value: RelationshipType.RELATIVE, label: "친인척" },
-  { value: RelationshipType.CAREGIVER, label: "돌봄 담당" },
+  { value: RelationshipType.CAREGIVER, label: "관리 담당" },
   { value: RelationshipType.CUSTOM, label: "직접 입력" },
 ] as const;
 
@@ -99,13 +100,15 @@ export default function GidoMemberRecord({
   const careRecords = member.careRecords.filter((record) => record.category !== "ATTENDANCE" && record.category !== "MINISTRY");
   const activeLifeStatuses = member.lifeStatuses.filter((status) => status.isActive);
   const householdMeta = parseJson<HouseholdMeta>(member.household?.notes) ?? {};
+  const memberMeta = parseGidoMemberMeta(member.notes);
+  const familyRoleLabel = getGidoFamilyRoleLabel(memberMeta.familyRole);
 
   const latestTouch = careRecords[0] ?? attendanceRecords[0] ?? ministryRecords[0] ?? null;
   const focusItems = [
     member.requiresFollowUp
       ? {
-          label: "돌봄",
-          text: "돌봄 기록 필요",
+          label: "관리",
+          text: "관리 기록 필요",
         }
       : null,
     latestTouch
@@ -133,12 +136,10 @@ export default function GidoMemberRecord({
 
   const roleSummary = leadership.isActiveLeader
     ? "현 목자"
-    : leadership.rotationTrack
-      ? "순환 진행 가정"
-      : "일반 목원";
+    : familyRoleLabel ?? (leadership.rotationTrack ? "순환 진행 가정" : "일반 목원");
 
   const overviewItems = [
-    { label: "돌봄 기록", value: `${careRecords.length}건` },
+    { label: "관리 기록", value: `${careRecords.length}건` },
     { label: "출석 흐름", value: `${attendanceRecords.length}건` },
     { label: "삶 상태", value: `${member.lifeStatuses.length}건` },
     { label: "사역 이력", value: `${ministryRecords.length}건` },
@@ -174,7 +175,7 @@ export default function GidoMemberRecord({
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE DETAIL</p>
                 <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">{member.name}</h1>
                 <p className="mt-2 text-sm leading-6 text-[#5f564b]">
-                  상태, 돌봄, 가정 연결, 리더 구별
+                  상태, 관리, 가정 연결, 리더 구별
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -187,7 +188,8 @@ export default function GidoMemberRecord({
                   ) : (
                     <Tag>목원</Tag>
                   )}
-                  {member.requiresFollowUp ? <Tag tone="alert">돌봄 필요</Tag> : null}
+                  {familyRoleLabel ? <Tag>{familyRoleLabel}</Tag> : null}
+                  {member.requiresFollowUp ? <Tag tone="alert">관리 필요</Tag> : null}
                   {member.household?.name ? <Tag>{member.household.name}</Tag> : null}
                 </div>
               </div>
@@ -199,7 +201,7 @@ export default function GidoMemberRecord({
               <HeroMetric
                 label="최근 접점"
                 value={latestTouch ? formatDate(latestTouch.happenedAt) : "기록 없음"}
-                sub={latestTouch?.title ?? "돌봄 메모부터 시작"}
+                sub={latestTouch?.title ?? "기록 메모부터 시작"}
               />
             </div>
 
@@ -293,7 +295,7 @@ export default function GidoMemberRecord({
                 요약 보기
               </Link>
               <Link href={`/app/${churchSlug}/followups`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">
-                돌봄 보드
+                관리 보드
               </Link>
               <Link href={`/app/${churchSlug}/households`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">
                 가정 화면
@@ -328,7 +330,7 @@ export default function GidoMemberRecord({
               </div>
 
               <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
-                <CompactStat label="돌봄 상태" value={member.requiresFollowUp ? "바로 체크" : "안정"} />
+                <CompactStat label="관리 상태" value={member.requiresFollowUp ? "바로 체크" : "안정"} />
                 <CompactStat label="가족 연결" value={`${familyLinks.length}건`} />
                 <CompactStat label="기도제목" value={householdMeta.prayers?.length ? `${householdMeta.prayers.length}개` : "없음"} />
                 <CompactStat label="최근 접점" value={latestTouch ? formatDate(latestTouch.happenedAt) : "없음"} />
@@ -339,6 +341,7 @@ export default function GidoMemberRecord({
               <InfoRow label="전화번호" value={member.phone ?? "-"} />
               <InfoRow label="이메일" value={member.email ?? "-"} />
               <InfoRow label="현재 역할" value={member.position ?? "미정"} />
+              <InfoRow label="가정 역할" value={familyRoleLabel ?? "미지정"} />
               <InfoRow label="등록일" value={formatDate(member.registeredAt)} />
               <InfoRow label="직장" value={member.currentJob ?? "미기록"} />
               <InfoRow label="세례 / 침례" value={member.baptismStatus ?? "미기록"} />
@@ -386,7 +389,7 @@ export default function GidoMemberRecord({
         <div className="grid gap-4">
           <section className="grid gap-4 2xl:grid-cols-[1.02fr_0.98fr]">
             <SurfaceCard id="care-log">
-              <Header title="돌봄 / 메모" caption="바로 기록" />
+              <Header title="상세 기록 / 메모" caption="바로 기록" />
               <form action={addCareRecord.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[140px_minmax(0,1fr)_140px_auto]">
                 <select name="category" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
                   <option value="VISIT">심방</option>
@@ -399,7 +402,7 @@ export default function GidoMemberRecord({
                 <input name="title" placeholder="기록 제목" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
                 <input name="happenedAt" type="date" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
                 <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">기록 추가</button>
-                <textarea name="summary" placeholder="돌봄 내용, 대화 요점, 다음 액션" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                <textarea name="summary" placeholder="관리 내용, 대화 요점, 다음 액션" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
               </form>
 
               <div className="mt-4 grid gap-3">

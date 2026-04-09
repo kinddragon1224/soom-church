@@ -65,7 +65,7 @@ export default function GidoUpdatesPage({
 
           <div className="flex flex-wrap gap-2 xl:justify-end">
             <Link href={`/app/${churchSlug}/followups`} className="rounded-[14px] border border-[#E7E0D4] bg-white px-4 py-2 text-sm font-medium text-[#121212]">
-              후속 관리
+              관리 보드
             </Link>
             <Link href={`/app/${churchSlug}/members`} className="rounded-[14px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">
               목원 보기
@@ -92,8 +92,8 @@ export default function GidoUpdatesPage({
 
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <MetricCard label="근황 기록" value={`${updates.length}건`} />
-            <MetricCard label="후속 카드" value={`${followUps.length}건`} />
-            <MetricCard label="후속 필요" value={`${decoratedMembers.filter((member) => member.requiresFollowUp).length}명`} tone="alert" />
+            <MetricCard label="관리 카드" value={`${followUps.length}건`} />
+            <MetricCard label="관리 필요" value={`${decoratedMembers.filter((member) => member.requiresFollowUp).length}명`} tone="alert" />
             <MetricCard label="검색 결과" value={`${filteredUpdates.length}건`} />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function GidoUpdatesPage({
         <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">CARE TARGETS</p>
+              <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">MANAGEMENT TARGETS</p>
               <h2 className="mt-2 text-lg font-semibold text-[#111111]">바로 챙길 사람</h2>
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function GidoUpdatesPage({
                           {tag}
                         </span>
                       )) : null}
-                      <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">후속 필요</span>
+                      <span className="rounded-full bg-[#fff4df] px-2.5 py-1 text-[11px] text-[#8C6A2E]">관리 필요</span>
                     </div>
                   </div>
                 </Link>
@@ -177,7 +177,7 @@ export default function GidoUpdatesPage({
           <div className="mt-4 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
             <p className="text-sm font-semibold text-[#111111]">기록 기준</p>
             <ul className="mt-3 space-y-2 text-sm leading-6 text-[#5f564b]">
-              <li>근황은 기록으로 남기고, 실제 행동은 후속 페이지에서 정리</li>
+              <li>근황은 기록으로 남기고, 실제 행동은 관리 페이지에서 정리</li>
               <li>리더와 순환 진행 가정은 따로 필터해서 볼 수 있게 유지</li>
               <li>사람별 디테일 페이지에서 바로 메모와 출석을 추가</li>
             </ul>
