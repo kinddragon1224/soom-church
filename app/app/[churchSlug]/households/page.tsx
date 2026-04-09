@@ -1,6 +1,7 @@
 import Link from "next/link";
 import GidoHouseholdsPage from "./gido-households-page";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { getAppliedRecordLog } from "@/lib/chat-apply-log";
 import { getGidoWorkspaceData } from "@/lib/gido-workspace-data";
 import { getWorkspaceMembers } from "@/lib/workspace-data";
 
@@ -17,9 +18,12 @@ export default async function ChurchHouseholdsPage({
   const church = membership.church;
 
   if (church.slug === "gido") {
-    const data = await getGidoWorkspaceData(church.id);
+    const [data, logs] = await Promise.all([
+      getGidoWorkspaceData(church.id),
+      getAppliedRecordLog(church.id, 80),
+    ]);
 
-    return <GidoHouseholdsPage churchSlug={church.slug} households={data.households} focusId={searchParams?.focus} />;
+    return <GidoHouseholdsPage churchSlug={church.slug} households={data.households} logs={logs} focusId={searchParams?.focus} />;
   }
 
   const members = await getWorkspaceMembers(church.id);

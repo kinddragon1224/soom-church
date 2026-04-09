@@ -35,13 +35,16 @@
 - `ApplyResult` 모델과 `lib/extracted-update-apply.ts`를 추가함
 - ambiguity 없는 `confirmed` 항목은 이제 자동으로 실제 도메인 모델에 반영됨: `MemberCareRecord`, `MemberFaithMilestone`, `MemberRelationship`, `Member`, `Household` 중 가능한 대상에 즉시 적용하고, 애매하면 다시 `Review`로 되돌림
 - `Review`에서 승인한 카드도 같은 apply 로직을 타도록 연결함
+- `lib/chat-apply-log.ts`를 추가해 `ApplyResult + ExtractedUpdate + Capture`를 공통 로그 뷰로 묶음
+- `People`는 기존 `members` redirect를 걷어내고 사람별 최근 반영 로그를 보여주는 v2 레코드 화면으로 교체함
+- `Timeline`은 임시 G.I.D.O 데이터가 아니라 실제 apply 결과를 시간순으로 보여주는 화면으로 교체함
+- `Households`는 quick form 편집판 대신 가정 구조 / 가족 관계 / 최근 반영 기록 / 가정 메모를 함께 보는 관계 중심 보드로 재구성함
 
 ### 바로 다음에 할 것
-1. 현재 apply 결과를 `People / Households / Timeline` 화면에 실제 반영 로그 기준으로 보여주기
-2. fallback parser와 LLM prompt를 더 정교화해서 관계/교회이벤트/출석 문장 해석 정확도 올리기
-3. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
-4. `Households`도 관계 중심 정리판으로 다시 정리
-5. `Timeline`을 실제 `ApplyResult` / extracted log 기반으로 교체
+1. fallback parser와 LLM prompt를 더 정교화해서 관계/교회이벤트/출석 문장 해석 정확도 올리기
+2. `Review`의 `수정 후 승인`을 실제 payload 수정 플로우로 바꾸기
+3. `People / Households / Timeline`에서 apply 로그를 더 길게 탐색하거나 필터링하는 흐름 붙이기
+4. 실제 텔레그램 입력과 웹 `Chat` thread를 하나의 운영 기록으로 어떻게 합칠지 정리하기
 
 ### 멈출 것
 - G.I.D.O 입력형 UI 확장
