@@ -29,13 +29,16 @@
 - `/app/gido`와 로그인 후 기본 진입점을 메인 채팅 화면 `/chat`으로 변경함
 - `Chat`, `Review`, `Timeline`, `Search` v2 골격 화면을 추가함
 - 로그인은 이메일 대신 간단한 아이디 `gido`를 받도록 바꾸고, 기본 비밀번호는 `1234` 기준으로 단순화함
+- `ChatCapture`, `ExtractedUpdate`, `ReviewItem` Prisma 모델을 추가하고 `prisma db push`까지 완료함
+- `Chat` 페이지에서 메시지 전송 시 `capture -> AI extract(or fallback parse) -> ambiguity flag Review Queue 등록 -> assistant reply 저장` 흐름을 실제로 연결함
+- `Review` 페이지는 이제 실제 `ReviewItem` DB를 읽고 승인/수정후승인/보류/무시 상태 변경까지 동작함
 
 ### 바로 다음에 할 것
-1. Prisma에 `capture / extracted update / review item / apply result` 초안 추가
-2. 지금 만든 메인 `Chat` 화면을 실제 메시지 thread + composer + capture 저장 흐름으로 교체
-3. `Review` 골격을 실제 DB 기준 리스트로 교체
-4. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
-5. `Households`도 관계 중심 정리판으로 다시 정리
+1. extract 결과 중 `confirmed` 항목을 실제 도메인 모델(MemberCareRecord, MemberRelationship 등)에 apply 하는 단계 추가
+2. 현재 LLM prompt/fallback parser를 목장 운영 문장에 맞게 더 정교화
+3. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
+4. `Households`도 관계 중심 정리판으로 다시 정리
+5. `Timeline`을 실제 extracted/apply log 기반으로 교체
 
 ### 멈출 것
 - G.I.D.O 입력형 UI 확장

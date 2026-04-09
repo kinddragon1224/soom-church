@@ -125,6 +125,51 @@ enum SacramentType {
   CUSTOM
 }
 
+enum ChatSpeakerRole {
+  PASTOR
+  ASSISTANT
+  SYSTEM
+}
+
+enum ExtractedUpdateType {
+  MEMBER_PROFILE
+  HOUSEHOLD_PROFILE
+  RELATIONSHIP
+  PRAYER
+  CARE_RECORD
+  ATTENDANCE
+  CHURCH_EVENT
+  FOLLOW_UP
+  STATUS_CHANGE
+}
+
+enum ExtractedUpdateStatus {
+  DRAFT
+  NEEDS_REVIEW
+  CONFIRMED
+  REJECTED
+  MERGED
+}
+
+enum ReviewReason {
+  AMBIGUOUS_MEMBER_MATCH
+  AMBIGUOUS_HOUSEHOLD_MATCH
+  RELATIONSHIP_UNCERTAIN
+  DUPLICATE_CANDIDATE
+  LOW_CONFIDENCE
+  MISSING_REQUIRED_FIELD
+  CONFLICTING_EXISTING_DATA
+}
+
+enum ReviewItemStatus {
+  PENDING
+  APPROVED
+  EDITED_AND_APPROVED
+  REJECTED
+  SKIPPED
+  MERGED
+}
+
 model Church {
   id                      String                  @id @default(cuid())
   slug                    String                  @unique
@@ -555,4 +600,64 @@ model ActivityLog {
   createdAt  DateTime @default(now())
 
   @@index([churchId, createdAt])
+}
+
+model ChatCapture {
+  id               String            @id @default(cuid())
+  churchId         String
+  speakerRole      ChatSpeakerRole
+  sourceChannel    String            @default("WEB_CHAT")
+  sourceChatId     String?
+  sourceMessageId  String?
+  rawText          String
+  threadKey        String            @default("main")
+  happenedAt       DateTime          @default(now())
+  capturedAt       DateTime          @default(now())
+  extractedUpdates ExtractedUpdate[]
+
+  @@index([churchId, threadKey, capturedAt])
+}
+
+model ExtractedUpdate {
+  id                  String                @id @default(cuid())
+  churchId            String
+  captureId           String
+  updateType          ExtractedUpdateType
+  confidence          Float                 @default(0)
+  payloadJson         Json
+  targetMemberHint    String?
+  targetHouseholdHint String?
+  ambiguityFlags      Json?
+  sourceSummary       String?
+  suggestedAction     String?
+  reviewPrompt        String?
+  status              ExtractedUpdateStatus @default(DRAFT)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  capture             ChatCapture           @relation(fields: [captureId], references: [id], onDelete: Cascade)
+  reviewItems         ReviewItem[]
+
+  @@index([churchId, status, createdAt])
+  @@index([captureId])
+  @@index([churchId, updateType])
+}
+
+model ReviewItem {
+  id                String           @id @default(cuid())
+  churchId          String
+  extractedUpdateId String
+  reviewReason      ReviewReason
+  title             String
+  summary           String
+  suggestedAction   String
+  status            ReviewItemStatus @default(PENDING)
+  reviewerId        String?
+  reviewedAt        DateTime?
+  resolutionNote    String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  extractedUpdate   ExtractedUpdate  @relation(fields: [extractedUpdateId], references: [id], onDelete: Cascade)
+
+  @@index([churchId, status, createdAt])
+  @@index([extractedUpdateId])
 }
