@@ -30,7 +30,7 @@ export type GidoUpdateView = {
 export type GidoHouseholdView = {
   id: string;
   title: string;
-  members: { id: string; name: string; birthLabel: string; familyRole?: GidoFamilyRole }[];
+  members: { id: string; name: string; birthLabel: string; familyRole?: GidoFamilyRole | null }[];
   tags: string[];
   prayers: string[];
   contacts: string[];

@@ -6,7 +6,7 @@ type GidoMemberMeta = {
   birthLabel?: string;
   homePinned?: boolean;
   homePinnedAt?: string | null;
-  familyRole?: GidoFamilyRole;
+  familyRole?: GidoFamilyRole | null;
 };
 
 type GidoHouseholdMeta = {
@@ -131,7 +131,7 @@ export function getGidoPrayerOrder(_title: string, notes?: string | null) {
   return typeof meta.prayerOrder === "number" ? meta.prayerOrder : null;
 }
 
-export function getGidoFamilyRoleLabel(role?: GidoFamilyRole) {
+export function getGidoFamilyRoleLabel(role?: GidoFamilyRole | null) {
   if (role === "SELF") return "가정 대표";
   if (role === "SPOUSE") return "배우자";
   if (role === "CHILD") return "자녀";

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { getGidoFamilyRoleLabel } from "@/lib/gido-home-config";
+import { type GidoFamilyRole, getGidoFamilyRoleLabel } from "@/lib/gido-home-config";
 import { GidoHouseholdView } from "@/lib/gido-workspace-data";
-import { createGidoHouseholdChild, updateGidoHouseholdSettings } from "./actions";
+import { createGidoHouseholdChild, updateGidoHouseholdMemberRole, updateGidoHouseholdSettings } from "./actions";
 
 type Props = {
   churchSlug: string;
@@ -25,6 +25,7 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
         return parents.length > 0 ? parents : selectedHousehold.members;
       })()
     : [];
+  const familySummary = selectedHousehold ? summarizeHouseholdFamilyRoles(selectedHousehold.members) : null;
 
   return (
     <div className="flex flex-col gap-5 text-[#111111]">
@@ -94,12 +95,13 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                 <div>
                   <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">HOUSEHOLD DETAIL</p>
                   <h2 className="mt-2 text-[1.6rem] font-semibold tracking-[-0.04em] text-[#111111]">{selectedHousehold.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">구성원, 중보, 연락 메모, 순서 설정</p>
+                  <p className="mt-2 text-sm leading-6 text-[#5f564b]">가정 대표, 배우자, 자녀, 기타 가족 구조와 중보, 연락 메모, 순서를 함께 관리</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <InfoPill label="구성원" value={`${selectedHousehold.members.length}명`} />
-                  <InfoPill label="중보" value={`${selectedHousehold.prayers.length}개`} />
-                  <InfoPill label="연락" value={`${selectedHousehold.contacts.length}개`} />
+                  <InfoPill label="가정 대표" value={familySummary?.representativeName ?? "미지정"} />
+                  <InfoPill label="자녀" value={`${familySummary?.childCount ?? 0}명`} />
+                  <InfoPill label="미지정" value={`${familySummary?.unassignedCount ?? 0}명`} />
                   <InfoPill label="순서" value={typeof selectedHousehold.prayerOrder === "number" ? `${selectedHousehold.prayerOrder}` : "미설정"} />
                 </div>
               </div>
@@ -112,6 +114,7 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                     <div>
                       <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">MEMBERS</p>
                       <h3 className="mt-2 text-lg font-semibold text-[#111111]">구성원</h3>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">가정 대표는 한 명만 두고, 배우자 / 자녀 / 기타 가족을 분명히 나눠서 관리.</p>
                     </div>
                     <Link href={`/app/${churchSlug}/members`} className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">
                       목원 관리
@@ -125,17 +128,42 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                       memberSections.map((section) => (
                         <div key={`${selectedHousehold.id}-${section.key}`} className="grid gap-2.5">
                           <div className="flex items-center justify-between gap-3 px-1">
-                            <p className="text-[12px] font-semibold text-[#5f564b]">{section.title}</p>
+                            <div>
+                              <p className="text-[12px] font-semibold text-[#5f564b]">{section.title}</p>
+                              {section.caption ? <p className="mt-1 text-[11px] text-[#8c7a5b]">{section.caption}</p> : null}
+                            </div>
                             <span className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-2.5 py-1 text-[10px] text-[#6f6256]">{section.members.length}명</span>
                           </div>
                           {section.members.map((member) => (
-                            <div key={member.id} className="flex items-center justify-between rounded-[16px] border border-[#ece4d8] bg-[#fbfaf7] px-4 py-3">
-                              <div>
-                                <Link href={`/app/${churchSlug}/members/${member.id}`} className="text-sm font-semibold text-[#111111] hover:text-[#8C6A2E]">
-                                  {member.name}
-                                </Link>
+                            <div key={member.id} className="rounded-[16px] border border-[#ece4d8] bg-[#fbfaf7] px-4 py-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <div>
+                                  <Link href={`/app/${churchSlug}/members/${member.id}`} className="text-sm font-semibold text-[#111111] hover:text-[#8C6A2E]">
+                                    {member.name}
+                                  </Link>
+                                  <p className="mt-1 text-[12px] text-[#8c7a5b]">{getFamilyRoleHint(member.familyRole)}</p>
+                                </div>
+                                <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[10px] text-[#6f6256]">{getGidoFamilyRoleLabel(member.familyRole) ?? "미지정"}</span>
                               </div>
-                              <span className="rounded-full border border-[#e4dbc9] bg-white px-2.5 py-1 text-[10px] text-[#6f6256]">{getGidoFamilyRoleLabel(member.familyRole) ?? "구성원"}</span>
+
+                              <form action={updateGidoHouseholdMemberRole.bind(null, churchSlug, returnPath)} className="mt-3 grid gap-2 sm:grid-cols-[180px_auto] sm:items-end">
+                                <input type="hidden" name="householdId" value={selectedHousehold.id} />
+                                <input type="hidden" name="memberId" value={member.id} />
+                                <label className="grid gap-2">
+                                  <span className="text-[11px] font-medium text-[#5f564b]">가정 역할</span>
+                                  <select name="familyRole" defaultValue={member.familyRole ?? ""} className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                                    {FAMILY_ROLE_OPTIONS.map((option) => (
+                                      <option key={option.value || "empty"} value={option.value}>{option.label}</option>
+                                    ))}
+                                  </select>
+                                </label>
+                                <div className="flex gap-2">
+                                  <button className="h-[42px] rounded-[12px] bg-[#111827] px-4 text-sm font-semibold text-white">적용</button>
+                                  <Link href={`/app/${churchSlug}/members/${member.id}#family-links`} className="inline-flex h-[42px] items-center rounded-[12px] border border-[#E7E0D4] bg-white px-4 text-sm font-medium text-[#121212]">
+                                    상세 보기
+                                  </Link>
+                                </div>
+                              </form>
                             </div>
                           ))}
                         </div>
@@ -265,14 +293,46 @@ function EmptyBox({ text, compact = false }: { text: string; compact?: boolean }
   return <div className={`rounded-[18px] border border-dashed border-[#dccfb9] bg-[#fcfbf8] text-sm text-[#5f564b] ${compact ? "p-4" : "p-6"}`}>{text}</div>;
 }
 
+const FAMILY_ROLE_OPTIONS: { value: GidoFamilyRole | ""; label: string }[] = [
+  { value: "", label: "미지정" },
+  { value: "SELF", label: "가정 대표" },
+  { value: "SPOUSE", label: "배우자" },
+  { value: "CHILD", label: "자녀" },
+  { value: "FAMILY", label: "기타 가족" },
+];
+
 function buildHouseholdMemberSections(members: GidoHouseholdView["members"]) {
-  const adults = members.filter((member) => member.familyRole === "SELF" || member.familyRole === "SPOUSE" || !member.familyRole);
+  const representative = members.filter((member) => member.familyRole === "SELF");
+  const spouse = members.filter((member) => member.familyRole === "SPOUSE");
   const children = members.filter((member) => member.familyRole === "CHILD");
-  const families = members.filter((member) => member.familyRole === "FAMILY");
+  const family = members.filter((member) => member.familyRole === "FAMILY");
+  const unassigned = members.filter((member) => !member.familyRole);
 
   return [
-    { key: "adults", title: "성인", members: adults },
-    { key: "children", title: "자녀", members: children },
-    { key: "families", title: "기타 가족", members: families },
+    { key: "representative", title: "가정 대표", caption: "가정의 기본 기준 인물", members: representative },
+    { key: "spouse", title: "배우자", caption: "대표와 함께 보는 성인 구성원", members: spouse },
+    { key: "children", title: "자녀", caption: "아이와 청소년 구성원", members: children },
+    { key: "family", title: "기타 가족", caption: "부모, 형제자매, 동거 가족 등", members: family },
+    { key: "unassigned", title: "미지정", caption: "역할을 아직 정하지 않은 구성원", members: unassigned },
   ].filter((section) => section.members.length > 0);
+}
+
+function summarizeHouseholdFamilyRoles(members: GidoHouseholdView["members"]) {
+  const representative = members.find((member) => member.familyRole === "SELF") ?? null;
+  const childCount = members.filter((member) => member.familyRole === "CHILD").length;
+  const unassignedCount = members.filter((member) => !member.familyRole).length;
+
+  return {
+    representativeName: representative?.name ?? null,
+    childCount,
+    unassignedCount,
+  };
+}
+
+function getFamilyRoleHint(role?: GidoFamilyRole | null) {
+  if (role === "SELF") return "가정 기준 인물";
+  if (role === "SPOUSE") return "대표와 함께 보는 배우자";
+  if (role === "CHILD") return "자녀 / 청소년 구성원";
+  if (role === "FAMILY") return "기타 가족 구성원";
+  return "가정 역할을 아직 정하지 않음";
 }

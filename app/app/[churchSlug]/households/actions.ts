@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireWorkspaceMembership } from "@/lib/church-context";
-import { updateGidoHouseholdMeta, updateGidoMemberMeta } from "@/lib/gido-home-config";
+import { parseGidoMemberMeta, updateGidoHouseholdMeta, updateGidoMemberMeta } from "@/lib/gido-home-config";
 import { prisma } from "@/lib/prisma";
 
 function parseLines(value: FormDataEntryValue | null) {
@@ -11,6 +11,12 @@ function parseLines(value: FormDataEntryValue | null) {
     .split(/\r?\n/)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function asFamilyRole(value: FormDataEntryValue | null) {
+  const role = String(value || "").trim();
+  if (role === "SELF" || role === "SPOUSE" || role === "CHILD" || role === "FAMILY") return role;
+  return null;
 }
 
 export async function updateGidoHouseholdSettings(churchSlug: string, returnPath: string, formData: FormData) {
@@ -138,5 +144,68 @@ export async function createGidoHouseholdChild(churchSlug: string, returnPath: s
 
   revalidateTag(`church:${household.churchId}:members`);
   revalidateTag(`church:${household.churchId}:dashboard`);
+  redirect(returnPath);
+}
+
+export async function updateGidoHouseholdMemberRole(churchSlug: string, returnPath: string, formData: FormData) {
+  const householdId = String(formData.get("householdId") || "").trim();
+  const memberId = String(formData.get("memberId") || "").trim();
+  if (!householdId || !memberId) redirect(returnPath);
+
+  const { membership } = await requireWorkspaceMembership(churchSlug);
+  if (!membership) redirect(returnPath);
+
+  const member = await prisma.member.findFirst({
+    where: {
+      id: memberId,
+      churchId: membership.church.id,
+      householdId,
+      isDeleted: false,
+    },
+    select: {
+      id: true,
+      churchId: true,
+      householdId: true,
+      notes: true,
+    },
+  });
+  if (!member) redirect(returnPath);
+
+  const familyRole = asFamilyRole(formData.get("familyRole"));
+
+  if (familyRole === "SELF") {
+    const householdMembers = await prisma.member.findMany({
+      where: {
+        churchId: membership.church.id,
+        householdId: member.householdId,
+        isDeleted: false,
+        NOT: { id: member.id },
+      },
+      select: { id: true, notes: true },
+    });
+
+    for (const item of householdMembers) {
+      const meta = parseGidoMemberMeta(item.notes);
+      if (meta.familyRole === "SELF") {
+        await prisma.member.update({
+          where: { id: item.id },
+          data: {
+            notes: updateGidoMemberMeta(item.notes, { familyRole: null }),
+          },
+        });
+      }
+    }
+  }
+
+  await prisma.member.update({
+    where: { id: member.id },
+    data: {
+      notes: updateGidoMemberMeta(member.notes, { familyRole }),
+    },
+  });
+
+  revalidateTag(`church:${member.churchId}:members`);
+  revalidateTag(`church:${member.churchId}:dashboard`);
+  revalidateTag(`church:${member.churchId}:households`);
   redirect(returnPath);
 }
