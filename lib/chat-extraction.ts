@@ -105,6 +105,16 @@ function buildReviewPrompt(updateType: InternalUpdateType, summary: string, memb
   return `${target} ${summary} -> ${actionMap[updateType]}`;
 }
 
+function inferRelationshipType(sentence: string) {
+  if (/아내|남편|배우자/.test(sentence)) return "SPOUSE";
+  if (/어머니|엄마|아버지|아빠|부모/.test(sentence)) return "PARENT";
+  if (/자녀|아들|딸/.test(sentence)) return "CHILD";
+  if (/형제|자매|오빠|언니|누나|동생/.test(sentence)) return "SIBLING";
+  if (/보호자/.test(sentence)) return "GUARDIAN";
+  if (/친척|가족/.test(sentence)) return "RELATIVE";
+  return null;
+}
+
 function createFallbackCandidate(args: {
   updateType: InternalUpdateType;
   sentence: string;
@@ -127,6 +137,8 @@ function createFallbackCandidate(args: {
     payload: {
       summary,
       rawText: args.sentence,
+      memberName: args.targetMemberHint ?? undefined,
+      householdName: args.targetHouseholdHint ?? undefined,
       ...args.payload,
     },
     ambiguityFlags,
@@ -189,6 +201,7 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
+          payload: { category: "NOTE" },
           ambiguityFlags: flags,
           suggestedAction: "기도제목으로 저장할지 확인",
           reviewReason: flags[0] ?? null,
@@ -205,6 +218,7 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
+          payload: { category: "ATTENDANCE", attendanceStatus: /결석|빠졌|못 왔|안 왔/.test(sentence) ? "ABSENT" : "ATTENDED" },
           ambiguityFlags: flags,
           suggestedAction: "출석 변화로 저장할지 확인",
           reviewReason: flags[0] ?? null,
@@ -220,6 +234,7 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
+          payload: { relationshipType: inferRelationshipType(sentence) },
           ambiguityFlags: flags,
           suggestedAction: "배우자/가족 관계로 연결할지 확인",
           reviewReason: "relationship_uncertain",
@@ -237,6 +252,7 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
+          payload: { requiresFollowUp: true, category: "NOTE" },
           ambiguityFlags: flags,
           suggestedAction: "후속조치 카드로 저장할지 확인",
           reviewReason: flags[0] ?? null,

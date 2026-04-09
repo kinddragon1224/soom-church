@@ -636,6 +636,7 @@ model ExtractedUpdate {
   updatedAt           DateTime              @updatedAt
   capture             ChatCapture           @relation(fields: [captureId], references: [id], onDelete: Cascade)
   reviewItems         ReviewItem[]
+  applyResults        ApplyResult[]
 
   @@index([churchId, status, createdAt])
   @@index([captureId])
@@ -660,4 +661,17 @@ model ReviewItem {
 
   @@index([churchId, status, createdAt])
   @@index([extractedUpdateId])
+}
+
+model ApplyResult {
+  id                String          @id @default(cuid())
+  extractedUpdateId String
+  appliedEntityType String?
+  appliedEntityId   String?
+  appliedPatchJson  Json?
+  actorId           String?
+  appliedAt         DateTime        @default(now())
+  extractedUpdate   ExtractedUpdate @relation(fields: [extractedUpdateId], references: [id], onDelete: Cascade)
+
+  @@index([extractedUpdateId, appliedAt])
 }

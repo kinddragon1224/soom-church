@@ -32,13 +32,16 @@
 - `ChatCapture`, `ExtractedUpdate`, `ReviewItem` Prisma 모델을 추가하고 `prisma db push`까지 완료함
 - `Chat` 페이지에서 메시지 전송 시 `capture -> AI extract(or fallback parse) -> ambiguity flag Review Queue 등록 -> assistant reply 저장` 흐름을 실제로 연결함
 - `Review` 페이지는 이제 실제 `ReviewItem` DB를 읽고 승인/수정후승인/보류/무시 상태 변경까지 동작함
+- `ApplyResult` 모델과 `lib/extracted-update-apply.ts`를 추가함
+- ambiguity 없는 `confirmed` 항목은 이제 자동으로 실제 도메인 모델에 반영됨: `MemberCareRecord`, `MemberFaithMilestone`, `MemberRelationship`, `Member`, `Household` 중 가능한 대상에 즉시 적용하고, 애매하면 다시 `Review`로 되돌림
+- `Review`에서 승인한 카드도 같은 apply 로직을 타도록 연결함
 
 ### 바로 다음에 할 것
-1. extract 결과 중 `confirmed` 항목을 실제 도메인 모델(MemberCareRecord, MemberRelationship 등)에 apply 하는 단계 추가
-2. 현재 LLM prompt/fallback parser를 목장 운영 문장에 맞게 더 정교화
+1. 현재 apply 결과를 `People / Households / Timeline` 화면에 실제 반영 로그 기준으로 보여주기
+2. fallback parser와 LLM prompt를 더 정교화해서 관계/교회이벤트/출석 문장 해석 정확도 올리기
 3. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
 4. `Households`도 관계 중심 정리판으로 다시 정리
-5. `Timeline`을 실제 extracted/apply log 기반으로 교체
+5. `Timeline`을 실제 `ApplyResult` / extracted log 기반으로 교체
 
 ### 멈출 것
 - G.I.D.O 입력형 UI 확장

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { ChatSpeakerRole, ExtractedUpdateStatus, ExtractedUpdateType, Prisma, ReviewReason } from "@prisma/client";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { applyExtractedUpdate } from "@/lib/extracted-update-apply";
 import { extractStructuredChatUpdates, type InternalReviewReason, type InternalUpdateType } from "@/lib/chat-extraction";
 import { prisma } from "@/lib/prisma";
 
@@ -32,7 +33,7 @@ export async function submitChatMessage(churchSlug: string, formData: FormData) 
   const rawText = String(formData.get("message") || "").trim();
   if (!rawText) return;
 
-  const { membership } = await requireWorkspaceMembership(churchSlug);
+  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
   if (!membership) return;
 
   const churchId = membership.church.id;
@@ -69,6 +70,9 @@ export async function submitChatMessage(churchSlug: string, formData: FormData) 
   });
 
   await prisma.$transaction(async (tx) => {
+    let reviewCount = 0;
+    let appliedCount = 0;
+
     for (const update of extraction.updates) {
       const ambiguityFlags = update.ambiguityFlags.filter((flag): flag is InternalReviewReason => Boolean(reviewReasonMap[flag]));
       const createdUpdate = await tx.extractedUpdate.create({
@@ -100,14 +104,25 @@ export async function submitChatMessage(churchSlug: string, formData: FormData) 
             suggestedAction: update.suggestedAction,
           },
         });
+        reviewCount += 1;
+        continue;
       }
+
+      const outcome = await applyExtractedUpdate(tx, createdUpdate.id, userId);
+      if (outcome.applied) appliedCount += 1;
+      if (outcome.redirectedToReview) reviewCount += 1;
     }
+
+    const assistantReply =
+      extraction.updates.length === 0
+        ? "정리할 내용을 아직 잡지 못했어. 조금만 더 구체적으로 말해줘."
+        : `${extraction.updates.length}개 항목으로 읽었어. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `애매한 ${reviewCount}건은 Review에 올려둘게.` : "바로 기록해뒀어."}`;
 
     await tx.chatCapture.create({
       data: {
         churchId,
         speakerRole: ChatSpeakerRole.ASSISTANT,
-        rawText: extraction.assistantReply,
+        rawText: assistantReply,
         threadKey: "main",
         happenedAt: new Date(),
         capturedAt: new Date(),
@@ -120,4 +135,7 @@ export async function submitChatMessage(churchSlug: string, formData: FormData) 
   revalidatePath(`/app/${churchSlug}/review`);
   revalidatePath(`/app/${churchSlug}/search`);
   revalidatePath(`/app/${churchSlug}/timeline`);
+  revalidatePath(`/app/${churchSlug}/people`);
+  revalidatePath(`/app/${churchSlug}/households`);
+  revalidatePath(`/app/${churchSlug}/members`);
 }

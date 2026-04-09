@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { ExtractedUpdateStatus, ReviewItemStatus } from "@prisma/client";
 import { requireWorkspaceMembership } from "@/lib/church-context";
+import { applyExtractedUpdate } from "@/lib/extracted-update-apply";
 import { prisma } from "@/lib/prisma";
 
 function getNextExtractedStatus(status: ReviewItemStatus) {
@@ -27,7 +28,7 @@ export async function resolveReviewItem(churchSlug: string, formData: FormData) 
   const resolutionNote = String(formData.get("resolutionNote") || "").trim() || null;
   if (!reviewItemId || !statusValue) return;
 
-  const status = Object.values(ReviewItemStatus).find((item) => item === statusValue as ReviewItemStatus);
+  const status = Object.values(ReviewItemStatus).find((item) => item === (statusValue as ReviewItemStatus));
   if (!status) return;
 
   const { membership, userId } = await requireWorkspaceMembership(churchSlug);
@@ -62,8 +63,16 @@ export async function resolveReviewItem(churchSlug: string, formData: FormData) 
         status: getNextExtractedStatus(status),
       },
     });
+
+    if (status === ReviewItemStatus.APPROVED || status === ReviewItemStatus.EDITED_AND_APPROVED) {
+      await applyExtractedUpdate(tx, reviewItem.extractedUpdateId, userId);
+    }
   });
 
   revalidatePath(`/app/${churchSlug}/chat`);
   revalidatePath(`/app/${churchSlug}/review`);
+  revalidatePath(`/app/${churchSlug}/timeline`);
+  revalidatePath(`/app/${churchSlug}/people`);
+  revalidatePath(`/app/${churchSlug}/households`);
+  revalidatePath(`/app/${churchSlug}/members`);
 }
