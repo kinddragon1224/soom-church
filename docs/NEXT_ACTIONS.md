@@ -39,10 +39,13 @@
 - `People`는 기존 `members` redirect를 걷어내고 사람별 최근 반영 로그를 보여주는 v2 레코드 화면으로 교체함
 - `Timeline`은 임시 G.I.D.O 데이터가 아니라 실제 apply 결과를 시간순으로 보여주는 화면으로 교체함
 - `Households`는 quick form 편집판 대신 가정 구조 / 가족 관계 / 최근 반영 기록 / 가정 메모를 함께 보는 관계 중심 보드로 재구성함
+- fallback parser를 보강해 관계 후보는 실제 멤버 2명이 잡히거나 명시적 연결 의도가 있을 때만 만들도록 줄였음
+- fallback parser에 교회 이벤트(`침례/세례/입교/성찬/등록/이명/헌아`)와 더 넓은 출석 표현 감지를 추가함
+- LLM prompt에도 updateType별 payload 키 규약과 `두 번째 사람 이름을 지어내지 말 것` 규칙을 넣음
 
 ### 바로 다음에 할 것
-1. fallback parser와 LLM prompt를 더 정교화해서 관계/교회이벤트/출석 문장 해석 정확도 올리기
-2. `Review`의 `수정 후 승인`을 실제 payload 수정 플로우로 바꾸기
+1. `Review`의 `수정 후 승인`을 실제 payload 수정 플로우로 바꾸기
+2. parser/LLM 정확도는 계속 보강하되, 다음 타깃은 household-level 문장과 애매한 가족 호칭 처리 정교화
 3. `People / Households / Timeline`에서 apply 로그를 더 길게 탐색하거나 필터링하는 흐름 붙이기
 4. 실제 텔레그램 입력과 웹 `Chat` thread를 하나의 운영 기록으로 어떻게 합칠지 정리하기
 

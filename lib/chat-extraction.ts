@@ -106,13 +106,44 @@ function buildReviewPrompt(updateType: InternalUpdateType, summary: string, memb
 }
 
 function inferRelationshipType(sentence: string) {
-  if (/아내|남편|배우자/.test(sentence)) return "SPOUSE";
+  if (/아내|남편|배우자|부부/.test(sentence)) return "SPOUSE";
   if (/어머니|엄마|아버지|아빠|부모/.test(sentence)) return "PARENT";
   if (/자녀|아들|딸/.test(sentence)) return "CHILD";
   if (/형제|자매|오빠|언니|누나|동생/.test(sentence)) return "SIBLING";
   if (/보호자/.test(sentence)) return "GUARDIAN";
   if (/친척|가족/.test(sentence)) return "RELATIVE";
   return null;
+}
+
+function inferAttendanceStatus(sentence: string) {
+  if (/결석|빠졌|불참|못 왔|안 왔|못왔|안왔/.test(sentence)) return "ABSENT";
+  if (/출석|참석|예배.*왔|함께 왔|같이 왔|드렸어/.test(sentence)) return "ATTENDED";
+  return null;
+}
+
+function inferChurchEventType(sentence: string) {
+  if (/헌아|유아세례/.test(sentence)) return "INFANT_BAPTISM";
+  if (/침례|세례/.test(sentence)) return "BAPTISM";
+  if (/입교/.test(sentence)) return "CONFIRMATION";
+  if (/성찬/.test(sentence)) return "COMMUNION";
+  if (/등록|이명/.test(sentence)) return "MEMBERSHIP_TRANSFER";
+  return null;
+}
+
+function shouldCreateRelationshipCandidate(sentence: string, memberMatches: string[]) {
+  if (!/아내|남편|배우자|부부|자녀|아들|딸|엄마|어머니|아버지|아빠|부모|형제|자매|오빠|언니|누나|동생|보호자|가족|관계|연결/.test(sentence)) {
+    return false;
+  }
+
+  if (memberMatches.length >= 2) return true;
+  return /관계|연결|배우자 추가|배우자 등록|가족 연결|자녀 등록/.test(sentence);
+}
+
+function extractRelationshipTargets(memberMatches: string[]) {
+  return {
+    fromMemberName: memberMatches[0] ?? null,
+    toMemberName: memberMatches[1] ?? null,
+  };
 }
 
 function createFallbackCandidate(args: {
@@ -209,7 +240,7 @@ function fallbackExtract({
       );
     }
 
-    if (/결석|출석|예배.*왔|예배.*못|안 왔|빠졌|함께 왔|같이 왔/.test(sentence)) {
+    if (/결석|출석|참석|예배.*왔|예배.*못|안 왔|빠졌|함께 왔|같이 왔|드렸어/.test(sentence)) {
       const flags = [...sharedFlags];
       if (!targetMemberHint && !targetHouseholdHint) flags.push("low_confidence");
       updates.push(
@@ -218,7 +249,10 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
-          payload: { category: "ATTENDANCE", attendanceStatus: /결석|빠졌|못 왔|안 왔/.test(sentence) ? "ABSENT" : "ATTENDED" },
+          payload: {
+            category: "ATTENDANCE",
+            attendanceStatus: inferAttendanceStatus(sentence),
+          },
           ambiguityFlags: flags,
           suggestedAction: "출석 변화로 저장할지 확인",
           reviewReason: flags[0] ?? null,
@@ -226,19 +260,46 @@ function fallbackExtract({
       );
     }
 
-    if (/아내|남편|배우자|자녀|엄마|어머니|아버지|아빠|가족/.test(sentence)) {
-      const flags = [...sharedFlags, "relationship_uncertain"] as InternalReviewReason[];
+    if (/침례|세례|입교|성찬|등록|이명|헌아/.test(sentence)) {
+      const flags = [...sharedFlags];
+      if (!targetMemberHint) flags.push("ambiguous_member_match");
+      updates.push(
+        createFallbackCandidate({
+          updateType: "church_event",
+          sentence,
+          targetMemberHint,
+          targetHouseholdHint,
+          payload: {
+            eventType: inferChurchEventType(sentence),
+            sacramentType: inferChurchEventType(sentence),
+          },
+          ambiguityFlags: flags,
+          suggestedAction: "교회 이벤트로 저장할지 확인",
+          reviewReason: flags[0] ?? null,
+        }),
+      );
+    }
+
+    if (shouldCreateRelationshipCandidate(sentence, memberMatches)) {
+      const relationshipTargets = extractRelationshipTargets(memberMatches);
+      const flags = [...sharedFlags];
+      if (!relationshipTargets.fromMemberName || !relationshipTargets.toMemberName) flags.push("relationship_uncertain");
       updates.push(
         createFallbackCandidate({
           updateType: "relationship",
           sentence,
           targetMemberHint,
           targetHouseholdHint,
-          payload: { relationshipType: inferRelationshipType(sentence) },
+          payload: {
+            relationshipType: inferRelationshipType(sentence),
+            fromMemberName: relationshipTargets.fromMemberName ?? undefined,
+            toMemberName: relationshipTargets.toMemberName ?? undefined,
+            relatedMemberName: relationshipTargets.toMemberName ?? undefined,
+          },
           ambiguityFlags: flags,
           suggestedAction: "배우자/가족 관계로 연결할지 확인",
-          reviewReason: "relationship_uncertain",
-          confidence: 0.58,
+          reviewReason: flags[0] ?? null,
+          confidence: flags.includes("relationship_uncertain") ? 0.58 : 0.82,
         }),
       );
     }
@@ -328,7 +389,7 @@ async function extractWithLLM({
           {
             role: "system",
             content:
-              "You extract structured mokjang operations from Korean chat messages. Return JSON only. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Put items with ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
+              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Use payload keys when relevant: relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp}, care_record/prayer={memberName or householdName,category,summary}. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
           },
           {
             role: "user",
