@@ -35,14 +35,6 @@ export default async function LoginPage({
           </div>
 
           <section className="rounded-[28px] border border-[#ece4d7] bg-white px-6 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-7">
-            <div className="mb-4 rounded-[18px] border border-[#ece4d7] bg-[#faf7f2] px-4 py-3 text-sm text-[#4f4539]">
-              <p className="text-[11px] tracking-[0.16em] text-[#8a8177]">빠른 로그인</p>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-[#e4dbc9] bg-white px-3 py-1.5 text-[12px] font-medium text-[#1d1d1d]">아이디 gido</span>
-                <span className="rounded-full border border-[#e4dbc9] bg-white px-3 py-1.5 text-[12px] font-medium text-[#1d1d1d]">비밀번호 1234</span>
-              </div>
-            </div>
-
             <LoginForm next={next} defaultCallbackUrl={defaultCallbackUrl} compact />
 
             {error ? (
