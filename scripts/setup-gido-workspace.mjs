@@ -1,6 +1,7 @@
 import { PrismaClient, MembershipRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { PLATFORM_ADMIN_EMAILS } from "../lib/admin";
+
+const PLATFORM_ADMIN_EMAILS = ["platform-admin@soom.church", "admin@soom.church"];
 
 const prisma = new PrismaClient();
 
