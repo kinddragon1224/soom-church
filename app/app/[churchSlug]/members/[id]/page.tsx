@@ -82,12 +82,18 @@ export default async function ChurchMemberRecordPage({
   if (!membership) notFound();
 
   const church = membership.church;
-  const [member, memberOptions] = await Promise.all([
+  const [member, memberOptions, organizationOptions] = await Promise.all([
     getWorkspaceMemberRecord(church.id, params.id),
     prisma.member.findMany({
       where: { churchId: church.id, isDeleted: false, NOT: { id: params.id } },
       select: { id: true, name: true, phone: true, statusTag: true },
       orderBy: { name: "asc" },
+      take: 200,
+    }),
+    prisma.organizationUnit.findMany({
+      where: { churchId: church.id },
+      select: { id: true, name: true, type: true },
+      orderBy: [{ type: "asc" }, { name: "asc" }],
       take: 200,
     }),
   ]);
@@ -141,15 +147,8 @@ export default async function ChurchMemberRecordPage({
       }
     }
 
-    return <GidoMemberRecord churchSlug={church.slug} member={member} memberOptions={memberOptions} queueContext={queueContext} />;
+    return <GidoMemberRecord churchSlug={church.slug} member={member} memberOptions={memberOptions} organizationOptions={organizationOptions} queueContext={queueContext} />;
   }
-
-  const organizationOptions = await prisma.organizationUnit.findMany({
-    where: { churchId: church.id },
-    select: { id: true, name: true, type: true },
-    orderBy: [{ type: "asc" }, { name: "asc" }],
-    take: 200,
-  });
 
   const familyLinks = [
     ...member.relationshipsFrom.map((item) => ({

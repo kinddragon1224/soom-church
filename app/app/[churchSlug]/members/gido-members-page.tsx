@@ -82,7 +82,7 @@ export default function GidoMembersPage({ churchSlug, members, groups, household
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목원 관리</h1>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">우선 확인 대상, 관리, 가정 연결</p>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">목원 추가, 가정 연결, 상세 기록, 출석, 교회 이벤트, 교구와 부서 관리</p>
           </div>
 
           <div className="flex flex-wrap gap-2 xl:justify-end">

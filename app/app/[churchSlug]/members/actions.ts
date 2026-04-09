@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { CareCategory, MemberOrgRole, RelationshipType } from "@prisma/client";
+import { CareCategory, MemberOrgRole, RelationshipType, SacramentType } from "@prisma/client";
 import { updateGidoMemberMeta } from "@/lib/gido-home-config";
 import { getStatusUpdatePatch } from "@/lib/member-status";
 import { prisma } from "@/lib/prisma";
@@ -453,6 +453,45 @@ export async function addMinistryRecord(churchSlug: string, memberId: string, fo
       targetId: member.id,
       memberId: member.id,
       metadata: JSON.stringify({ ministryName, ministryRole }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, member.id);
+  redirect(`/app/${churchSlug}/members/${member.id}`);
+}
+
+export async function addFaithMilestone(churchSlug: string, memberId: string, formData: FormData) {
+  const scoped = await getScopedMember(churchSlug, memberId);
+  if (!scoped) return;
+
+  const { membership, userId, member } = scoped;
+  const type = String(formData.get("type") || "BAPTISM").trim() as SacramentType;
+  const happenedAtInput = String(formData.get("happenedAt") || "").trim();
+  const churchName = asOptionalString(formData.get("churchName"));
+  const officiant = asOptionalString(formData.get("officiant"));
+  const notes = asOptionalString(formData.get("notes"));
+
+  await prisma.memberFaithMilestone.create({
+    data: {
+      churchId: membership.church.id,
+      memberId: member.id,
+      type,
+      happenedAt: happenedAtInput ? new Date(happenedAtInput) : null,
+      churchName,
+      officiant,
+      notes,
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_FAITH_MILESTONE_RECORDED",
+      targetType: "MemberFaithMilestone",
+      targetId: member.id,
+      memberId: member.id,
+      metadata: JSON.stringify({ type }),
     },
   });
 

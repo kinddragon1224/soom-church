@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { RelationshipType } from "@prisma/client";
+import { MemberOrgRole, RelationshipType, SacramentType } from "@prisma/client";
 import type { ReactNode } from "react";
 import {
   addAttendanceRecord,
   addCareRecord,
+  addFaithMilestone,
+  addMinistryRecord,
+  addOrganizationMembership,
   createFamilyLink,
+  removeOrganizationMembership,
   removeFamilyLink,
   restoreMember,
   softDeleteMember,
@@ -22,6 +26,12 @@ type MemberOption = {
   name: string;
   phone: string | null;
   statusTag: string;
+};
+
+type OrganizationOption = {
+  id: string;
+  name: string;
+  type: string;
 };
 
 type HouseholdMeta = {
@@ -50,6 +60,22 @@ const RELATIONSHIP_OPTIONS = [
   { value: RelationshipType.CUSTOM, label: "직접 입력" },
 ] as const;
 
+const ORGANIZATION_ROLE_OPTIONS = [
+  { value: MemberOrgRole.MEMBER, label: "구성원" },
+  { value: MemberOrgRole.LEAD, label: "리더" },
+  { value: MemberOrgRole.ASSISTANT_LEAD, label: "부리더" },
+  { value: MemberOrgRole.PASTOR, label: "담당 교역자" },
+  { value: MemberOrgRole.STAFF, label: "스태프" },
+] as const;
+
+const CHURCH_EVENT_OPTIONS = [
+  { value: SacramentType.BAPTISM, label: "침례식" },
+  { value: SacramentType.INFANT_BAPTISM, label: "유아세례 / 헌아" },
+  { value: SacramentType.CONFIRMATION, label: "입교" },
+  { value: SacramentType.COMMUNION, label: "성찬" },
+  { value: SacramentType.MEMBERSHIP_TRANSFER, label: "등록 / 이명" },
+] as const;
+
 function parseJson<T>(value?: string | null): T | null {
   if (!value) return null;
   try {
@@ -69,11 +95,13 @@ export default function GidoMemberRecord({
   churchSlug,
   member,
   memberOptions,
+  organizationOptions,
   queueContext,
 }: {
   churchSlug: string;
   member: MemberRecord;
   memberOptions: MemberOption[];
+  organizationOptions: OrganizationOption[];
   queueContext?: QueueContext;
 }) {
   const leadership = getGidoLeadershipProfile(member.name, member.household?.name);
@@ -102,6 +130,7 @@ export default function GidoMemberRecord({
   const householdMeta = parseJson<HouseholdMeta>(member.household?.notes) ?? {};
   const memberMeta = parseGidoMemberMeta(member.notes);
   const familyRoleLabel = getGidoFamilyRoleLabel(memberMeta.familyRole);
+  const primaryOrganization = member.organizations.find((item) => item.isPrimary) ?? member.organizations[0] ?? null;
 
   const latestTouch = careRecords[0] ?? attendanceRecords[0] ?? ministryRecords[0] ?? null;
   const focusItems = [
@@ -124,6 +153,12 @@ export default function GidoMemberRecord({
       ? {
           label: "이번 주 중보",
           text: householdMeta.prayers[0],
+        }
+      : null,
+    primaryOrganization
+      ? {
+          label: "섬기는 부서",
+          text: primaryOrganization.organization.name,
         }
       : null,
     leadership.rotationTrack
@@ -159,6 +194,14 @@ export default function GidoMemberRecord({
       label: householdMeta.prayers?.length ? "가정 중보" : "출석 확인",
       href: householdMeta.prayers?.length ? "#household-prayer" : "#attendance-log",
     },
+    {
+      label: "교회 이벤트",
+      href: "#church-events",
+    },
+    {
+      label: "부서 / 소속",
+      href: "#organization-links",
+    },
   ].filter((item, index, list) => list.findIndex((candidate) => candidate.href === item.href) === index);
 
   return (
@@ -175,7 +218,7 @@ export default function GidoMemberRecord({
                 <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE DETAIL</p>
                 <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">{member.name}</h1>
                 <p className="mt-2 text-sm leading-6 text-[#5f564b]">
-                  상태, 관리, 가정 연결, 리더 구별
+                  상태, 관리, 가정, 출석, 교회 이벤트, 소속 관리
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -342,6 +385,7 @@ export default function GidoMemberRecord({
               <InfoRow label="이메일" value={member.email ?? "-"} />
               <InfoRow label="현재 역할" value={member.position ?? "미정"} />
               <InfoRow label="가정 역할" value={familyRoleLabel ?? "미지정"} />
+              <InfoRow label="주 소속" value={primaryOrganization?.organization.name ?? "미지정"} />
               <InfoRow label="등록일" value={formatDate(member.registeredAt)} />
               <InfoRow label="직장" value={member.currentJob ?? "미기록"} />
               <InfoRow label="세례 / 침례" value={member.baptismStatus ?? "미기록"} />
@@ -369,11 +413,12 @@ export default function GidoMemberRecord({
           </SurfaceCard>
 
           <SurfaceCard>
-            <Header title="가정 메타" caption="중보와 태그" />
+            <Header title="가정 / 소속 메타" caption="중보와 연결 상태" />
             <div className="mt-4 grid gap-3">
               <InfoRow label="기도제목" value={householdMeta.prayers?.length ? `${householdMeta.prayers.length}개` : "없음"} />
               <InfoRow label="연락 메모" value={householdMeta.contacts?.length ? `${householdMeta.contacts.length}개` : "없음"} />
               <InfoRow label="가족 연결" value={`${familyLinks.length}건`} />
+              <InfoRow label="부서 / 조직" value={member.organizations.length > 0 ? `${member.organizations.length}건` : "없음"} />
             </div>
 
             {householdMeta.tags?.length ? (
@@ -546,9 +591,102 @@ export default function GidoMemberRecord({
                 </div>
               </SurfaceCard>
 
+              <SurfaceCard id="church-events">
+                <Header title="교회 이벤트" caption="침례, 입교, 등록 이력" />
+                <form action={addFaithMilestone.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[180px_160px_minmax(0,1fr)_140px_auto]">
+                  <select name="type" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" defaultValue={SacramentType.BAPTISM}>
+                    {CHURCH_EVENT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                  <input name="happenedAt" type="date" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <input name="churchName" placeholder="교회명" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <input name="officiant" placeholder="집례자" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">추가</button>
+                  <textarea name="notes" placeholder="메모" className="sm:col-span-5 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                </form>
+
+                <div className="mt-4 grid gap-3">
+                  {member.faithMilestones.length > 0 ? (
+                    member.faithMilestones.slice(0, 6).map((milestone) => (
+                      <TimelineCard
+                        key={milestone.id}
+                        label="교회 이벤트"
+                        title={formatFaithMilestoneType(milestone.type)}
+                        body={[milestone.churchName, milestone.officiant, milestone.notes].filter(Boolean).join(" · ") || "메모 없음"}
+                        date={milestone.happenedAt ? formatDate(milestone.happenedAt) : "날짜 미정"}
+                      />
+                    ))
+                  ) : (
+                    <EmptyBox text="교회 이벤트 기록 없음" />
+                  )}
+                </div>
+              </SurfaceCard>
+
+              <SurfaceCard id="organization-links">
+                <Header title="교구 / 목장 / 부서" caption="소속과 섬김 연결" />
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <InfoRow label="교구" value={member.district?.name ?? "미정"} />
+                  <InfoRow label="목장" value={member.group?.name ?? "미정"} />
+                </div>
+
+                <form action={addOrganizationMembership.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[minmax(0,1.3fr)_180px_160px_auto]">
+                  <select name="organizationId" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" defaultValue="">
+                    <option value="">부서 / 조직 선택</option>
+                    {organizationOptions.map((option) => (
+                      <option key={option.id} value={option.id}>{option.type} · {option.name}</option>
+                    ))}
+                  </select>
+                  <select name="role" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" defaultValue={MemberOrgRole.MEMBER}>
+                    {ORGANIZATION_ROLE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                  <input name="startedAt" type="date" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">추가</button>
+                  <textarea name="notes" placeholder="메모" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <label className="sm:col-span-4 flex items-center gap-2 text-sm text-[#5f564b]"><input name="isPrimary" type="checkbox" /> 주 소속으로 설정</label>
+                </form>
+
+                <div className="mt-4 grid gap-3">
+                  {member.organizations.length > 0 ? (
+                    member.organizations.map((organization) => (
+                      <article key={organization.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111111]">{organization.organization.name}</p>
+                            <p className="mt-1 text-xs text-[#8c7a5b]">{organization.organization.type} · {formatOrganizationRole(organization.role)}</p>
+                            <p className="mt-2 text-sm leading-6 text-[#5f564b]">
+                              {[organization.startedAt ? formatDate(organization.startedAt) : null, organization.notes].filter(Boolean).join(" · ") || "메모 없음"}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {organization.isPrimary ? <Tag strong>주 소속</Tag> : null}
+                            <form action={removeOrganizationMembership.bind(null, churchSlug, member.id)}>
+                              <input type="hidden" name="membershipId" value={organization.id} />
+                              <button className="rounded-[12px] border border-[#f0c9c9] bg-white px-3 py-2 text-xs font-semibold text-[#9a4a4a]">해제</button>
+                            </form>
+                          </div>
+                        </div>
+                      </article>
+                    ))
+                  ) : (
+                    <EmptyBox text="연결된 부서 / 조직 없음" />
+                  )}
+                </div>
+              </SurfaceCard>
+
               <SurfaceCard id="life-status">
-                <Header title="삶 상태 / 사역" caption="깊은 관리" />
-                <div className="grid gap-3 lg:grid-cols-2">
+                <Header title="삶 상태 / 사역 기록" caption="심방 이후 맥락과 섬김 흐름" />
+                <form action={addMinistryRecord.bind(null, churchSlug, member.id)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 sm:grid-cols-[minmax(0,1fr)_160px_140px_auto]">
+                  <input name="ministryName" placeholder="섬기는 사역 / 역할" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <input name="ministryRole" placeholder="예: 팀원, 리더" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <input name="happenedAt" type="date" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                  <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">추가</button>
+                  <textarea name="summary" placeholder="섬김 내용이나 메모" className="sm:col-span-4 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                </form>
+
+                <div className="mt-4 grid gap-3 lg:grid-cols-2">
                   <div className="grid gap-3">
                     <p className="text-xs font-semibold text-[#8C7A5B]">삶 상태</p>
                     {member.lifeStatuses.length > 0 ? (
@@ -653,6 +791,23 @@ function CompactStat({ label, value }: { label: string; value: string }) {
       <p className="mt-1 text-sm font-semibold text-[#111111]">{value}</p>
     </div>
   );
+}
+
+function formatFaithMilestoneType(type: SacramentType) {
+  if (type === SacramentType.BAPTISM) return "침례식";
+  if (type === SacramentType.INFANT_BAPTISM) return "유아세례 / 헌아";
+  if (type === SacramentType.CONFIRMATION) return "입교";
+  if (type === SacramentType.COMMUNION) return "성찬";
+  if (type === SacramentType.MEMBERSHIP_TRANSFER) return "등록 / 이명";
+  return type;
+}
+
+function formatOrganizationRole(role: MemberOrgRole) {
+  if (role === MemberOrgRole.LEAD) return "리더";
+  if (role === MemberOrgRole.ASSISTANT_LEAD) return "부리더";
+  if (role === MemberOrgRole.PASTOR) return "담당 교역자";
+  if (role === MemberOrgRole.STAFF) return "스태프";
+  return "구성원";
 }
 
 function TimelineCard({
