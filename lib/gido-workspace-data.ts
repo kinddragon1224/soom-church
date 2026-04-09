@@ -31,6 +31,16 @@ export type GidoHouseholdView = {
   id: string;
   title: string;
   members: { id: string; name: string; birthLabel: string; familyRole?: GidoFamilyRole | null }[];
+  relationships: {
+    id: string;
+    relationshipType: string;
+    customRelationship: string | null;
+    notes: string | null;
+    fromMemberId: string;
+    fromMemberName: string;
+    toMemberId: string;
+    toMemberName: string;
+  }[];
   tags: string[];
   prayers: string[];
   contacts: string[];
@@ -58,7 +68,7 @@ function toBirthLabel(birthDate: Date, notes?: string | null) {
 }
 
 export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorkspaceData> {
-  const [church, households, members] = await Promise.all([
+  const [church, households, members, relationships] = await Promise.all([
     prisma.church.findUnique({ where: { id: churchId }, select: { name: true } }),
     prisma.household.findMany({
       where: { churchId },
@@ -77,6 +87,32 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
         statusTag: true,
         requiresFollowUp: true,
         household: { select: { name: true } },
+      },
+    }),
+    prisma.memberRelationship.findMany({
+      where: { churchId },
+      orderBy: { createdAt: "asc" },
+      select: {
+        id: true,
+        relationshipType: true,
+        customRelationship: true,
+        notes: true,
+        fromMemberId: true,
+        toMemberId: true,
+        fromMember: {
+          select: {
+            name: true,
+            householdId: true,
+            isDeleted: true,
+          },
+        },
+        toMember: {
+          select: {
+            name: true,
+            householdId: true,
+            isDeleted: true,
+          },
+        },
       },
     }),
   ]);
@@ -111,6 +147,27 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
 
   const followUps: GidoFollowUpView[] = [];
   const updates: GidoUpdateView[] = [];
+  const relationshipsByHousehold = new Map<string, GidoHouseholdView["relationships"]>();
+
+  relationships.forEach((relationship) => {
+    if (relationship.fromMember.isDeleted || relationship.toMember.isDeleted) return;
+
+    const householdId = relationship.fromMember.householdId;
+    if (!householdId || householdId !== relationship.toMember.householdId) return;
+
+    const bucket = relationshipsByHousehold.get(householdId) ?? [];
+    bucket.push({
+      id: relationship.id,
+      relationshipType: relationship.relationshipType,
+      customRelationship: relationship.customRelationship,
+      notes: relationship.notes,
+      fromMemberId: relationship.fromMemberId,
+      fromMemberName: relationship.fromMember.name,
+      toMemberId: relationship.toMemberId,
+      toMemberName: relationship.toMember.name,
+    });
+    relationshipsByHousehold.set(householdId, bucket);
+  });
 
   const householdViews: GidoHouseholdView[] = households.map((household) => {
     const meta = parseGidoHouseholdMeta(household.notes);
@@ -121,6 +178,7 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
       id: household.id,
       title: household.name,
       members: membersByHousehold.get(household.id) ?? [],
+      relationships: relationshipsByHousehold.get(household.id) ?? [],
       tags: meta.tags ?? [],
       prayers: meta.prayers ?? [],
       contacts: meta.contacts ?? [],

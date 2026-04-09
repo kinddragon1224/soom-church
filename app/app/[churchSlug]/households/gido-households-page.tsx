@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { type GidoFamilyRole, getGidoFamilyRoleLabel } from "@/lib/gido-home-config";
 import { GidoHouseholdView } from "@/lib/gido-workspace-data";
-import { createGidoHouseholdChild, updateGidoHouseholdMemberRole, updateGidoHouseholdSettings } from "./actions";
+import {
+  createGidoHouseholdChild,
+  createGidoHouseholdFamilyLink,
+  createGidoHouseholdSpouse,
+  removeGidoHouseholdFamilyLink,
+  updateGidoHouseholdMemberRole,
+  updateGidoHouseholdSettings,
+} from "./actions";
 
 type Props = {
   churchSlug: string;
@@ -25,6 +32,7 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
         return parents.length > 0 ? parents : selectedHousehold.members;
       })()
     : [];
+  const defaultAdultMemberId = availableParentOptions.find((member) => member.familyRole === "SELF")?.id ?? availableParentOptions[0]?.id ?? "";
   const familySummary = selectedHousehold ? summarizeHouseholdFamilyRoles(selectedHousehold.members) : null;
 
   return (
@@ -102,6 +110,7 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                   <InfoPill label="가정 대표" value={familySummary?.representativeName ?? "미지정"} />
                   <InfoPill label="자녀" value={`${familySummary?.childCount ?? 0}명`} />
                   <InfoPill label="미지정" value={`${familySummary?.unassignedCount ?? 0}명`} />
+                  <InfoPill label="연결" value={`${selectedHousehold.relationships.length}건`} />
                   <InfoPill label="순서" value={typeof selectedHousehold.prayerOrder === "number" ? `${selectedHousehold.prayerOrder}` : "미설정"} />
                 </div>
               </div>
@@ -172,6 +181,51 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                   </div>
                 </article>
 
+                <form action={createGidoHouseholdSpouse.bind(null, churchSlug, returnPath)} className="grid gap-4 rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+                  <input type="hidden" name="householdId" value={selectedHousehold.id} />
+
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SPOUSE ADD</p>
+                    <h3 className="mt-2 text-lg font-semibold text-[#111111]">배우자 추가</h3>
+                    <p className="mt-2 text-sm leading-6 text-[#5f564b]">가정 안에서 배우자를 바로 등록하고 연결.</p>
+                  </div>
+
+                  <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_180px_150px_minmax(0,1fr)_auto]">
+                    <label className="grid gap-2">
+                      <span className="text-[12px] font-medium text-[#5f564b]">이름</span>
+                      <input name="name" required placeholder="배우자 이름" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    </label>
+                    <label className="grid gap-2">
+                      <span className="text-[12px] font-medium text-[#5f564b]">연락처</span>
+                      <input name="phone" placeholder="선택 입력" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    </label>
+                    <label className="grid gap-2">
+                      <span className="text-[12px] font-medium text-[#5f564b]">생년월일</span>
+                      <input name="birthDate" type="date" required className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    </label>
+                    <label className="grid gap-2">
+                      <span className="text-[12px] font-medium text-[#5f564b]">성별</span>
+                      <select name="gender" defaultValue="OTHER" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                        <option value="OTHER">미지정</option>
+                        <option value="MALE">남성</option>
+                        <option value="FEMALE">여성</option>
+                      </select>
+                    </label>
+                    <label className="grid gap-2">
+                      <span className="text-[12px] font-medium text-[#5f564b]">연결할 구성원</span>
+                      <select name="partnerMemberId" defaultValue={defaultAdultMemberId} className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                        <option value="">선택 안함</option>
+                        {availableParentOptions.map((member) => (
+                          <option key={member.id} value={member.id}>{member.name}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="flex items-end">
+                      <button className="h-[42px] rounded-[12px] bg-[#111827] px-4 text-sm font-semibold text-white">추가</button>
+                    </div>
+                  </div>
+                </form>
+
                 <form action={createGidoHouseholdChild.bind(null, churchSlug, returnPath)} className="grid gap-4 rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
                   <input type="hidden" name="householdId" value={selectedHousehold.id} />
 
@@ -214,51 +268,124 @@ export default function GidoHouseholdsPage({ churchSlug, households, focusId }: 
                 </form>
               </div>
 
-              <form action={updateGidoHouseholdSettings.bind(null, churchSlug, returnPath)} className="grid gap-4 rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-                <input type="hidden" name="householdId" value={selectedHousehold.id} />
+              <div className="grid gap-4">
+                <article className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">FAMILY LINKS</p>
+                      <h3 className="mt-2 text-lg font-semibold text-[#111111]">가족 연결</h3>
+                      <p className="mt-2 text-sm leading-6 text-[#5f564b]">배우자, 부모-자녀, 형제자매 연결을 여기서 바로 정리.</p>
+                    </div>
+                    <span className="rounded-full border border-[#ebe2d5] bg-[#fcfaf6] px-3 py-1 text-[11px] text-[#6f6256]">{selectedHousehold.relationships.length}건</span>
+                  </div>
 
-                <div>
-                  <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SETTINGS</p>
-                  <h3 className="mt-2 text-lg font-semibold text-[#111111]">가정 설정</h3>
-                </div>
+                  {selectedHousehold.members.length >= 2 ? (
+                    <form action={createGidoHouseholdFamilyLink.bind(null, churchSlug, returnPath)} className="mt-4 grid gap-3 rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4 lg:grid-cols-[minmax(0,1fr)_150px_minmax(0,1fr)_minmax(0,1fr)_auto]">
+                      <input type="hidden" name="householdId" value={selectedHousehold.id} />
+                      <select name="fromMemberId" defaultValue="" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                        <option value="">기준 목원</option>
+                        {selectedHousehold.members.map((member) => (
+                          <option key={member.id} value={member.id}>{member.name}</option>
+                        ))}
+                      </select>
+                      <select name="relationshipType" defaultValue="SPOUSE" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                        {HOUSEHOLD_RELATIONSHIP_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                      <select name="toMemberId" defaultValue="" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                        <option value="">연결 대상</option>
+                        {selectedHousehold.members.map((member) => (
+                          <option key={member.id} value={member.id}>{member.name}</option>
+                        ))}
+                      </select>
+                      <input name="customRelationship" placeholder="직접 관계명" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                      <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">연결</button>
+                      <textarea name="notes" placeholder="메모" className="lg:col-span-5 rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    </form>
+                  ) : (
+                    <div className="mt-4">
+                      <EmptyBox text="연결할 구성원이 아직 부족함" compact />
+                    </div>
+                  )}
 
-                <label className="grid gap-2">
-                  <span className="text-[12px] font-medium text-[#5f564b]">중보 순서</span>
-                  <input
-                    type="number"
-                    min={1}
-                    step={1}
-                    name="prayerOrder"
-                    defaultValue={typeof selectedHousehold.prayerOrder === "number" ? selectedHousehold.prayerOrder : ""}
-                    placeholder="예: 1"
-                    className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]"
-                  />
-                </label>
+                  <div className="mt-4 grid gap-3">
+                    {selectedHousehold.relationships.length === 0 ? (
+                      <EmptyBox text="가족 연결 없음" compact />
+                    ) : (
+                      selectedHousehold.relationships.map((relationship) => (
+                        <article key={relationship.id} className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111111]">
+                                <Link href={`/app/${churchSlug}/members/${relationship.fromMemberId}#family-links`} className="hover:text-[#8C6A2E]">
+                                  {relationship.fromMemberName}
+                                </Link>
+                                <span className="px-2 text-[#8c7a5b]">· {getRelationshipLabel(relationship.relationshipType, relationship.customRelationship)} ·</span>
+                                <Link href={`/app/${churchSlug}/members/${relationship.toMemberId}#family-links`} className="hover:text-[#8C6A2E]">
+                                  {relationship.toMemberName}
+                                </Link>
+                              </p>
+                              <p className="mt-2 text-sm leading-6 text-[#5f564b]">{relationship.notes ?? "메모 없음"}</p>
+                            </div>
+                            <form action={removeGidoHouseholdFamilyLink.bind(null, churchSlug, returnPath)}>
+                              <input type="hidden" name="householdId" value={selectedHousehold.id} />
+                              <input type="hidden" name="relationshipId" value={relationship.id} />
+                              <button className="rounded-[12px] border border-[#f0c9c9] bg-white px-3 py-2 text-xs font-semibold text-[#9a4a4a]">해제</button>
+                            </form>
+                          </div>
+                        </article>
+                      ))
+                    )}
+                  </div>
+                </article>
 
-                <label className="grid gap-2">
-                  <span className="text-[12px] font-medium text-[#5f564b]">중보 기도</span>
-                  <textarea
-                    name="prayers"
-                    defaultValue={selectedHousehold.prayers.join("\n")}
-                    placeholder="한 줄에 하나씩 입력"
-                    className="min-h-[140px] rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]"
-                  />
-                </label>
+                <form action={updateGidoHouseholdSettings.bind(null, churchSlug, returnPath)} className="grid gap-4 rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+                  <input type="hidden" name="householdId" value={selectedHousehold.id} />
 
-                <label className="grid gap-2">
-                  <span className="text-[12px] font-medium text-[#5f564b]">연락 메모</span>
-                  <textarea
-                    name="contacts"
-                    defaultValue={selectedHousehold.contacts.join("\n")}
-                    placeholder="한 줄에 하나씩 입력"
-                    className="min-h-[120px] rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]"
-                  />
-                </label>
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SETTINGS</p>
+                    <h3 className="mt-2 text-lg font-semibold text-[#111111]">가정 설정</h3>
+                  </div>
 
-                <div className="flex justify-end">
-                  <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">저장</button>
-                </div>
-              </form>
+                  <label className="grid gap-2">
+                    <span className="text-[12px] font-medium text-[#5f564b]">중보 순서</span>
+                    <input
+                      type="number"
+                      min={1}
+                      step={1}
+                      name="prayerOrder"
+                      defaultValue={typeof selectedHousehold.prayerOrder === "number" ? selectedHousehold.prayerOrder : ""}
+                      placeholder="예: 1"
+                      className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]"
+                    />
+                  </label>
+
+                  <label className="grid gap-2">
+                    <span className="text-[12px] font-medium text-[#5f564b]">중보 기도</span>
+                    <textarea
+                      name="prayers"
+                      defaultValue={selectedHousehold.prayers.join("\n")}
+                      placeholder="한 줄에 하나씩 입력"
+                      className="min-h-[140px] rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]"
+                    />
+                  </label>
+
+                  <label className="grid gap-2">
+                    <span className="text-[12px] font-medium text-[#5f564b]">연락 메모</span>
+                    <textarea
+                      name="contacts"
+                      defaultValue={selectedHousehold.contacts.join("\n")}
+                      placeholder="한 줄에 하나씩 입력"
+                      className="min-h-[120px] rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]"
+                    />
+                  </label>
+
+                  <div className="flex justify-end">
+                    <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">저장</button>
+                  </div>
+                </form>
+              </div>
             </section>
           </div>
         </section>
@@ -301,6 +428,17 @@ const FAMILY_ROLE_OPTIONS: { value: GidoFamilyRole | ""; label: string }[] = [
   { value: "FAMILY", label: "기타 가족" },
 ];
 
+const HOUSEHOLD_RELATIONSHIP_OPTIONS = [
+  { value: "SPOUSE", label: "배우자" },
+  { value: "PARENT", label: "부모" },
+  { value: "CHILD", label: "자녀" },
+  { value: "SIBLING", label: "형제자매" },
+  { value: "RELATIVE", label: "친인척" },
+  { value: "GUARDIAN", label: "보호자" },
+  { value: "CAREGIVER", label: "돌봄 담당" },
+  { value: "CUSTOM", label: "직접 입력" },
+];
+
 function buildHouseholdMemberSections(members: GidoHouseholdView["members"]) {
   const representative = members.filter((member) => member.familyRole === "SELF");
   const spouse = members.filter((member) => member.familyRole === "SPOUSE");
@@ -335,4 +473,10 @@ function getFamilyRoleHint(role?: GidoFamilyRole | null) {
   if (role === "CHILD") return "자녀 / 청소년 구성원";
   if (role === "FAMILY") return "기타 가족 구성원";
   return "가정 역할을 아직 정하지 않음";
+}
+
+function getRelationshipLabel(type: string, customRelationship?: string | null) {
+  if (customRelationship) return customRelationship;
+  const label = HOUSEHOLD_RELATIONSHIP_OPTIONS.find((option) => option.value === type)?.label;
+  return label ?? type;
 }
