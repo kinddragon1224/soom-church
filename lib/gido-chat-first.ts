@@ -12,6 +12,13 @@ export type GidoReviewCandidate = {
   sourceLabel: string;
 };
 
+export type GidoChatMessage = {
+  id: string;
+  role: "pastor" | "assistant";
+  body: string;
+  meta: string;
+};
+
 export type GidoTimelineEvent = {
   id: string;
   kind: "follow_up" | "update" | "household";
@@ -81,6 +88,59 @@ export function buildGidoReviewCandidates(data: GidoWorkspaceData): GidoReviewCa
     }));
 
   return [...memberItems, ...followUpItems, ...updateItems, ...householdItems];
+}
+
+export function buildGidoChatMessages(data: GidoWorkspaceData): GidoChatMessage[] {
+  const messages: GidoChatMessage[] = [];
+
+  data.updates.slice(0, 3).forEach((item, index) => {
+    messages.push({
+      id: `chat-update-pastor-${index}`,
+      role: "pastor",
+      body: trimText(item.body || item.note || item.title, 220),
+      meta: item.due || "방금 보낸 내용",
+    });
+    messages.push({
+      id: `chat-update-assistant-${index}`,
+      role: "assistant",
+      body: trimText(`${item.title}로 읽었어. 근황, 기도, 후속 중 어디에 반영할지 Review에서 바로 확인할 수 있게 둘게.`, 220),
+      meta: "모라",
+    });
+  });
+
+  data.followUps.slice(0, 2).forEach((item, index) => {
+    messages.push({
+      id: `chat-followup-pastor-${index}`,
+      role: "pastor",
+      body: trimText(item.note || item.title, 220),
+      meta: item.due || "후속 메모",
+    });
+    messages.push({
+      id: `chat-followup-assistant-${index}`,
+      role: "assistant",
+      body: trimText(`${item.title}로 후속 카드 후보를 만들었어. 사람 연결과 일정 확정만 보면 돼.`, 220),
+      meta: "모라",
+    });
+  });
+
+  if (messages.length === 0) {
+    messages.push(
+      {
+        id: "chat-empty-pastor",
+        role: "pastor",
+        body: "이번 주 목장 근황과 챙겨야 할 사람들을 정리하고 싶어.",
+        meta: "예시 입력",
+      },
+      {
+        id: "chat-empty-assistant",
+        role: "assistant",
+        body: "좋아. 그냥 말하듯 적어줘. 사람, 가정, 기도제목, 심방, 결석, 후속조치 후보로 나눠서 다른 탭에 정리해둘게.",
+        meta: "모라",
+      },
+    );
+  }
+
+  return messages;
 }
 
 export function buildGidoTimelineEvents(data: GidoWorkspaceData): GidoTimelineEvent[] {

@@ -12,7 +12,7 @@ type GidoWorkspaceShellProps = {
 };
 
 type SidebarItem = {
-  key: "today" | "review" | "people" | "households" | "timeline" | "search";
+  key: "chat" | "review" | "people" | "households" | "timeline" | "search";
   label: string;
   hint: string;
   href: string;
@@ -20,7 +20,7 @@ type SidebarItem = {
 };
 
 const sidebarItems = (base: string): SidebarItem[] => [
-  { key: "today", label: "Today", hint: "오늘 바로 처리", href: `${base}/today`, tone: "#f3f4f6" },
+  { key: "chat", label: "Chat", hint: "목장 운영 대화", href: `${base}/chat`, tone: "#f3f4f6" },
   { key: "review", label: "Review", hint: "AI 검토 대기", href: `${base}/review`, tone: "#f0c674" },
   { key: "people", label: "People", hint: "사람 레코드", href: `${base}/people`, tone: "#7dd3a7" },
   { key: "households", label: "Households", hint: "가정 관계", href: `${base}/households`, tone: "#d2a8ff" },
@@ -37,7 +37,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[272px] shrink-0 flex-col bg-[#0b0f17] px-4 py-5 text-white lg:flex">
           <div className="px-1">
-            <Link href={`${base}/today`} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
+            <Link href={`${base}/chat`} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
               soom ops
             </Link>
             <div className="mt-2 flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
                 const active =
                   pathname === item.href ||
                   pathname.startsWith(`${item.href}/`) ||
-                  (item.key === "today" && pathname === `${base}/dashboard`);
+                  (item.key === "chat" && (pathname === `${base}/dashboard` || pathname === `${base}/today`));
 
                 return (
                   <Link
@@ -148,7 +148,7 @@ function SidebarGlyph({
   name,
   compact = false,
 }: {
-  name: "today" | "review" | "people" | "households" | "timeline" | "search" | "profile" | "help";
+  name: "chat" | "review" | "people" | "households" | "timeline" | "search" | "profile" | "help";
   compact?: boolean;
 }) {
   const size = compact ? 12 : 15;
@@ -165,8 +165,8 @@ function SidebarGlyph({
   };
 
   switch (name) {
-    case "today":
-      return <svg {...common}><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h10" /></svg>;
+    case "chat":
+      return <svg {...common}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>;
     case "review":
       return <svg {...common}><path d="M9 11.5 11 13.5 15.5 9" /><path d="M21 12a9 9 0 1 1-5.27-8.2" /></svg>;
     case "people":

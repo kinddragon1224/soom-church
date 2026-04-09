@@ -25,16 +25,17 @@
 - `docs/SOOM_V2_REVIEW_SCHEMA_2026-04-09.md`
 
 ### 이번 세션 반영
-- G.I.D.O 전용 shell을 `Today / Review / People / Households / Timeline / Search` 구조로 교체함
-- `/app/gido`와 로그인 후 기본 진입점을 `/today`로 변경함
-- `Review`, `Timeline`, `Search` v2 골격 화면을 추가함
+- G.I.D.O 전용 shell을 `Chat / Review / People / Households / Timeline / Search` 구조로 다시 교체함
+- `/app/gido`와 로그인 후 기본 진입점을 메인 채팅 화면 `/chat`으로 변경함
+- `Chat`, `Review`, `Timeline`, `Search` v2 골격 화면을 추가함
 - 로그인은 이메일 대신 간단한 아이디 `gido`를 받도록 바꾸고, 기본 비밀번호는 `1234` 기준으로 단순화함
 
 ### 바로 다음에 할 것
 1. Prisma에 `capture / extracted update / review item / apply result` 초안 추가
-2. 지금 만든 `Review` 골격을 실제 DB 기준 리스트로 교체
-3. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
-4. `Households`도 관계 중심 정리판으로 다시 정리
+2. 지금 만든 메인 `Chat` 화면을 실제 메시지 thread + composer + capture 저장 흐름으로 교체
+3. `Review` 골격을 실제 DB 기준 리스트로 교체
+4. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
+5. `Households`도 관계 중심 정리판으로 다시 정리
 
 ### 멈출 것
 - G.I.D.O 입력형 UI 확장

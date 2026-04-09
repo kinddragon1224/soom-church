@@ -31,7 +31,7 @@ export default async function ChurchSearchPage({ params }: { params: { churchSlu
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Link href={`${base}/today`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Today</Link>
+            <Link href={`${base}/chat`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Chat</Link>
             <Link href={`${base}/people`} className="rounded-[12px] border border-[#111827] bg-[#111827] px-3 py-2 text-sm text-white">People</Link>
           </div>
         </div>

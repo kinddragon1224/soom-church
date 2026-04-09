@@ -67,7 +67,7 @@ async function main() {
   await removeLegacyLeader(church.id);
   const attachedAdmins = await attachPlatformAdmins(church.id);
 
-  console.log(`G.I.D.O workspace ready: /app/${church.slug}/today`);
+  console.log(`G.I.D.O workspace ready: /app/${church.slug}/chat`);
   console.log(`Leader account: ${leaderAccount.email}`);
   console.log(`Quick login: ${simpleLoginId} / ${leaderPasswordFromEnv ? "custom password from env" : simplePassword}`);
   console.log(`Attached platform admins: ${attachedAdmins.map((admin) => admin.email).join(", ") || "none found"}`);
