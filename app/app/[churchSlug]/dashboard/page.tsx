@@ -1,9 +1,8 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requireWorkspaceMembership } from "@/lib/church-context";
-import { prisma } from "@/lib/prisma";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
 import { getChurchStructureMap } from "@/lib/visualization-data";
-import GidoDashboardPage from "./gido-dashboard";
 
 const statusTone: Record<string, string> = {
   새가족: "bg-[#E8F1FF] text-[#295FA8] border-[#C9DCF8]",
@@ -19,13 +18,12 @@ function badgeClass(statusTag: string) {
 }
 
 export default async function ChurchDashboardPage({ params }: { params: { churchSlug: string } }) {
-  const { userId, membership } = await requireWorkspaceMembership(params.churchSlug);
+  const { membership } = await requireWorkspaceMembership(params.churchSlug);
   if (!membership) return null;
 
   const church = membership.church;
   if (church.slug === "gido") {
-    const currentUser = await prisma.user.findUnique({ where: { id: userId }, select: { name: true } });
-    return <GidoDashboardPage churchId={church.id} churchSlug={church.slug} base={`/app/${church.slug}`} currentUserName={currentUser?.name ?? undefined} />;
+    redirect(`/app/${church.slug}/today`);
   }
 
   const base = `/app/${church.slug}`;

@@ -4,16 +4,16 @@ import { PLATFORM_ADMIN_EMAILS } from "../lib/admin";
 
 const prisma = new PrismaClient();
 
+const simpleLoginId = (process.env.GIDO_SIMPLE_LOGIN_ID || "gido").trim().toLowerCase();
+const simplePassword = process.env.GIDO_SIMPLE_PASSWORD || "1234";
+const leaderPasswordFromEnv = process.env.GIDO_LEADER_PASSWORD || process.env.GIDO_LEADER1_PASSWORD;
+
 const leaderAccount = {
   email: process.env.GIDO_LEADER_EMAIL || process.env.GIDO_LEADER1_EMAIL || "gido.mokja1@soom.church",
   name: process.env.GIDO_LEADER_NAME || process.env.GIDO_LEADER1_NAME || "G.I.D.O 목자",
-  password: process.env.GIDO_LEADER_PASSWORD || process.env.GIDO_LEADER1_PASSWORD,
+  password: leaderPasswordFromEnv || simplePassword,
   role: MembershipRole.LEADER,
 };
-
-if (!leaderAccount.password) {
-  throw new Error(`Missing password for ${leaderAccount.email}. Set GIDO_LEADER_PASSWORD (or GIDO_LEADER1_PASSWORD).`);
-}
 
 async function attachPlatformAdmins(churchId) {
   const admins = await prisma.user.findMany({
@@ -67,8 +67,9 @@ async function main() {
   await removeLegacyLeader(church.id);
   const attachedAdmins = await attachPlatformAdmins(church.id);
 
-  console.log(`G.I.D.O workspace ready: /app/${church.slug}/dashboard`);
+  console.log(`G.I.D.O workspace ready: /app/${church.slug}/today`);
   console.log(`Leader account: ${leaderAccount.email}`);
+  console.log(`Quick login: ${simpleLoginId} / ${leaderPasswordFromEnv ? "custom password from env" : simplePassword}`);
   console.log(`Attached platform admins: ${attachedAdmins.map((admin) => admin.email).join(", ") || "none found"}`);
 }
 

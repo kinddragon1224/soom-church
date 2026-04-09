@@ -10,6 +10,27 @@ import { isPlatformAdminEmail, PLATFORM_ADMIN_EMAILS } from "@/lib/admin";
 
 const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me";
 
+const gidoSimpleLoginId = (process.env.GIDO_SIMPLE_LOGIN_ID || "gido").trim().toLowerCase();
+const gidoLeaderEmail = (process.env.GIDO_LEADER_EMAIL || process.env.GIDO_LEADER1_EMAIL || "gido.mokja1@soom.church").trim().toLowerCase();
+
+function resolveCredentialEmails(rawIdentifier: string) {
+  const identifier = rawIdentifier.trim().toLowerCase();
+  if (!identifier) return [];
+
+  const candidates = new Set<string>();
+
+  if (identifier.includes("@")) {
+    candidates.add(identifier);
+  } else {
+    candidates.add(`${identifier}@soom.church`);
+    if (identifier === gidoSimpleLoginId || identifier === "mokja" || identifier === "목자") {
+      candidates.add(gidoLeaderEmail);
+    }
+  }
+
+  return [...candidates];
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   secret: authSecret,
@@ -19,17 +40,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers: [
     Credentials({
-      name: "이메일 로그인",
+      name: "아이디 로그인",
       credentials: {
-        email: { label: "이메일", type: "email" },
+        identifier: { label: "아이디", type: "text" },
         password: { label: "비밀번호", type: "password" },
       },
       async authorize(credentials) {
-        const email = String(credentials?.email ?? "").trim().toLowerCase();
+        const identifier = String(credentials?.identifier ?? "").trim().toLowerCase();
         const password = String(credentials?.password ?? "");
-        if (!email || !password) return null;
+        const candidateEmails = resolveCredentialEmails(identifier);
+        if (candidateEmails.length === 0 || !password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await prisma.user.findFirst({
+          where: { email: { in: candidateEmails } },
+          orderBy: { email: "asc" },
+        });
         if (!user || !user.isActive) return null;
 
         const isValid = await verifyPassword(password, user.passwordHash);
@@ -125,7 +150,7 @@ export async function getPostLoginPath(userId: string) {
   if (isPlatformAdminEmail(user.email)) return "/platform-admin";
 
   const church = await getFirstChurchByUserId(user.id);
-  if (church) return `/app/${church.slug}/dashboard`;
+  if (church) return church.slug === "gido" ? `/app/${church.slug}/today` : `/app/${church.slug}/dashboard`;
 
   if (user.email === "dev@soom.church") {
     return "/app/soom-dev/dashboard";

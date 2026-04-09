@@ -24,11 +24,17 @@
 - `docs/SOOM_V2_IA_2026-04-09.md`
 - `docs/SOOM_V2_REVIEW_SCHEMA_2026-04-09.md`
 
+### 이번 세션 반영
+- G.I.D.O 전용 shell을 `Today / Review / People / Households / Timeline / Search` 구조로 교체함
+- `/app/gido`와 로그인 후 기본 진입점을 `/today`로 변경함
+- `Review`, `Timeline`, `Search` v2 골격 화면을 추가함
+- 로그인은 이메일 대신 간단한 아이디 `gido`를 받도록 바꾸고, 기본 비밀번호는 `1234` 기준으로 단순화함
+
 ### 바로 다음에 할 것
-1. `chat -> extracted update -> review -> record` 흐름 스키마 설계
-2. 웹앱 IA를 `Today / Review / People / Households / Timeline / Search`로 재설계
-3. 첫 구현을 `Review Queue` 화면부터 시작
-4. 이후 `People`, `Households`를 입력형이 아니라 정리판으로 다시 설계
+1. Prisma에 `capture / extracted update / review item / apply result` 초안 추가
+2. 지금 만든 `Review` 골격을 실제 DB 기준 리스트로 교체
+3. `People`를 기존 members redirect가 아니라 v2 레코드 화면으로 교체
+4. `Households`도 관계 중심 정리판으로 다시 정리
 
 ### 멈출 것
 - G.I.D.O 입력형 UI 확장
@@ -41,7 +47,7 @@
 - OpenClaw cron은 전부 제거됨, 현재 `/home/kinddragon/.openclaw/cron/jobs.json` = 빈 jobs
 - 텔레그램 발신은 정상
 - `channels.telegram.apiRoot` 미지원 경고 로그 있음, 나중에 설정 정리 필요
-- G.I.D.O 외 로컬 변경 파일 `app/login/page.tsx`, `app/workspace/page.tsx`, `components/auth/login-form.tsx` 는 커밋 대상에서 계속 제외할 것
+- 커밋 시 이번 세션 관련 파일만 올리고, 여전히 무관한 `app/workspace/page.tsx` 같은 로컬 변경은 제외할 것
 
 ---
 
