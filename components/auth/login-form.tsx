@@ -28,12 +28,12 @@ export default function LoginForm({ next, defaultCallbackUrl = "/app", compact =
 
       <label className="grid gap-2">
         <span className="text-[12px] font-medium text-[#6d6359]">아이디</span>
-        <input autoComplete="username" className={fieldClass} name="identifier" placeholder="gido" required type="text" />
+        <input autoComplete="username" className={fieldClass} name="identifier" placeholder="아이디를 입력해 주세요" required type="text" />
       </label>
 
       <label className="grid gap-2">
         <span className="text-[12px] font-medium text-[#6d6359]">비밀번호</span>
-        <input autoComplete="current-password" className={fieldClass} name="password" placeholder="1234" required type="password" />
+        <input autoComplete="current-password" className={fieldClass} name="password" placeholder="비밀번호를 입력해 주세요" required type="password" />
       </label>
 
       <button
