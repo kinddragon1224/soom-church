@@ -5,6 +5,36 @@
 
 ---
 
+## LATEST SESSION RECOVERY - 2026-04-09
+### 제품 정의
+- 숨은 `목자가 목원을 관리하기 편하게 만드는 워크스페이스`
+- 홈은 launcher / overview
+- 실제 운영은 `목원 관리`, `관리`, `중보`, `근황`에서 처리
+- AI는 장식이 아니라 정리, 복구, 우선순위 제안, 다음 행동 연결 역할
+
+### 오늘까지 완료
+1. 홈을 launcher형으로 재구성
+2. `목원 관리` 목록을 등록 / 구조 보완 / 오늘 관리 대상 / 기록 바로가기 중심으로 재구성
+3. 목원 상세에 `교회 이벤트`, `교구/목장/부서`, `사역 기록` 섹션 추가
+4. 가정 상세에서 `가정 대표 / 배우자 / 자녀 / 기타 가족 / 미지정` 역할 구분과 즉시 수정 흐름 추가
+
+### 바로 다음에 할 것
+1. households에서 `배우자 추가 / 가족 연결`을 더 빠르게 만드는 UI 붙이기
+2. households와 members 사이 family-link 흐름 정리
+3. 교회 이벤트를 현재 faith milestone 범위를 넘는 일반 이벤트 모델로 확장할지 검토
+
+### 꼭 같이 볼 문서
+- `docs/GIDO_BETA_WORKSPACE_PLAN_2026-04-09.md`
+- `memory/2026-04-09.md`
+
+### 운영 메모
+- OpenClaw cron은 전부 제거됨, 현재 `/home/kinddragon/.openclaw/cron/jobs.json` = 빈 jobs
+- 텔레그램 발신은 정상
+- `channels.telegram.apiRoot` 미지원 경고 로그 있음, 나중에 설정 정리 필요
+- G.I.D.O 외 로컬 변경 파일 `app/login/page.tsx`, `app/workspace/page.tsx`, `components/auth/login-form.tsx` 는 커밋 대상에서 계속 제외할 것
+
+---
+
 ## 2026-04-09 G.I.D.O ACTIVE TRACK
 - 기준 문서: `docs/GIDO_BETA_WORKSPACE_PLAN_2026-04-09.md`
 - 현재 제품 정의: 숨은 목자가 목원을 관리하기 편하게 만드는 워크스페이스
