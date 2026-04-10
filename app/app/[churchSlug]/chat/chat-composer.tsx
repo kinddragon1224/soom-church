@@ -37,12 +37,6 @@ type Props = {
   action: (formData: FormData) => void | Promise<void>;
 };
 
-const EXAMPLES = [
-  "오상준 형제 허벅지 다쳐서 내일 병원 가. 중보기도 올렸고 다음 주에 연락해봐야 해.",
-  "박지은 자매 오늘 처음 왔어. 새가족 등록 후보로 넣어줘.",
-  "김민수 이번 주 예배 못 왔고 다음 주에 전화해보자.",
-];
-
 function appendSegment(base: string, segment: string) {
   const cleanBase = base.trim();
   const cleanSegment = segment.trim();
@@ -127,14 +121,6 @@ export default function ChatComposer({ churchSlug, action }: Props) {
     recognitionRef.current.start();
   }
 
-  function applyExample(value: string) {
-    setSuccessNote(null);
-    setVoiceError(null);
-    setMessage(value);
-    setDraftTranscript("");
-    textareaRef.current?.focus();
-  }
-
   function clearInput() {
     setMessage("");
     setDraftTranscript("");
@@ -153,19 +139,6 @@ export default function ChatComposer({ churchSlug, action }: Props) {
         <p className="mx-auto mt-4 max-w-[620px] text-sm leading-6 text-[#5f564b]">{helperText}</p>
       </div>
 
-      <div className="mx-auto mt-8 flex w-full max-w-3xl flex-wrap justify-center gap-2">
-        {EXAMPLES.map((example, index) => (
-          <button
-            key={`${index}-${example}`}
-            type="button"
-            onClick={() => applyExample(example)}
-            className="rounded-full border border-[#e7dfd3] bg-white px-3 py-2 text-xs text-[#5f564b] transition hover:bg-[#faf7f2]"
-          >
-            예시 {index + 1}
-          </button>
-        ))}
-      </div>
-
       <form
         action={(formData) => {
           startTransition(async () => {
@@ -177,7 +150,7 @@ export default function ChatComposer({ churchSlug, action }: Props) {
             textareaRef.current?.focus();
           });
         }}
-        className="mx-auto mt-8 w-full max-w-3xl"
+        className="mx-auto mt-10 w-full max-w-3xl"
       >
         <div className="rounded-[32px] border border-[#e7dfd3] bg-white p-3 shadow-[0_18px_48px_rgba(15,23,42,0.08)]">
           <textarea
