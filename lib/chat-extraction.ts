@@ -130,6 +130,37 @@ function inferChurchEventType(sentence: string) {
   return null;
 }
 
+function inferCareCategory(sentence: string) {
+  if (/심방|방문/.test(sentence)) return "VISIT";
+  if (/상담|나눔|대화/.test(sentence)) return "COUNSEL";
+  if (/수술|입원|아프|병원|건강|회복|치료|통증|다쳤/.test(sentence)) return "HEALTH";
+  if (/이직|취업|직장|회사|면접/.test(sentence)) return "JOB";
+  if (/경제|재정|생활비|월세|돈|빚/.test(sentence)) return "FINANCE";
+  if (/가정|부부|자녀|가족/.test(sentence)) return "FAMILY";
+  return "NOTE";
+}
+
+function inferCareTitle(sentence: string) {
+  if (/심방/.test(sentence)) return "심방 기록";
+  if (/상담/.test(sentence)) return "상담 기록";
+  if (/수술|입원|병원|치료|회복/.test(sentence)) return "건강 기록";
+  if (/기도|중보/.test(sentence)) return "기도제목";
+  if (/연락|전화|챙겨|후속/.test(sentence)) return "후속조치";
+  return "운영 기록";
+}
+
+function inferFollowUpTitle(sentence: string) {
+  if (/병원/.test(sentence)) return "병원 방문 확인";
+  if (/심방/.test(sentence)) return "심방 후속";
+  if (/전화|연락/.test(sentence)) return "연락 필요";
+  if (/다음 주|내일|모레|이번 주/.test(sentence)) return "일정 후속";
+  return "후속조치";
+}
+
+function looksLikeExistingMemberRecord(sentence: string, memberMatches: string[], householdMatches: string[]) {
+  return memberMatches.length > 0 || householdMatches.length > 0;
+}
+
 function shouldCreateRelationshipCandidate(sentence: string, memberMatches: string[]) {
   if (!/아내|남편|배우자|부부|자녀|아들|딸|엄마|어머니|아버지|아빠|부모|형제|자매|오빠|언니|누나|동생|보호자|가족|관계|연결/.test(sentence)) {
     return false;
@@ -206,7 +237,7 @@ function fallbackExtract({
     if (memberMatches.length > 1) sharedFlags.push("ambiguous_member_match");
     if (householdMatches.length > 1) sharedFlags.push("ambiguous_household_match");
 
-    if (/수술|입원|아프|병원|건강|회복|치료/.test(sentence)) {
+    if (looksLikeExistingMemberRecord(sentence, memberMatches, householdMatches) && /수술|입원|아프|병원|건강|회복|치료|심방|상담|다쳤|통증|면접|직장|경제|재정/.test(sentence)) {
       const flags = [...sharedFlags];
       if (!targetMemberHint) flags.push("ambiguous_member_match");
       updates.push(
@@ -215,9 +246,12 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
-          payload: { category: "HEALTH" },
+          payload: {
+            category: inferCareCategory(sentence),
+            title: inferCareTitle(sentence),
+          },
           ambiguityFlags: flags,
-          suggestedAction: "건강 기록으로 저장할지 확인",
+          suggestedAction: `${inferCareTitle(sentence)}으로 저장할지 확인`,
           reviewReason: flags[0] ?? null,
         }),
       );
@@ -304,7 +338,7 @@ function fallbackExtract({
       );
     }
 
-    if (/연락|전화|챙겨|심방|방문|다음 주|후속/.test(sentence)) {
+    if (/연락|전화|챙겨|방문 예정|내일|모레|이번 주|다음 주|후속/.test(sentence)) {
       const flags = [...sharedFlags];
       if (!targetMemberHint && !targetHouseholdHint) flags.push("low_confidence");
       updates.push(
@@ -313,7 +347,11 @@ function fallbackExtract({
           sentence,
           targetMemberHint,
           targetHouseholdHint,
-          payload: { requiresFollowUp: true, category: "NOTE" },
+          payload: {
+            requiresFollowUp: true,
+            category: "NOTE",
+            title: inferFollowUpTitle(sentence),
+          },
           ambiguityFlags: flags,
           suggestedAction: "후속조치 카드로 저장할지 확인",
           reviewReason: flags[0] ?? null,
@@ -389,7 +427,7 @@ async function extractWithLLM({
           {
             role: "system",
             content:
-              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Use payload keys when relevant: relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp}, care_record/prayer={memberName or householdName,category,summary}. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
+              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. Treat this as mokjang operations only: member registration/update, care/visit notes, prayer, attendance, church events, follow-up, and household relationships. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Use payload keys when relevant: relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp,title}, care_record/prayer={memberName or householdName,category,title,summary}. If the sentence mentions visit, hospital, surgery, counseling, job, finance, or family situation for an existing member, prefer care_record. If it mentions prayer, create prayer. If it mentions contact, next week, tomorrow, scheduled visit, or follow-up intent, create follow_up. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
           },
           {
             role: "user",
