@@ -1,104 +1,61 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { signIn, getPostLoginPath } from "@/auth";
+import { auth, signIn, getPostLoginPath } from "@/auth";
+import { isLoggedIn } from "@/lib/auth";
 import LoginForm from "@/components/auth/login-form";
-import { getCurrentUserId, isLoggedIn } from "@/lib/auth";
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: { next?: string; error?: string };
+  searchParams?: { error?: string; next?: string };
 }) {
-  const next = searchParams?.next;
-  const error = searchParams?.error;
-  const defaultCallbackUrl = "/app";
+  const loggedIn = await isLoggedIn();
+  if (loggedIn) {
+    const session = await auth();
+    if (session?.user?.id) {
+      redirect(await getPostLoginPath(session.user.id));
+    }
+    redirect("/app/beta");
+  }
 
-  if (await isLoggedIn()) {
-    const userId = await getCurrentUserId();
-    if (userId) redirect(next || (await getPostLoginPath(userId)));
+  async function loginWithGoogle() {
+    "use server";
+    await signIn("google", { redirectTo: searchParams?.next || "/app/beta" });
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#fbfaf7] text-[#171717]">
-      <div className="absolute left-5 top-5 text-[1.05rem] font-medium tracking-[-0.04em] text-[#2a2a2a] sm:left-7 sm:top-6">
-        soom workspace
-      </div>
+    <main className="min-h-screen bg-[#F7F4EE] px-6 py-12 text-[#121212]">
+      <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[0.96fr_1.04fr] lg:items-center">
+        <section className="rounded-[32px] border border-[#E6DFD5] bg-[#FCFBF8] p-8 shadow-[0_18px_48px_rgba(15,23,42,0.04)] lg:p-10">
+          <p className="text-[11px] tracking-[0.18em] text-[#9A8B7A]">SOOM BETA</p>
+          <h1 className="mt-3 text-[2.1rem] font-semibold tracking-[-0.05em] text-[#111111]">운영 개발 OS 로그인</h1>
+          <p className="mt-4 text-sm leading-7 text-[#5F564B]">
+            아이디와 비밀번호로 바로 들어가면 됩니다. 로그인 후 기본 진입은 새 beta 워크스페이스입니다.
+          </p>
 
-      <div className="mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4 py-16">
-        <div className="w-full max-w-[360px]">
-          <div className="mb-6 text-center">
-            <h1 className="text-[1.8rem] font-semibold tracking-[-0.06em] text-[#1d1d1d]">Soom에 로그인</h1>
-            <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-[#8a8177]">
-              <span className="rounded-full border border-[#ece4d7] bg-white px-2.5 py-1">chat-first beta</span>
-              <span className="rounded-full border border-[#ece4d7] bg-white px-2.5 py-1">mokjang os</span>
-            </div>
+          <div className="mt-8">
+            <LoginForm error={searchParams?.error} />
           </div>
 
-          <section className="rounded-[28px] border border-[#ece4d7] bg-white px-6 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:px-7">
-            <LoginForm next={next} defaultCallbackUrl={defaultCallbackUrl} compact />
+          <div className="mt-4 text-sm text-[#5F564B]">
+            아직 계정이 없으면 <Link href="/signup" className="font-medium text-[#111111] underline underline-offset-4">가입하기</Link>
+          </div>
+        </section>
 
-            {error ? (
-              <div className="mt-4 rounded-[14px] border border-[#f0d7d7] bg-[#fff7f7] px-3.5 py-3 text-center text-xs text-[#9a4a4a]">
-                {error === "credentials" ? "아이디 또는 비밀번호가 맞지 않습니다." : "로그인에 실패했습니다. 다시 시도해 주세요."}
-              </div>
-            ) : null}
+        <section className="rounded-[32px] border border-[#E6DFD5] bg-white p-8 shadow-[0_18px_48px_rgba(15,23,42,0.06)] lg:p-10">
+          <p className="text-sm font-semibold text-[#111111]">간단 로그인 기준</p>
+          <div className="mt-5 grid gap-3 text-sm text-[#5F564B]">
+            <div className="rounded-[18px] border border-[#EDE6D8] bg-[#FCFBF8] p-4">아이디 1개, 비밀번호 1개로 시작</div>
+            <div className="rounded-[18px] border border-[#EDE6D8] bg-[#FCFBF8] p-4">로그인 후 바로 beta 운영 OS 진입</div>
+            <div className="rounded-[18px] border border-[#EDE6D8] bg-[#FCFBF8] p-4">교회/워크스페이스 연결은 다음 단계에서 붙이기</div>
+          </div>
 
-            <div className="my-5 flex items-center gap-3 text-[11px] text-[#a39a90]">
-              <div className="h-px flex-1 bg-[#eee7dc]" />
-              <span>또는</span>
-              <div className="h-px flex-1 bg-[#eee7dc]" />
-            </div>
-
-            <div className="grid gap-2.5">
-              <form
-                action={async () => {
-                  "use server";
-                  await signIn("google", { redirectTo: next?.startsWith("/") ? next : "/app" });
-                }}
-              >
-                <button
-                  type="submit"
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-[14px] border border-[#e9e2d8] bg-white text-sm font-medium text-[#2a2a2a] transition hover:bg-[#faf7f2]"
-                >
-                  <span className="text-base">G</span>
-                  <span>Google로 계속하기</span>
-                </button>
-              </form>
-
-              <form
-                action={async () => {
-                  "use server";
-                  await signIn("naver", { redirectTo: next?.startsWith("/") ? next : "/app" });
-                }}
-              >
-                <button
-                  type="submit"
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-[14px] border border-[#e9e2d8] bg-white text-sm font-medium text-[#2a2a2a] transition hover:bg-[#faf7f2]"
-                >
-                  <span className="text-base">N</span>
-                  <span>네이버로 계속하기</span>
-                </button>
-              </form>
-            </div>
-
-            <div className="mt-5 text-center text-[11px] text-[#8e867c]">
-              <span>계정이 없으신가요? </span>
-              <Link href="/contact" className="font-medium text-[#2a2a2a] underline underline-offset-4">
-                문의하기
-              </Link>
-            </div>
-          </section>
-        </div>
-      </div>
-
-      <div className="absolute bottom-5 left-0 right-0 text-center text-[11px] text-[#9d948a]">
-        <Link href="/terms" className="hover:text-[#2a2a2a]">
-          서비스 약관
-        </Link>
-        <span className="mx-1.5">및</span>
-        <Link href="/privacy" className="hover:text-[#2a2a2a]">
-          개인정보처리방침
-        </Link>
+          <form action={loginWithGoogle} className="mt-8">
+            <button className="h-12 w-full rounded-[16px] border border-[#E7E0D4] bg-white text-sm font-semibold text-[#121212] transition hover:bg-[#FAF7F1]">
+              Google로 로그인
+            </button>
+          </form>
+        </section>
       </div>
     </main>
   );

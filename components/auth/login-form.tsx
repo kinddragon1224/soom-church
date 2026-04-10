@@ -7,9 +7,10 @@ type LoginFormProps = {
   next?: string;
   defaultCallbackUrl?: string;
   compact?: boolean;
+  error?: string;
 };
 
-export default function LoginForm({ next, defaultCallbackUrl = "/app", compact = false }: LoginFormProps) {
+export default function LoginForm({ next, defaultCallbackUrl = "/app/beta", compact = false, error }: LoginFormProps) {
   const [csrfToken, setCsrfToken] = useState<string>("");
 
   useEffect(() => {
@@ -35,6 +36,8 @@ export default function LoginForm({ next, defaultCallbackUrl = "/app", compact =
         <span className="text-[12px] font-medium text-[#6d6359]">비밀번호</span>
         <input autoComplete="current-password" className={fieldClass} name="password" placeholder="비밀번호를 입력해 주세요" required type="password" />
       </label>
+
+      {error ? <p className="rounded-[14px] bg-[#FFF3F3] px-4 py-3 text-sm text-[#9A4D4D]">{error}</p> : null}
 
       <button
         className="mt-1 inline-flex h-11 items-center justify-center rounded-[14px] bg-[#222222] px-5 text-sm font-semibold text-white transition hover:bg-black"

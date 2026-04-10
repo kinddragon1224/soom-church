@@ -2,96 +2,58 @@ import { prisma } from "@/lib/prisma";
 import { signIn } from "@/auth";
 import { NextResponse } from "next/server";
 import { hashPassword } from "@/lib/password";
-import { slugifyKorean } from "@/lib/slug";
-import { MembershipRole, Plan, SubscriptionStatus } from "@prisma/client";
+
+function normalizeIdentifier(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
+}
 
 export async function POST(request: Request) {
   const formData = await request.formData();
+  const identifier = normalizeIdentifier(String(formData.get("identifier") ?? ""));
   const name = String(formData.get("name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  const churchName = String(formData.get("churchName") ?? "").trim();
-  const roleInput = String(formData.get("role") ?? "VIEWER").trim().toUpperCase();
-  const ministry = String(formData.get("ministry") ?? "").trim();
   const password = String(formData.get("password") ?? "");
 
-  if (!name || !email || !password || !churchName) {
-    const signupUrl = new URL("/signup", request.url);
-    signupUrl.searchParams.set("error", "required");
-    return NextResponse.redirect(signupUrl);
+  if (!identifier || !name || !password) {
+    return NextResponse.redirect(new URL("/signup?error=모든 항목을 입력해 주세요.", request.url));
   }
 
-  if (password.length < 8) {
-    const signupUrl = new URL("/signup", request.url);
-    signupUrl.searchParams.set("error", "weak_password");
-    return NextResponse.redirect(signupUrl);
+  if (identifier.length < 3) {
+    return NextResponse.redirect(new URL("/signup?error=아이디는 3자 이상이어야 합니다.", request.url));
   }
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    const signupUrl = new URL("/signup", request.url);
-    signupUrl.searchParams.set("error", "exists");
-    return NextResponse.redirect(signupUrl);
+  if (password.length < 4) {
+    return NextResponse.redirect(new URL("/signup?error=비밀번호는 4자 이상이어야 합니다.", request.url));
   }
 
-  const role = (["OWNER", "ADMIN", "PASTOR", "LEADER", "VIEWER"] as const).includes(roleInput as MembershipRole)
-    ? (roleInput as MembershipRole)
-    : MembershipRole.VIEWER;
+  const email = `${identifier}@beta.soom.local`;
 
-  const baseSlug = slugifyKorean(churchName) || `church-${Date.now()}`;
-  let slug = baseSlug;
-  let suffix = 2;
-  while (await prisma.church.findUnique({ where: { slug } })) {
-    slug = `${baseSlug}-${suffix++}`;
-  }
-
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      passwordHash: await hashPassword(password),
-      isActive: true,
-      memberships: {
-        create: {
-          role,
-          isActive: true,
-          church: {
-            create: {
-              name: churchName,
-              slug,
-              timezone: "Asia/Seoul",
-              isActive: true,
-              subscriptions: {
-                create: {
-                  plan: Plan.FREE,
-                  status: SubscriptionStatus.TRIALING,
-                  trialEndsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
-                },
-              },
-              activityLogs: {
-                create: {
-                  action: "WORKSPACE_ONBOARDED",
-                  targetType: "CHURCH",
-                  metadata: JSON.stringify({
-                    ownerName: name,
-                    ownerEmail: email,
-                    role,
-                    ministry,
-                    churchName,
-                    slug,
-                  }),
-                },
-              },
-            },
-          },
-        },
-      },
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [{ email }, { name: identifier }],
     },
     select: { id: true },
   });
 
-  return signIn("credentials", {
-    email,
-    password,
-    redirectTo: `/app/${slug}/dashboard`,
+  if (existingUser) {
+    return NextResponse.redirect(new URL("/signup?error=이미 사용 중인 아이디입니다.", request.url));
+  }
+
+  const hashedPassword = await hashPassword(password);
+
+  await prisma.user.create({
+    data: {
+      email,
+      name,
+      passwordHash: hashedPassword,
+    },
   });
+
+  await signIn("credentials", {
+    identifier,
+    password,
+    redirect: true,
+    redirectTo: "/app/beta",
+  });
+
+  return NextResponse.redirect(new URL("/app/beta", request.url));
 }

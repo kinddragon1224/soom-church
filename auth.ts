@@ -169,5 +169,5 @@ export async function getPostLoginPath(userId: string) {
     return "/app/soom-dev/dashboard";
   }
 
-  return "/app";
+  return "/app/beta";
 }
