@@ -31,6 +31,35 @@ function resolveCredentialEmails(rawIdentifier: string) {
   return [...candidates];
 }
 
+const socialProviders = [];
+
+if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
+  socialProviders.push(
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+  );
+}
+
+if (process.env.AUTH_NAVER_ID && process.env.AUTH_NAVER_SECRET) {
+  socialProviders.push(
+    Naver({
+      clientId: process.env.AUTH_NAVER_ID,
+      clientSecret: process.env.AUTH_NAVER_SECRET,
+    }),
+  );
+}
+
+if (process.env.AUTH_KAKAO_ID && process.env.AUTH_KAKAO_SECRET) {
+  socialProviders.push(
+    Kakao({
+      clientId: process.env.AUTH_KAKAO_ID,
+      clientSecret: process.env.AUTH_KAKAO_SECRET,
+    }),
+  );
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   secret: authSecret,
@@ -74,18 +103,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         };
       },
     }),
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID ?? "",
-      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
-    }),
-    Naver({
-      clientId: process.env.AUTH_NAVER_ID ?? "",
-      clientSecret: process.env.AUTH_NAVER_SECRET ?? "",
-    }),
-    Kakao({
-      clientId: process.env.AUTH_KAKAO_ID ?? "",
-      clientSecret: process.env.AUTH_KAKAO_SECRET ?? "",
-    }),
+    ...socialProviders,
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
