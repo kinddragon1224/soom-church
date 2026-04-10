@@ -46,7 +46,7 @@ export default async function ChurchApplicationsPage({
     return (
       <section className="rounded-[24px] border border-[#E7E0D4] bg-white p-5 text-[#121212] shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
         <h2 className="text-lg font-semibold">접근 권한이 없어</h2>
-        <p className="mt-2 text-sm text-[#5F564B]">워크스페이스 선택 화면으로 돌아가 다시 시도해줘.</p>
+        <p className="mt-2 text-sm text-[#5F564B]">워크스페이스 선택 화면으로 돌아가 다시 시도해 주세요.</p>
       </section>
     );
   }

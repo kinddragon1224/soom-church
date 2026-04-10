@@ -80,7 +80,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
     recognition.onerror = () => {
       setRecording(false);
       setDraftTranscript("");
-      setStatusText("음성 입력을 다시 시도해줘.");
+      setStatusText("음성 입력을 다시 시도해 주세요.");
     };
     recognition.onresult = (event) => {
       let finalTranscript = "";
@@ -137,7 +137,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
 
       setMessage("");
       setDraftTranscript("");
-      setStatusText(result.assistantReply || "반영했어.");
+      setStatusText(result.assistantReply || "반영되었습니다.");
       textareaRef.current?.focus();
     } catch (error) {
       setStatusText(error instanceof Error ? error.message : "입력을 반영하지 못했어.");
@@ -172,10 +172,10 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
                 출석, 심방, 기도제목, 근황 정리
               </div>
               <p className="mt-5 text-[18px] font-medium leading-8 tracking-[-0.03em] text-[#2f2a24] sm:text-[20px]">
-                오늘 목장 상황을 자유롭게 말씀해주세요.
+                오늘 목장 상황을 자유롭게 입력해 주세요.
               </p>
               <p className="mt-3 text-sm leading-7 text-[#6f6256]">
-                신방 갔다 온 이야기, 출석 체크, 기도제목, 관리가 필요한 사람까지 편하게 적으면 돼.
+                신방 기록, 출석 체크, 기도제목, 관리가 필요한 사람까지 편하게 남겨 주세요.
               </p>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
                 setMessage(event.target.value);
               }}
               className="min-h-[120px] w-full resize-none rounded-[20px] border-0 bg-transparent px-4 py-4 text-[16px] leading-7 text-[#171717] outline-none placeholder:text-[#ada08f]"
-              placeholder="목장 이야기를 자유롭게 써주세요..."
+              placeholder="목장 상황을 자유롭게 입력해 주세요..."
               required
             />
 

@@ -80,7 +80,7 @@ export default async function GidoDashboardPage({
       key: "manage-alert",
       label: "관리",
       title: urgentMemberCount > 0 ? `관리 필요한 목원 ${urgentMemberCount}명` : "급한 관리 없음",
-      body: urgentMemberCount > 0 ? "관리 보드에서 오늘 처리할 대상을 확인해줘." : "지금은 급한 관리 항목이 없어.",
+      body: urgentMemberCount > 0 ? "관리 보드에서 오늘 처리할 대상을 확인해 주세요." : "지금은 급한 관리 항목이 없습니다.",
       href: `${base}/followups`,
       meta: "운영 알림",
       tone: urgentMemberCount > 0 ? ("amber" as const) : ("navy" as const),

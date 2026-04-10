@@ -409,7 +409,7 @@ export default function GidoMembersPage({ churchSlug, members, groups, household
         {filteredMembers.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <p className="text-base font-semibold text-[#111111]">조건에 맞는 목원이 없어.</p>
-            <p className="mt-2 text-sm text-[#5f564b]">검색어나 필터를 확인해줘.</p>
+            <p className="mt-2 text-sm text-[#5f564b]">검색어나 필터를 확인해 주세요.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -515,7 +515,7 @@ function getCompositionIssues(member: ReturnType<typeof buildGidoMembersView<Gid
 
 function getCompositionIssueSummary(issues: string[]) {
   if (issues.length === 0) return "구조 보완 항목 없음";
-  return `${issues.join(", ")}부터 확인해줘.`;
+  return `${issues.join(", ")}부터 확인해 주세요.`;
 }
 
 function getPriorityToneClasses(tone: "alert" | "dark" | "warm" | "neutral") {
