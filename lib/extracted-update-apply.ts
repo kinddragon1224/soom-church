@@ -1,6 +1,8 @@
 import {
   CareCategory,
   ExtractedUpdateStatus,
+  Gender,
+  IntakeCandidateType,
   Prisma,
   RelationshipType,
   ReviewItemStatus,
@@ -107,6 +109,15 @@ function parseRelationshipType(value: string | null) {
 function parseSacramentType(value: string | null) {
   if (!value) return null;
   return sacramentTypeMap[value.toUpperCase()] ?? null;
+}
+
+function parseGender(value: string | null) {
+  if (!value) return null;
+  const normalized = value.toUpperCase();
+  if (normalized === "MALE") return Gender.MALE;
+  if (normalized === "FEMALE") return Gender.FEMALE;
+  if (normalized === "OTHER") return Gender.OTHER;
+  return null;
 }
 
 function buildReviewTitle(update: ExtractedUpdateRecord) {
@@ -527,9 +538,6 @@ async function applyMemberProfile(
   actorId?: string | null,
 ) {
   const member = await resolveMember(tx, update.churchId, [update.targetMemberHint, asString(payload.memberName)]);
-  if (!member) {
-    return redirectToReview(tx, update, ReviewReason.AMBIGUOUS_MEMBER_MATCH, "사람 대상을 먼저 확인해줘.");
-  }
 
   const patch = {
     ...(asString(payload.phone) ? { phone: asString(payload.phone)! } : {}),
@@ -538,14 +546,44 @@ async function applyMemberProfile(
     ...(asString(payload.currentJob) ? { currentJob: asString(payload.currentJob) } : {}),
   };
 
-  if (Object.keys(patch).length === 0) {
-    return redirectToReview(tx, update, ReviewReason.MISSING_REQUIRED_FIELD, "사람 기본정보로 반영할 내용이 부족해.");
+  if (member) {
+    if (Object.keys(patch).length === 0) {
+      return redirectToReview(tx, update, ReviewReason.MISSING_REQUIRED_FIELD, "사람 기본정보로 반영할 내용이 부족해.");
+    }
+
+    await tx.member.update({ where: { id: member.id }, data: patch });
+    await createApplyResult(tx, update.id, "Member", member.id, patch, actorId);
+
+    return { applied: true, entityType: "Member", entityId: member.id } satisfies ApplyOutcome;
   }
 
-  await tx.member.update({ where: { id: member.id }, data: patch });
-  await createApplyResult(tx, update.id, "Member", member.id, patch, actorId);
+  if (asBoolean(payload.registrationIntent)) {
+    const candidate = await tx.intakeCandidate.create({
+      data: {
+        churchId: update.churchId,
+        extractedUpdateId: update.id,
+        candidateType: IntakeCandidateType.MEMBER_REGISTRATION,
+        proposedName: firstNonEmpty(asString(payload.proposedName), asString(payload.memberName), update.targetMemberHint),
+        proposedPhone: asString(payload.proposedPhone) ?? asString(payload.phone),
+        proposedBirthDate: asDate(payload.proposedBirthDate),
+        proposedGender: parseGender(asString(payload.proposedGender)),
+        proposedHouseholdName: firstNonEmpty(asString(payload.proposedHouseholdName), update.targetHouseholdHint),
+        summary: firstNonEmpty(asString(payload.summary), update.sourceSummary, asString(payload.rawText)),
+        payloadJson: payload as Prisma.InputJsonValue,
+      },
+    });
 
-  return { applied: true, entityType: "Member", entityId: member.id } satisfies ApplyOutcome;
+    await createApplyResult(tx, update.id, "IntakeCandidate", candidate.id, {
+      candidateType: "MEMBER_REGISTRATION",
+      proposedName: candidate.proposedName,
+      proposedPhone: candidate.proposedPhone,
+      proposedHouseholdName: candidate.proposedHouseholdName,
+    }, actorId);
+
+    return { applied: true, entityType: "IntakeCandidate", entityId: candidate.id } satisfies ApplyOutcome;
+  }
+
+  return redirectToReview(tx, update, ReviewReason.AMBIGUOUS_MEMBER_MATCH, "사람 대상을 먼저 확인해줘.");
 }
 
 export async function applyExtractedUpdate(

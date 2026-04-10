@@ -181,8 +181,13 @@ export async function getAppliedRecordLog(churchId: string, limit = 40): Promise
       .filter((item) => item.appliedEntityType === "Household")
       .map((item) => item.appliedEntityId),
   );
+  const intakeCandidateIds = uniqueStrings(
+    applyResults
+      .filter((item) => item.appliedEntityType === "IntakeCandidate")
+      .map((item) => item.appliedEntityId),
+  );
 
-  const [careRecords, milestones, relationships, members, households] = await Promise.all([
+  const [careRecords, milestones, relationships, members, households, intakeCandidates] = await Promise.all([
     careRecordIds.length > 0
       ? prisma.memberCareRecord.findMany({
           where: { id: { in: careRecordIds } },
@@ -271,6 +276,19 @@ export async function getAppliedRecordLog(churchId: string, limit = 40): Promise
           },
         })
       : Promise.resolve([]),
+    intakeCandidateIds.length > 0
+      ? prisma.intakeCandidate.findMany({
+          where: { id: { in: intakeCandidateIds } },
+          select: {
+            id: true,
+            candidateType: true,
+            proposedName: true,
+            proposedPhone: true,
+            proposedHouseholdName: true,
+            summary: true,
+          },
+        })
+      : Promise.resolve([]),
   ]);
 
   const careRecordById = new Map(careRecords.map((item) => [item.id, item]));
@@ -278,6 +296,7 @@ export async function getAppliedRecordLog(churchId: string, limit = 40): Promise
   const relationshipById = new Map(relationships.map((item) => [item.id, item]));
   const memberById = new Map(members.map((item) => [item.id, item]));
   const householdById = new Map(households.map((item) => [item.id, item]));
+  const intakeCandidateById = new Map(intakeCandidates.map((item) => [item.id, item]));
 
   return applyResults.map((result) => {
     const patch = asRecord(result.appliedPatchJson);
@@ -393,6 +412,26 @@ export async function getAppliedRecordLog(churchId: string, limit = 40): Promise
           relatedMemberIds: [],
           primaryHouseholdId: household.id,
           relatedHouseholdIds: [household.id],
+        };
+      }
+    }
+
+    if (result.appliedEntityType === "IntakeCandidate" && result.appliedEntityId) {
+      const candidate = intakeCandidateById.get(result.appliedEntityId);
+      if (candidate) {
+        return {
+          id: result.id,
+          appliedAt: result.appliedAt,
+          updateType: result.extractedUpdate.updateType,
+          updateTypeLabel: "등록 후보",
+          entityType: result.appliedEntityType,
+          title: `${candidate.proposedName ?? "이름 미상"} · 등록 후보`,
+          body: trimText(firstNonEmpty(candidate.summary, candidate.proposedPhone ? `연락처 ${candidate.proposedPhone}` : null, candidate.proposedHouseholdName ? `가정 ${candidate.proposedHouseholdName}` : null, sourceSummary) ?? sourceSummary),
+          captureText,
+          primaryMemberId: null,
+          relatedMemberIds: [],
+          primaryHouseholdId: null,
+          relatedHouseholdIds: [],
         };
       }
     }

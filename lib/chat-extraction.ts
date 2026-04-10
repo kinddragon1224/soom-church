@@ -161,6 +161,17 @@ function looksLikeExistingMemberRecord(sentence: string, memberMatches: string[]
   return memberMatches.length > 0 || householdMatches.length > 0;
 }
 
+function looksLikeMemberRegistration(sentence: string, memberMatches: string[]) {
+  if (memberMatches.length === 0) return false;
+  return /처음 왔|처음왔|첫 방문|등록해줘|등록해 줘|새가족|새 가족|처음 등록|등록했어|등록할게|오셨어|왔어|방문했어/.test(sentence);
+}
+
+function inferGender(sentence: string) {
+  if (/형제|남편|남성/.test(sentence)) return "MALE";
+  if (/자매|아내|여성/.test(sentence)) return "FEMALE";
+  return null;
+}
+
 function shouldCreateRelationshipCandidate(sentence: string, memberMatches: string[]) {
   if (!/아내|남편|배우자|부부|자녀|아들|딸|엄마|어머니|아버지|아빠|부모|형제|자매|오빠|언니|누나|동생|보호자|가족|관계|연결/.test(sentence)) {
     return false;
@@ -253,6 +264,28 @@ function fallbackExtract({
           ambiguityFlags: flags,
           suggestedAction: `${inferCareTitle(sentence)}으로 저장할지 확인`,
           reviewReason: flags[0] ?? null,
+        }),
+      );
+    }
+
+    if (looksLikeMemberRegistration(sentence, memberMatches)) {
+      const flags = [...sharedFlags];
+      updates.push(
+        createFallbackCandidate({
+          updateType: "member_profile",
+          sentence,
+          targetMemberHint,
+          targetHouseholdHint,
+          payload: {
+            registrationIntent: true,
+            proposedName: targetMemberHint ?? undefined,
+            proposedGender: inferGender(sentence) ?? undefined,
+            note: sentence,
+          },
+          ambiguityFlags: flags,
+          suggestedAction: "새 목원 등록 후보로 저장할지 확인",
+          reviewReason: flags[0] ?? null,
+          confidence: flags.length > 0 ? 0.68 : 0.88,
         }),
       );
     }
@@ -427,7 +460,7 @@ async function extractWithLLM({
           {
             role: "system",
             content:
-              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. Treat this as mokjang operations only: member registration/update, care/visit notes, prayer, attendance, church events, follow-up, and household relationships. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Use payload keys when relevant: relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp,title}, care_record/prayer={memberName or householdName,category,title,summary}. If the sentence mentions visit, hospital, surgery, counseling, job, finance, or family situation for an existing member, prefer care_record. If it mentions prayer, create prayer. If it mentions contact, next week, tomorrow, scheduled visit, or follow-up intent, create follow_up. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
+              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. Treat this as mokjang operations only: member registration/update, care/visit notes, prayer, attendance, church events, follow-up, and household relationships. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Use payload keys when relevant: member_profile={memberName,phone,address,currentJob,registrationIntent,proposedName,proposedPhone,proposedBirthDate,proposedGender,proposedHouseholdName}, relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp,title}, care_record/prayer={memberName or householdName,category,title,summary}. If the sentence is about a first visit, new family, or registration intent, prefer member_profile with registrationIntent=true instead of forcing a fully resolved member update. If the sentence mentions visit, hospital, surgery, counseling, job, finance, or family situation for an existing member, prefer care_record. If it mentions prayer, create prayer. If it mentions contact, next week, tomorrow, scheduled visit, or follow-up intent, create follow_up. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
           },
           {
             role: "user",

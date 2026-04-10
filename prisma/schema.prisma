@@ -170,6 +170,17 @@ enum ReviewItemStatus {
   MERGED
 }
 
+enum IntakeCandidateType {
+  MEMBER_REGISTRATION
+}
+
+enum IntakeCandidateStatus {
+  PENDING
+  CONFIRMED
+  MERGED
+  REJECTED
+}
+
 model Church {
   id                      String                  @id @default(cuid())
   slug                    String                  @unique
@@ -637,10 +648,32 @@ model ExtractedUpdate {
   capture             ChatCapture           @relation(fields: [captureId], references: [id], onDelete: Cascade)
   reviewItems         ReviewItem[]
   applyResults        ApplyResult[]
+  intakeCandidates    IntakeCandidate[]
 
   @@index([churchId, status, createdAt])
   @@index([captureId])
   @@index([churchId, updateType])
+}
+
+model IntakeCandidate {
+  id                   String               @id @default(cuid())
+  churchId             String
+  extractedUpdateId    String
+  candidateType        IntakeCandidateType
+  status               IntakeCandidateStatus @default(PENDING)
+  proposedName         String?
+  proposedPhone        String?
+  proposedBirthDate    DateTime?
+  proposedGender       Gender?
+  proposedHouseholdName String?
+  summary              String?
+  payloadJson          Json?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  extractedUpdate      ExtractedUpdate      @relation(fields: [extractedUpdateId], references: [id], onDelete: Cascade)
+
+  @@index([churchId, status, createdAt])
+  @@index([extractedUpdateId])
 }
 
 model ReviewItem {
