@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -34,7 +34,6 @@ type SpeechRecognitionEventLike = {
 
 type Props = {
   churchSlug: string;
-  action: (formData: FormData) => void | Promise<void>;
 };
 
 function appendSegment(base: string, segment: string) {
@@ -45,7 +44,7 @@ function appendSegment(base: string, segment: string) {
   return `${cleanBase}${cleanBase.endsWith("\n") ? "" : "\n"}${cleanSegment}`;
 }
 
-export default function ChatComposer({ churchSlug, action }: Props) {
+export default function ChatComposer({ churchSlug }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const [message, setMessage] = useState("");
@@ -54,7 +53,7 @@ export default function ChatComposer({ churchSlug, action }: Props) {
   const [recording, setRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [successNote, setSuccessNote] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -129,6 +128,36 @@ export default function ChatComposer({ churchSlug, action }: Props) {
     textareaRef.current?.focus();
   }
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!message.trim() || isPending) return;
+
+    setIsPending(true);
+    setSuccessNote(null);
+    setVoiceError(null);
+
+    try {
+      const response = await fetch("/api/gido/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ churchSlug, message: message.trim() }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.ok) {
+        throw new Error(result?.message || "입력을 반영하지 못했어.");
+      }
+
+      setMessage("");
+      setDraftTranscript("");
+      setSuccessNote(result.assistantReply || "입력한 내용을 정리해서 워크스페이스에 반영했어.");
+      textareaRef.current?.focus();
+    } catch (error) {
+      setVoiceError(error instanceof Error ? error.message : "입력을 반영하지 못했어.");
+    } finally {
+      setIsPending(false);
+    }
+  }
+
   return (
     <div className="mx-auto flex min-h-[calc(100vh-10rem)] w-full max-w-4xl flex-col px-4 pb-8 pt-10 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-3xl text-center">
@@ -139,19 +168,7 @@ export default function ChatComposer({ churchSlug, action }: Props) {
         <p className="mx-auto mt-4 max-w-[620px] text-sm leading-6 text-[#5f564b]">{helperText}</p>
       </div>
 
-      <form
-        action={(formData) => {
-          startTransition(async () => {
-            await action(formData);
-            setMessage("");
-            setDraftTranscript("");
-            setVoiceError(null);
-            setSuccessNote("입력한 내용을 정리해서 워크스페이스에 반영했어.");
-            textareaRef.current?.focus();
-          });
-        }}
-        className="mx-auto mt-10 w-full max-w-3xl"
-      >
+      <form onSubmit={handleSubmit} className="mx-auto mt-10 w-full max-w-3xl">
         <div className="rounded-[32px] border border-[#e7dfd3] bg-white p-3 shadow-[0_18px_48px_rgba(15,23,42,0.08)]">
           <textarea
             ref={textareaRef}
