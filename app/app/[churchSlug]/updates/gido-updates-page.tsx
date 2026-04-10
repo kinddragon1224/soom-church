@@ -58,7 +58,7 @@ export default function GidoUpdatesPage({
       <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O UPDATES</p>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SOOM UPDATES</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">근황 기록</h1>
             <p className="mt-2 text-sm leading-6 text-[#5f564b]">최근 근황과 메모를 보고, 바로 챙겨야 할 사람까지 같이 확인해.</p>
           </div>

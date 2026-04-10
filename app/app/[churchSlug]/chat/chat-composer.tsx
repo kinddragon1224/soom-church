@@ -186,10 +186,10 @@ export default function ChatComposer({ churchSlug, world }: Props) {
           <div className="flex w-full max-w-4xl flex-1 flex-col justify-end">
             <div className="max-w-xl rounded-[28px] border border-white/70 bg-white/55 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm">
               <p className="text-[18px] font-medium leading-8 tracking-[-0.03em] text-[#2f2a24] sm:text-[20px]">
-                오늘 목장 상황을 자유롭게 입력해 주세요.
+                오늘 목장 상황을 입력해 주세요.
               </p>
               <p className="mt-2 text-sm leading-7 text-[#6f6256]">
-                출석, 신방, 기도제목, 근황을 자연스럽게 남기시면 됩니다.
+                새가족 등록, 출석, 심방, 기도제목, 후속조치를 자연스럽게 적으시면 됩니다.
               </p>
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function ChatComposer({ churchSlug, world }: Props) {
                 setMessage(event.target.value);
               }}
               className="min-h-[120px] w-full resize-none rounded-[20px] border-0 bg-transparent px-4 py-4 text-[16px] leading-7 text-[#171717] outline-none placeholder:text-[#ada08f]"
-              placeholder="목장 상황을 자유롭게 입력해 주세요..."
+              placeholder="예: 조성진 형제 오늘 처음 오셨습니다. 다음 주에 다시 연락드리면 좋겠습니다."
               required
             />
 
@@ -253,15 +253,15 @@ export default function ChatComposer({ churchSlug, world }: Props) {
           <div className="relative z-10">
             <div>
               <p className="text-[10px] tracking-[0.18em] text-white/48">MOKJANG MINI WORLD</p>
-              <p className="mt-2 text-base font-medium text-white">목장 상태가 조용히 쌓이는 레이어</p>
-              <p className="mt-2 text-[12px] leading-5 text-white/64">채팅은 그대로 두고, 사람 상태만 가볍게 보여줘.</p>
+              <p className="mt-2 text-base font-medium text-white">채팅 결과가 쌓이는 미니 월드</p>
+              <p className="mt-2 text-[12px] leading-5 text-white/64">사람이 등록되거나 기록이 반영되면 오른쪽 카드가 바로 채워집니다.</p>
             </div>
 
             <div className="mt-4 rounded-[24px] border border-white/8 bg-white/[0.05] p-4 backdrop-blur-sm">
               <div className="flex items-end justify-between gap-3">
                 <div>
                   <p className="text-[11px] text-white/42">FIELD</p>
-                  <p className="mt-1 text-sm font-medium text-white">현재 목장</p>
+                  <p className="mt-1 text-sm font-medium text-white">현재 등록 상태</p>
                 </div>
                 <div className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[11px] text-white/56">
                   {world.memberCount}명
@@ -274,8 +274,8 @@ export default function ChatComposer({ churchSlug, world }: Props) {
                     <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-lg text-white/70">
                       +
                     </div>
-                    <p className="mt-4 text-sm font-medium text-white">첫 목원을 기다리는 중</p>
-                    <p className="mt-2 text-[12px] leading-5 text-white/56">채팅으로 첫 사람을 추가하면 여기서 미니미 상태가 보이기 시작해.</p>
+                    <p className="mt-4 text-sm font-medium text-white">아직 등록된 사람이 없습니다</p>
+                    <p className="mt-2 text-[12px] leading-5 text-white/56">채팅에서 새가족을 입력하면 여기 카드가 사람 상태로 바뀝니다.</p>
                   </div>
                 ) : (
                   world.members.map((member) => (
@@ -303,7 +303,7 @@ export default function ChatComposer({ churchSlug, world }: Props) {
 
             <div className="mt-4 rounded-[22px] border border-white/8 bg-white/[0.05] p-4">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-sm font-medium text-white">방금 쌓인 변화</p>
+                <p className="text-sm font-medium text-white">최근 반영 기록</p>
                 <span className="text-[11px] text-white/42">최근 {world.recentLogs.length}건</span>
               </div>
               <div className="mt-3 space-y-2">

@@ -33,7 +33,7 @@ export async function submitStructuredChatMessage(args: {
 }) {
   const rawText = args.rawText.trim();
   if (!rawText) {
-    return { ok: false as const, message: "입력 내용이 비어 있어." };
+    return { ok: false as const, message: "입력 내용이 비어 있습니다." };
   }
 
   const [memberNames, householdNames] = await Promise.all([
@@ -115,7 +115,7 @@ export async function submitStructuredChatMessage(args: {
     const assistantReply =
       extraction.updates.length === 0
         ? "정리할 내용을 아직 파악하지 못했습니다. 조금 더 구체적으로 입력해 주세요."
-        : `${extraction.updates.length}개 항목으로 확인했습니다. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `확인이 필요한 ${reviewCount}건은 따로 보관했습니다.` : "기록에 바로 반영했습니다."}`;
+        : `${extraction.updates.length}개 항목을 확인했습니다. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `확인이 필요한 ${reviewCount}건은 따로 보관했습니다.` : "기록에 바로 반영했습니다."}`;
 
     await tx.chatCapture.create({
       data: {

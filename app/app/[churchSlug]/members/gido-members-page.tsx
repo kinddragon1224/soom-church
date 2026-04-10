@@ -80,7 +80,7 @@ export default function GidoMembersPage({ churchSlug, members, groups, household
       <section className="rounded-[28px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] sm:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O MEMBER MANAGEMENT</p>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SOOM MEMBER MANAGEMENT</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목원 관리</h1>
             <p className="mt-2 max-w-[760px] text-sm leading-6 text-[#5f564b]">
               여기서는 목원 등록, 가정 연결 보완, 관리 대상 확인, 상세 기록 진입을 처리해. 중보 순서나 가정 운영 전체는 가정 화면에서 이어가고, 이 화면은 사람 운영에만 집중한다.

@@ -161,9 +161,19 @@ function looksLikeExistingMemberRecord(sentence: string, memberMatches: string[]
   return memberMatches.length > 0 || householdMatches.length > 0;
 }
 
-function looksLikeMemberRegistration(sentence: string, memberMatches: string[]) {
-  if (memberMatches.length === 0) return false;
-  return /처음 왔|처음왔|첫 방문|등록해줘|등록해 줘|새가족|새 가족|처음 등록|등록했어|등록할게|오셨어|왔어|방문했어/.test(sentence);
+function inferCandidateName(sentence: string) {
+  const explicit = sentence.match(/([가-힣]{2,4})\s*(형제|자매|청년|집사|권사|장로|목자|목원)/);
+  if (explicit?.[1]) return explicit[1];
+
+  const fallback = sentence.match(/([가-힣]{2,4})\s*(님)?(?:이|가|은|는|을|를)?\s*(처음 왔|처음왔|처음 오셨|첫 방문|등록|새가족|새 가족|왔다|왔어|오셨어|오셨습니다)/);
+  if (fallback?.[1]) return fallback[1];
+
+  return null;
+}
+
+function looksLikeMemberRegistration(sentence: string, memberMatches: string[], candidateName: string | null) {
+  if (!candidateName && memberMatches.length === 0) return false;
+  return /처음 왔|처음왔|처음 오셨|첫 방문|등록해줘|등록해 줘|새가족|새 가족|처음 등록|등록했어|등록할게|오셨어|오셨습니다|왔어|방문했어/.test(sentence);
 }
 
 function inferGender(sentence: string) {
@@ -237,13 +247,19 @@ function fallbackExtract({
     .filter(Boolean);
 
   const updates: ExtractedCandidate[] = [];
+  let lastTargetMemberHint: string | null = null;
+  let lastTargetHouseholdHint: string | null = null;
 
   for (const sentence of sentences.length > 0 ? sentences : [messageText.trim()]) {
     const memberMatches = detectMemberMatches(sentence, memberNames);
     const householdMatches = detectHouseholdMatches(sentence, householdNames);
-    const targetMemberHint = memberMatches[0] ?? null;
-    const targetHouseholdHint = householdMatches[0] ?? null;
+    const candidateName = inferCandidateName(sentence);
+    const targetMemberHint: string | null = memberMatches[0] ?? candidateName ?? lastTargetMemberHint ?? null;
+    const targetHouseholdHint: string | null = householdMatches[0] ?? lastTargetHouseholdHint ?? null;
     const sharedFlags: InternalReviewReason[] = [];
+
+    if (targetMemberHint) lastTargetMemberHint = targetMemberHint;
+    if (targetHouseholdHint) lastTargetHouseholdHint = targetHouseholdHint;
 
     if (memberMatches.length > 1) sharedFlags.push("ambiguous_member_match");
     if (householdMatches.length > 1) sharedFlags.push("ambiguous_household_match");
@@ -268,7 +284,7 @@ function fallbackExtract({
       );
     }
 
-    if (looksLikeMemberRegistration(sentence, memberMatches)) {
+    if (looksLikeMemberRegistration(sentence, memberMatches, candidateName)) {
       const flags = [...sharedFlags];
       updates.push(
         createFallbackCandidate({
@@ -278,14 +294,14 @@ function fallbackExtract({
           targetHouseholdHint,
           payload: {
             registrationIntent: true,
-            proposedName: targetMemberHint ?? undefined,
+            proposedName: candidateName ?? targetMemberHint ?? undefined,
             proposedGender: inferGender(sentence) ?? undefined,
             note: sentence,
           },
           ambiguityFlags: flags,
-          suggestedAction: "새 목원 등록 후보로 저장할지 확인",
+          suggestedAction: "새 목원 등록 후보로 저장",
           reviewReason: flags[0] ?? null,
-          confidence: flags.length > 0 ? 0.68 : 0.88,
+          confidence: flags.length > 0 ? 0.68 : 0.9,
         }),
       );
     }
@@ -412,7 +428,7 @@ function fallbackExtract({
       ];
 
   const needsReview = finalUpdates.filter((item) => item.ambiguityFlags.length > 0).length;
-  const assistantReply = `${finalUpdates.length}개 항목으로 정리했어. ${needsReview > 0 ? `애매한 ${needsReview}건은 Review에 올려둘게.` : "바로 정리 가능한 항목으로 묶어뒀어."}`;
+  const assistantReply = `${finalUpdates.length}개 항목으로 정리했습니다. ${needsReview > 0 ? `확인이 필요한 ${needsReview}건은 보류해 두었습니다.` : "바로 반영 가능한 항목으로 정리했습니다."}`;
 
   return ExtractionResponseSchema.parse({
     assistantReply,
@@ -460,7 +476,7 @@ async function extractWithLLM({
           {
             role: "system",
             content:
-              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. Treat this as mokjang operations only: member registration/update, care/visit notes, prayer, attendance, church events, follow-up, and household relationships. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까?'. Use payload keys when relevant: member_profile={memberName,phone,address,currentJob,registrationIntent,proposedName,proposedPhone,proposedBirthDate,proposedGender,proposedHouseholdName}, relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp,title}, care_record/prayer={memberName or householdName,category,title,summary}. If the sentence is about a first visit, new family, or registration intent, prefer member_profile with registrationIntent=true instead of forcing a fully resolved member update. If the sentence mentions visit, hospital, surgery, counseling, job, finance, or family situation for an existing member, prefer care_record. If it mentions prayer, create prayer. If it mentions contact, next week, tomorrow, scheduled visit, or follow-up intent, create follow_up. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short and Korean.",
+              "You extract structured mokjang operations from Korean chat messages. Return JSON only. Prefer the smallest set of high-signal updates, not every possible interpretation. Treat this as mokjang operations only: member registration/update, care/visit notes, prayer, attendance, church events, follow-up, and household relationships. For each update, use updateType from the allowed lowercase set, confidence 0..1, payload object, ambiguityFlags array, reviewReason when needed, suggestedAction, sourceSummary, and reviewPrompt like '김민수 어머니 수술 예정 -> 건강 기록으로 저장할까요?'. Use payload keys when relevant: member_profile={memberName,phone,address,currentJob,registrationIntent,proposedName,proposedPhone,proposedBirthDate,proposedGender,proposedHouseholdName}, relationship={fromMemberName,toMemberName,relationshipType,customRelationship}, church_event={memberName,eventType,sacramentType,happenedAt,churchName,officiant}, attendance={memberName or householdName,attendanceStatus}, follow_up={memberName or householdName,requiresFollowUp,title}, care_record/prayer={memberName or householdName,category,title,summary}. If the sentence is about a first visit, new family, or registration intent, prefer member_profile with registrationIntent=true instead of forcing a fully resolved member update. New names may appear even when they are not in the existing memberNames list, so infer proposedName from Korean honorific patterns like 형제, 자매, 청년, 집사, 권사, 장로. If the sentence mentions visit, hospital, surgery, counseling, job, finance, or family situation for an existing member, prefer care_record. If it mentions prayer, create prayer. If it mentions contact, next week, tomorrow, scheduled visit, or follow-up intent, create follow_up. If kinship words like '어머니' appear inside a health or prayer note, do not create a relationship update unless two actual members are identifiable or the user explicitly asks to connect the relationship. Never invent a second person name. Put ambiguity into ambiguityFlags. Keep assistantReply short, Korean, and polite.",
           },
           {
             role: "user",

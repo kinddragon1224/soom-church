@@ -31,6 +31,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
   const pathname = usePathname();
   const items = sidebarItems(base);
   const chatFocused = pathname === `${base}/chat` || pathname === `${base}/dashboard` || pathname === `${base}/today`;
+  const workspaceName = church.slug === "gido" ? "숨 베타 워크스페이스" : church.name;
 
   return (
     <main className="min-h-screen bg-[#f6f4ef] text-[#171717]">
@@ -50,10 +51,10 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
 
           <div className={`mt-6 rounded-[20px] border border-white/8 bg-white/[0.04] ${chatFocused ? "p-3.5" : "p-4"}`}>
             <p className="text-[10px] tracking-[0.18em] text-white/34">WORKSPACE</p>
-            <p className="mt-2 text-sm font-medium text-white">{church.name}</p>
+            <p className="mt-2 text-sm font-medium text-white">{workspaceName}</p>
             <p className="mt-1 text-xs text-white/46">{currentUserName ?? role}</p>
             <p className={`mt-4 text-[12px] leading-5 text-white/56 ${chatFocused ? "line-clamp-2" : ""}`}>
-              여기서는 사람과 가정, 기록 데이터만 단순하게 관리한다.
+              채팅으로 입력하고, 정리된 사람과 가정 기록만 확인합니다.
             </p>
           </div>
 
@@ -94,7 +95,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
                   {(currentUserName ?? church.name).slice(0, 1)}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-white">{currentUserName ?? church.name}</p>
+                  <p className="truncate text-sm font-medium text-white">{currentUserName ?? workspaceName}</p>
                   <p className="truncate text-[11px] text-white/42">{church.slug}</p>
                 </div>
               </div>

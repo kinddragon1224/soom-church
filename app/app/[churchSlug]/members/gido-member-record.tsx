@@ -215,7 +215,7 @@ export default function GidoMemberRecord({
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">G.I.D.O PEOPLE DETAIL</p>
+                <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SOOM PEOPLE DETAIL</p>
                 <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">{member.name}</h1>
                 <p className="mt-2 text-sm leading-6 text-[#5f564b]">
                   상태, 관리, 가정, 출석, 교회 이벤트, 소속 관리
