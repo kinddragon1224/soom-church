@@ -190,7 +190,7 @@ export async function getGidoWorkspaceData(churchId: string): Promise<GidoWorksp
   const contactCount = householdViews.reduce((sum, household) => sum + household.contacts.length, 0);
 
   return {
-    groupName: church?.name ?? "G.I.D.O 목장",
+    groupName: church?.name ?? "숨 베타 목장",
     households: householdViews,
     members: memberViews,
     followUps,

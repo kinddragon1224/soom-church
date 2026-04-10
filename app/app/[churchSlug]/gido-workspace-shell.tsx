@@ -12,7 +12,7 @@ type GidoWorkspaceShellProps = {
 };
 
 type SidebarItem = {
-  key: "chat" | "people" | "households" | "timeline" | "search";
+  key: "chat" | "world" | "people" | "households" | "timeline" | "search";
   label: string;
   hint: string;
   href: string;
@@ -21,6 +21,7 @@ type SidebarItem = {
 
 const sidebarItems = (base: string): SidebarItem[] => [
   { key: "chat", label: "Chat", hint: "운영 입력", href: `${base}/chat`, tone: "#f3f4f6" },
+  { key: "world", label: "World", hint: "목장 월드", href: `${base}/world`, tone: "#fbbf24" },
   { key: "people", label: "People", hint: "사람 레코드", href: `${base}/people`, tone: "#7dd3a7" },
   { key: "households", label: "Households", hint: "가정 관계", href: `${base}/households`, tone: "#d2a8ff" },
   { key: "timeline", label: "Timeline", hint: "기록 흐름", href: `${base}/timeline`, tone: "#7cc6ff" },
@@ -149,7 +150,7 @@ function SidebarGlyph({
   name,
   compact = false,
 }: {
-  name: "chat" | "review" | "people" | "households" | "timeline" | "search" | "profile" | "help";
+  name: "chat" | "world" | "review" | "people" | "households" | "timeline" | "search" | "profile" | "help";
   compact?: boolean;
 }) {
   const size = compact ? 12 : 15;
@@ -168,6 +169,8 @@ function SidebarGlyph({
   switch (name) {
     case "chat":
       return <svg {...common}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>;
+    case "world":
+      return <svg {...common}><path d="M3 18h18" /><path d="M6 18V9l6-4 6 4v9" /><path d="M10 18v-4h4v4" /><path d="M4.5 12.5 12 7l7.5 5.5" /></svg>;
     case "review":
       return <svg {...common}><path d="M9 11.5 11 13.5 15.5 9" /><path d="M21 12a9 9 0 1 1-5.27-8.2" /></svg>;
     case "people":
