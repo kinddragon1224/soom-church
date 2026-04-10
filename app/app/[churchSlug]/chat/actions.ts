@@ -116,7 +116,7 @@ export async function submitChatMessage(churchSlug: string, formData: FormData) 
     const assistantReply =
       extraction.updates.length === 0
         ? "정리할 내용을 아직 잡지 못했어. 조금만 더 구체적으로 말해줘."
-        : `${extraction.updates.length}개 항목으로 읽었어. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `애매한 ${reviewCount}건은 Review에 올려둘게.` : "바로 기록해뒀어."}`;
+        : `${extraction.updates.length}개 항목으로 읽었어. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `확인이 필요한 ${reviewCount}건은 따로 보관할게.` : "바로 기록해뒀어."}`;
 
     await tx.chatCapture.create({
       data: {
