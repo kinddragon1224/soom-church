@@ -23,7 +23,7 @@ export default async function ChurchDashboardPage({ params }: { params: { church
 
   const church = membership.church;
   if (church.slug === "gido") {
-    redirect(`/app/${church.slug}/chat`);
+    redirect(`/app/${church.slug}/people`);
   }
 
   const base = `/app/${church.slug}`;

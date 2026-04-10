@@ -45,9 +45,8 @@ export default async function ChurchTimelinePage({ params }: { params: { churchS
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Link href={`${base}/chat`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Chat</Link>
-            <Link href={`${base}/review`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Review</Link>
-            <Link href={`${base}/people`} className="rounded-[12px] border border-[#111827] bg-[#111827] px-3 py-2 text-sm text-white">People</Link>
+            <Link href={`${base}/people`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">People</Link>
+            <Link href={`${base}/households`} className="rounded-[12px] border border-[#111827] bg-[#111827] px-3 py-2 text-sm text-white">Households</Link>
           </div>
         </div>
       </header>

@@ -68,15 +68,14 @@ export default async function ChurchPeoplePage({ params }: { params: { churchSlu
       </header>
 
       <div className="flex flex-wrap gap-2">
-        <Link href={`${base}/chat`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Chat</Link>
-        <Link href={`${base}/review`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Review</Link>
+        <Link href={`${base}/households`} className="rounded-[12px] border border-[#e7dfd3] bg-[#faf7f2] px-3 py-2 text-sm text-[#3f372d]">Households</Link>
         <Link href={`${base}/timeline`} className="rounded-[12px] border border-[#111827] bg-[#111827] px-3 py-2 text-sm text-white">Timeline</Link>
       </div>
 
       <section className="grid gap-4 xl:grid-cols-2">
         {memberCards.length === 0 ? (
           <div className="rounded-[24px] border border-[#ece4d8] bg-white px-5 py-10 text-center text-sm text-[#6f6256] shadow-[0_8px_24px_rgba(15,23,42,0.04)] xl:col-span-2">
-            아직 사람별 반영 기록이 없어. Chat에서 먼저 운영 내용을 보내면 여기부터 쌓여.
+            아직 사람별 반영 기록이 없어. 운영 데이터가 쌓이면 여기부터 정리돼.
           </div>
         ) : (
           memberCards.map((member) => (
