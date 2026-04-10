@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IntakeCandidateStatus } from "@prisma/client";
 import { advanceMemberStatus } from "./actions";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { startOfMonth, formatDate } from "@/lib/date";
@@ -6,6 +7,7 @@ import { getStatusMeta } from "@/lib/member-status";
 import { prisma } from "@/lib/prisma";
 import { getWorkspaceMembers } from "@/lib/workspace-data";
 import GidoMembersPage from "./gido-members-page";
+import { getAppliedRecordLog } from "@/lib/chat-apply-log";
 
 export default async function ChurchMembersPage({
   params,
@@ -32,12 +34,26 @@ export default async function ChurchMembersPage({
   });
 
   if (church.slug === "gido") {
-    const [groups, households] = await Promise.all([
+    const [groups, households, intakeCandidates, recentLogs] = await Promise.all([
       prisma.group.findMany({ where: { churchId: church.id }, orderBy: [{ name: "asc" }], select: { id: true, name: true } }),
       prisma.household.findMany({ where: { churchId: church.id }, orderBy: [{ name: "asc" }], select: { id: true, name: true } }),
+      prisma.intakeCandidate.findMany({
+        where: { churchId: church.id, status: IntakeCandidateStatus.PENDING },
+        orderBy: [{ createdAt: "desc" }],
+        take: 6,
+        select: {
+          id: true,
+          proposedName: true,
+          proposedPhone: true,
+          proposedHouseholdName: true,
+          summary: true,
+          createdAt: true,
+        },
+      }),
+      getAppliedRecordLog(church.id, 6),
     ]);
 
-    return <GidoMembersPage churchSlug={church.slug} members={members} filter={filter} q={searchParams?.q} groups={groups} households={households} />;
+    return <GidoMembersPage churchSlug={church.slug} members={members} filter={filter} q={searchParams?.q} groups={groups} households={households} intakeCandidates={intakeCandidates} recentLogs={recentLogs} />;
   }
 
   const counts = {
