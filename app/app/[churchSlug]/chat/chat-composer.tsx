@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 
 declare global {
@@ -32,6 +33,7 @@ type SpeechRecognitionEventLike = {
 };
 
 type Props = {
+  churchSlug: string;
   action: (formData: FormData) => void | Promise<void>;
 };
 
@@ -41,14 +43,23 @@ const EXAMPLES = [
   "김민수 이번 주 예배 못 왔고 다음 주에 전화해보자.",
 ];
 
-export default function ChatComposer({ action }: Props) {
-  const formRef = useRef<HTMLFormElement | null>(null);
+function appendSegment(base: string, segment: string) {
+  const cleanBase = base.trim();
+  const cleanSegment = segment.trim();
+  if (!cleanSegment) return cleanBase;
+  if (!cleanBase) return cleanSegment;
+  return `${cleanBase}${cleanBase.endsWith("\n") ? "" : "\n"}${cleanSegment}`;
+}
+
+export default function ChatComposer({ churchSlug, action }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const [message, setMessage] = useState("");
+  const [draftTranscript, setDraftTranscript] = useState("");
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [recording, setRecording] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [successNote, setSuccessNote] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -63,21 +74,31 @@ export default function ChatComposer({ action }: Props) {
     recognition.onstart = () => {
       setRecording(true);
       setVoiceError(null);
+      setSuccessNote(null);
     };
-    recognition.onend = () => setRecording(false);
+    recognition.onend = () => {
+      setRecording(false);
+      setDraftTranscript("");
+    };
     recognition.onerror = (event) => {
       setRecording(false);
+      setDraftTranscript("");
       setVoiceError(event.error === "not-allowed" ? "마이크 권한이 필요해." : "음성 입력을 다시 시도해줘.");
     };
     recognition.onresult = (event) => {
-      let transcript = "";
+      let finalTranscript = "";
+      let interimTranscript = "";
+
       for (let i = event.resultIndex; i < event.results.length; i += 1) {
-        transcript += event.results[i][0]?.transcript ?? "";
+        const piece = event.results[i][0]?.transcript ?? "";
+        if (event.results[i].isFinal) finalTranscript += piece;
+        else interimTranscript += piece;
       }
-      setMessage((prev) => {
-        const next = `${prev}${prev && !prev.endsWith(" ") ? " " : ""}${transcript}`.trim();
-        return next;
-      });
+
+      if (finalTranscript.trim()) {
+        setMessage((prev) => appendSegment(prev, finalTranscript));
+      }
+      setDraftTranscript(interimTranscript.trim());
     };
 
     recognitionRef.current = recognition;
@@ -91,8 +112,11 @@ export default function ChatComposer({ action }: Props) {
   const helperText = useMemo(() => {
     if (recording) return "듣고 있어. 말을 마치면 다시 눌러서 멈추면 돼.";
     if (voiceError) return voiceError;
+    if (successNote) return successNote;
     return "텍스트나 음성으로 목원 등록, 심방, 기도, 이벤트, 후속조치를 입력해.";
-  }, [recording, voiceError]);
+  }, [recording, successNote, voiceError]);
+
+  const visibleMessage = draftTranscript ? appendSegment(message, draftTranscript) : message;
 
   function toggleRecording() {
     if (!recognitionRef.current) return;
@@ -104,7 +128,18 @@ export default function ChatComposer({ action }: Props) {
   }
 
   function applyExample(value: string) {
+    setSuccessNote(null);
+    setVoiceError(null);
     setMessage(value);
+    setDraftTranscript("");
+    textareaRef.current?.focus();
+  }
+
+  function clearInput() {
+    setMessage("");
+    setDraftTranscript("");
+    setSuccessNote(null);
+    setVoiceError(null);
     textareaRef.current?.focus();
   }
 
@@ -119,24 +154,27 @@ export default function ChatComposer({ action }: Props) {
       </div>
 
       <div className="mx-auto mt-8 flex w-full max-w-3xl flex-wrap justify-center gap-2">
-        {EXAMPLES.map((example) => (
+        {EXAMPLES.map((example, index) => (
           <button
-            key={example}
+            key={`${index}-${example}`}
             type="button"
             onClick={() => applyExample(example)}
             className="rounded-full border border-[#e7dfd3] bg-white px-3 py-2 text-xs text-[#5f564b] transition hover:bg-[#faf7f2]"
           >
-            예시 넣기
+            예시 {index + 1}
           </button>
         ))}
       </div>
 
       <form
-        ref={formRef}
         action={(formData) => {
           startTransition(async () => {
             await action(formData);
             setMessage("");
+            setDraftTranscript("");
+            setVoiceError(null);
+            setSuccessNote("입력한 내용을 정리해서 워크스페이스에 반영했어.");
+            textareaRef.current?.focus();
           });
         }}
         className="mx-auto mt-8 w-full max-w-3xl"
@@ -145,15 +183,20 @@ export default function ChatComposer({ action }: Props) {
           <textarea
             ref={textareaRef}
             name="message"
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
+            value={visibleMessage}
+            onChange={(event) => {
+              setSuccessNote(null);
+              setVoiceError(null);
+              setDraftTranscript("");
+              setMessage(event.target.value);
+            }}
             className="min-h-[280px] w-full resize-none rounded-[24px] border border-[#efe7da] bg-[#fcfbf8] px-5 py-5 text-[15px] leading-7 text-[#171717] outline-none placeholder:text-[#9a8b7a] focus:border-[#111827]"
             placeholder="예: 오상준 형제 허벅지 다쳐서 내일 병원 가. 중보기도 올렸고 다음 주에 연락해봐야 해."
             required
           />
 
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3 px-1 pb-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={toggleRecording}
@@ -166,16 +209,32 @@ export default function ChatComposer({ action }: Props) {
               >
                 {recording ? "음성 멈추기" : "음성 입력"}
               </button>
+              <button
+                type="button"
+                onClick={clearInput}
+                disabled={!visibleMessage.trim() && !draftTranscript}
+                className="inline-flex h-11 items-center rounded-[16px] border border-[#e7dfd3] bg-white px-4 text-sm font-medium text-[#3f372d] transition disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                지우기
+              </button>
               <span className="text-xs text-[#8c7a5b]">{voiceSupported ? "브라우저 음성 입력 사용" : "이 브라우저에서는 음성 입력이 아직 안 돼"}</span>
             </div>
 
-            <button
-              type="submit"
-              disabled={isPending || !message.trim()}
-              className="inline-flex h-11 items-center justify-center rounded-[16px] bg-[#111827] px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {isPending ? "정리 중..." : "보내기"}
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/app/${churchSlug}/people`}
+                className="inline-flex h-11 items-center rounded-[16px] border border-[#e7dfd3] bg-white px-4 text-sm font-medium text-[#3f372d] transition hover:bg-[#faf7f2]"
+              >
+                People 보기
+              </Link>
+              <button
+                type="submit"
+                disabled={isPending || !message.trim()}
+                className="inline-flex h-11 items-center justify-center rounded-[16px] bg-[#111827] px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isPending ? "정리 중..." : "보내기"}
+              </button>
+            </div>
           </div>
         </div>
       </form>

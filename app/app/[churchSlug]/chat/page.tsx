@@ -13,5 +13,5 @@ export default async function ChurchChatPage({ params }: { params: { churchSlug:
 
   const sendMessage = submitChatMessage.bind(null, params.churchSlug);
 
-  return <ChatComposer action={sendMessage} />;
+  return <ChatComposer churchSlug={params.churchSlug} action={sendMessage} />;
 }
