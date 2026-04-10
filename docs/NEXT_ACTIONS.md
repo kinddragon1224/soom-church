@@ -26,6 +26,7 @@
 - `docs/SOOM_V2_REVIEW_SCHEMA_2026-04-09.md`
 - `docs/SOOM_V2_PRODUCT_STRUCTURE_2026-04-10.md`
 - `docs/SOOM_V2_CHAT_INPUT_PLAN_2026-04-10.md`
+- `docs/SOOM_WORLD_GAME_LAYER_2026-04-10.md`
 
 ### 이번 세션 반영
 - G.I.D.O 전용 shell을 `Chat / Review / People / Households / Timeline / Search` 구조로 다시 교체함
@@ -51,8 +52,8 @@
 ### 바로 다음에 할 것
 1. 빈 `gido` 베타에서 채팅으로 첫 목원 추가 테스트를 다시 시작하기
 2. `채팅 입력 -> 등록 후보 -> Members 실제 생성` 흐름을 한 번 더 end-to-end로 검증하기
-3. 첫 입력 후 `목장 미니 월드` 카드가 실제로 어떻게 채워지는지 확인하고, 상태 분류가 어색한 케이스를 보정하기
-4. 목자/목원 미니미 아바타, 방문 뷰, 기도/심방/최근 기록 이펙트가 들어가는 중간 버전 픽셀 레이어 방향을 구체화하기
+3. `/app/gido/world` 1차 화면을 만들고 실제 member / household 데이터를 월드 오브젝트로 배치하기
+4. 목자/목원 미니미 아바타, 방문 뷰, 기도/심방/최근 기록 이펙트를 월드 레이어에서 직접 표현하기
 5. visible `Review`는 계속 숨기고, 채팅 중심 운영 구조를 유지하기
 
 ### 멈출 것
