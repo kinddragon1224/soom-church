@@ -155,44 +155,39 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#f6f3ec] lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-4 lg:px-4 lg:py-4">
-      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden bg-[radial-gradient(circle_at_top,#fffdf8_0%,#f8f4ec_48%,#f3efe7_100%)] lg:rounded-[32px] lg:border lg:border-[#e7dfd3] lg:shadow-[0_18px_48px_rgba(15,23,42,0.06)]">
+    <div className="min-h-[calc(100vh-4rem)] bg-[#f7f4ee] lg:grid lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-4 lg:p-4">
+      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col overflow-hidden bg-[radial-gradient(circle_at_top,#fffdf9_0%,#faf7f0_52%,#f4efe7_100%)] lg:rounded-[32px] lg:border lg:border-[#e8e0d4] lg:shadow-[0_18px_48px_rgba(15,23,42,0.05)]">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute left-[-8%] top-[-8%] h-48 w-48 rounded-full bg-[#efe6d6] blur-3xl" />
           <div className="absolute right-[-12%] top-[12%] h-44 w-44 rounded-full bg-[#e6eef8] blur-3xl" />
           <div className="absolute bottom-[10%] left-[12%] h-36 w-36 rounded-full bg-[#ece4f7] blur-3xl" />
         </div>
 
-        <header className="relative z-10 flex items-center justify-between border-b border-[#ece4d8]/80 px-4 py-3 sm:px-5 lg:px-6">
+        <header className="relative z-10 flex items-center justify-between border-b border-[#eee7dc]/80 px-4 py-3 sm:px-5 lg:px-6">
           <div>
             <p className="text-[11px] tracking-[0.18em] text-[#9a8c7c]">SOOM</p>
             <p className="mt-1 text-sm font-medium text-[#2f2a24]">목장 채팅</p>
           </div>
-          <div className="rounded-full border border-[#e7dfd3] bg-white/80 px-3 py-1.5 text-[11px] text-[#6f6256] backdrop-blur">
-            AI workspace
-          </div>
+          <div className="rounded-full border border-[#ebe3d7] bg-white/75 px-3 py-1.5 text-[11px] text-[#7a6d60] backdrop-blur">beta</div>
         </header>
 
-        <div className="relative z-10 flex flex-1 items-center justify-center px-5 py-10 sm:px-6 lg:px-10">
-          <div className="w-full max-w-3xl">
-            <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
-              <div className="inline-flex rounded-full border border-[#e8dfd1] bg-white/80 px-3 py-1 text-[11px] text-[#8b7b69] backdrop-blur">
-                출석, 신방, 기도제목, 근황 정리
-              </div>
-              <p className="mt-5 text-[18px] font-medium leading-8 tracking-[-0.03em] text-[#2f2a24] sm:text-[20px]">
+        <div className="relative z-10 flex flex-1 px-5 py-8 sm:px-6 lg:px-8">
+          <div className="flex w-full max-w-4xl flex-1 flex-col justify-end">
+            <div className="max-w-xl rounded-[28px] border border-white/70 bg-white/55 p-5 shadow-[0_10px_30px_rgba(15,23,42,0.04)] backdrop-blur-sm">
+              <p className="text-[18px] font-medium leading-8 tracking-[-0.03em] text-[#2f2a24] sm:text-[20px]">
                 오늘 목장 상황을 자유롭게 입력해 주세요.
               </p>
-              <p className="mt-3 text-sm leading-7 text-[#6f6256]">
-                신방 기록, 출석 체크, 기도제목, 관리가 필요한 사람까지 편하게 남겨 주세요.
+              <p className="mt-2 text-sm leading-7 text-[#6f6256]">
+                출석, 신방, 기도제목, 근황을 자연스럽게 남기시면 됩니다.
               </p>
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="relative z-20 sticky bottom-0 border-t border-[#e7dfd3]/90 bg-white/88 px-3 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl sm:px-4 lg:px-6 lg:pb-6 lg:pt-4">
-          <div className="mx-auto w-full max-w-4xl rounded-[26px] border border-[#e5dccf] bg-white/95 p-2.5 shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
+        <form onSubmit={handleSubmit} className="relative z-20 sticky bottom-0 px-3 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 sm:px-4 lg:px-6 lg:pb-6 lg:pt-4">
+          <div className="mx-auto w-full max-w-4xl rounded-[28px] border border-[#e4dccf] bg-white/96 p-2.5 shadow-[0_16px_34px_rgba(15,23,42,0.10)]">
             {statusText ? (
-              <div className={`mb-2 rounded-[16px] px-3 py-2 text-sm ${statusTone === "error" ? "border border-[#f0c9c9] bg-[#fff6f6] text-[#9a4a4a]" : "border border-[#dfe8d8] bg-[#f5fbf2] text-[#42653b]"}`}>
+              <div className={`mb-3 rounded-[16px] px-3 py-2.5 text-sm ${statusTone === "error" ? "border border-[#f0c9c9] bg-[#fff6f6] text-[#9a4a4a]" : "border border-[#dfe8d8] bg-[#f5fbf2] text-[#42653b]"}`}>
                 {statusText}
               </div>
             ) : null}
@@ -212,7 +207,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
             />
 
             <div className="flex items-center justify-between gap-2 border-t border-[#f0e8dc] px-2 pt-2">
-              <div className="min-w-0 flex-1 text-[12px] text-[#8f8172]" />
+              <div className="min-w-0 flex-1 text-[12px] text-[#8f8172]">&nbsp;</div>
 
               <div className="flex items-center gap-2">
                 <button
@@ -237,26 +232,26 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
       </section>
 
       <aside className="hidden lg:block">
-        <div className="sticky top-4 rounded-[28px] border border-[#e7dfd3] bg-white p-4 shadow-[0_16px_40px_rgba(15,23,42,0.05)]">
+        <div className="sticky top-4 rounded-[24px] border border-[#e7dfd3] bg-white/92 p-3 shadow-[0_14px_34px_rgba(15,23,42,0.04)] backdrop-blur-sm">
           <div className="mb-4">
             <p className="text-[10px] tracking-[0.18em] text-[#9a8c7c]">CURRENT MOKJANG</p>
             <p className="mt-2 text-sm font-medium text-[#2f2a24]">지금 목장 요약</p>
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-sm text-[#2f2a24]">
-            <div className="rounded-[18px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
+            <div className="rounded-[16px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
               <div className="text-[11px] text-[#9a8c7c]">출석</div>
               <div className="mt-1 font-medium">{summary.recentAttendanceCount}건</div>
             </div>
-            <div className="rounded-[18px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
+            <div className="rounded-[16px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
               <div className="text-[11px] text-[#9a8c7c]">관리 필요</div>
               <div className="mt-1 font-medium">{summary.followUpCount}명</div>
             </div>
-            <div className="rounded-[18px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
+            <div className="rounded-[16px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
               <div className="text-[11px] text-[#9a8c7c]">목원</div>
               <div className="mt-1 font-medium">{summary.memberCount}명</div>
             </div>
-            <div className="rounded-[18px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
+            <div className="rounded-[16px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3">
               <div className="text-[11px] text-[#9a8c7c]">등록 후보</div>
               <div className="mt-1 font-medium">{summary.pendingCandidates}건</div>
             </div>
@@ -264,7 +259,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
 
           <div className="mt-4 space-y-2">
             {summary.recentLogs.map((item) => (
-              <div key={item.id} className="rounded-[18px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3 text-sm text-[#2f2a24]">
+              <div key={item.id} className="rounded-[16px] border border-[#eee7dc] bg-[#fcfaf6] px-3 py-3 text-sm text-[#2f2a24]">
                 <div className="font-medium">{item.title}</div>
                 <div className="mt-1 leading-6 text-[#6f6256]">{item.body}</div>
               </div>

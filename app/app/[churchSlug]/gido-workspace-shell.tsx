@@ -30,13 +30,14 @@ const sidebarItems = (base: string): SidebarItem[] => [
 export default function GidoWorkspaceShell({ base, church, role, currentUserName, children }: GidoWorkspaceShellProps) {
   const pathname = usePathname();
   const items = sidebarItems(base);
+  const chatFocused = pathname === `${base}/chat` || pathname === `${base}/dashboard` || pathname === `${base}/today`;
 
   return (
     <main className="min-h-screen bg-[#f6f4ef] text-[#171717]">
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
-        <aside className="hidden w-[272px] shrink-0 flex-col bg-[#0b0f17] px-4 py-5 text-white lg:flex">
+        <aside className={`hidden shrink-0 flex-col px-4 py-5 text-white lg:flex ${chatFocused ? "w-[228px] bg-[#10141c]" : "w-[272px] bg-[#0b0f17]"}`}>
           <div className="px-1">
-            <Link href={`${base}/chat`} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
+            <Link href={`${base}/chat`} className={`font-medium tracking-[-0.04em] text-white/92 ${chatFocused ? "text-[0.95rem]" : "text-[1rem]"}`}>
               soom ops
             </Link>
             <div className="mt-2 flex items-center gap-2">
@@ -47,11 +48,11 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
             </div>
           </div>
 
-          <div className="mt-6 rounded-[20px] border border-white/8 bg-white/[0.04] p-4">
+          <div className={`mt-6 rounded-[20px] border border-white/8 bg-white/[0.04] ${chatFocused ? "p-3.5" : "p-4"}`}>
             <p className="text-[10px] tracking-[0.18em] text-white/34">WORKSPACE</p>
             <p className="mt-2 text-sm font-medium text-white">{church.name}</p>
             <p className="mt-1 text-xs text-white/46">{currentUserName ?? role}</p>
-            <p className="mt-4 text-[12px] leading-5 text-white/56">
+            <p className={`mt-4 text-[12px] leading-5 text-white/56 ${chatFocused ? "line-clamp-2" : ""}`}>
               여기서는 사람과 가정, 기록 데이터만 단순하게 관리한다.
             </p>
           </div>
@@ -69,7 +70,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`group rounded-[16px] px-3 py-3 transition ${active ? "bg-white/8 text-white" : "text-white/62 hover:bg-white/5 hover:text-white"}`}
+                    className={`group rounded-[16px] px-3 py-3 transition ${active ? "bg-white/8 text-white" : "text-white/56 hover:bg-white/5 hover:text-white"}`}
                   >
                     <div className="flex items-start gap-3">
                       <SidebarIcon tone={item.tone} active={active}>
@@ -122,8 +123,8 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
           </div>
         </aside>
 
-        <section className="min-w-0 flex-1 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
-          <div className="min-h-[calc(100vh-2rem)] rounded-[30px] border border-[#e8e1d6] bg-[#fbfaf7] p-4 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-5 lg:p-6">
+        <section className={`min-w-0 flex-1 ${chatFocused ? "px-0 py-0 lg:px-4 lg:py-4" : "px-4 py-4 sm:px-6 lg:px-8 lg:py-6"}`}>
+          <div className={`${chatFocused ? "min-h-screen lg:min-h-[calc(100vh-2rem)]" : "min-h-[calc(100vh-2rem)] rounded-[30px] border border-[#e8e1d6] bg-[#fbfaf7] p-4 shadow-[0_20px_60px_rgba(15,23,42,0.05)] sm:p-5 lg:p-6"}`}>
             {children}
           </div>
         </section>
