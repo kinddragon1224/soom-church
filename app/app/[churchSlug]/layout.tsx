@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { requireWorkspaceMembership } from "@/lib/church-context";
 import { prisma } from "@/lib/prisma";
 import { getWorkspaceDashboardData } from "@/lib/workspace-data";
@@ -15,6 +16,10 @@ export default async function ChurchWorkspaceLayout({
   params: { churchSlug: string };
 }) {
   const { userId, membership } = await requireWorkspaceMembership(params.churchSlug);
+
+  if (membership?.church.slug === "gido") {
+    redirect("/app/beta");
+  }
 
   if (!membership) {
     return (

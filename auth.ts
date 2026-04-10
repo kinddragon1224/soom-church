@@ -10,8 +10,6 @@ import { isPlatformAdminEmail, PLATFORM_ADMIN_EMAILS } from "@/lib/admin";
 
 const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me";
 
-const gidoSimpleLoginId = (process.env.GIDO_SIMPLE_LOGIN_ID || "gido").trim().toLowerCase();
-const gidoLeaderEmail = (process.env.GIDO_LEADER_EMAIL || process.env.GIDO_LEADER1_EMAIL || "gido.mokja1@soom.church").trim().toLowerCase();
 
 function resolveCredentialEmails(rawIdentifier: string) {
   const identifier = rawIdentifier.trim().toLowerCase();
@@ -23,9 +21,6 @@ function resolveCredentialEmails(rawIdentifier: string) {
     candidates.add(identifier);
   } else {
     candidates.add(`${identifier}@soom.church`);
-    if (identifier === gidoSimpleLoginId || identifier === "mokja" || identifier === "목자") {
-      candidates.add(gidoLeaderEmail);
-    }
   }
 
   return [...candidates];
@@ -168,7 +163,7 @@ export async function getPostLoginPath(userId: string) {
   if (isPlatformAdminEmail(user.email)) return "/platform-admin";
 
   const church = await getFirstChurchByUserId(user.id);
-  if (church) return church.slug === "gido" ? `/app/${church.slug}/chat` : `/app/${church.slug}/dashboard`;
+  if (church) return church.slug === "gido" ? "/app/beta" : `/app/${church.slug}/dashboard`;
 
   if (user.email === "dev@soom.church") {
     return "/app/soom-dev/dashboard";
