@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 declare global {
@@ -51,6 +52,7 @@ function appendSegment(base: string, segment: string) {
 }
 
 export default function ChatComposer({ churchSlug, summary }: Props) {
+  const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const [message, setMessage] = useState("");
@@ -58,6 +60,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [recording, setRecording] = useState(false);
   const [statusText, setStatusText] = useState<string | null>(null);
+  const [statusTone, setStatusTone] = useState<"info" | "error">("info");
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
@@ -80,6 +83,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
     recognition.onerror = () => {
       setRecording(false);
       setDraftTranscript("");
+      setStatusTone("error");
       setStatusText("음성 입력을 다시 시도해 주세요.");
     };
     recognition.onresult = (event) => {
@@ -123,6 +127,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
 
     setIsPending(true);
     setStatusText(null);
+    setStatusTone("info");
 
     try {
       const response = await fetch("/api/gido/chat", {
@@ -132,15 +137,18 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
       });
       const result = await response.json().catch(() => null);
       if (!response.ok || !result?.ok) {
-        throw new Error(result?.message || "입력을 반영하지 못했어.");
+        throw new Error(result?.message || "입력을 반영하지 못했습니다.");
       }
 
       setMessage("");
       setDraftTranscript("");
-      setStatusText(result.assistantReply || "반영되었습니다.");
+      setStatusTone("info");
+      setStatusText(result.assistantReply || "입력한 내용을 반영했습니다.");
+      router.refresh();
       textareaRef.current?.focus();
     } catch (error) {
-      setStatusText(error instanceof Error ? error.message : "입력을 반영하지 못했어.");
+      setStatusTone("error");
+      setStatusText(error instanceof Error ? error.message : "입력을 반영하지 못했습니다.");
     } finally {
       setIsPending(false);
     }
@@ -169,7 +177,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
           <div className="w-full max-w-3xl">
             <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
               <div className="inline-flex rounded-full border border-[#e8dfd1] bg-white/80 px-3 py-1 text-[11px] text-[#8b7b69] backdrop-blur">
-                출석, 심방, 기도제목, 근황 정리
+                출석, 신방, 기도제목, 근황 정리
               </div>
               <p className="mt-5 text-[18px] font-medium leading-8 tracking-[-0.03em] text-[#2f2a24] sm:text-[20px]">
                 오늘 목장 상황을 자유롭게 입력해 주세요.
@@ -183,6 +191,12 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
 
         <form onSubmit={handleSubmit} className="relative z-20 sticky bottom-0 border-t border-[#e7dfd3]/90 bg-white/88 px-3 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl sm:px-4 lg:px-6 lg:pb-6 lg:pt-4">
           <div className="mx-auto w-full max-w-4xl rounded-[26px] border border-[#e5dccf] bg-white/95 p-2.5 shadow-[0_12px_32px_rgba(15,23,42,0.08)]">
+            {statusText ? (
+              <div className={`mb-2 rounded-[16px] px-3 py-2 text-sm ${statusTone === "error" ? "border border-[#f0c9c9] bg-[#fff6f6] text-[#9a4a4a]" : "border border-[#dfe8d8] bg-[#f5fbf2] text-[#42653b]"}`}>
+                {statusText}
+              </div>
+            ) : null}
+
             <textarea
               ref={textareaRef}
               name="message"
@@ -198,9 +212,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
             />
 
             <div className="flex items-center justify-between gap-2 border-t border-[#f0e8dc] px-2 pt-2">
-              <div className="min-w-0 flex-1 text-[12px] text-[#8f8172]">
-                {statusText ? <span className="truncate">{statusText}</span> : null}
-              </div>
+              <div className="min-w-0 flex-1 text-[12px] text-[#8f8172]" />
 
               <div className="flex items-center gap-2">
                 <button
@@ -209,7 +221,7 @@ export default function ChatComposer({ churchSlug, summary }: Props) {
                   disabled={!voiceSupported}
                   className={`inline-flex h-10 items-center rounded-full border px-3.5 text-sm font-medium transition ${recording ? "border-[#111827] bg-[#111827] text-white" : "border-[#e0d7ca] bg-[#faf7f1] text-[#2f2a24] hover:bg-white"} ${!voiceSupported ? "opacity-40" : ""}`}
                 >
-                  {recording ? "멈춤" : "음성"}
+                  {recording ? "중지" : "음성"}
                 </button>
                 <button
                   type="submit"

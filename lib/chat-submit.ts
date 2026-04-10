@@ -114,8 +114,8 @@ export async function submitStructuredChatMessage(args: {
 
     const assistantReply =
       extraction.updates.length === 0
-        ? "정리할 내용을 아직 잡지 못했어. 조금만 더 구체적으로 말해줘."
-        : `${extraction.updates.length}개 항목으로 읽었어. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `확인이 필요한 ${reviewCount}건은 따로 보관할게.` : "바로 기록해뒀어."}`;
+        ? "정리할 내용을 아직 파악하지 못했습니다. 조금 더 구체적으로 입력해 주세요."
+        : `${extraction.updates.length}개 항목으로 확인했습니다. ${appliedCount > 0 ? `${appliedCount}건은 바로 반영했고 ` : ""}${reviewCount > 0 ? `확인이 필요한 ${reviewCount}건은 따로 보관했습니다.` : "기록에 바로 반영했습니다."}`;
 
     await tx.chatCapture.create({
       data: {
