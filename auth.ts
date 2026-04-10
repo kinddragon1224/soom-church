@@ -21,6 +21,7 @@ function resolveCredentialEmails(rawIdentifier: string) {
     candidates.add(identifier);
   } else {
     candidates.add(`${identifier}@soom.church`);
+    candidates.add(`${identifier}@beta.soom.local`);
   }
 
   return [...candidates];
