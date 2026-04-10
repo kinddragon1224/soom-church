@@ -3,7 +3,7 @@ import { District, Group, Household, Member } from "@prisma/client";
 import { AppliedRecordLogItem } from "@/lib/chat-apply-log";
 import { formatDate } from "@/lib/date";
 import { buildGidoMembersView } from "@/lib/gido-members-view";
-import { createQuickWorkspaceMember } from "./actions";
+import { confirmIntakeCandidateAsMember, createQuickWorkspaceMember } from "./actions";
 
 type GidoMemberRow = Member & {
   district: District | null;
@@ -56,6 +56,7 @@ export default function GidoMembersPage({ churchSlug, members, groups, household
 
   const qParam = q ? `&q=${encodeURIComponent(q)}` : "";
   const listPath = `/app/${churchSlug}/members?filter=${activeFilter}${qParam}`;
+  const returnPath = `/app/${churchSlug}/members`;
 
   const compositionQueue = decoratedMembers
     .map((member) => ({ member, issues: getCompositionIssues(member) }))
@@ -141,6 +142,24 @@ export default function GidoMembersPage({ churchSlug, members, groups, household
                       {candidate.proposedHouseholdName ? <span className="rounded-full border border-[#e6dccd] bg-white px-2.5 py-1">가정 {candidate.proposedHouseholdName}</span> : null}
                     </div>
                   </div>
+                  <form action={confirmIntakeCandidateAsMember.bind(null, churchSlug, returnPath)} className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,1fr)_160px_170px_170px_150px_auto]">
+                    <input type="hidden" name="candidateId" value={candidate.id} />
+                    <input name="name" defaultValue={candidate.proposedName ?? ""} required placeholder="이름" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    <input name="birthDate" type="date" required className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    <input name="phone" defaultValue={candidate.proposedPhone ?? ""} placeholder="연락처" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]" />
+                    <select name="householdId" defaultValue="" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                      <option value="">가정 선택</option>
+                      {households.map((household) => (
+                        <option key={household.id} value={household.id}>{household.name}</option>
+                      ))}
+                    </select>
+                    <select name="gender" defaultValue="OTHER" className="rounded-[12px] border border-[#E7E0D4] bg-white px-3 py-2 text-sm text-[#111111]">
+                      <option value="OTHER">성별 미지정</option>
+                      <option value="MALE">남성</option>
+                      <option value="FEMALE">여성</option>
+                    </select>
+                    <button className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">목원 생성</button>
+                  </form>
                 </div>
               ))
             )}

@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { CareCategory, MemberOrgRole, RelationshipType, SacramentType } from "@prisma/client";
+import { CareCategory, Gender, IntakeCandidateStatus, MemberOrgRole, RelationshipType, SacramentType } from "@prisma/client";
 import { updateGidoMemberMeta } from "@/lib/gido-home-config";
 import { getStatusUpdatePatch } from "@/lib/member-status";
 import { prisma } from "@/lib/prisma";
@@ -201,6 +201,92 @@ export async function createQuickWorkspaceMember(churchSlug: string, returnPath:
       targetId: created.id,
       memberId: created.id,
       metadata: JSON.stringify({ mode: "quick" }),
+    },
+  });
+
+  await refreshMemberView(membership.church.id, created.id);
+  redirect(returnPath);
+}
+
+export async function confirmIntakeCandidateAsMember(churchSlug: string, returnPath: string, formData: FormData) {
+  const { membership, userId } = await requireWorkspaceMembership(churchSlug);
+  if (!membership) redirect(returnPath);
+
+  const candidateId = String(formData.get("candidateId") || "").trim();
+  const name = String(formData.get("name") || "").trim();
+  const birthDateInput = String(formData.get("birthDate") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+  const householdId = asOptionalString(formData.get("householdId"));
+  const groupIdInput = asOptionalString(formData.get("groupId"));
+  const genderInput = String(formData.get("gender") || "OTHER").trim();
+
+  if (!candidateId || !name || !birthDateInput) redirect(returnPath);
+
+  const candidate = await prisma.intakeCandidate.findFirst({
+    where: { id: candidateId, churchId: membership.church.id },
+    select: { id: true, proposedHouseholdName: true },
+  });
+  if (!candidate) redirect(returnPath);
+
+  let resolvedHouseholdId = householdId;
+  if (!resolvedHouseholdId && candidate.proposedHouseholdName) {
+    const household = await prisma.household.findFirst({
+      where: { churchId: membership.church.id, name: candidate.proposedHouseholdName },
+      select: { id: true },
+    });
+    resolvedHouseholdId = household?.id ?? null;
+  }
+
+  const placement = await inferPlacementFromGroupAndHousehold(membership.church.id, {
+    householdId: resolvedHouseholdId,
+    groupId: groupIdInput,
+    districtId: null,
+  });
+
+  const gender = genderInput === "MALE"
+    ? Gender.MALE
+    : genderInput === "FEMALE"
+      ? Gender.FEMALE
+      : Gender.OTHER;
+
+  const created = await prisma.member.create({
+    data: {
+      churchId: membership.church.id,
+      name,
+      gender,
+      birthDate: parseDate(formData.get("birthDate")),
+      phone,
+      email: null,
+      address: null,
+      householdId: resolvedHouseholdId,
+      districtId: placement.districtId,
+      groupId: placement.groupId,
+      registeredAt: new Date(),
+      position: null,
+      statusTag: "등록대기",
+      requiresFollowUp: false,
+      notes: null,
+      currentJob: null,
+      previousChurch: null,
+      previousFaith: null,
+      baptismStatus: null,
+    },
+  });
+
+  await prisma.intakeCandidate.update({
+    where: { id: candidate.id },
+    data: { status: IntakeCandidateStatus.CONFIRMED },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      churchId: membership.church.id,
+      actorId: userId,
+      action: "MEMBER_CREATED_FROM_INTAKE",
+      targetType: "Member",
+      targetId: created.id,
+      memberId: created.id,
+      metadata: JSON.stringify({ candidateId: candidate.id }),
     },
   });
 
