@@ -13,7 +13,7 @@ export default function BetaPage() {
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           <section className="rounded-[20px] border border-[#ece4d8] bg-[#fcfbf8] p-5">
             <h2 className="text-sm font-semibold text-[#111111]">1. 기존 베타 정리</h2>
-            <p className="mt-2 text-sm leading-6 text-[#5f564b]">gido 전용 화면, 테스트 로그인, 실험 구조를 걷어냅니다.</p>
+            <p className="mt-2 text-sm leading-6 text-[#5f564b]">이전 테스트 화면, 임시 로그인, 실험 구조를 걷어내고 다시 시작합니다.</p>
           </section>
           <section className="rounded-[20px] border border-[#ece4d8] bg-[#fcfbf8] p-5">
             <h2 className="text-sm font-semibold text-[#111111]">2. 새 운영 화면</h2>
