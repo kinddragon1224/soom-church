@@ -12,7 +12,7 @@ type GidoWorkspaceShellProps = {
 };
 
 type SidebarItem = {
-  key: "people" | "households" | "timeline" | "search";
+  key: "chat" | "people" | "households" | "timeline" | "search";
   label: string;
   hint: string;
   href: string;
@@ -20,6 +20,7 @@ type SidebarItem = {
 };
 
 const sidebarItems = (base: string): SidebarItem[] => [
+  { key: "chat", label: "Chat", hint: "운영 입력", href: `${base}/chat`, tone: "#f3f4f6" },
   { key: "people", label: "People", hint: "사람 레코드", href: `${base}/people`, tone: "#7dd3a7" },
   { key: "households", label: "Households", hint: "가정 관계", href: `${base}/households`, tone: "#d2a8ff" },
   { key: "timeline", label: "Timeline", hint: "기록 흐름", href: `${base}/timeline`, tone: "#7cc6ff" },
@@ -35,7 +36,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[272px] shrink-0 flex-col bg-[#0b0f17] px-4 py-5 text-white lg:flex">
           <div className="px-1">
-            <Link href={`${base}/people`} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
+            <Link href={`${base}/chat`} className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
               soom ops
             </Link>
             <div className="mt-2 flex items-center gap-2">
@@ -62,7 +63,7 @@ export default function GidoWorkspaceShell({ base, church, role, currentUserName
                 const active =
                   pathname === item.href ||
                   pathname.startsWith(`${item.href}/`) ||
-                  (item.key === "people" && (pathname === `${base}/dashboard` || pathname === `${base}/today` || pathname === `${base}/chat` || pathname === `${base}/review`));
+                  (item.key === "chat" && (pathname === `${base}/dashboard` || pathname === `${base}/today` || pathname === `${base}/chat` || pathname === `${base}/review`));
 
                 return (
                   <Link
