@@ -27,7 +27,7 @@ export default function BetaWorldShepherdingPage() {
             <span>/</span>
             <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1 text-[#3f372d]">목양</span>
           </div>
-          <p className="mt-3 text-[10px] tracking-[0.18em] text-[#9a8b7a]">WORLD / SHEPHERDING</p>
+          <p className="mt-3 text-[10px] tracking-[0.18em] text-[#9a8b7a]">목양 공간</p>
           <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목양</h1>
           <p className="mt-3 max-w-[760px] text-sm leading-6 text-[#5f564b]">
             월드 안의 첫 기능 공간. 상단은 목원들이 들어오는 따뜻한 내부 공간, 아래는 목원 아바타 카드와 상세 보기 공간이다.
@@ -47,7 +47,7 @@ export default function BetaWorldShepherdingPage() {
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
         <section className="relative overflow-hidden rounded-[32px] border border-[#d8c7b2] shadow-[0_18px_40px_rgba(66,38,12,0.12)] min-h-[680px]">
           <Image
-            src="/beta-world/shepherding-room-bg-01.jpg"
+            src="/beta-world/shepherding-room-bg-02.jpg"
             alt="목양 내부 공간"
             fill
             priority
@@ -56,7 +56,7 @@ export default function BetaWorldShepherdingPage() {
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,28,18,0.08)_0%,rgba(44,28,18,0.02)_28%,rgba(44,28,18,0.12)_72%,rgba(44,28,18,0.22)_100%)]" />
 
           <div className="absolute left-5 top-5 z-10 max-w-[420px] rounded-[24px] border border-white/18 bg-[#fff8ee]/78 px-5 py-4 text-[#3d2d1e] backdrop-blur-md shadow-[0_14px_30px_rgba(66,38,12,0.10)]">
-            <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">INSIDE ROOM</p>
+            <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">목양 공간</p>
             <h2 className="mt-2 text-[1.4rem] font-semibold tracking-[-0.04em]">따뜻한 내부 공간</h2>
             <p className="mt-3 text-sm leading-6 text-[#6b5743]">
               홈 화면과 같은 결의 실내 서브월드. 이제 목원은 아래 박스가 아니라 이 공간 안의 포인트로 직접 들어오게 만든다.
@@ -90,13 +90,13 @@ export default function BetaWorldShepherdingPage() {
           </div>
 
           <div className="absolute bottom-5 left-5 z-10 rounded-[20px] border border-white/16 bg-[rgba(88,58,34,0.58)] px-4 py-3 text-white backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.20)]">
-            <p className="text-[10px] tracking-[0.18em] text-white/60">SPACE MODE</p>
+            <p className="text-[10px] tracking-[0.18em] text-white/60">공간 보기</p>
             <p className="mt-1 text-sm text-white/88">목원 포인트를 눌러 상세 보기</p>
           </div>
         </section>
 
         <aside className="rounded-[32px] border border-[#e6dccd] bg-[linear-gradient(180deg,#f7efe1_0%,#efe4d3_100%)] p-5 shadow-[0_18px_40px_rgba(66,38,12,0.08)] backdrop-blur-sm">
-          <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">MEMBER DETAIL</p>
+          <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">목원 정보</p>
           {selectedMember ? (
             <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
               <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">
@@ -127,7 +127,7 @@ export default function BetaWorldShepherdingPage() {
         <section className="rounded-[30px] border border-[#111827] bg-[linear-gradient(180deg,#141a28_0%,#1a2235_52%,#223222_100%)] p-6 text-white shadow-[0_20px_50px_rgba(15,23,42,0.14)]">
           <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <p className="text-[10px] tracking-[0.18em] text-white/46">MEMBER CARD SPACE</p>
+              <p className="text-[10px] tracking-[0.18em] text-white/46">목원 목록</p>
               <p className="mt-1 text-lg font-semibold">목원 아바타 카드 공간</p>
             </div>
 
@@ -165,7 +165,7 @@ export default function BetaWorldShepherdingPage() {
         </section>
 
         <aside className="rounded-[30px] border border-[#e8e1d6] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-          <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">INPUT RULE</p>
+          <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">입력 규칙</p>
           <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
             <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">이름</div>
             <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">성별</div>
