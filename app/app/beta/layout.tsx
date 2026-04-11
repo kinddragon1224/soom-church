@@ -4,7 +4,6 @@ import { auth } from "@/auth";
 
 const navItems = [
   { href: "/app/beta/world", label: "World" },
-  { href: "/app/beta/world/shepherding", label: "Shepherding" },
   { href: "/app/beta/records", label: "Records" },
   { href: "/app/beta/settings", label: "Settings" },
 ];
