@@ -60,7 +60,7 @@ export default function BetaWorldPage() {
       <section className="relative overflow-hidden rounded-[30px] border border-[#e6dccd] bg-[#d9c7b0] shadow-[0_24px_60px_rgba(66,38,12,0.10)]">
         <div className="relative aspect-[16/9] w-full">
           <Image
-            src="/beta-world/world-bg-yohan-maria-01.jpg"
+            src="/beta-world/world-bg-key-01.jpg"
             alt="Soom beta world background"
             fill
             priority
@@ -78,24 +78,32 @@ export default function BetaWorldPage() {
 
           <Link
             href="/app/beta/world/shepherding"
-            className="absolute left-[42%] top-[62%] z-20 -translate-x-1/2 -translate-y-1/2 group"
+            className="absolute left-[46.5%] top-[60.5%] z-20 -translate-x-1/2 -translate-y-1/2 group"
             aria-label="요한"
           >
-            <div className="h-24 w-20 rounded-[24px]" />
-            <div className="mt-2 -ml-1 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)] transition group-hover:scale-[1.03]">
-              요한
-            </div>
+            <div className="absolute bottom-[4px] left-1/2 h-3 w-8 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.26)] blur-[4px]" />
+            <Image
+              src="/beta-world/npc-yohan-cutout-01.png"
+              alt="요한"
+              width={58}
+              height={90}
+              className="relative h-auto w-[58px] drop-shadow-[0_8px_12px_rgba(51,31,18,0.18)] transition group-hover:translate-y-[-2px] group-hover:scale-[1.03]"
+            />
           </Link>
 
           <Link
             href="/app/beta/world/shepherding"
-            className="absolute left-[58%] top-[62%] z-20 -translate-x-1/2 -translate-y-1/2 group"
+            className="absolute left-[53.5%] top-[60.8%] z-20 -translate-x-1/2 -translate-y-1/2 group"
             aria-label="마리아"
           >
-            <div className="h-24 w-20 rounded-[24px]" />
-            <div className="mt-2 -ml-1 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)] transition group-hover:scale-[1.03]">
-              마리아
-            </div>
+            <div className="absolute bottom-[4px] left-1/2 h-3 w-8 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.24)] blur-[4px]" />
+            <Image
+              src="/beta-world/npc-maria-cutout-01.png"
+              alt="마리아"
+              width={54}
+              height={88}
+              className="relative h-auto w-[54px] drop-shadow-[0_8px_12px_rgba(51,31,18,0.16)] transition group-hover:translate-y-[-2px] group-hover:scale-[1.03]"
+            />
           </Link>
 
           {members.slice(0, 4).map((member, index) => (
