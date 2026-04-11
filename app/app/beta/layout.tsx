@@ -3,9 +3,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
 const navItems = [
-  { href: "/app/beta", label: "Home" },
-  { href: "/app/beta/chat", label: "Chat" },
   { href: "/app/beta/world", label: "World" },
+  { href: "/app/beta/world/shepherding", label: "Shepherding" },
   { href: "/app/beta/records", label: "Records" },
   { href: "/app/beta/settings", label: "Settings" },
 ];
@@ -21,7 +20,7 @@ export default async function BetaLayout({ children }: { children: React.ReactNo
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="hidden w-[248px] shrink-0 flex-col border-r border-white/6 bg-[#10141c] px-4 py-5 text-white lg:flex">
           <div>
-            <Link href="/app/beta" className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
+            <Link href="/app/beta/world" className="text-[1rem] font-medium tracking-[-0.04em] text-white/92">
               soom beta os
             </Link>
             <div className="mt-2 flex items-center gap-2">
@@ -34,8 +33,8 @@ export default async function BetaLayout({ children }: { children: React.ReactNo
 
           <div className="mt-6 rounded-[20px] border border-white/8 bg-white/[0.04] p-4">
             <p className="text-[10px] tracking-[0.18em] text-white/34">WORKSPACE</p>
-            <p className="mt-2 text-sm font-medium text-white">새 beta 운영 개발 OS</p>
-            <p className="mt-4 text-[12px] leading-5 text-white/56">기본 구조부터 단계별로 다시 세우는 작업 공간.</p>
+            <p className="mt-2 text-sm font-medium text-white">월드 중심 운영 공간</p>
+            <p className="mt-4 text-[12px] leading-5 text-white/56">월드 안에서 입력하고, 공간을 열고, 기록을 보는 구조.</p>
           </div>
 
           <div className="mt-5 border-t border-white/6 pt-4">
