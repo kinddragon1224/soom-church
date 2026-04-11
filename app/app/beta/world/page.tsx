@@ -2,28 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import {
-  BetaMember,
-  addMemberToStorage,
-  parseMemberCommand,
-  readMembersFromStorage,
-} from "@/lib/beta-shepherding-client";
+import { addMemberToStorage, parseMemberCommand } from "@/lib/beta-shepherding-client";
 
 export default function BetaWorldPage() {
   const [command, setCommand] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [members, setMembers] = useState<BetaMember[]>([]);
-
-  useEffect(() => {
-    setMembers(readMembersFromStorage());
-  }, []);
-
-  function refreshMembers() {
-    setMembers(readMembersFromStorage());
-  }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,7 +24,6 @@ export default function BetaWorldPage() {
       }
 
       const member = addMemberToStorage(parsed);
-      refreshMembers();
       setMessage(`${member.name} 추가 완료`);
       setCommand("");
     } catch (error) {
@@ -69,6 +54,34 @@ export default function BetaWorldPage() {
               우리 목장 월드
             </div>
           </div>
+
+          <div className="absolute left-[18%] top-[22%] z-20 rounded-[18px] border border-white/20 bg-[rgba(255,247,235,0.72)] px-3 py-3 text-[#5b4631] backdrop-blur-md shadow-[0_12px_24px_rgba(66,38,12,0.10)]">
+            <p className="text-[10px] tracking-[0.16em] text-[#9a8060]">CHURCH</p>
+            <div className="mt-2 grid gap-1.5 text-[11px]">
+              <div className="rounded-full bg-white/70 px-2.5 py-1">주일 예배</div>
+              <div className="rounded-full bg-white/70 px-2.5 py-1">새가족 모임</div>
+            </div>
+          </div>
+
+          <div className="absolute right-[15%] top-[34%] z-20 rounded-[18px] border border-white/18 bg-[rgba(255,247,235,0.64)] px-3 py-3 text-[#5b4631] backdrop-blur-md shadow-[0_12px_24px_rgba(66,38,12,0.10)]">
+            <p className="text-[10px] tracking-[0.16em] text-[#9a8060]">MOKJANG</p>
+            <div className="mt-2 grid gap-1.5 text-[11px]">
+              <div className="rounded-full bg-white/70 px-2.5 py-1">목장 모임</div>
+              <div className="rounded-full bg-white/70 px-2.5 py-1">심방 예정</div>
+            </div>
+          </div>
+
+          <div className="absolute left-[39%] top-[69%] z-10 h-6 w-6 rounded-full bg-[rgba(255,228,169,0.52)] blur-[6px]" />
+          <div className="absolute left-[40%] top-[70%] z-10 h-2.5 w-2.5 rounded-full bg-[#ffe4ad] shadow-[0_0_14px_rgba(255,228,173,0.9)]" />
+          <div className="absolute left-[61%] top-[67%] z-10 h-6 w-6 rounded-full bg-[rgba(255,228,169,0.48)] blur-[6px]" />
+          <div className="absolute left-[62%] top-[68%] z-10 h-2.5 w-2.5 rounded-full bg-[#ffe4ad] shadow-[0_0_14px_rgba(255,228,173,0.9)]" />
+
+          <div className="absolute left-[71%] top-[57%] z-20 flex items-center gap-1.5 rounded-full border border-white/16 bg-[rgba(110,73,42,0.68)] px-3 py-1.5 text-[11px] text-white backdrop-blur-md shadow-[0_10px_22px_rgba(66,38,12,0.16)]">
+            <span className="inline-block h-2 w-2 rounded-full bg-[#ffd38a]" />
+            이벤트
+          </div>
+
+          <div className="absolute left-[50%] top-[56.5%] z-10 h-10 w-28 -translate-x-1/2 rounded-full bg-[rgba(255,220,156,0.14)] blur-[18px]" />
 
           <Link
             href="/app/beta/world/shepherding"
@@ -109,9 +122,6 @@ export default function BetaWorldPage() {
               className="relative h-auto w-[44px] saturate-[0.8] sepia-[0.06] brightness-[0.99] drop-shadow-[0_8px_12px_rgba(51,31,18,0.11)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
             />
           </Link>
-
-          <div className="absolute left-[50%] top-[56.5%] z-10 h-10 w-28 -translate-x-1/2 rounded-full bg-[rgba(255,220,156,0.14)] blur-[18px]" />
-
         </div>
       </section>
 
