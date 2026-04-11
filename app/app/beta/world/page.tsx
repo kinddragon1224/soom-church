@@ -94,9 +94,7 @@ export default function BetaWorldPage() {
               key={member.id}
               className={`absolute ${memberPositions[index] ?? "left-[32%] top-[73%]"} z-20 -translate-x-1/2 -translate-y-1/2`}
             >
-              <div className="rounded-full border border-white/18 bg-[rgba(58,40,23,0.62)] px-3 py-2 text-[11px] font-semibold text-white backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.22)]">
-                {member.name}
-              </div>
+              <div className="h-3 w-3 rounded-full border border-white/40 bg-[rgba(58,40,23,0.78)] shadow-[0_8px_18px_rgba(44,28,18,0.28)]" />
             </div>
           ))}
         </div>
@@ -108,7 +106,7 @@ export default function BetaWorldPage() {
             <textarea
               value={command}
               onChange={(event) => setCommand(event.target.value)}
-              placeholder="무엇을 기록할까? 예: 목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문"
+              placeholder="무엇을 기록할까요?"
               className="min-h-[110px] w-full resize-none bg-transparent text-[15px] leading-7 text-[#1f1a16] outline-none placeholder:text-[#9d9285]"
             />
 
