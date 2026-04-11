@@ -1,3 +1,5 @@
+import { workspaceHomeQuickLinks, workspaceHomeTodayBoard } from "@/lib/workspace-registry";
+
 export default function WorkspacePage() {
   return (
     <div className="flex flex-col gap-6 text-[#121212]">
@@ -27,9 +29,11 @@ export default function WorkspacePage() {
               <div className="rounded-[18px] border border-white/10 bg-white/8 px-4 py-3">
                 <p className="text-[11px] tracking-[0.16em] text-white/42">QUICK OPEN</p>
                 <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                  <a href="/workspace/people" className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">사람</a>
-                  <a href="/workspace/notices" className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">공지</a>
-                  <a href="/workspace/content" className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">콘텐츠</a>
+                  {workspaceHomeQuickLinks.map((item) => (
+                    <a key={item.href} href={item.href} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/82">
+                      {item.label}
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
@@ -47,11 +51,7 @@ export default function WorkspacePage() {
             </div>
 
             <div className="divide-y divide-white/10 bg-white/4">
-              {[
-                { lane: "지금", title: "후속 연락 3건 확인", desc: "48시간 안에 응답이 필요한 사람 흐름입니다.", cta: "사람 보기", href: "/workspace/people" },
-                { lane: "다음", title: "예약 공지 4건 점검", desc: "수요일·주말 발송 전 마지막 확인이 필요합니다.", cta: "공지 보기", href: "/workspace/notices" },
-                { lane: "검토", title: "콘텐츠 승인 2건", desc: "썸네일과 자막 톤만 맞추면 바로 배포할 수 있습니다.", cta: "콘텐츠 보기", href: "/workspace/content" },
-              ].map((item) => (
+              {workspaceHomeTodayBoard.map((item) => (
                 <a key={item.title} href={item.href} className="grid gap-2 px-5 py-4 transition hover:bg-white/6 sm:grid-cols-[58px_minmax(0,1fr)_84px] sm:items-center sm:px-6">
                   <p className="text-[11px] tracking-[0.18em] text-white/46">{item.lane}</p>
                   <div className="min-w-0">
