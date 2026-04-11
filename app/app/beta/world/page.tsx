@@ -12,7 +12,7 @@ import {
 } from "@/lib/beta-shepherding-client";
 
 export default function BetaWorldPage() {
-  const [command, setCommand] = useState("목원 추가 김은혜, 새가족 2가정 확인");
+  const [command, setCommand] = useState("목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문");
   const [message, setMessage] = useState("월드 안에서 바로 명령해봐. 이제 목원 추가가 바로 반영돼.");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [members, setMembers] = useState<BetaMember[]>([]);
@@ -33,7 +33,7 @@ export default function BetaWorldPage() {
       const parsed = parseMemberCommand(command);
 
       if (!parsed) {
-        setMessage("지금은 `목원 추가 이름, 메모` 형식으로 먼저 반응하게 해놨어.");
+        setMessage("지금은 `목원 추가 이름, 성별, 나이, 연락처, 관계, 메모` 형식으로 반응하게 해놨어.");
         return;
       }
 
@@ -136,14 +136,14 @@ export default function BetaWorldPage() {
               <textarea
                 value={command}
                 onChange={(event) => setCommand(event.target.value)}
-                placeholder="목원 추가 김은혜, 새가족 2가정 확인"
+                placeholder="목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문"
                 className="min-h-[96px] w-full resize-none rounded-[18px] border border-white/12 bg-black/18 px-4 py-3 text-sm text-white outline-none placeholder:text-white/34"
               />
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex flex-wrap gap-2 text-[12px] text-white/62">
-                  <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5">예: 목원 추가 김은혜, 새가족 2가정 확인</span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5">예: 목원 추가 박요한, 청년 목장 연결 필요</span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5">예: 목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문</span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5">예: 목원 추가 박요한, 남, 29, 010-2222-3333, 청년, 연결 필요</span>
                 </div>
                 <button
                   type="submit"
@@ -160,7 +160,7 @@ export default function BetaWorldPage() {
             <p className="text-[10px] tracking-[0.18em] text-white/46">WORLD RESPONSE</p>
             <p className="mt-3 text-sm leading-6 text-white/82">{message}</p>
             <div className="mt-4 rounded-[18px] border border-white/10 bg-white/[0.05] p-3 text-[12px] leading-5 text-white/58">
-              지금은 현재 브라우저 기준으로 목원 카드가 바로 갱신되게 붙여놨어. 다음엔 카드 클릭, 목원 상세, 내부 공간 입장까지 이어가면 돼.
+              지금은 현재 브라우저 기준으로 목원 카드가 바로 갱신되고, 기본 필드는 이름, 성별, 나이, 연락처, 관계, 메모까지 받게 해놨어.
             </div>
           </div>
         </div>

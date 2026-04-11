@@ -7,7 +7,7 @@ import { addMemberToStorage, parseMemberCommand } from "@/lib/beta-shepherding-c
 
 export function ChatCommandForm() {
   const router = useRouter();
-  const [command, setCommand] = useState("목원 추가 김은혜, 새가족 2가정 확인");
+  const [command, setCommand] = useState("목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문");
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,7 +20,7 @@ export function ChatCommandForm() {
       const parsed = parseMemberCommand(command);
 
       if (!parsed) {
-        setMessage("지금은 `목원 추가 이름, 메모` 형식만 지원해.");
+        setMessage("지금은 `목원 추가 이름, 성별, 나이, 연락처, 관계, 메모` 형식만 지원해.");
         return;
       }
 
@@ -43,12 +43,12 @@ export function ChatCommandForm() {
         <textarea
           value={command}
           onChange={(event) => setCommand(event.target.value)}
-          placeholder="목원 추가 김은혜, 새가족 2가정 확인"
+          placeholder="목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문"
           className="mt-3 min-h-[120px] w-full resize-none rounded-[18px] border border-[#e7dfd3] bg-white px-4 py-3 text-sm text-[#2f2a24] outline-none"
         />
         <div className="mt-3 flex flex-wrap gap-2 text-[12px] text-[#7a7064]">
-          <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1.5">예: 목원 추가 김은혜, 새가족 2가정 확인</span>
-          <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1.5">예: 목원 추가 박요한, 청년 목장 연결 필요</span>
+          <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1.5">예: 목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문</span>
+          <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1.5">예: 목원 추가 박요한, 남, 29, 010-2222-3333, 청년, 연결 필요</span>
         </div>
       </div>
 
