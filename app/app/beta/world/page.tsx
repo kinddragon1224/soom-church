@@ -60,7 +60,7 @@ export default function BetaWorldPage() {
       <section className="relative overflow-hidden rounded-[30px] border border-[#e6dccd] bg-[#d9c7b0] shadow-[0_24px_60px_rgba(66,38,12,0.10)]">
         <div className="relative aspect-[16/9] w-full">
           <Image
-            src="/beta-world/world-bg-key-01.jpg"
+            src="/beta-world/world-bg-yohan-maria-01.jpg"
             alt="Soom beta world background"
             fill
             priority
@@ -76,18 +76,27 @@ export default function BetaWorldPage() {
             </div>
           </div>
 
-          <div className="absolute left-1/2 top-[58%] z-20 -translate-x-1/2 -translate-y-1/2">
-            <Link href="/app/beta/world/shepherding" className="group flex flex-col items-center">
-              <div className="flex h-[86px] w-[86px] items-center justify-center rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_30%,rgba(255,246,231,0.96),rgba(193,148,93,0.90))] shadow-[0_18px_40px_rgba(33,22,10,0.30)] transition group-hover:scale-[1.04]">
-                <div className="flex h-[66px] w-[66px] items-center justify-center rounded-full border border-white/35 bg-[linear-gradient(180deg,#fff2df_0%,#e2b781_100%)] text-[1rem] font-semibold text-[#55351f]">
-                  요한
-                </div>
-              </div>
-              <div className="mt-2 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)]">
-                목양 공간 들어가기
-              </div>
-            </Link>
-          </div>
+          <Link
+            href="/app/beta/world/shepherding"
+            className="absolute left-[42%] top-[62%] z-20 -translate-x-1/2 -translate-y-1/2 group"
+            aria-label="요한"
+          >
+            <div className="h-24 w-20 rounded-[24px]" />
+            <div className="mt-2 -ml-1 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)] transition group-hover:scale-[1.03]">
+              요한
+            </div>
+          </Link>
+
+          <Link
+            href="/app/beta/world/shepherding"
+            className="absolute left-[58%] top-[62%] z-20 -translate-x-1/2 -translate-y-1/2 group"
+            aria-label="마리아"
+          >
+            <div className="h-24 w-20 rounded-[24px]" />
+            <div className="mt-2 -ml-1 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)] transition group-hover:scale-[1.03]">
+              마리아
+            </div>
+          </Link>
 
           {members.slice(0, 4).map((member, index) => (
             <div
