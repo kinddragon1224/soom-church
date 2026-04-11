@@ -109,7 +109,7 @@ export default function BetaWorldPage() {
               </span>
             </div>
             <Image
-              src="/beta-world/npc-maria-cutout-02.png"
+              src="/beta-world/npc-maria-cutout-03.png"
               alt="마리아"
               width={44}
               height={74}
