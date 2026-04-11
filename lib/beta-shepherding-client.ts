@@ -258,6 +258,10 @@ export function readMembersFromStorage() {
   return defaultBetaMembers;
 }
 
+export function readMemberByIdFromStorage(id: string) {
+  return readMembersFromStorage().find((member) => member.id === id) ?? null;
+}
+
 export function addMemberToStorage(input: {
   name: string;
   gender?: string;

@@ -70,33 +70,28 @@ export default function BetaWorldShepherdingPage() {
 
         <div className="absolute bottom-5 left-5 z-10 rounded-[20px] border border-white/16 bg-[rgba(88,58,34,0.54)] px-4 py-3 text-white backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.20)]">
           <p className="text-[10px] tracking-[0.18em] text-white/60">공간 보기</p>
-          <p className="mt-1 text-sm text-white/88">목원 포인트를 눌러 상세 보기</p>
+          <p className="mt-1 text-sm text-white/88">목원 포인트를 눌러 요약 보기</p>
         </div>
 
         <aside className="absolute right-5 top-5 z-10 hidden w-[320px] rounded-[28px] border border-white/18 bg-[rgba(255,248,238,0.84)] p-5 text-[#5f564b] backdrop-blur-md shadow-[0_18px_36px_rgba(44,28,18,0.14)] xl:block">
           <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">목원 정보</p>
           {selectedMember ? (
-            <div className="mt-4 grid gap-3 text-sm">
-              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">
-                <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
-                <p className="mt-1 text-[12px] text-[#8a7a69]">
-                  {selectedMember.status} · {selectedMember.relationship}
-                </p>
+            <Link href={`/app/beta/world/shepherding/member/${selectedMember.id}`} className="mt-4 block rounded-[22px] border border-[#ece4d8] bg-white/82 p-4 transition hover:bg-white">
+              <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
+              <p className="mt-1 text-[12px] text-[#8a7a69]">
+                {selectedMember.status} · {selectedMember.relationship}
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-[16px] border border-[#ece4d8] bg-[#fcfbf8] p-3">성별: {selectedMember.gender}</div>
+                <div className="rounded-[16px] border border-[#ece4d8] bg-[#fcfbf8] p-3">나이: {selectedMember.age}</div>
+                <div className="rounded-[16px] border border-[#ece4d8] bg-[#fcfbf8] p-3">연락처: {selectedMember.phone}</div>
+                <div className="rounded-[16px] border border-[#ece4d8] bg-[#fcfbf8] p-3">침례: {selectedMember.baptized ? "유" : "무"}</div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">성별: {selectedMember.gender}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">나이: {selectedMember.age}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">연락처: {selectedMember.phone}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">침례: {selectedMember.baptized ? "유" : "무"}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">직업: {selectedMember.job}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">직분: {selectedMember.role}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">교구: {selectedMember.district}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">사역: {selectedMember.ministry}</div>
+              <div className="mt-4 rounded-[16px] border border-[#ece4d8] bg-[#fcfbf8] p-3 text-sm">메모: {selectedMember.note}</div>
+              <div className="mt-4 rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-4 py-2 text-center text-sm text-[#3f372d]">
+                더 상세하게 보기
               </div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">주소: {selectedMember.address}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">관계: {selectedMember.relationship}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">메모: {selectedMember.note}</div>
-            </div>
+            </Link>
           ) : (
             <div className="mt-4 rounded-[18px] border border-[#ece4d8] bg-white/84 p-4 text-sm">
               목원을 선택하면 상세 정보가 보여.
@@ -108,20 +103,15 @@ export default function BetaWorldShepherdingPage() {
       <section className="border-t border-[#eadfce] bg-[linear-gradient(180deg,#f7efe1_0%,#efe4d3_100%)] p-4 xl:hidden">
         <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">목원 정보</p>
         {selectedMember ? (
-          <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
-            <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">
-              <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
-              <p className="mt-1 text-[12px] text-[#8a7a69]">
-                {selectedMember.status} · {selectedMember.relationship}
-              </p>
+          <Link href={`/app/beta/world/shepherding/member/${selectedMember.id}`} className="mt-4 block rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4 text-sm text-[#5f564b]">
+            <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
+            <p className="mt-1 text-[12px] text-[#8a7a69]">
+              {selectedMember.status} · {selectedMember.relationship}
+            </p>
+            <div className="mt-4 rounded-[16px] border border-[#ece4d8] bg-white p-3 text-center text-sm text-[#3f372d]">
+              더 상세하게 보기
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">성별: {selectedMember.gender}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">나이: {selectedMember.age}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">연락처: {selectedMember.phone}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">침례: {selectedMember.baptized ? "유" : "무"}</div>
-            </div>
-          </div>
+          </Link>
         ) : null}
       </section>
     </div>
