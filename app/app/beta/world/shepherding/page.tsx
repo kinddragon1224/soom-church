@@ -38,11 +38,10 @@ export default function BetaWorldShepherdingPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {shepherds.map((shepherd, index) => (
+          {shepherds.map((shepherd) => (
             <button
               key={shepherd.name}
               className="rounded-[24px] border border-white/10 bg-white/[0.06] p-5 text-left transition hover:bg-white/[0.10]"
-              style={{ animation: `bob ${2.8 + index * 0.15}s ease-in-out infinite` }}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex h-14 w-14 items-center justify-center rounded-[18px] border border-white/12 bg-white/[0.08] text-lg">
@@ -57,12 +56,6 @@ export default function BetaWorldShepherdingPage() {
         </div>
       </section>
 
-      <style jsx>{`
-        @keyframes bob {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-5px); }
-        }
-      `}</style>
     </div>
   );
 }
