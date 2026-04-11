@@ -31,7 +31,7 @@ export default function BetaWorldPage() {
           <p className="text-[10px] tracking-[0.18em] text-white/58">BETA / WORLD SCENE</p>
           <h1 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.05em]">월드 첫 장면</h1>
           <p className="mt-2 text-sm leading-6 text-white/78">
-            배경뿐 아니라 집, 교회, 캐릭터도 에셋으로 바꾸기 시작했다. 이제 박스형 프로토타입에서 진짜 장면형 월드로 넘어간다.
+            배경뿐 아니라 집, 중심 건물, 캐릭터도 에셋으로 바꾸기 시작했다. 이제 박스형 프로토타입에서 진짜 장면형 월드로 넘어간다.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export default function BetaWorldPage() {
           <div className="relative h-[170px] w-[190px] drop-shadow-[0_20px_28px_rgba(0,0,0,0.22)]">
             <Image src="/beta-world/asset-church-01.jpg" alt="church asset" fill className="object-contain" />
           </div>
-          <p className="mt-2 text-sm font-semibold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)]">모임 공간</p>
+          <p className="mt-2 text-sm font-semibold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)]">중심 공간</p>
         </div>
 
         {homes.map((home, index) => (
@@ -84,7 +84,7 @@ export default function BetaWorldPage() {
         <div className="rounded-[24px] border border-white/16 bg-black/16 px-5 py-4 text-white backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.14)]">
           <p className="text-[10px] tracking-[0.18em] text-white/56">ASSET PIPELINE</p>
           <p className="mt-2 text-sm leading-6 text-white/82">
-            배경, 교회, 집, 캐릭터까지 에셋으로 전환했다. 다음은 상태별 캐릭터 변형과 실제 데이터 연결이다.
+            배경, 중심 건물, 집, 캐릭터까지 에셋으로 전환했다. 다음은 상태별 캐릭터 변형과 실제 데이터 연결이다.
           </p>
         </div>
 
@@ -92,7 +92,7 @@ export default function BetaWorldPage() {
           <p className="text-[10px] tracking-[0.18em] text-white/56">NOW</p>
           <div className="mt-3 grid gap-2 text-sm text-white/82">
             <div className="rounded-[16px] border border-white/10 bg-white/[0.04] px-3 py-2">배경 에셋</div>
-            <div className="rounded-[16px] border border-white/10 bg-white/[0.04] px-3 py-2">집/교회 에셋</div>
+            <div className="rounded-[16px] border border-white/10 bg-white/[0.04] px-3 py-2">집/중심 건물 에셋</div>
             <div className="rounded-[16px] border border-white/10 bg-white/[0.04] px-3 py-2">캐릭터 에셋</div>
           </div>
         </div>
