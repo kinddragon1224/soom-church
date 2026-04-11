@@ -48,13 +48,6 @@ export default function BetaWorldPage() {
     }
   }
 
-  const memberPositions = [
-    "left-[32%] top-[73%]",
-    "left-[43%] top-[67%]",
-    "left-[58%] top-[72%]",
-    "left-[69%] top-[66%]",
-  ];
-
   return (
     <div className="-m-4 flex flex-col gap-4 bg-[#f3ede3] p-4 sm:-m-5 sm:p-5 lg:-m-6 lg:p-6">
       <section className="relative overflow-hidden rounded-[34px] border border-[#e8ddcf] bg-[#d9c7b0] shadow-[0_28px_70px_rgba(66,38,12,0.10)]">
@@ -99,7 +92,7 @@ export default function BetaWorldPage() {
 
           <Link
             href="/app/beta/world/shepherding"
-            className="absolute left-[53.2%] top-[61.1%] z-20 -translate-x-1/2 -translate-y-1/2 group"
+            className="absolute left-[53.6%] top-[60.9%] z-20 -translate-x-1/2 -translate-y-1/2 group"
             aria-label="마리아"
           >
             <div className="absolute bottom-[2px] left-1/2 h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.20)] blur-[4px]" />
@@ -119,14 +112,6 @@ export default function BetaWorldPage() {
 
           <div className="absolute left-[50%] top-[56.5%] z-10 h-10 w-28 -translate-x-1/2 rounded-full bg-[rgba(255,220,156,0.14)] blur-[18px]" />
 
-          {members.slice(0, 4).map((member, index) => (
-            <div
-              key={member.id}
-              className={`absolute ${memberPositions[index] ?? "left-[32%] top-[73%]"} z-20 -translate-x-1/2 -translate-y-1/2`}
-            >
-              <div className="h-3 w-3 rounded-full border border-white/40 bg-[rgba(58,40,23,0.78)] shadow-[0_8px_18px_rgba(44,28,18,0.28)]" />
-            </div>
-          ))}
         </div>
       </section>
 
