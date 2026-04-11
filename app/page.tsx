@@ -26,14 +26,14 @@ export default async function HomePage() {
   const currentUserId = loggedIn ? await getCurrentUserId() : null;
   const currentUser = currentUserId ? await prisma.user.findUnique({ where: { id: currentUserId }, select: { email: true } }) : null;
   const adminMode = isPlatformAdminEmail(currentUser?.email);
-  const appLoginHref = "/login?next=%2Fapp";
-  const headerCtaHref = loggedIn ? "/app" : "/signup";
+  const appLoginHref = "/login?next=%2Fapp%2Fbeta%2Fworld";
+  const headerCtaHref = loggedIn ? "/app/beta/world" : "/signup";
   const headerCtaLabel = loggedIn ? "워크스페이스" : "회원가입";
-  const heroPrimaryHref = loggedIn ? "/app" : "/signup";
+  const heroPrimaryHref = loggedIn ? "/app/beta/world" : "/signup";
   const heroPrimaryLabel = loggedIn ? "워크스페이스 열기" : "무료로 시작하기";
-  const heroSecondaryHref = loggedIn ? "/app" : appLoginHref;
+  const heroSecondaryHref = loggedIn ? "/app/beta/world" : appLoginHref;
   const heroSecondaryLabel = loggedIn ? "내 워크스페이스" : "로그인 후 워크스페이스";
-  const workspaceCardHref = loggedIn ? "/app" : appLoginHref;
+  const workspaceCardHref = loggedIn ? "/app/beta/world" : appLoginHref;
   const workspaceCardLabel = loggedIn ? "내 워크스페이스" : "로그인 후 워크스페이스";
 
   return (
