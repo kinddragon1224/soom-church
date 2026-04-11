@@ -12,8 +12,8 @@ import {
 } from "@/lib/beta-shepherding-client";
 
 export default function BetaWorldPage() {
-  const [command, setCommand] = useState("목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문");
-  const [message, setMessage] = useState("입력한 내용이 바로 월드와 목양 공간에 반영되도록 붙이는 중이야.");
+  const [command, setCommand] = useState("");
+  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [members, setMembers] = useState<BetaMember[]>([]);
 
@@ -39,7 +39,7 @@ export default function BetaWorldPage() {
 
       const member = addMemberToStorage(parsed);
       refreshMembers();
-      setMessage(`${member.name} 목원이 목양 공간에 추가됐어.`);
+      setMessage(`${member.name} 추가 완료`);
       setCommand("");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "명령 처리 중 오류가 났어.");
@@ -104,19 +104,6 @@ export default function BetaWorldPage() {
 
       <section className="rounded-[30px] border border-[#e7dece] bg-[#fbfaf7] p-4 shadow-[0_18px_40px_rgba(66,38,12,0.05)] sm:p-5">
         <form onSubmit={handleSubmit} className="grid gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">SOOM WORLD INPUT</p>
-              <p className="mt-1 text-sm text-[#5f564b]">월드 아래에서 바로 입력하고, 위 장면 변화는 더 또렷하게 보는 구조로 바꿨어.</p>
-            </div>
-            <Link
-              href="/app/beta/chat"
-              className="rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-3 py-1.5 text-[12px] text-[#5a4d40]"
-            >
-              채팅 화면 열기
-            </Link>
-          </div>
-
           <div className="rounded-[24px] border border-[#e7dfd3] bg-white px-4 py-4 sm:px-5">
             <textarea
               value={command}
@@ -141,7 +128,7 @@ export default function BetaWorldPage() {
             </div>
           </div>
 
-          <p className="px-1 text-sm text-[#6b6258]">{message}</p>
+          {message ? <p className="px-1 text-sm text-[#6b6258]">{message}</p> : null}
         </form>
       </section>
     </div>
