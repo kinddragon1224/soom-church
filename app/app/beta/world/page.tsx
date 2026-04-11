@@ -62,13 +62,19 @@ export default function BetaWorldPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,232,178,0.10),transparent_30%)]" />
 
       <div className="absolute left-4 right-4 top-4 z-20 flex items-start justify-between gap-4 sm:left-6 sm:right-6 sm:top-6">
-        <div className="max-w-[420px] rounded-[22px] border border-white/14 bg-black/10 px-5 py-4 text-white backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.10)]">
-          <p className="text-[10px] tracking-[0.18em] text-white/56">BETA / WORLD</p>
+        <div className="max-w-[480px] rounded-[22px] border border-white/14 bg-black/10 px-5 py-4 text-white backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.10)]">
+          <div className="flex flex-wrap items-center gap-2 text-[11px] text-white/62">
+            <Link href="/app/beta" className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1">홈</Link>
+            <span>/</span>
+            <span className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1 text-white/88">월드</span>
+          </div>
+          <p className="mt-3 text-[10px] tracking-[0.18em] text-white/56">BETA / WORLD</p>
           <h1 className="mt-2 text-[1.5rem] font-semibold tracking-[-0.05em]">월드 안에서 운영하기</h1>
           <p className="mt-2 text-sm leading-6 text-white/72">이제 chat을 따로 가지 않고, 월드 안에서 말하면 목양 공간이 반응하는 흐름으로 붙이는 중이야.</p>
         </div>
 
         <div className="hidden gap-2 md:flex text-[11px]">
+          <Link href="/app/beta" className="rounded-full border border-white/14 bg-black/10 px-3 py-1.5 text-white/78 backdrop-blur-md">홈</Link>
           <Link href="/app/beta/world/shepherding" className="rounded-full border border-white/14 bg-black/10 px-3 py-1.5 text-white/78 backdrop-blur-md">목양 공간 열기</Link>
           <Link href="/app/beta/records" className="rounded-full border border-white/14 bg-black/10 px-3 py-1.5 text-white/78 backdrop-blur-md">Records</Link>
         </div>

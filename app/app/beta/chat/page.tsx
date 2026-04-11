@@ -6,7 +6,14 @@ export default function BetaChatPage() {
   return (
     <div className="flex flex-col gap-5 text-[#171717]">
       <header className="rounded-[28px] border border-[#ece4d8] bg-white px-6 py-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] lg:px-7">
-        <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">BETA / CHAT</p>
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#7f7366]">
+          <Link href="/app/beta" className="rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-3 py-1">홈</Link>
+          <span>/</span>
+          <Link href="/app/beta/world" className="rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-3 py-1">월드</Link>
+          <span>/</span>
+          <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1 text-[#3f372d]">운영 입력</span>
+        </div>
+        <p className="mt-3 text-[10px] tracking-[0.18em] text-[#9a8b7a]">BETA / CHAT</p>
         <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">운영 입력</h1>
         <p className="mt-3 max-w-[760px] text-sm leading-6 text-[#5f564b]">
           이제부터 chat 명령으로 목양 공간 상태를 바꾸기 시작한다. 첫 연결은 `목자 추가`다.

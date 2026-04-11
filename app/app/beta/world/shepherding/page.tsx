@@ -16,19 +16,26 @@ export default function BetaWorldShepherdingPage() {
     <div className="flex flex-col gap-5 text-[#171717]">
       <header className="flex flex-col gap-4 rounded-[28px] border border-[#ece4d8] bg-white px-6 py-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] lg:flex-row lg:items-end lg:justify-between lg:px-7">
         <div>
-          <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">WORLD / SHEPHERDING</p>
+          <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#7f7366]">
+            <Link href="/app/beta" className="rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-3 py-1">홈</Link>
+            <span>/</span>
+            <Link href="/app/beta/world" className="rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-3 py-1">월드</Link>
+            <span>/</span>
+            <span className="rounded-full border border-[#e7dfd3] bg-white px-3 py-1 text-[#3f372d]">목양</span>
+          </div>
+          <p className="mt-3 text-[10px] tracking-[0.18em] text-[#9a8b7a]">WORLD / SHEPHERDING</p>
           <h1 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-[#111111]">목양</h1>
           <p className="mt-3 max-w-[760px] text-sm leading-6 text-[#5f564b]">
             월드 안의 첫 기능 공간. 상단은 따뜻한 내부 공간, 아래는 목자 아바타 카드 공간으로 나눴다.
           </p>
         </div>
 
-        <div className="flex gap-2">
-          <Link href="/app/beta/chat" className="rounded-[14px] border border-[#e7dfd3] bg-[#faf7f2] px-4 py-2 text-sm text-[#3f372d]">
-            chat에서 목자 추가
+        <div className="flex flex-wrap gap-2">
+          <Link href="/app/beta" className="rounded-[14px] border border-[#e7dfd3] bg-[#faf7f2] px-4 py-2 text-sm text-[#3f372d]">
+            홈으로
           </Link>
           <Link href="/app/beta/world" className="rounded-[14px] border border-[#e7dfd3] bg-white px-4 py-2 text-sm text-[#3f372d]">
-            월드로 돌아가기
+            월드로
           </Link>
         </div>
       </header>
