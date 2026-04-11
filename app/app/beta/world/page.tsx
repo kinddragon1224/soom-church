@@ -14,8 +14,8 @@ export default function BetaWorldPage() {
   return (
     <div className="relative -m-4 min-h-[calc(100vh-2rem)] overflow-hidden rounded-[30px] sm:-m-5 lg:-m-6">
       <Image
-        src="/beta-world/world-bg-master-fixed.jpg"
-        alt="Soom beta world master background"
+        src="/beta-world/world-bg-key-01.jpg"
+        alt="Soom beta world background"
         fill
         priority
         className="object-cover"
