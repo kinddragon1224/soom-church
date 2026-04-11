@@ -47,16 +47,16 @@ export default function BetaWorldPage() {
       <div className="absolute inset-0 z-10">
         <Link
           href="/app/beta/world/shepherding"
-          className="absolute left-[48%] top-[63%] z-20 flex -translate-x-1/2 flex-col items-center"
-          style={{ animation: "npcBob 3.4s ease-in-out infinite" }}
+          className="absolute left-[47%] top-[61.5%] z-20 flex -translate-x-1/2 flex-col items-center"
+          style={{ animation: "npcGround 4.2s ease-in-out infinite" }}
         >
-          <div className="relative flex h-[84px] w-[84px] items-center justify-center rounded-full border border-white/20 bg-black/12 text-xl text-white backdrop-blur-sm shadow-[0_18px_28px_rgba(0,0,0,0.16)]">
-            <span className="text-2xl">🧍</span>
-            <span className="absolute -right-1 -top-1 rounded-full border border-white/20 bg-[#f6d48a22] px-2 py-1 text-[10px] text-[#fff0bf] shadow-[0_0_14px_rgba(246,212,138,0.22)]">
-              목양
-            </span>
+          <div className="relative h-[140px] w-[140px] drop-shadow-[0_18px_24px_rgba(0,0,0,0.24)]">
+            <Image src="/beta-world/asset-leader-01.jpg" alt="목양 NPC" fill className="object-contain" />
           </div>
-          <div className="mt-2 h-2 w-8 rounded-full bg-black/20 blur-[2px]" />
+          <div className="-mt-2 rounded-full border border-white/14 bg-black/12 px-3 py-1 text-[11px] text-white/86 backdrop-blur-sm shadow-[0_10px_20px_rgba(0,0,0,0.12)]">
+            목양
+          </div>
+          <div className="mt-1 h-2 w-10 rounded-full bg-black/25 blur-[2px]" />
         </Link>
 
         {worldSignals.map((signal, index) => (
@@ -88,9 +88,9 @@ export default function BetaWorldPage() {
           0%, 100% { transform: translateY(0px) translateX(0px); }
           50% { transform: translateY(-10px) translateX(8px); }
         }
-        @keyframes npcBob {
+        @keyframes npcGround {
           0%, 100% { transform: translateX(-50%) translateY(0px); }
-          50% { transform: translateX(-50%) translateY(-4px); }
+          50% { transform: translateX(-50%) translateY(-2px); }
         }
       `}</style>
     </div>
