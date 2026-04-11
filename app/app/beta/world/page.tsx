@@ -36,7 +36,7 @@ export default function BetaWorldPage() {
   return (
     <div className="-m-4 flex flex-col gap-4 bg-[#f3ede3] p-4 sm:-m-5 sm:p-5 lg:-m-6 lg:p-6">
       <section className="relative overflow-hidden rounded-[34px] border border-[#e8ddcf] bg-[#d9c7b0] shadow-[0_28px_70px_rgba(66,38,12,0.10)]">
-        <div className="relative aspect-[16/9] w-full">
+        <div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:aspect-[16/9]">
           <Image
             src="/beta-world/world-bg-key-01.jpg"
             alt="Soom beta world background"
@@ -55,30 +55,40 @@ export default function BetaWorldPage() {
             </div>
           </div>
 
-          <div className="absolute left-[18%] top-[22%] z-20 rounded-[18px] border border-white/20 bg-[rgba(255,247,235,0.72)] px-3 py-3 text-[#5b4631] backdrop-blur-md shadow-[0_12px_24px_rgba(66,38,12,0.10)]">
-            <p className="text-[10px] tracking-[0.16em] text-[#9a8060]">CHURCH</p>
-            <div className="mt-2 grid gap-1.5 text-[11px]">
-              <div className="rounded-full bg-white/70 px-2.5 py-1">주일 예배</div>
-              <div className="rounded-full bg-white/70 px-2.5 py-1">새가족 모임</div>
+          <div className="absolute left-[13%] top-[23%] z-20 rotate-[-4deg]">
+            <div className="rounded-[16px] border border-[#7d5936]/60 bg-[linear-gradient(180deg,rgba(167,122,78,0.96)_0%,rgba(120,80,45,0.96)_100%)] px-3 py-2.5 text-[#fff7eb] shadow-[0_12px_24px_rgba(66,38,12,0.18)]">
+              <p className="text-[9px] tracking-[0.18em] text-white/70">CHURCH</p>
+              <div className="mt-2 grid gap-1 text-[10px]">
+                <div className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[#ffe0a8]" />주일 예배</div>
+                <div className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[#ffe0a8]" />새가족</div>
+              </div>
             </div>
+            <div className="mx-auto h-5 w-1.5 rounded-b-full bg-[#7f5835]" />
           </div>
 
-          <div className="absolute right-[15%] top-[34%] z-20 rounded-[18px] border border-white/18 bg-[rgba(255,247,235,0.64)] px-3 py-3 text-[#5b4631] backdrop-blur-md shadow-[0_12px_24px_rgba(66,38,12,0.10)]">
-            <p className="text-[10px] tracking-[0.16em] text-[#9a8060]">MOKJANG</p>
-            <div className="mt-2 grid gap-1.5 text-[11px]">
-              <div className="rounded-full bg-white/70 px-2.5 py-1">목장 모임</div>
-              <div className="rounded-full bg-white/70 px-2.5 py-1">심방 예정</div>
+          <div className="absolute right-[12%] top-[35%] z-20 rotate-[5deg]">
+            <div className="rounded-[16px] border border-[#7d5936]/60 bg-[linear-gradient(180deg,rgba(167,122,78,0.95)_0%,rgba(120,80,45,0.95)_100%)] px-3 py-2.5 text-[#fff7eb] shadow-[0_12px_24px_rgba(66,38,12,0.18)]">
+              <p className="text-[9px] tracking-[0.18em] text-white/70">MOKJANG</p>
+              <div className="mt-2 grid gap-1 text-[10px]">
+                <div className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[#ffe0a8]" />목장 모임</div>
+                <div className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[#ffe0a8]" />심방 예정</div>
+              </div>
             </div>
+            <div className="mx-auto h-5 w-1.5 rounded-b-full bg-[#7f5835]" />
           </div>
 
-          <div className="absolute left-[39%] top-[69%] z-10 h-6 w-6 rounded-full bg-[rgba(255,228,169,0.52)] blur-[6px]" />
-          <div className="absolute left-[40%] top-[70%] z-10 h-2.5 w-2.5 rounded-full bg-[#ffe4ad] shadow-[0_0_14px_rgba(255,228,173,0.9)]" />
-          <div className="absolute left-[61%] top-[67%] z-10 h-6 w-6 rounded-full bg-[rgba(255,228,169,0.48)] blur-[6px]" />
-          <div className="absolute left-[62%] top-[68%] z-10 h-2.5 w-2.5 rounded-full bg-[#ffe4ad] shadow-[0_0_14px_rgba(255,228,173,0.9)]" />
+          <div className="absolute left-[38.5%] top-[68%] z-10 h-8 w-8 rounded-full bg-[rgba(255,228,169,0.34)] blur-[8px]" />
+          <div className="absolute left-[39.5%] top-[69%] z-10 h-3 w-3 rounded-full bg-[#ffe4ad] shadow-[0_0_16px_rgba(255,228,173,0.95)]" />
+          <div className="absolute left-[61%] top-[66%] z-10 h-8 w-8 rounded-full bg-[rgba(255,228,169,0.3)] blur-[8px]" />
+          <div className="absolute left-[62%] top-[67%] z-10 h-3 w-3 rounded-full bg-[#ffe4ad] shadow-[0_0_16px_rgba(255,228,173,0.95)]" />
 
-          <div className="absolute left-[71%] top-[57%] z-20 flex items-center gap-1.5 rounded-full border border-white/16 bg-[rgba(110,73,42,0.68)] px-3 py-1.5 text-[11px] text-white backdrop-blur-md shadow-[0_10px_22px_rgba(66,38,12,0.16)]">
-            <span className="inline-block h-2 w-2 rounded-full bg-[#ffd38a]" />
-            이벤트
+          <div className="absolute left-[73%] top-[56%] z-20">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-[rgba(255,182,110,0.26)] blur-[10px]" />
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-full border border-white/18 bg-[rgba(130,84,44,0.82)] text-[12px] text-white shadow-[0_10px_22px_rgba(66,38,12,0.16)]">
+                ✦
+              </div>
+            </div>
           </div>
 
           <div className="absolute left-[50%] top-[56.5%] z-10 h-10 w-28 -translate-x-1/2 rounded-full bg-[rgba(255,220,156,0.14)] blur-[18px]" />
