@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const worldSignals = [
-  { label: "기도", className: "left-[37%] top-[55%]", color: "#c4b5fd" },
-  { label: "후속", className: "left-[57%] top-[59%]", color: "#fcd34d" },
-  { label: "돌봄", className: "left-[67%] top-[51%]", color: "#7dd3fc" },
-  { label: "새 방문", className: "left-[27%] top-[59%]", color: "#f9d7a5" },
+  { label: "기도", className: "left-[37%] top-[55%]", src: "/beta-world/effect-prayer-01.jpg" },
+  { label: "후속", className: "left-[57%] top-[59%]", src: "/beta-world/effect-followup-01.jpg" },
+  { label: "돌봄", className: "left-[67%] top-[51%]", src: "/beta-world/effect-care-01.jpg" },
+  { label: "새 방문", className: "left-[27%] top-[59%]", src: "/beta-world/effect-newcomer-01.jpg" },
 ];
 
 export default function BetaWorldPage() {
@@ -38,13 +38,13 @@ export default function BetaWorldPage() {
 
       <div className="absolute inset-0 z-10">
         {worldSignals.map((signal, index) => (
-          <div key={signal.label} className={`absolute ${signal.className}`} style={{ animation: `pulse ${2.6 + index * 0.35}s ease-in-out infinite` }}>
-            <div className="relative flex items-center justify-center">
-              <div className="h-8 w-8 rounded-full blur-md" style={{ backgroundColor: `${signal.color}88` }} />
-              <div className="absolute h-3.5 w-3.5 rounded-full border border-white/40 shadow-[0_0_12px_rgba(255,255,255,0.12)]" style={{ backgroundColor: signal.color }} />
-            </div>
-            <div className="mt-2 -ml-4 rounded-full border border-white/12 bg-black/12 px-2.5 py-1 text-[10px] text-white/78 backdrop-blur-sm">
-              {signal.label}
+          <div
+            key={signal.label}
+            className={`absolute ${signal.className} z-10`}
+            style={{ animation: `pulse ${2.6 + index * 0.35}s ease-in-out infinite` }}
+          >
+            <div className="relative h-[66px] w-[66px] drop-shadow-[0_0_18px_rgba(255,255,255,0.18)]">
+              <Image src={signal.src} alt={signal.label} fill className="object-contain" />
             </div>
           </div>
         ))}
@@ -53,7 +53,7 @@ export default function BetaWorldPage() {
       <div className="absolute bottom-4 left-4 z-20 sm:bottom-6 sm:left-6">
         <div className="rounded-[20px] border border-white/14 bg-black/10 px-4 py-3 text-white backdrop-blur-md shadow-[0_18px_40px_rgba(0,0,0,0.10)]">
           <p className="text-[10px] tracking-[0.18em] text-white/56">SCENE MODE</p>
-          <p className="mt-1 text-sm text-white/80">배경 중심 장면으로 정리 중</p>
+          <p className="mt-1 text-sm text-white/80">배경 고정 + 상태 이펙트 리파인</p>
         </div>
       </div>
 
