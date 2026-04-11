@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -43,68 +44,77 @@ export default function BetaWorldShepherdingPage() {
         </div>
       </header>
 
-      <section className="rounded-[32px] border border-[#e6dccd] bg-[linear-gradient(180deg,#f7efe1_0%,#efe4d3_100%)] p-5 shadow-[0_18px_40px_rgba(66,38,12,0.08)] lg:p-6">
-        <div className="grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
-          <div className="rounded-[28px] border border-[#eadfce] bg-[linear-gradient(180deg,#fff8ee_0%,#f4e7d4_100%)] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <section className="relative overflow-hidden rounded-[32px] border border-[#d8c7b2] shadow-[0_18px_40px_rgba(66,38,12,0.12)] min-h-[680px]">
+          <Image
+            src="/beta-world/shepherding-room-bg-01.jpg"
+            alt="목양 내부 공간"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,28,18,0.08)_0%,rgba(44,28,18,0.02)_28%,rgba(44,28,18,0.12)_72%,rgba(44,28,18,0.22)_100%)]" />
+
+          <div className="absolute left-5 top-5 z-10 max-w-[420px] rounded-[24px] border border-white/18 bg-[#fff8ee]/78 px-5 py-4 text-[#3d2d1e] backdrop-blur-md shadow-[0_14px_30px_rgba(66,38,12,0.10)]">
             <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">INSIDE ROOM</p>
-            <h2 className="mt-2 text-[1.4rem] font-semibold tracking-[-0.04em] text-[#3d2d1e]">따뜻한 내부 공간</h2>
-            <p className="mt-3 max-w-[560px] text-sm leading-6 text-[#6b5743]">
-              방금 추가한 목원들이 들어와 머무르고, 오늘 돌봐야 할 흐름을 한눈에 보는 공간으로 키울 자리.
+            <h2 className="mt-2 text-[1.4rem] font-semibold tracking-[-0.04em]">따뜻한 내부 공간</h2>
+            <p className="mt-3 text-sm leading-6 text-[#6b5743]">
+              홈 화면과 같은 결의 실내 서브월드. 방금 추가한 목원들이 이 공간 안으로 들어와 머무르는 구조로 키운다.
             </p>
+          </div>
 
-            <div className="mt-5 rounded-[24px] border border-[#e6d5bc] bg-[linear-gradient(180deg,#9d6f42_0%,#7f5731_100%)] p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-              <div className="flex items-end justify-between gap-3">
-                <div>
-                  <p className="text-[10px] tracking-[0.18em] text-white/60">MAIN TABLE</p>
-                  <p className="mt-2 text-base font-semibold">지금 들어온 목원 자리</p>
-                </div>
-                <div className="rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[11px] text-white/80">
-                  최근 추가 순
-                </div>
+          <div className="absolute bottom-5 left-5 right-5 z-10 rounded-[28px] border border-white/16 bg-[rgba(88,58,34,0.62)] p-4 text-white backdrop-blur-md shadow-[0_18px_40px_rgba(44,28,18,0.20)]">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] tracking-[0.18em] text-white/60">MEMBER SPOTS</p>
+                <p className="mt-2 text-base font-semibold">지금 들어온 목원 자리</p>
               </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
-                {members.slice(0, 6).map((member) => (
-                  <button
-                    key={member.id}
-                    onClick={() => setSelectedMember(member)}
-                    className="flex aspect-square flex-col items-center justify-center rounded-[18px] border border-white/12 bg-white/10 px-2 text-center text-[11px] text-white/84"
-                  >
-                    <span className="font-semibold">{member.name.slice(0, 2)}</span>
-                    <span className="mt-1 text-white/60">{member.status}</span>
-                  </button>
-                ))}
+              <div className="rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[11px] text-white/80">
+                최근 추가 순
               </div>
             </div>
-          </div>
 
-          <div className="rounded-[28px] border border-[#eadfce] bg-white/72 p-5 backdrop-blur-sm">
-            <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">MEMBER DETAIL</p>
-            {selectedMember ? (
-              <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
-                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">
-                  <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
-                  <p className="mt-1 text-[12px] text-[#8a7a69]">{selectedMember.status} · {selectedMember.relationship}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">성별: {selectedMember.gender}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">나이: {selectedMember.age}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">연락처: {selectedMember.phone}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">침례: {selectedMember.baptized ? "유" : "무"}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">직업: {selectedMember.job}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">직분: {selectedMember.role}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">교구: {selectedMember.district}</div>
-                  <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">사역: {selectedMember.ministry}</div>
-                </div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">주소: {selectedMember.address}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">관계: {selectedMember.relationship}</div>
-                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">메모: {selectedMember.note}</div>
-              </div>
-            ) : (
-              <div className="mt-4 rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4 text-sm text-[#5f564b]">목원을 선택하면 상세 정보가 보여.</div>
-            )}
+            <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
+              {members.slice(0, 6).map((member) => (
+                <button
+                  key={member.id}
+                  onClick={() => setSelectedMember(member)}
+                  className="flex aspect-square flex-col items-center justify-center rounded-[18px] border border-white/18 bg-white/8 px-2 text-center text-[11px] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]"
+                >
+                  <span className="font-semibold">{member.name.slice(0, 2)}</span>
+                  <span className="mt-1 text-white/70">{member.status}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </section>
+
+        <aside className="rounded-[32px] border border-[#e6dccd] bg-[linear-gradient(180deg,#f7efe1_0%,#efe4d3_100%)] p-5 shadow-[0_18px_40px_rgba(66,38,12,0.08)] backdrop-blur-sm">
+          <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">MEMBER DETAIL</p>
+          {selectedMember ? (
+            <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
+              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">
+                <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
+                <p className="mt-1 text-[12px] text-[#8a7a69]">{selectedMember.status} · {selectedMember.relationship}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">성별: {selectedMember.gender}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">나이: {selectedMember.age}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">연락처: {selectedMember.phone}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">침례: {selectedMember.baptized ? "유" : "무"}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">직업: {selectedMember.job}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">직분: {selectedMember.role}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">교구: {selectedMember.district}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">사역: {selectedMember.ministry}</div>
+              </div>
+              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">주소: {selectedMember.address}</div>
+              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">관계: {selectedMember.relationship}</div>
+              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">메모: {selectedMember.note}</div>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4 text-sm text-[#5f564b]">목원을 선택하면 상세 정보가 보여.</div>
+          )}
+        </aside>
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
