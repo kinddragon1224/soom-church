@@ -33,7 +33,7 @@ export default function BetaWorldShepherdingPage() {
     <div className="-m-4 min-h-[calc(100vh-2rem)] sm:-m-5 lg:-m-6">
       <section className="relative min-h-[calc(100vh-2rem)] overflow-hidden rounded-[30px] bg-[#e9dccb]">
         <Image
-          src="/beta-world/shepherding-room-bg-05-hq.jpg"
+          src="/beta-world/shepherding-room-bg-06-filled.jpg"
           alt="목양 내부 공간"
           fill
           priority
@@ -60,18 +60,17 @@ export default function BetaWorldShepherdingPage() {
         <div className="absolute left-5 top-5 z-20 flex flex-wrap items-center gap-2">
           <Link
             href="/app/beta/world"
-            className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.76)] px-4 py-2 text-sm text-[#3d2d1e] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]"
+            className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.68)] px-4 py-2 text-sm text-[#4b3929] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.08)]"
           >
             월드로
           </Link>
-          <div className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.68)] px-4 py-2 text-sm text-[#6b5743] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]">
+          <div className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.60)] px-4 py-2 text-sm text-[#6b5743] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.08)]">
             목양
           </div>
         </div>
 
-        <div className="absolute bottom-5 left-5 z-20 rounded-[20px] border border-white/16 bg-[rgba(88,58,34,0.54)] px-4 py-3 text-white backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.20)]">
-          <p className="text-[10px] tracking-[0.18em] text-white/60">공간 보기</p>
-          <p className="mt-1 text-sm text-white/88">목원 포인트를 눌러 요약 보기</p>
+        <div className="absolute bottom-5 left-5 z-20 rounded-[18px] border border-white/14 bg-[rgba(88,58,34,0.44)] px-4 py-2.5 text-white/86 backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.16)]">
+          <p className="text-sm">목원 포인트 선택</p>
         </div>
 
         <aside className="absolute right-5 top-5 z-20 hidden w-[320px] rounded-[28px] border border-white/18 bg-[rgba(255,248,238,0.84)] p-5 text-[#5f564b] backdrop-blur-md shadow-[0_18px_36px_rgba(44,28,18,0.14)] xl:block">

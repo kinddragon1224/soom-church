@@ -89,11 +89,11 @@ export default function BetaWorldPage() {
               </span>
             </div>
             <Image
-              src="/beta-world/npc-yohan-cutout-01.png"
+              src="/beta-world/npc-yohan-cutout-02.png"
               alt="요한"
-              width={52}
-              height={82}
-              className="relative h-auto w-[52px] saturate-[0.88] sepia-[0.06] drop-shadow-[0_8px_14px_rgba(51,31,18,0.15)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
+              width={48}
+              height={76}
+              className="relative h-auto w-[48px] saturate-[0.82] sepia-[0.08] brightness-[0.98] drop-shadow-[0_8px_12px_rgba(51,31,18,0.12)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
             />
           </Link>
 
@@ -109,11 +109,11 @@ export default function BetaWorldPage() {
               </span>
             </div>
             <Image
-              src="/beta-world/npc-maria-cutout-01.png"
+              src="/beta-world/npc-maria-cutout-02.png"
               alt="마리아"
-              width={48}
-              height={80}
-              className="relative h-auto w-[48px] saturate-[0.84] sepia-[0.05] drop-shadow-[0_8px_14px_rgba(51,31,18,0.14)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
+              width={44}
+              height={74}
+              className="relative h-auto w-[44px] saturate-[0.8] sepia-[0.06] brightness-[0.99] drop-shadow-[0_8px_12px_rgba(51,31,18,0.11)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
             />
           </Link>
 
