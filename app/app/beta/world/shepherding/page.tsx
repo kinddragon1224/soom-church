@@ -47,7 +47,7 @@ export default function BetaWorldShepherdingPage() {
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
         <section className="relative overflow-hidden rounded-[32px] border border-[#d8c7b2] shadow-[0_18px_40px_rgba(66,38,12,0.12)] min-h-[680px]">
           <Image
-            src="/beta-world/shepherding-room-bg-02.jpg"
+            src="/beta-world/shepherding-room-bg-03.jpg"
             alt="목양 내부 공간"
             fill
             priority
