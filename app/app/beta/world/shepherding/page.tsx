@@ -34,39 +34,27 @@ export default function BetaWorldShepherdingPage() {
       <section className="relative min-h-[calc(100vh-2rem)] overflow-hidden rounded-[30px] bg-[#e9dccb]">
         <Image
           src="/beta-world/shepherding-room-bg-05-hq.jpg"
-          alt="목양 내부 공간 배경"
+          alt="목양 내부 공간"
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-34 blur-[20px] scale-[1.03]"
+          className="object-cover"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,28,18,0.08)_0%,rgba(44,28,18,0.04)_28%,rgba(44,28,18,0.12)_72%,rgba(44,28,18,0.18)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,28,18,0.03)_0%,rgba(44,28,18,0.01)_28%,rgba(44,28,18,0.08)_72%,rgba(44,28,18,0.12)_100%)]" />
 
-        <div className="absolute inset-0 z-[1] flex items-center justify-center p-3 sm:p-4 lg:p-6">
-          <div className="relative inline-block max-w-full">
-            <img
-              src="/beta-world/shepherding-room-bg-05-hq.jpg"
-              alt="목양 내부 공간"
-              width={2528}
-              height={1696}
-              className="block h-auto max-h-[calc(100vh-5.5rem)] w-auto max-w-full rounded-[28px] border border-white/22 shadow-[0_28px_60px_rgba(44,28,18,0.22)]"
-            />
-
-            <div className="absolute inset-0 z-10">
-              {members.slice(0, 10).map((member, index) => (
-                <button
-                  key={member.id}
-                  onClick={() => setSelectedMember(member)}
-                  className={`absolute ${memberPositions[index] ?? "left-[20%] top-[60%]"} flex -translate-x-1/2 -translate-y-1/2 flex-col items-center`}
-                >
-                  <div className="rounded-full border border-white/18 bg-[rgba(88,58,34,0.72)] px-3 py-2 text-[11px] font-semibold text-white backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.24)]">
-                    {member.name}
-                  </div>
-                  <div className="mt-2 h-3 w-3 rounded-full border border-white/40 bg-[#f7e6c4] shadow-[0_0_14px_rgba(247,230,196,0.55)]" />
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="absolute inset-0 z-10">
+          {members.slice(0, 10).map((member, index) => (
+            <button
+              key={member.id}
+              onClick={() => setSelectedMember(member)}
+              className={`absolute ${memberPositions[index] ?? "left-[20%] top-[60%]"} flex -translate-x-1/2 -translate-y-1/2 flex-col items-center`}
+            >
+              <div className="rounded-full border border-white/18 bg-[rgba(88,58,34,0.72)] px-3 py-2 text-[11px] font-semibold text-white backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.24)]">
+                {member.name}
+              </div>
+              <div className="mt-2 h-3 w-3 rounded-full border border-white/40 bg-[#f7e6c4] shadow-[0_0_14px_rgba(247,230,196,0.55)]" />
+            </button>
+          ))}
         </div>
 
         <div className="absolute left-5 top-5 z-20 flex flex-wrap items-center gap-2">
