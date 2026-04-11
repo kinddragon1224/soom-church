@@ -50,8 +50,8 @@ export default function BetaWorldPage() {
           className="absolute left-[47%] top-[61.5%] z-20 flex -translate-x-1/2 flex-col items-center"
           style={{ animation: "npcGround 4.2s ease-in-out infinite" }}
         >
-          <div className="relative h-[140px] w-[140px] drop-shadow-[0_18px_24px_rgba(0,0,0,0.24)]">
-            <Image src="/beta-world/asset-leader-01.jpg" alt="목양 NPC" fill className="object-contain" />
+          <div className="relative h-[152px] w-[152px] drop-shadow-[0_18px_24px_rgba(0,0,0,0.22)]">
+            <Image src="/beta-world/npc-shepherd-transparent-01.jpg" alt="목양 NPC" fill className="object-contain" />
           </div>
           <div className="-mt-2 rounded-full border border-white/14 bg-black/12 px-3 py-1 text-[11px] text-white/86 backdrop-blur-sm shadow-[0_10px_20px_rgba(0,0,0,0.12)]">
             목양
