@@ -30,8 +30,8 @@ export default function BetaWorldShepherdingPage() {
   }, []);
 
   return (
-    <div className="-m-4 grid min-h-[calc(100vh-2rem)] gap-0 lg:grid-cols-[minmax(0,1fr)_360px] sm:-m-5 lg:-m-6">
-      <section className="relative overflow-hidden rounded-l-[30px] rounded-r-[30px] lg:rounded-r-none">
+    <div className="-m-4 min-h-[calc(100vh-2rem)] sm:-m-5 lg:-m-6">
+      <section className="relative min-h-[calc(100vh-2rem)] overflow-hidden rounded-[30px]">
         <Image
           src="/beta-world/shepherding-room-bg-04.jpg"
           alt="목양 내부 공간"
@@ -44,12 +44,12 @@ export default function BetaWorldShepherdingPage() {
         <div className="absolute left-5 top-5 z-10 flex flex-wrap items-center gap-2">
           <Link
             href="/app/beta/world"
-            className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.78)] px-4 py-2 text-sm text-[#3d2d1e] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]"
+            className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.76)] px-4 py-2 text-sm text-[#3d2d1e] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]"
           >
             월드로
           </Link>
-          <div className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.72)] px-4 py-2 text-sm text-[#6b5743] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]">
-            목양 공간
+          <div className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.68)] px-4 py-2 text-sm text-[#6b5743] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]">
+            목양
           </div>
         </div>
 
@@ -68,13 +68,44 @@ export default function BetaWorldShepherdingPage() {
           ))}
         </div>
 
-        <div className="absolute bottom-5 left-5 z-10 rounded-[20px] border border-white/16 bg-[rgba(88,58,34,0.58)] px-4 py-3 text-white backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.20)]">
+        <div className="absolute bottom-5 left-5 z-10 rounded-[20px] border border-white/16 bg-[rgba(88,58,34,0.54)] px-4 py-3 text-white backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.20)]">
           <p className="text-[10px] tracking-[0.18em] text-white/60">공간 보기</p>
           <p className="mt-1 text-sm text-white/88">목원 포인트를 눌러 상세 보기</p>
         </div>
+
+        <aside className="absolute right-5 top-5 z-10 hidden w-[320px] rounded-[28px] border border-white/18 bg-[rgba(255,248,238,0.84)] p-5 text-[#5f564b] backdrop-blur-md shadow-[0_18px_36px_rgba(44,28,18,0.14)] xl:block">
+          <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">목원 정보</p>
+          {selectedMember ? (
+            <div className="mt-4 grid gap-3 text-sm">
+              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">
+                <p className="text-base font-semibold text-[#2f2416]">{selectedMember.name}</p>
+                <p className="mt-1 text-[12px] text-[#8a7a69]">
+                  {selectedMember.status} · {selectedMember.relationship}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">성별: {selectedMember.gender}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">나이: {selectedMember.age}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">연락처: {selectedMember.phone}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">침례: {selectedMember.baptized ? "유" : "무"}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">직업: {selectedMember.job}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">직분: {selectedMember.role}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">교구: {selectedMember.district}</div>
+                <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">사역: {selectedMember.ministry}</div>
+              </div>
+              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">주소: {selectedMember.address}</div>
+              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">관계: {selectedMember.relationship}</div>
+              <div className="rounded-[18px] border border-[#ece4d8] bg-white/84 p-4">메모: {selectedMember.note}</div>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-[18px] border border-[#ece4d8] bg-white/84 p-4 text-sm">
+              목원을 선택하면 상세 정보가 보여.
+            </div>
+          )}
+        </aside>
       </section>
 
-      <aside className="border-l border-[#eadfce] bg-[linear-gradient(180deg,#f7efe1_0%,#efe4d3_100%)] p-5 shadow-[-10px_0_30px_rgba(66,38,12,0.06)]">
+      <section className="border-t border-[#eadfce] bg-[linear-gradient(180deg,#f7efe1_0%,#efe4d3_100%)] p-4 xl:hidden">
         <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">목원 정보</p>
         {selectedMember ? (
           <div className="mt-4 grid gap-3 text-sm text-[#5f564b]">
@@ -89,21 +120,10 @@ export default function BetaWorldShepherdingPage() {
               <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">나이: {selectedMember.age}</div>
               <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">연락처: {selectedMember.phone}</div>
               <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">침례: {selectedMember.baptized ? "유" : "무"}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">직업: {selectedMember.job}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">직분: {selectedMember.role}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">교구: {selectedMember.district}</div>
-              <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">사역: {selectedMember.ministry}</div>
             </div>
-            <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">주소: {selectedMember.address}</div>
-            <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">관계: {selectedMember.relationship}</div>
-            <div className="rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4">메모: {selectedMember.note}</div>
           </div>
-        ) : (
-          <div className="mt-4 rounded-[18px] border border-[#ece4d8] bg-[#fcfbf8] p-4 text-sm text-[#5f564b]">
-            목원을 선택하면 상세 정보가 보여.
-          </div>
-        )}
-      </aside>
+        ) : null}
+      </section>
     </div>
   );
 }
