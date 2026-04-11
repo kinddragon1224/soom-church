@@ -48,96 +48,102 @@ export default function BetaWorldPage() {
     }
   }
 
+  const memberPositions = [
+    "left-[32%] top-[73%]",
+    "left-[43%] top-[67%]",
+    "left-[58%] top-[72%]",
+    "left-[69%] top-[66%]",
+  ];
+
   return (
-    <div className="relative -m-4 min-h-[calc(100vh-2rem)] overflow-hidden rounded-[30px] sm:-m-5 lg:-m-6">
-      <Image
-        src="/beta-world/world-bg-key-01.jpg"
-        alt="Soom beta world background"
-        fill
-        priority
-        className="object-cover"
-      />
+    <div className="-m-4 flex flex-col gap-4 bg-[#f3ede3] p-4 sm:-m-5 sm:p-5 lg:-m-6 lg:p-6">
+      <section className="relative overflow-hidden rounded-[30px] border border-[#e6dccd] bg-[#d9c7b0] shadow-[0_24px_60px_rgba(66,38,12,0.10)]">
+        <div className="relative aspect-[16/9] w-full">
+          <Image
+            src="/beta-world/world-bg-key-01.jpg"
+            alt="Soom beta world background"
+            fill
+            priority
+            className="object-cover"
+          />
 
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,14,25,0.04)_0%,rgba(8,14,25,0.01)_30%,rgba(8,14,25,0.12)_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,232,178,0.12),transparent_32%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,14,25,0.03)_0%,rgba(8,14,25,0.00)_35%,rgba(8,14,25,0.10)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,232,178,0.10),transparent_32%)]" />
 
-      <div className="absolute right-[18%] top-[34%] z-20">
-        <Link href="/app/beta/world/shepherding" className="group flex flex-col items-center">
-          <div className="flex h-[88px] w-[88px] items-center justify-center rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_30%,rgba(255,246,231,0.95),rgba(192,148,94,0.86))] shadow-[0_18px_40px_rgba(33,22,10,0.28)] transition group-hover:scale-[1.04]">
-            <div className="flex h-[68px] w-[68px] items-center justify-center rounded-full border border-white/35 bg-[linear-gradient(180deg,#fff2df_0%,#e2b781_100%)] text-[1.1rem] font-semibold text-[#55351f]">
-              요한
+          <div className="absolute left-4 top-4 z-20 sm:left-5 sm:top-5">
+            <div className="rounded-full border border-white/18 bg-[rgba(255,248,238,0.76)] px-4 py-2 text-sm text-[#3d2d1e] backdrop-blur-md shadow-[0_10px_24px_rgba(66,38,12,0.10)]">
+              월드
             </div>
           </div>
-          <div className="mt-3 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-4 py-2 text-[12px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)]">
-            요한과 목양 공간 들어가기
-          </div>
-        </Link>
-      </div>
 
-      {members.slice(0, 4).map((member, index) => {
-        const positions = [
-          "left-[26%] top-[63%]",
-          "left-[39%] top-[57%]",
-          "left-[56%] top-[60%]",
-          "left-[67%] top-[52%]",
-        ];
-
-        return (
-          <div
-            key={member.id}
-            className={`absolute ${positions[index] ?? "left-[28%] top-[62%]"} z-20 -translate-x-1/2 -translate-y-1/2`}
-          >
-            <div className="rounded-full border border-white/18 bg-[rgba(58,40,23,0.62)] px-3 py-2 text-[11px] font-semibold text-white backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.22)]">
-              {member.name}
-            </div>
-          </div>
-        );
-      })}
-
-      <div className="absolute bottom-5 left-4 right-4 z-20 sm:bottom-6 sm:left-6 sm:right-6">
-        <div className="mx-auto max-w-[980px] rounded-[28px] border border-white/14 bg-[rgba(20,16,13,0.58)] p-4 text-white backdrop-blur-xl shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-5">
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-[10px] tracking-[0.18em] text-white/42">SOOM WORLD INPUT</p>
-                <p className="mt-1 text-sm text-white/74">말로 적으면 월드와 목양 공간이 같이 바뀌는 구조로 가는 중이야.</p>
-              </div>
-              <Link
-                href="/app/beta/chat"
-                className="rounded-full border border-white/12 bg-white/[0.05] px-3 py-1.5 text-[12px] text-white/72"
-              >
-                채팅 화면 열기
-              </Link>
-            </div>
-
-            <div className="rounded-[24px] border border-white/12 bg-black/18 px-4 py-4 sm:px-5">
-              <textarea
-                value={command}
-                onChange={(event) => setCommand(event.target.value)}
-                placeholder="무엇을 기록할까? 예: 목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문"
-                className="min-h-[96px] w-full resize-none bg-transparent text-[15px] leading-7 text-white outline-none placeholder:text-white/32"
-              />
-
-              <div className="mt-4 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex flex-wrap gap-2 text-[12px] text-white/54">
-                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">목원 추가</span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">심방 메모</span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">기도 요청</span>
+          <div className="absolute left-1/2 top-[58%] z-20 -translate-x-1/2 -translate-y-1/2">
+            <Link href="/app/beta/world/shepherding" className="group flex flex-col items-center">
+              <div className="flex h-[86px] w-[86px] items-center justify-center rounded-full border border-white/28 bg-[radial-gradient(circle_at_30%_30%,rgba(255,246,231,0.96),rgba(193,148,93,0.90))] shadow-[0_18px_40px_rgba(33,22,10,0.30)] transition group-hover:scale-[1.04]">
+                <div className="flex h-[66px] w-[66px] items-center justify-center rounded-full border border-white/35 bg-[linear-gradient(180deg,#fff2df_0%,#e2b781_100%)] text-[1rem] font-semibold text-[#55351f]">
+                  요한
                 </div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="rounded-full bg-white px-4 py-2.5 text-sm font-medium text-[#1f1a16] transition hover:bg-[#f8ecda] disabled:opacity-60"
-                >
-                  {isSubmitting ? "반영 중..." : "반영하기"}
-                </button>
+              </div>
+              <div className="mt-2 rounded-full border border-white/18 bg-[rgba(58,40,23,0.72)] px-3 py-1.5 text-[11px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.24)]">
+                목양 공간 들어가기
+              </div>
+            </Link>
+          </div>
+
+          {members.slice(0, 4).map((member, index) => (
+            <div
+              key={member.id}
+              className={`absolute ${memberPositions[index] ?? "left-[32%] top-[73%]"} z-20 -translate-x-1/2 -translate-y-1/2`}
+            >
+              <div className="rounded-full border border-white/18 bg-[rgba(58,40,23,0.62)] px-3 py-2 text-[11px] font-semibold text-white backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.22)]">
+                {member.name}
               </div>
             </div>
-
-            <p className="px-1 text-sm text-white/66">{message}</p>
-          </form>
+          ))}
         </div>
-      </div>
+      </section>
+
+      <section className="rounded-[30px] border border-[#e7dece] bg-[#fbfaf7] p-4 shadow-[0_18px_40px_rgba(66,38,12,0.05)] sm:p-5">
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">SOOM WORLD INPUT</p>
+              <p className="mt-1 text-sm text-[#5f564b]">월드 아래에서 바로 입력하고, 위 장면 변화는 더 또렷하게 보는 구조로 바꿨어.</p>
+            </div>
+            <Link
+              href="/app/beta/chat"
+              className="rounded-full border border-[#e7dfd3] bg-[#faf7f2] px-3 py-1.5 text-[12px] text-[#5a4d40]"
+            >
+              채팅 화면 열기
+            </Link>
+          </div>
+
+          <div className="rounded-[24px] border border-[#e7dfd3] bg-white px-4 py-4 sm:px-5">
+            <textarea
+              value={command}
+              onChange={(event) => setCommand(event.target.value)}
+              placeholder="무엇을 기록할까? 예: 목원 추가 김은혜, 여, 34, 010-1234-5678, 새가족, 이번 주 첫 방문"
+              className="min-h-[110px] w-full resize-none bg-transparent text-[15px] leading-7 text-[#1f1a16] outline-none placeholder:text-[#9d9285]"
+            />
+
+            <div className="mt-4 flex flex-col gap-3 border-t border-[#eee5da] pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-2 text-[12px] text-[#776d62]">
+                <span className="rounded-full border border-[#eadfce] bg-[#faf7f2] px-3 py-1.5">목원 추가</span>
+                <span className="rounded-full border border-[#eadfce] bg-[#faf7f2] px-3 py-1.5">심방 메모</span>
+                <span className="rounded-full border border-[#eadfce] bg-[#faf7f2] px-3 py-1.5">기도 요청</span>
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="rounded-full bg-[#1f1a16] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#34291f] disabled:opacity-60"
+              >
+                {isSubmitting ? "반영 중..." : "반영하기"}
+              </button>
+            </div>
+          </div>
+
+          <p className="px-1 text-sm text-[#6b6258]">{message}</p>
+        </form>
+      </section>
     </div>
   );
 }
