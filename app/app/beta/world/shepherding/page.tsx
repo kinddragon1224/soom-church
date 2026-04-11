@@ -59,33 +59,39 @@ export default function BetaWorldShepherdingPage() {
             <p className="text-[10px] tracking-[0.18em] text-[#9f8361]">INSIDE ROOM</p>
             <h2 className="mt-2 text-[1.4rem] font-semibold tracking-[-0.04em]">따뜻한 내부 공간</h2>
             <p className="mt-3 text-sm leading-6 text-[#6b5743]">
-              홈 화면과 같은 결의 실내 서브월드. 방금 추가한 목원들이 이 공간 안으로 들어와 머무르는 구조로 키운다.
+              홈 화면과 같은 결의 실내 서브월드. 이제 목원은 아래 박스가 아니라 이 공간 안의 포인트로 직접 들어오게 만든다.
             </p>
           </div>
 
-          <div className="absolute bottom-5 left-5 right-5 z-10 rounded-[28px] border border-white/16 bg-[rgba(88,58,34,0.62)] p-4 text-white backdrop-blur-md shadow-[0_18px_40px_rgba(44,28,18,0.20)]">
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <p className="text-[10px] tracking-[0.18em] text-white/60">MEMBER SPOTS</p>
-                <p className="mt-2 text-base font-semibold">지금 들어온 목원 자리</p>
-              </div>
-              <div className="rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[11px] text-white/80">
-                최근 추가 순
-              </div>
-            </div>
+          <div className="absolute inset-0 z-10">
+            {members.slice(0, 6).map((member, index) => {
+              const positions = [
+                "left-[18%] top-[68%]",
+                "left-[33%] top-[63%]",
+                "left-[49%] top-[58%]",
+                "left-[63%] top-[63%]",
+                "left-[76%] top-[53%]",
+                "left-[28%] top-[49%]",
+              ];
 
-            <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
-              {members.slice(0, 6).map((member) => (
+              return (
                 <button
                   key={member.id}
                   onClick={() => setSelectedMember(member)}
-                  className="flex aspect-square flex-col items-center justify-center rounded-[18px] border border-white/18 bg-white/8 px-2 text-center text-[11px] text-white/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]"
+                  className={`absolute ${positions[index] ?? "left-[20%] top-[60%]"} flex -translate-x-1/2 -translate-y-1/2 flex-col items-center`}
                 >
-                  <span className="font-semibold">{member.name.slice(0, 2)}</span>
-                  <span className="mt-1 text-white/70">{member.status}</span>
+                  <div className="rounded-full border border-white/18 bg-[rgba(88,58,34,0.72)] px-3 py-2 text-[11px] font-semibold text-white backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.24)]">
+                    {member.name}
+                  </div>
+                  <div className="mt-2 h-3 w-3 rounded-full border border-white/40 bg-[#f7e6c4] shadow-[0_0_14px_rgba(247,230,196,0.55)]" />
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+
+          <div className="absolute bottom-5 left-5 z-10 rounded-[20px] border border-white/16 bg-[rgba(88,58,34,0.58)] px-4 py-3 text-white backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.20)]">
+            <p className="text-[10px] tracking-[0.18em] text-white/60">SPACE MODE</p>
+            <p className="mt-1 text-sm text-white/88">목원 포인트를 눌러 상세 보기</p>
           </div>
         </section>
 
