@@ -31,16 +31,16 @@ export default function BetaWorldShepherdingPage() {
 
   return (
     <div className="-m-4 min-h-[calc(100vh-2rem)] sm:-m-5 lg:-m-6">
-      <section className="relative min-h-[calc(100vh-2rem)] overflow-hidden rounded-[30px] bg-[#e9dccb]">
+      <section className="relative min-h-[72vh] overflow-hidden rounded-[30px] bg-[#e9dccb] md:min-h-[calc(100vh-2rem)]">
         <Image
           src="/beta-world/shepherding-room-bg-06-filled.jpg"
           alt="목양 내부 공간"
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover object-[52%_16%] md:object-[50%_50%]"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,28,18,0.03)_0%,rgba(44,28,18,0.01)_28%,rgba(44,28,18,0.08)_72%,rgba(44,28,18,0.12)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(44,28,18,0.04)_0%,rgba(44,28,18,0.01)_24%,rgba(44,28,18,0.08)_68%,rgba(44,28,18,0.12)_100%)]" />
 
         <div className="absolute inset-0 z-10">
           {members.slice(0, 10).map((member, index) => (
