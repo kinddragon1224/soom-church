@@ -100,7 +100,7 @@ export default function BetaWorldPage() {
           >
             <div className="absolute bottom-[2px] left-[44%] h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.22)] blur-[4px]" />
             <div className="absolute bottom-[2px] left-[63%] h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.20)] blur-[4px]" />
-            <div className="absolute inset-x-0 -bottom-8 flex justify-center opacity-0 transition duration-200 group-hover:opacity-100">
+            <div className="absolute inset-x-0 -bottom-8 flex justify-center">
               <span className="rounded-full border border-white/18 bg-[rgba(71,49,30,0.74)] px-3 py-1 text-[10px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.20)]">
                 목양 관리
               </span>
