@@ -105,7 +105,7 @@ export default function BetaWorldPage() {
                 목양 관리
               </span>
             </div>
-            <div className="relative flex items-end gap-1 transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]">
+            <div className="relative flex items-end -space-x-2 transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]">
               <Image
                 src="/beta-world/npc-yohan-cutout-02.png"
                 alt="요한"
