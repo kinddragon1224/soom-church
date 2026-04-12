@@ -95,42 +95,32 @@ export default function BetaWorldPage() {
 
           <Link
             href="/app/beta/world/shepherding"
-            className="absolute left-[46.7%] top-[60.8%] z-20 -translate-x-1/2 -translate-y-1/2 group"
-            aria-label="요한"
+            className="absolute left-[50.2%] top-[60.9%] z-20 -translate-x-1/2 -translate-y-1/2 group"
+            aria-label="목양 관리"
           >
-            <div className="absolute bottom-[2px] left-1/2 h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.22)] blur-[4px]" />
-            <div className="absolute inset-x-0 -bottom-7 flex justify-center opacity-0 transition duration-200 group-hover:opacity-100">
+            <div className="absolute bottom-[2px] left-[44%] h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.22)] blur-[4px]" />
+            <div className="absolute bottom-[2px] left-[63%] h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.20)] blur-[4px]" />
+            <div className="absolute inset-x-0 -bottom-8 flex justify-center opacity-0 transition duration-200 group-hover:opacity-100">
               <span className="rounded-full border border-white/18 bg-[rgba(71,49,30,0.74)] px-3 py-1 text-[10px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.20)]">
-                요한
+                목양 관리
               </span>
             </div>
-            <Image
-              src="/beta-world/npc-yohan-cutout-02.png"
-              alt="요한"
-              width={48}
-              height={76}
-              className="relative h-auto w-[48px] saturate-[0.82] sepia-[0.08] brightness-[0.98] drop-shadow-[0_8px_12px_rgba(51,31,18,0.12)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
-            />
-          </Link>
-
-          <Link
-            href="/app/beta/world/shepherding"
-            className="absolute left-[53.6%] top-[60.9%] z-20 -translate-x-1/2 -translate-y-1/2 group"
-            aria-label="마리아"
-          >
-            <div className="absolute bottom-[2px] left-1/2 h-3 w-7 -translate-x-1/2 rounded-full bg-[rgba(43,28,17,0.20)] blur-[4px]" />
-            <div className="absolute inset-x-0 -bottom-7 flex justify-center opacity-0 transition duration-200 group-hover:opacity-100">
-              <span className="rounded-full border border-white/18 bg-[rgba(71,49,30,0.74)] px-3 py-1 text-[10px] font-medium text-white backdrop-blur-md shadow-[0_10px_24px_rgba(33,22,10,0.20)]">
-                마리아
-              </span>
+            <div className="relative flex items-end gap-3 transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]">
+              <Image
+                src="/beta-world/npc-yohan-cutout-02.png"
+                alt="요한"
+                width={48}
+                height={76}
+                className="relative h-auto w-[48px] saturate-[0.82] sepia-[0.08] brightness-[0.98] drop-shadow-[0_8px_12px_rgba(51,31,18,0.12)]"
+              />
+              <Image
+                src="/beta-world/npc-maria-cutout-03.png"
+                alt="마리아"
+                width={44}
+                height={74}
+                className="relative h-auto w-[44px] saturate-[0.8] sepia-[0.06] brightness-[0.99] drop-shadow-[0_8px_12px_rgba(51,31,18,0.11)]"
+              />
             </div>
-            <Image
-              src="/beta-world/npc-maria-cutout-03.png"
-              alt="마리아"
-              width={44}
-              height={74}
-              className="relative h-auto w-[44px] saturate-[0.8] sepia-[0.06] brightness-[0.99] drop-shadow-[0_8px_12px_rgba(51,31,18,0.11)] transition duration-200 group-hover:translate-y-[-2px] group-hover:scale-[1.04]"
-            />
           </Link>
         </div>
       </section>
