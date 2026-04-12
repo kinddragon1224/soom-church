@@ -71,15 +71,15 @@ export default function BetaWorldShepherdingPage() {
                 className={`absolute ${memberPositions[index] ?? "left-[20%] top-[60%]"} flex -translate-x-1/2 -translate-y-1/2 flex-col items-center`}
               >
                 <div
-                  className={`rounded-full border px-3 py-2 text-[11px] font-semibold backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.22)] transition ${
+                  className={`rounded-full border px-3 py-2 text-[11px] font-semibold backdrop-blur-md shadow-[0_10px_24px_rgba(44,28,18,0.22)] transition duration-300 ${
                     isSelected
-                      ? "border-[#ffe2b3] bg-[rgba(120,77,41,0.82)] text-white"
-                      : "border-white/18 bg-[rgba(88,58,34,0.68)] text-white/92"
+                      ? "border-[#ffe2b3] bg-[rgba(120,77,41,0.82)] text-white scale-[1.03]"
+                      : "border-white/18 bg-[rgba(88,58,34,0.68)] text-white/92 hover:scale-[1.02]"
                   }`}
                 >
                   {member.name}
                 </div>
-                <div className={`mt-2 rounded-full border ${isSelected ? "h-4 w-4 border-[#ffe7bd] bg-[#ffe0a5] shadow-[0_0_18px_rgba(255,224,165,0.8)]" : "h-3 w-3 border-white/40 bg-[#f7e6c4] shadow-[0_0_14px_rgba(247,230,196,0.55)]"}`} />
+                <div className={`mt-2 rounded-full border transition-all duration-300 ${isSelected ? "h-4 w-4 border-[#ffe7bd] bg-[#ffe0a5] shadow-[0_0_18px_rgba(255,224,165,0.8)] animate-pulse" : "h-3 w-3 border-white/40 bg-[#f7e6c4] shadow-[0_0_14px_rgba(247,230,196,0.55)]"}`} />
               </button>
             );
           })}
@@ -88,6 +88,10 @@ export default function BetaWorldShepherdingPage() {
         <div className="absolute bottom-5 left-5 z-20 rounded-[18px] border border-white/14 bg-[rgba(88,58,34,0.42)] px-4 py-2.5 text-white/86 backdrop-blur-md shadow-[0_14px_30px_rgba(44,28,18,0.16)]">
           <p className="text-sm">사람을 선택하면 지금 상태가 열린다</p>
         </div>
+
+        <div className="pointer-events-none absolute left-[23%] top-[33%] z-10 h-10 w-10 rounded-full bg-[rgba(255,214,146,0.18)] blur-[10px] animate-pulse" />
+        <div className="pointer-events-none absolute left-[69%] top-[25%] z-10 h-12 w-12 rounded-full bg-[rgba(255,214,146,0.16)] blur-[12px] animate-pulse" />
+        <div className="pointer-events-none absolute left-[57%] top-[57%] z-10 h-6 w-6 rounded-full bg-[rgba(255,236,190,0.26)] blur-[6px] animate-pulse" />
 
         <aside className="absolute right-5 top-5 z-20 hidden w-[350px] rounded-[30px] border border-white/18 bg-[rgba(255,248,238,0.86)] p-5 text-[#5f564b] backdrop-blur-md shadow-[0_22px_44px_rgba(44,28,18,0.14)] xl:block">
           {selectedMember ? (
@@ -118,9 +122,9 @@ export default function BetaWorldShepherdingPage() {
                 </div>
 
                 <div className="mt-4 grid gap-2 text-[12px]">
-                  <div className="rounded-[16px] border border-[#efe4d6] bg-[#fffaf3] px-3 py-2 text-[#6c573c]">기도를 이어서 적기</div>
-                  <div className="rounded-[16px] border border-[#efe4d6] bg-[#fffaf3] px-3 py-2 text-[#6c573c]">심방 메모 정리하기</div>
-                  <div className="rounded-[16px] border border-[#efe4d6] bg-[#fffaf3] px-3 py-2 text-[#6c573c]">다음 연락 잡기</div>
+                  <div className="rounded-[16px] border border-[#efe4d6] bg-[#fffaf3] px-3 py-2 text-[#6c573c] transition hover:bg-[#fff6ea]">기도를 이어서 적기</div>
+                  <div className="rounded-[16px] border border-[#efe4d6] bg-[#fffaf3] px-3 py-2 text-[#6c573c] transition hover:bg-[#fff6ea]">심방 메모 정리하기</div>
+                  <div className="rounded-[16px] border border-[#efe4d6] bg-[#fffaf3] px-3 py-2 text-[#6c573c] transition hover:bg-[#fff6ea]">다음 연락 잡기</div>
                 </div>
               </div>
 
