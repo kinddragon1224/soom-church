@@ -1,27 +1,8 @@
 import { useMemo, useState } from "react";
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 
-type WorldObject = {
-  id: string;
-  name: string;
-  kind: "house" | "person" | "hub";
-  state: string;
-  note: string;
-  x: number;
-  y: number;
-  icon: string;
-};
-
-const objects: WorldObject[] = [
-  { id: "hub", name: "목양 관리", kind: "hub", state: "핵심 진입", note: "사람/기도/후속 흐름으로 들어간다.", x: 148, y: 60, icon: "⛪" },
-  { id: "h1", name: "은혜 가정", kind: "house", state: "기도 2", note: "이번 주 중보 요청이 올라옴.", x: 28, y: 180, icon: "🏠" },
-  { id: "h2", name: "소망 가정", kind: "house", state: "안정", note: "정착 흐름 유지 중.", x: 246, y: 190, icon: "🏠" },
-  { id: "h3", name: "기쁨 가정", kind: "house", state: "후속 1", note: "초신자 후속 필요.", x: 64, y: 368, icon: "🏠" },
-  { id: "h4", name: "평안 가정", kind: "house", state: "돌봄", note: "심방 일정 조정 필요.", x: 232, y: 382, icon: "🏠" },
-  { id: "p1", name: "김요한", kind: "person", state: "✨ 기도", note: "기도제목 업데이트됨.", x: 132, y: 266, icon: "🙂" },
-  { id: "p2", name: "박마리아", kind: "person", state: "💧 돌봄", note: "상담 후속 필요.", x: 212, y: 292, icon: "🙂" },
-  { id: "p3", name: "이다니엘", kind: "person", state: "✉️ 후속", note: "연락 필요 3일 경과.", x: 162, y: 448, icon: "🙂" },
-];
+import { worldObjects, type WorldObject } from "../../lib/world-model";
+import { getWorldSummary } from "../../lib/world-summary";
 
 function tone(kind: WorldObject["kind"], active: boolean) {
   if (kind === "hub") {
@@ -49,9 +30,10 @@ function tone(kind: WorldObject["kind"], active: boolean) {
 
 export default function WorldScreen() {
   const [selectedId, setSelectedId] = useState("hub");
+  const summary = getWorldSummary();
 
   const selected = useMemo(() => {
-    return objects.find((item) => item.id === selectedId) ?? objects[0];
+    return worldObjects.find((item) => item.id === selectedId) ?? worldObjects[0];
   }, [selectedId]);
 
   return (
@@ -61,6 +43,10 @@ export default function WorldScreen() {
         <Text style={{ color: "#fff", fontSize: 31, fontWeight: "700", lineHeight: 36, marginTop: 6 }}>목장 월드</Text>
         <Text style={{ color: "rgba(255,255,255,0.68)", fontSize: 14, lineHeight: 22, marginTop: 6 }}>
           아래로 스크롤하면서 상태를 읽고, 오브젝트를 탭해 오늘 행동을 고른다.
+        </Text>
+
+        <Text style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, marginTop: 8 }}>
+          오브젝트 {summary.objectCount} · 가정 {summary.householdCount} · 사람 {summary.peopleCount} · 할 일 {summary.taskCount}
         </Text>
       </View>
 
@@ -79,7 +65,7 @@ export default function WorldScreen() {
           <View style={{ position: "absolute", right: 30, top: 250, width: 128, height: 4, borderRadius: 999, backgroundColor: "rgba(202,191,159,0.5)", transform: [{ rotate: "-16deg" }] }} />
           <View style={{ position: "absolute", left: 120, bottom: 130, width: 120, height: 4, borderRadius: 999, backgroundColor: "rgba(202,191,159,0.5)" }} />
 
-          {objects.map((item) => {
+          {worldObjects.map((item) => {
             const isActive = selectedId === item.id;
             const colors = tone(item.kind, isActive);
 

@@ -1,5 +1,7 @@
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 
+import { chatQuickActions } from "../../lib/world-model";
+
 function QuickAction({ label }: { label: string }) {
   return (
     <Pressable style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.04)", paddingVertical: 12, paddingHorizontal: 12 }}>
@@ -17,9 +19,9 @@ export default function ChatScreen() {
 
         <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.05)", padding: 16, gap: 10 }}>
           <Text style={{ color: "rgba(255,255,255,0.62)", fontSize: 13 }}>추천 명령</Text>
-          <QuickAction label="이번 주 심방 필요한 사람 보여줘" />
-          <QuickAction label="기도 요청 새로 들어온 것 정리해줘" />
-          <QuickAction label="오늘 해야 할 후속 3개만 뽑아줘" />
+          {chatQuickActions.map((item) => (
+            <QuickAction key={item} label={item} />
+          ))}
         </View>
 
         <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "#0f1b2e", padding: 16 }}>
