@@ -2,6 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getCurrentUserId } from "@/lib/auth";
+import { getFirstChurchByUserId } from "@/lib/church-context";
+
+function appendChurchSlugToReturnHref(href: string, churchSlug: string | null) {
+  if (!churchSlug) return href;
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}churchSlug=${encodeURIComponent(churchSlug)}`;
+}
 
 export default async function MobileAppReturnPage({
   searchParams,
@@ -11,12 +18,15 @@ export default async function MobileAppReturnPage({
   const userId = await getCurrentUserId();
 
   const appReturnRaw = typeof searchParams?.appReturnUrl === "string" ? decodeURIComponent(searchParams.appReturnUrl) : "";
-  const appReturnHref = appReturnRaw.startsWith("exp://") || appReturnRaw.startsWith("soom://") ? appReturnRaw : "soom://auth-complete";
+  const baseReturnHref = appReturnRaw.startsWith("exp://") || appReturnRaw.startsWith("soom://") ? appReturnRaw : "soom://auth-complete";
 
   if (!userId) {
-    const next = encodeURIComponent(`/app/mobile/return?appReturnUrl=${encodeURIComponent(appReturnHref)}`);
+    const next = encodeURIComponent(`/app/mobile/return?appReturnUrl=${encodeURIComponent(baseReturnHref)}`);
     redirect(`/login?next=${next}`);
   }
+
+  const firstChurch = await getFirstChurchByUserId(userId);
+  const appReturnHref = appendChurchSlugToReturnHref(baseReturnHref, firstChurch?.slug ?? null);
 
   return (
     <main className="min-h-screen bg-[#07111f] px-4 py-6 text-white sm:px-6">

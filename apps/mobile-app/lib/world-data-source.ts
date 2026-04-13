@@ -1,7 +1,8 @@
+import { getCurrentChurchSlug } from "./auth-bridge";
 import { chatQuickActions, peopleRecords, taskRecords, worldObjects } from "./world-model";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
-const CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
+const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
 
 type WorldObject = (typeof worldObjects)[number];
 type PersonRecord = (typeof peopleRecords)[number];
@@ -39,12 +40,12 @@ function isSnapshotPayload(value: unknown): value is SnapshotPayload {
   );
 }
 
-async function fetchRemoteSnapshot(): Promise<WorldSnapshot> {
+async function fetchRemoteSnapshot(churchSlug: string): Promise<WorldSnapshot> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 3000);
 
   try {
-    const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(CHURCH_SLUG)}`;
+    const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(churchSlug)}`;
     const response = await fetch(endpoint, {
       method: "GET",
       headers: { Accept: "application/json" },
@@ -68,9 +69,14 @@ async function fetchRemoteSnapshot(): Promise<WorldSnapshot> {
   }
 }
 
+function resolveChurchSlug(savedSlug: string | null) {
+  return savedSlug ?? DEFAULT_CHURCH_SLUG;
+}
+
 export async function getWorldSnapshot(): Promise<WorldSnapshot> {
   try {
-    return await fetchRemoteSnapshot();
+    const savedSlug = await getCurrentChurchSlug();
+    return await fetchRemoteSnapshot(resolveChurchSlug(savedSlug));
   } catch {
     return fallbackSnapshot();
   }

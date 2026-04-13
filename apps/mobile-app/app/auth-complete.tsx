@@ -1,18 +1,21 @@
 import { useEffect } from "react";
 import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
-import { setAuthConnected } from "../lib/auth-bridge";
+import { setAuthConnected, setCurrentChurchSlug } from "../lib/auth-bridge";
 
 export default function AuthCompleteScreen() {
+  const params = useLocalSearchParams<{ churchSlug?: string }>();
+
   useEffect(() => {
     const run = async () => {
+      await setCurrentChurchSlug(typeof params.churchSlug === "string" ? params.churchSlug : null);
       await setAuthConnected(true);
       router.replace("/(tabs)/world");
     };
 
     run();
-  }, []);
+  }, [params.churchSlug]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>
