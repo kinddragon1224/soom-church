@@ -167,12 +167,29 @@ export default function WorldScreen() {
     setGrowthPublishing((prev) => ({ ...prev, [loop.id]: false }));
   };
 
+  const urgentCount = snapshot.peopleRecords.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
+  const stableCount = snapshot.peopleRecords.filter((p) => p.state.includes("안정") || p.state.includes("기도")).length;
+  const teamPower = 28000 + summary.peopleCount * 1350 + urgentCount * 420;
+  const stageLabel = `STAGE ${summary.householdCount}-${summary.objectCount}`;
+  const autoReward = `${Math.max(1, stableCount) * 120}M`;
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <View style={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 }}>
         <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 2 }}>SOOM WORLD</Text>
         <Text style={{ color: mabiTheme.textPrimary, fontSize: 31, fontWeight: "700", lineHeight: 36, marginTop: 6 }}>목장 월드</Text>
         <Text style={{ color: mabiTheme.textMuted, fontSize: 14, lineHeight: 22, marginTop: 6 }}>마을을 내려보며 오늘 해야 할 돌봄을 고른다.</Text>
+
+        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "rgba(214,178,112,0.55)", backgroundColor: "rgba(24,33,50,0.92)", paddingHorizontal: 10, paddingVertical: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View>
+            <Text style={{ color: "#8ea6d2", fontSize: 10 }}>{stageLabel}</Text>
+            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>목양 전투력 {teamPower.toLocaleString()}</Text>
+          </View>
+          <View style={{ alignItems: "flex-end" }}>
+            <Text style={{ color: "#ffd687", fontSize: 11 }}>AFK 수급 +{autoReward}</Text>
+            <Text style={{ color: "#c9d9f5", fontSize: 10 }}>후속 {urgentCount} · 안정 {stableCount}</Text>
+          </View>
+        </View>
 
         <View style={{ marginTop: 10, alignSelf: "flex-start", borderRadius: 999, borderWidth: 1, borderColor: "rgba(214,178,112,0.55)", backgroundColor: "rgba(214,178,112,0.16)", paddingHorizontal: 12, paddingVertical: 5 }}>
           <Text style={{ color: "#f4e2bf", fontSize: 12 }}>오브젝트 {summary.objectCount} · 가정 {summary.householdCount} · 사람 {summary.peopleCount}</Text>
@@ -227,6 +244,10 @@ export default function WorldScreen() {
               }}
             >
               <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
+              <View style={{ position: "absolute", left: 10, right: 10, top: 10, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.38)", backgroundColor: "rgba(13,31,24,0.68)", paddingHorizontal: 10, paddingVertical: 6, flexDirection: "row", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
+                <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>AUTO ON · 모라가 루프 실행중</Text>
+                <Text style={{ color: "#f4d38e", fontSize: 11 }}>+{autoReward}</Text>
+              </View>
               <View style={{ position: "absolute", left: 18, top: 110, width: 140, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "11deg" }] }} />
               <View style={{ position: "absolute", right: 30, top: 250, width: 128, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "-16deg" }] }} />
               <View style={{ position: "absolute", left: 120, bottom: 130, width: 120, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)" }} />
@@ -328,6 +349,22 @@ export default function WorldScreen() {
 
         <View style={{ marginTop: 12, borderRadius: 18, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10 }}>
           <Text style={{ color: "#a9c3ef", fontSize: 11, fontWeight: "700", marginBottom: 8 }}>월드 채팅</Text>
+
+          <View style={{ flexDirection: "row", gap: 6, marginBottom: 7 }}>
+            {[
+              "모라, 후속 3명 자동배정",
+              "모라, 기도 루프 1회 실행",
+              "모라, 목양 스탯 낮은 순 정렬",
+            ].map((cmd) => (
+              <Pressable
+                key={cmd}
+                onPress={() => setWorldDraft(cmd)}
+                style={{ borderRadius: 999, borderWidth: 1, borderColor: "rgba(120,157,214,0.45)", backgroundColor: "rgba(52,86,156,0.38)", paddingHorizontal: 8, paddingVertical: 4 }}
+              >
+                <Text style={{ color: "#dbe8ff", fontSize: 10 }}>{cmd.replace("모라, ", "")}</Text>
+              </Pressable>
+            ))}
+          </View>
 
           <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.25)", backgroundColor: "rgba(11,18,29,0.7)", padding: 8, gap: 6, minHeight: 84 }}>
             {worldMessages.length ? (
