@@ -26,6 +26,7 @@ export default async function LoginPage({
 
   const error = typeof searchParams?.error === "string" ? searchParams.error : null;
   const next = typeof searchParams?.next === "string" && searchParams.next.startsWith("/") ? searchParams.next : "/app";
+  const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fbfaf7_0%,#f2eadf_100%)] px-4 py-8 text-[#171717] sm:px-6 lg:px-8">
@@ -62,21 +63,27 @@ export default async function LoginPage({
             지금은 구글 로그인만 지원해. 로그인 후엔 기존 워크스페이스로 들어가거나, 처음이면 새 공간을 만들게 돼.
           </p>
 
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: next });
-            }}
-            className="mt-6"
-          >
-            <button
-              type="submit"
-              className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-[16px] border border-[#e5dacd] bg-[#fffaf4] px-5 text-sm font-medium text-[#2f2416] transition hover:bg-[#f7efe3]"
+          {googleConfigured ? (
+            <form
+              action={async () => {
+                "use server";
+                await signIn("google", { redirectTo: next });
+              }}
+              className="mt-6"
             >
-              <GoogleMark />
-              Google로 계속하기
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-[16px] border border-[#e5dacd] bg-[#fffaf4] px-5 text-sm font-medium text-[#2f2416] transition hover:bg-[#f7efe3]"
+              >
+                <GoogleMark />
+                Google로 계속하기
+              </button>
+            </form>
+          ) : (
+            <div className="mt-6 rounded-[16px] border border-[#f1d4ca] bg-[#fff6f2] p-4 text-sm leading-6 text-[#8f4c3f]">
+              구글 로그인 설정이 아직 비어 있어. AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, AUTH_URL을 넣어야 실제 연동돼.
+            </div>
+          )}
 
           {error ? <p className="mt-4 text-sm text-[#b24b3f]">{error}</p> : null}
 

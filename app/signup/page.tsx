@@ -20,6 +20,8 @@ export default async function SignupPage() {
     redirect(await getPostLoginPath(session.user.id));
   }
 
+  const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
+
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#fbfaf7_0%,#f2eadf_100%)] px-4 py-8 text-[#171717] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.05fr)_440px] lg:items-center">
@@ -55,21 +57,27 @@ export default async function SignupPage() {
             구글로 시작하면 바로 계정을 만들고, 다음 단계에서 네 공동체용 워크스페이스를 생성하게 돼.
           </p>
 
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/app/onboarding" });
-            }}
-            className="mt-6"
-          >
-            <button
-              type="submit"
-              className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-[16px] border border-[#e5dacd] bg-[#fffaf4] px-5 text-sm font-medium text-[#2f2416] transition hover:bg-[#f7efe3]"
+          {googleConfigured ? (
+            <form
+              action={async () => {
+                "use server";
+                await signIn("google", { redirectTo: "/app/onboarding" });
+              }}
+              className="mt-6"
             >
-              <GoogleMark />
-              Google로 시작하기
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-[16px] border border-[#e5dacd] bg-[#fffaf4] px-5 text-sm font-medium text-[#2f2416] transition hover:bg-[#f7efe3]"
+              >
+                <GoogleMark />
+                Google로 시작하기
+              </button>
+            </form>
+          ) : (
+            <div className="mt-6 rounded-[16px] border border-[#f1d4ca] bg-[#fff6f2] p-4 text-sm leading-6 text-[#8f4c3f]">
+              구글 로그인 설정이 아직 비어 있어. AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, AUTH_URL을 넣어야 실제 연동돼.
+            </div>
+          )}
 
           <p className="mt-6 text-sm text-[#7a7064]">
             이미 계정이 있다면 <Link href="/login" className="font-medium text-[#3f372d] underline-offset-4 hover:underline">로그인</Link>
