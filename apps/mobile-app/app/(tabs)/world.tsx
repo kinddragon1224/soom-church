@@ -37,17 +37,18 @@ export default function WorldScreen() {
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
 
-  if (loading || !snapshot) {
+  const selected = useMemo(() => {
+    if (!snapshot?.worldObjects?.length) return null;
+    return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
+  }, [selectedId, snapshot]);
+
+  if (loading || !snapshot || !selected) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ color: mabiTheme.textPrimary }}>목양 월드 불러오는 중...</Text>
       </SafeAreaView>
     );
   }
-
-  const selected = useMemo(() => {
-    return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
-  }, [selectedId, snapshot.worldObjects]);
 
   const urgentCount = snapshot.peopleRecords.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
   const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
