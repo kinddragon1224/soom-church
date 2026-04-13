@@ -21,7 +21,9 @@
 - 192e6a7 Reskin mobile tabs with 2D pixel RPG tone
 
 ## 다음 작업 우선순위
-1. 오케스트레이터 결과를 실제 DB 변경 액션(상태태그/후속 기록)까지 연결
+1. ✅ 오케스트레이터 결과를 실제 DB 변경 액션(상태태그/후속 기록)까지 연결
+   - 반영 커밋: `8a53ac4`
+   - 내용: 키워드 기반 상태태그 패치 + MemberCareRecord 후속 기록 + `MOBILE_WORLD_DB_ACTION_APPLIED` 로그 생성
 2. 에이전트 성장 로그를 GitHub 이슈/작업 큐로 실제 발행하는 브리지 추가
 3. 월드 오브젝트 스프라이트를 실제 이미지 에셋(2D 픽셀)로 치환
 
