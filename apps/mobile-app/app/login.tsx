@@ -10,7 +10,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const openWebLogin = async () => {
-    const next = encodeURIComponent("/app/mobile");
+    const next = encodeURIComponent("/app/mobile/return");
     const url = `${WEB_BASE_URL}/login?next=${next}`;
     await Linking.openURL(url);
   };
@@ -28,7 +28,7 @@ export default function LoginScreen() {
           <Text style={{ color: "rgba(255,255,255,0.46)", fontSize: 11, letterSpacing: 2 }}>SOOM LOGIN BRIDGE</Text>
           <Text style={{ color: "#fff", fontSize: 34, fontWeight: "700", lineHeight: 39 }}>로그인 연결</Text>
           <Text style={{ color: "rgba(255,255,255,0.72)", fontSize: 15, lineHeight: 24 }}>
-            구글 로그인은 웹에서 처리하고, 로그인 완료 후 앱으로 돌아와서 계속 진행한다.
+            구글 로그인은 웹에서 처리하고, 완료 후 `앱으로 돌아가기`를 누르면 자동으로 월드로 들어간다.
           </Text>
         </View>
 
@@ -45,7 +45,7 @@ export default function LoginScreen() {
             disabled={loading}
             style={{ minHeight: 54, borderRadius: 999, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)", backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center", opacity: loading ? 0.6 : 1 }}
           >
-            <Text style={{ color: "#fff", fontSize: 15, fontWeight: "600" }}>{loading ? "연결 중..." : "로그인 완료, 앱으로 돌아오기"}</Text>
+            <Text style={{ color: "#fff", fontSize: 15, fontWeight: "600" }}>{loading ? "연결 중..." : "수동 완료(예외용)"}</Text>
           </Pressable>
 
           <Text style={{ color: "rgba(255,255,255,0.52)", fontSize: 12, lineHeight: 18, textAlign: "center", marginTop: 6 }}>
