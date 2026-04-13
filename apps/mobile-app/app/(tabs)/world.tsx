@@ -67,6 +67,15 @@ function memberStats(name: string, state: string) {
   };
 }
 
+function memberSkillSet(name: string) {
+  const key = statSeed(name, 19);
+  return [
+    { title: "즉시 돌봄", level: 1 + (key % 3), desc: "긴급 상태 목원을 우선 대상으로 지정" },
+    { title: "기도 버프", level: 1 + ((key + 1) % 3), desc: "기도 루프 실행 시 안정도 상승" },
+    { title: "후속 자동화", level: 1 + ((key + 2) % 3), desc: "후속 연락 대상을 자동 큐잉" },
+  ];
+}
+
 export default function WorldScreen() {
   const { loading, snapshot, selectedId, setSelectedId, setChatDraft, addRuntimeTask } = useWorldStore();
   const [worldDraft, setWorldDraft] = useState("");
@@ -77,6 +86,8 @@ export default function WorldScreen() {
   const [growthPublishing, setGrowthPublishing] = useState<Record<string, boolean>>({});
   const [growthPublishStatus, setGrowthPublishStatus] = useState<Record<string, string>>({});
   const [topMode, setTopMode] = useState<"world" | "shepherd">("world");
+  const [memberFocusId, setMemberFocusId] = useState<string | null>(null);
+  const [memberPanelTab, setMemberPanelTab] = useState<"stat" | "skill" | "synergy">("stat");
 
   const refreshGrowthLoops = async () => {
     setGrowthLoading(true);
@@ -109,6 +120,9 @@ export default function WorldScreen() {
   };
 
   const selectedBadge = stateBadge(selected.state);
+  const focusedMember = snapshot.peopleRecords.find((person) => person.id === memberFocusId) ?? snapshot.peopleRecords[0] ?? null;
+  const focusedStats = focusedMember ? memberStats(focusedMember.name, focusedMember.state) : null;
+  const focusedSkills = focusedMember ? memberSkillSet(focusedMember.name) : [];
 
   const submitWorldChat = async () => {
     const text = worldDraft.trim();
@@ -438,7 +452,21 @@ export default function WorldScreen() {
           {snapshot.peopleRecords.slice(0, 4).map((person) => {
             const stats = memberStats(person.name, person.state);
             return (
-              <View key={person.id} style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(148,171,212,0.28)", backgroundColor: "rgba(255,255,255,0.04)", padding: 9, gap: 6 }}>
+              <Pressable
+                key={person.id}
+                onPress={() => {
+                  setMemberFocusId(person.id);
+                  setMemberPanelTab("stat");
+                }}
+                style={{
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: person.id === focusedMember?.id ? "rgba(243,208,128,0.65)" : "rgba(148,171,212,0.28)",
+                  backgroundColor: person.id === focusedMember?.id ? "rgba(243,208,128,0.1)" : "rgba(255,255,255,0.04)",
+                  padding: 9,
+                  gap: 6,
+                }}
+              >
                 <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>{person.name} · {person.household}</Text>
                 <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 11 }}>{person.nextAction}</Text>
 
@@ -457,9 +485,78 @@ export default function WorldScreen() {
                     </View>
                   </View>
                 ))}
-              </View>
+              </Pressable>
             );
           })}
+
+          {focusedMember && focusedStats ? (
+            <View style={{ marginTop: 6, borderRadius: 12, borderWidth: 1, borderColor: "rgba(243,208,128,0.5)", backgroundColor: "rgba(11,18,29,0.88)", padding: 10 }}>
+              <Text style={{ color: "#ffeabf", fontSize: 11 }}>LV {25 + (statSeed(focusedMember.name, 7) % 30)} · {focusedMember.name}</Text>
+
+              <View style={{ marginTop: 8, flexDirection: "row", gap: 6 }}>
+                {[
+                  { key: "stat", label: "스탯" },
+                  { key: "skill", label: "스킬" },
+                  { key: "synergy", label: "상성" },
+                ].map((tab) => (
+                  <Pressable
+                    key={tab.key}
+                    onPress={() => setMemberPanelTab(tab.key as "stat" | "skill" | "synergy")}
+                    style={{
+                      flex: 1,
+                      minHeight: 34,
+                      borderRadius: 8,
+                      borderWidth: 1,
+                      borderColor: memberPanelTab === tab.key ? "rgba(243,208,128,0.7)" : "rgba(148,171,212,0.28)",
+                      backgroundColor: memberPanelTab === tab.key ? "rgba(243,208,128,0.22)" : "rgba(255,255,255,0.04)",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ color: memberPanelTab === tab.key ? "#ffeabf" : "#d8e6ff", fontSize: 11, fontWeight: "700" }}>{tab.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+
+              {memberPanelTab === "stat" ? (
+                <View style={{ marginTop: 8, gap: 6 }}>
+                  {[
+                    { label: "돌봄력", value: focusedStats.care, color: "#f2a8a8" },
+                    { label: "신앙력", value: focusedStats.faith, color: "#8fe0aa" },
+                    { label: "후속력", value: focusedStats.follow, color: "#f4d38e" },
+                  ].map((row) => (
+                    <View key={`focused-${row.label}`} style={{ gap: 3 }}>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <Text style={{ color: "rgba(216,230,255,0.86)", fontSize: 10 }}>{row.label}</Text>
+                        <Text style={{ color: "rgba(216,230,255,0.86)", fontSize: 10 }}>{row.value}</Text>
+                      </View>
+                      <View style={{ height: 8, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.12)", overflow: "hidden" }}>
+                        <View style={{ width: `${row.value}%`, height: "100%", backgroundColor: row.color }} />
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+
+              {memberPanelTab === "skill" ? (
+                <View style={{ marginTop: 8, gap: 6 }}>
+                  {focusedSkills.map((skill) => (
+                    <View key={`${focusedMember.id}-${skill.title}`} style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(148,171,212,0.28)", backgroundColor: "rgba(255,255,255,0.04)", padding: 8 }}>
+                      <Text style={{ color: "#f4f7ff", fontSize: 12, fontWeight: "700" }}>LV {skill.level} · {skill.title}</Text>
+                      <Text style={{ color: "rgba(216,230,255,0.78)", fontSize: 11, marginTop: 3 }}>{skill.desc}</Text>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+
+              {memberPanelTab === "synergy" ? (
+                <View style={{ marginTop: 8, gap: 6 }}>
+                  <Text style={{ color: "#d8e6ff", fontSize: 11 }}>최적 조합: {focusedMember.household} + 기도 루프 + 후속 자동화</Text>
+                  <Text style={{ color: "rgba(216,230,255,0.74)", fontSize: 11 }}>추천 명령: "모라, {focusedMember.name} 중심으로 오늘 루프 최적화"</Text>
+                </View>
+              ) : null}
+            </View>
+          ) : null}
         </View>
 
         <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 2, borderColor: "rgba(143,224,170,0.5)", backgroundColor: "rgba(143,224,170,0.1)", padding: 12, gap: 8 }}>
