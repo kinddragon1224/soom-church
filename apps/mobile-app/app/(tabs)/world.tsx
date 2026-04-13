@@ -107,7 +107,7 @@ export default function WorldScreen() {
   const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
   const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
-  const visiblePresets = WORLD_COMMAND_PRESETS;
+  const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
 
   const submitWorldChat = async () => {
     const text = worldDraft.trim();
@@ -146,7 +146,7 @@ export default function WorldScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84, gap: 12 }}>
         <View style={{
-          height: 392,
+          height: 344,
           borderRadius: 22,
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
@@ -155,10 +155,7 @@ export default function WorldScreen() {
         }}>
           <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
           <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(120,157,214,0.28)", backgroundColor: "rgba(15,22,34,0.84)", paddingHorizontal: 12, paddingVertical: 10, zIndex: 10, gap: 8 }}>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-              <Text style={{ color: "#f4f7ff", fontSize: 15, fontWeight: "700" }}>오늘 목양 메인</Text>
-              <Text style={{ color: "rgba(220,232,255,0.62)", fontSize: 11 }}>{selected.name}</Text>
-            </View>
+            <Text style={{ color: "#f4f7ff", fontSize: 15, fontWeight: "700" }}>오늘 목양 메인</Text>
             <View style={{ flexDirection: "row", gap: 8 }}>
               <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(242,168,168,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
                 <Text style={{ color: "#ffd7d7", fontSize: 10 }}>긴급 돌봄</Text>
@@ -187,14 +184,14 @@ export default function WorldScreen() {
                 style={{
                   position: "absolute",
                   left: item.x,
-                  top: item.y - 18,
-                  minWidth: item.kind === "person" ? 78 : 96,
+                  top: item.y - 34,
+                  minWidth: item.kind === "person" ? 74 : 92,
                   borderRadius: 12,
                   borderWidth: 2,
                   borderColor: colors.border,
                   backgroundColor: colors.bg,
-                  paddingVertical: 7,
-                  paddingHorizontal: 8,
+                  paddingVertical: 6,
+                  paddingHorizontal: 7,
                   alignItems: "center",
                 }}
               >
@@ -228,7 +225,7 @@ export default function WorldScreen() {
                 </View>
               ))
             ) : (
-              <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>후속, 기도, 심방 중 하나부터 바로 지시해줘.</Text>
+              <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>후속, 기도, 심방 중 하나만 바로 지시해줘.</Text>
             )}
           </View>
 
@@ -262,10 +259,23 @@ export default function WorldScreen() {
         <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(148,171,212,0.35)", backgroundColor: "rgba(26,35,52,0.9)", padding: 12, gap: 10 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>오늘 운영</Text>
 
-          <View style={{ borderRadius: 12, backgroundColor: "rgba(255,255,255,0.04)", padding: 10, gap: 6 }}>
-            <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>지금 볼 대상</Text>
-            <Text style={{ color: "#ffffff", fontSize: 16, fontWeight: "700" }}>{selected.name}</Text>
-            <Text style={{ color: "rgba(220,232,255,0.72)", fontSize: 12 }}>{selected.state}</Text>
+          <View style={{ borderRadius: 12, backgroundColor: "rgba(255,255,255,0.04)", padding: 10, gap: 8 }}>
+            <View>
+              <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>지금 볼 대상</Text>
+              <Text style={{ color: "#ffffff", fontSize: 16, fontWeight: "700", marginTop: 3 }}>{selected.name}</Text>
+              <Text style={{ color: "rgba(220,232,255,0.72)", fontSize: 12, marginTop: 2 }}>{selected.state}</Text>
+            </View>
+
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(243,208,128,0.08)", paddingHorizontal: 10, paddingVertical: 8 }}>
+                <Text style={{ color: "rgba(255,234,191,0.72)", fontSize: 10 }}>긴급</Text>
+                <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
+              </View>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(120,157,214,0.08)", paddingHorizontal: 10, paddingVertical: 8 }}>
+                <Text style={{ color: "rgba(207,224,255,0.72)", fontSize: 10 }}>운영</Text>
+                <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 2 }}>{operationIndex}</Text>
+              </View>
+            </View>
           </View>
 
           <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ minHeight: 46, borderRadius: 12, borderWidth: 1, borderColor: "rgba(243,208,128,0.55)", backgroundColor: "rgba(243,208,128,0.18)", alignItems: "center", justifyContent: "center" }}>
