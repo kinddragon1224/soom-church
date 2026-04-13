@@ -9,6 +9,12 @@ export type AgentGrowthLoop = {
   text: string | null;
   intents: string[];
   actions: unknown[];
+  dbActions?: {
+    applied?: boolean;
+    statusTag?: string;
+    updatedMembers?: string[];
+    followUpRecords?: number;
+  } | null;
   agentGrowth: {
     loopId?: string;
     title?: string;
@@ -40,5 +46,43 @@ export async function fetchAgentGrowthLoops(): Promise<AgentGrowthLoop[]> {
     return Array.isArray(data.loops) ? data.loops : [];
   } catch {
     return [];
+  }
+}
+
+export async function publishAgentGrowthLoop(loopId: string): Promise<{ ok: boolean; published: boolean; issueUrl?: string | null; reason?: string | null }> {
+  try {
+    const savedSlug = await getCurrentChurchSlug();
+    const churchSlug = resolveChurchSlug(savedSlug);
+
+    const response = await fetch(`${WEB_BASE_URL}/api/mobile/agent-growth`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ churchSlug, loopId }),
+    });
+
+    const data = (await response.json().catch(() => ({}))) as {
+      ok?: boolean;
+      published?: boolean;
+      issueUrl?: string | null;
+      reason?: string | null;
+      message?: string;
+    };
+
+    if (!response.ok || !data.ok) {
+      return {
+        ok: false,
+        published: false,
+        reason: data.reason ?? data.message ?? "발행 실패",
+      };
+    }
+
+    return {
+      ok: true,
+      published: Boolean(data.published),
+      issueUrl: data.issueUrl ?? null,
+      reason: data.reason ?? null,
+    };
+  } catch {
+    return { ok: false, published: false, reason: "네트워크 오류" };
   }
 }

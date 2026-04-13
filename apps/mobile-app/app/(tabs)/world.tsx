@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, TextInput
 import { router } from "expo-router";
 
 import PixelSprite from "../../components/pixel-sprite";
-import { fetchAgentGrowthLoops, type AgentGrowthLoop } from "../../lib/agent-growth-source";
+import { fetchAgentGrowthLoops, publishAgentGrowthLoop, type AgentGrowthLoop } from "../../lib/agent-growth-source";
 import { sendChatCommand } from "../../lib/chat-source";
 import { type WorldObject } from "../../lib/world-model";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -59,6 +59,8 @@ export default function WorldScreen() {
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
   const [growthLoops, setGrowthLoops] = useState<AgentGrowthLoop[]>([]);
   const [growthLoading, setGrowthLoading] = useState(false);
+  const [growthPublishing, setGrowthPublishing] = useState<Record<string, boolean>>({});
+  const [growthPublishStatus, setGrowthPublishStatus] = useState<Record<string, string>>({});
 
   const refreshGrowthLoops = async () => {
     setGrowthLoading(true);
@@ -126,6 +128,24 @@ export default function WorldScreen() {
 
     await refreshGrowthLoops();
     setWorldSending(false);
+  };
+
+  const publishLoop = async (loop: AgentGrowthLoop) => {
+    const loopId = loop.agentGrowth?.loopId;
+    if (!loopId || growthPublishing[loop.id]) return;
+
+    setGrowthPublishing((prev) => ({ ...prev, [loop.id]: true }));
+    const result = await publishAgentGrowthLoop(loopId);
+
+    if (result.ok && result.published) {
+      setGrowthPublishStatus((prev) => ({ ...prev, [loop.id]: result.issueUrl ? `GitHub 발행 완료: ${result.issueUrl}` : "GitHub 발행 완료" }));
+    } else if (result.ok && !result.published) {
+      setGrowthPublishStatus((prev) => ({ ...prev, [loop.id]: `작업 큐 저장 완료 (${result.reason ?? "GitHub 미설정"})` }));
+    } else {
+      setGrowthPublishStatus((prev) => ({ ...prev, [loop.id]: `발행 실패 (${result.reason ?? "오류"})` }));
+    }
+
+    setGrowthPublishing((prev) => ({ ...prev, [loop.id]: false }));
   };
 
   return (
@@ -315,6 +335,38 @@ export default function WorldScreen() {
                 <Text style={{ color: "rgba(216,255,229,0.86)", fontSize: 12, marginTop: 4 }}>{loop.agentGrowth?.summary ?? "요약 없음"}</Text>
                 {loop.agentGrowth?.suggestedGithubIssue ? (
                   <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 11, marginTop: 4 }}>이슈 제안: {loop.agentGrowth.suggestedGithubIssue}</Text>
+                ) : null}
+                {loop.dbActions?.applied ? (
+                  <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 11, marginTop: 4 }}>
+                    DB 반영: {(loop.dbActions.updatedMembers ?? []).join(", ")} · {loop.dbActions.statusTag ?? "상태"}
+                  </Text>
+                ) : null}
+
+                {loop.agentGrowth?.loopId ? (
+                  <View style={{ marginTop: 8, gap: 6 }}>
+                    <Pressable
+                      onPress={() => publishLoop(loop)}
+                      disabled={Boolean(growthPublishing[loop.id])}
+                      style={{
+                        alignSelf: "flex-start",
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: "rgba(243,208,128,0.55)",
+                        backgroundColor: "rgba(243,208,128,0.18)",
+                        paddingHorizontal: 9,
+                        paddingVertical: 5,
+                        opacity: growthPublishing[loop.id] ? 0.6 : 1,
+                      }}
+                    >
+                      <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>
+                        {growthPublishing[loop.id] ? "발행 중..." : "이슈/작업큐 발행"}
+                      </Text>
+                    </Pressable>
+
+                    {growthPublishStatus[loop.id] ? (
+                      <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 10 }}>{growthPublishStatus[loop.id]}</Text>
+                    ) : null}
+                  </View>
                 ) : null}
               </View>
             ))
