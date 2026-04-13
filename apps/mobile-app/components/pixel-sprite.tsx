@@ -1,39 +1,30 @@
 import { Image, View } from "react-native";
 
-type SpriteKind = "house" | "person" | "hub";
-type SpriteFrame = "normal" | "selected" | "alert" | "done";
-
-const spriteSource = {
-  house: require("../assets/sprites/house.jpg"),
-  person: require("../assets/sprites/person.png"),
-  hub: require("../assets/sprites/hub.jpg"),
-} as const;
-
-const frameTone: Record<SpriteFrame, { border: string; bg: string; badge: string }> = {
-  normal: { border: "rgba(255,255,255,0.25)", bg: "rgba(9,14,24,0.45)", badge: "#9fb2c8" },
-  selected: { border: "#f4d38e", bg: "rgba(75,52,18,0.42)", badge: "#f4d38e" },
-  alert: { border: "#f2a8a8", bg: "rgba(74,29,29,0.5)", badge: "#f2a8a8" },
-  done: { border: "#8fe0aa", bg: "rgba(22,54,37,0.5)", badge: "#8fe0aa" },
-};
-
-function spriteSize(kind: SpriteKind) {
-  if (kind === "person") return { width: 28, height: 36 };
-  if (kind === "hub") return { width: 40, height: 32 };
-  return { width: 40, height: 30 };
-}
+import {
+  type SpriteFrame,
+  type WorldAssetSlot,
+  worldAssetFallbackSources,
+  worldAssetFrameTone,
+  worldAssetResizeMode,
+  worldAssetSize,
+  worldAssetSlotByKind,
+} from "../lib/world-asset-slots";
+import type { WorldObjectKind } from "../lib/world-model";
 
 export default function PixelSprite({
   kind,
+  slot,
   frame = "normal",
   showBadge = false,
 }: {
-  kind: SpriteKind;
-  pixel?: number;
+  kind: WorldObjectKind;
+  slot?: WorldAssetSlot;
   frame?: SpriteFrame;
   showBadge?: boolean;
 }) {
-  const tone = frameTone[frame];
-  const size = spriteSize(kind);
+  const resolvedSlot = slot ?? worldAssetSlotByKind[kind];
+  const tone = worldAssetFrameTone[frame];
+  const size = worldAssetSize(resolvedSlot);
 
   return (
     <View style={{ position: "relative" }}>
@@ -48,9 +39,9 @@ export default function PixelSprite({
         }}
       >
         <Image
-          source={spriteSource[kind]}
+          source={worldAssetFallbackSources[resolvedSlot]}
           style={{ width: size.width, height: size.height, borderRadius: 4 }}
-          resizeMode={kind === "person" ? "contain" : "cover"}
+          resizeMode={worldAssetResizeMode(resolvedSlot)}
         />
       </View>
       {showBadge ? (
