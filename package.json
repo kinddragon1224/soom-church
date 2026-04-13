@@ -10,7 +10,12 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "seed:visual-mvp": "tsx scripts/seed-visual-mvp.ts"
+    "seed:visual-mvp": "tsx scripts/seed-visual-mvp.ts",
+    "mobile:install": "npm --prefix apps/mobile-app install --legacy-peer-deps",
+    "mobile:dev": "npm --prefix apps/mobile-app run dev",
+    "mobile:dev:clear": "npm --prefix apps/mobile-app run dev:clear",
+    "mobile:dev:tunnel": "npm --prefix apps/mobile-app run dev:tunnel",
+    "mobile:typecheck": "npm --prefix apps/mobile-app run typecheck"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",

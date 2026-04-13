@@ -10,8 +10,9 @@ Expo 기반 iOS / Android 앱 시작점.
 ## 시작
 ```bash
 cd apps/mobile-app
-npm install
-npm run dev
+cp .env.example .env
+npm install --legacy-peer-deps
+npm run dev:tunnel
 ```
 
 ## 현재 상태
