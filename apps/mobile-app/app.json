@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "soom",
+    "slug": "soom-mobile-app",
+    "scheme": "soom",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "kr.io.soom.mobile"
+    },
+    "android": {
+      "package": "kr.io.soom.mobile"
+    },
+    "plugins": ["expo-router"]
+  }
+}

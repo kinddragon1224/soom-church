@@ -4,7 +4,7 @@ import { isLoggedIn } from "@/lib/auth";
 
 export default async function WorkspaceLayout({ children }: { children: ReactNode }) {
   const loggedIn = await isLoggedIn();
-  const target = loggedIn ? "/app" : "/login?next=%2Fapp";
+  const target = loggedIn ? "/app/mobile" : "/login?next=%2Fapp%2Fmobile";
 
   redirect(target);
 
