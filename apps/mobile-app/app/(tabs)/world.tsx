@@ -91,7 +91,7 @@ export default function WorldScreen() {
 
         <View style={{
           marginTop: 10,
-          height: 560,
+          height: 460,
           borderRadius: 22,
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
@@ -134,8 +134,8 @@ export default function WorldScreen() {
           })}
         </View>
 
-        <View style={{ marginTop: 10, borderRadius: 14, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10 }}>
-          <Text style={{ color: "#a9c3ef", fontSize: 11, fontWeight: "700", marginBottom: 8 }}>모라에게 명령</Text>
+        <View style={{ marginTop: 10, borderRadius: 16, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", backgroundColor: "rgba(20,29,45,0.95)", padding: 12 }}>
+          <Text style={{ color: "#a9c3ef", fontSize: 12, fontWeight: "700", marginBottom: 8 }}>실행 명령 창 · 모라</Text>
 
           <View style={{ flexDirection: "row", gap: 6, marginBottom: 7 }}>
             {[
@@ -149,7 +149,7 @@ export default function WorldScreen() {
             ))}
           </View>
 
-          <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.25)", backgroundColor: "rgba(11,18,29,0.7)", padding: 8, gap: 6, minHeight: 64 }}>
+          <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.3)", backgroundColor: "rgba(11,18,29,0.75)", padding: 10, gap: 7, minHeight: 140 }}>
             {worldMessages.length ? (
               worldMessages.slice(-3).map((message) => (
                 <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "92%", borderRadius: 14, borderWidth: 1, borderColor: message.role === "user" ? "rgba(86,129,214,0.7)" : "rgba(255,255,255,0.14)", backgroundColor: message.role === "user" ? "rgba(52,86,156,0.72)" : "rgba(255,255,255,0.07)", paddingHorizontal: 10, paddingVertical: 7 }}>
@@ -161,7 +161,7 @@ export default function WorldScreen() {
             )}
           </View>
 
-          <View style={{ marginTop: 8, flexDirection: "row", alignItems: "flex-end", gap: 8 }}>
+          <View style={{ marginTop: 10, flexDirection: "row", alignItems: "stretch", gap: 8 }}>
             <TextInput
               value={worldDraft}
               onChangeText={setWorldDraft}
@@ -170,8 +170,8 @@ export default function WorldScreen() {
               multiline
               style={{
                 flex: 1,
-                minHeight: 42,
-                maxHeight: 96,
+                minHeight: 72,
+                maxHeight: 160,
                 borderRadius: 18,
                 borderWidth: 1,
                 borderColor: "rgba(120,157,214,0.45)",
@@ -179,10 +179,10 @@ export default function WorldScreen() {
                 color: "#f4f7ff",
                 paddingHorizontal: 12,
                 paddingVertical: 9,
-                textAlignVertical: "center",
+                textAlignVertical: "top",
               }}
             />
-            <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: 42, minWidth: 58, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 12 }}>
+            <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: 72, minWidth: 70, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 12 }}>
               {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
             </Pressable>
           </View>
