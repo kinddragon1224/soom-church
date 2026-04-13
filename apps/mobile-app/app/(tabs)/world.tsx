@@ -14,6 +14,52 @@ type WorldChatMessage = {
   text: string;
 };
 
+type WorldCommandPreset = {
+  id: string;
+  label: string;
+  command: string;
+  accent: string;
+};
+
+const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
+  {
+    id: "followup-today",
+    label: "오늘 후속 배정",
+    command: "모라, 오늘 후속 필요한 사람 3명 골라서 연락 순서까지 정리해줘",
+    accent: "rgba(92, 132, 214, 0.28)",
+  },
+  {
+    id: "prayer-priority",
+    label: "기도 우선 정리",
+    command: "모라, 기도 요청 들어온 순서대로 오늘 우선순위 정리해줘",
+    accent: "rgba(107, 163, 128, 0.26)",
+  },
+  {
+    id: "visit-plan",
+    label: "심방 일정 초안",
+    command: "모라, 이번 주 심방 필요한 가정 추려서 일정 초안 만들어줘",
+    accent: "rgba(187, 133, 90, 0.28)",
+  },
+  {
+    id: "care-alert",
+    label: "돌봄 경보 점검",
+    command: "모라, 돌봄 경보 있는 목원 먼저 보여주고 오늘 조치안 붙여줘",
+    accent: "rgba(183, 96, 112, 0.28)",
+  },
+  {
+    id: "newcomer-followup",
+    label: "새가족 후속",
+    command: "모라, 새가족이나 정착중인 사람 후속 계획 바로 작성해줘",
+    accent: "rgba(120, 157, 214, 0.24)",
+  },
+  {
+    id: "today-brief",
+    label: "오늘 목양 브리프",
+    command: "모라, 후속 기도 심방 기준으로 오늘 목양 브리프 짧게 정리해줘",
+    accent: "rgba(146, 132, 201, 0.26)",
+  },
+];
+
 function tone(kind: WorldObject["kind"], active: boolean) {
   if (kind === "hub") {
     return { bg: active ? "#c99a4d" : "#9f7740", border: "#f3ddb0", text: "#fff8ea" };
@@ -66,9 +112,18 @@ export default function WorldScreen() {
     const text = worldDraft.trim();
     if (!text || worldSending) return;
 
+    const commandTs = Date.now();
+
     setWorldSending(true);
-    setWorldMessages((prev) => [...prev, { id: `wu-${Date.now()}`, role: "user", text }]);
+    setWorldMessages((prev) => [...prev, { id: `wu-${commandTs}`, role: "user", text }]);
     setWorldDraft("");
+
+    addRuntimeTask({
+      id: `command-log-${commandTs}`,
+      title: `[명령 실행] ${text.replace(/^모라,?\s*/, "")}`,
+      due: "방금",
+      owner: "모라 명령창",
+    });
 
     const result = await sendChatCommand(text);
 
@@ -76,7 +131,7 @@ export default function WorldScreen() {
 
     result.actions.forEach((action, index) => {
       addRuntimeTask({
-        id: `${action.id}-world-${Date.now()}-${index}`,
+        id: `${action.id}-world-${commandTs}-${index}`,
         title: action.title,
         due: action.due,
         owner: action.owner,
@@ -149,14 +204,14 @@ export default function WorldScreen() {
         <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", backgroundColor: "rgba(20,29,45,0.95)", padding: 12 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령창</Text>
 
-          <View style={{ flexDirection: "row", gap: 6, marginTop: 8, marginBottom: 8 }}>
-            {[
-              "모라, 후속 3명 오늘 배정",
-              "모라, 기도 요청 우선 정리",
-              "모라, 오늘 목양 요약",
-            ].map((cmd) => (
-              <Pressable key={cmd} onPress={() => setWorldDraft(cmd)} style={{ borderRadius: 999, backgroundColor: "rgba(52,86,156,0.3)", paddingHorizontal: 9, paddingVertical: 5 }}>
-                <Text style={{ color: "#dbe8ff", fontSize: 10 }}>{cmd.replace("모라, ", "")}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8, marginBottom: 8 }}>
+            {WORLD_COMMAND_PRESETS.map((preset) => (
+              <Pressable
+                key={preset.id}
+                onPress={() => setWorldDraft(preset.command)}
+                style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 9, paddingVertical: 6 }}
+              >
+                <Text style={{ color: "#dbe8ff", fontSize: 10 }}>{preset.label}</Text>
               </Pressable>
             ))}
           </View>
