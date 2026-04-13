@@ -5,7 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { getFirstChurchByUserId } from "@/lib/church-context";
 import { isPlatformAdminEmail } from "@/lib/admin";
 
-const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me";
+const authSecret = (process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me").trim();
+const googleClientId = (process.env.AUTH_GOOGLE_ID ?? "").trim();
+const googleClientSecret = (process.env.AUTH_GOOGLE_SECRET ?? "").trim();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -16,8 +18,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers: [
     Google({
-      clientId: process.env.AUTH_GOOGLE_ID ?? "",
-      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     }),
   ],
   callbacks: {
