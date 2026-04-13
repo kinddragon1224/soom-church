@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 
@@ -32,10 +32,17 @@ function stateFrame(state: string, isSelected: boolean): "normal" | "selected" |
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, selectedId, setSelectedId, addRuntimeTask } = useWorldStore();
+  const { loading, snapshot, selectedId, setSelectedId, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
   const [worldDraft, setWorldDraft] = useState("");
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
+
+  useEffect(() => {
+    const incoming = chatDraft.trim();
+    if (!incoming) return;
+    setWorldDraft(incoming);
+    setChatDraft("");
+  }, [chatDraft, setChatDraft]);
 
   const selected = useMemo(() => {
     if (!snapshot?.worldObjects?.length) return null;
