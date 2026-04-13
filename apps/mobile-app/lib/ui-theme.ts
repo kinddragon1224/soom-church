@@ -9,4 +9,12 @@ export const mabiTheme = {
   textMuted: "rgba(248,245,237,0.68)",
   accentGold: "#d6b270",
   accentMint: "#8dd7c6",
+
+  pixelPanel: "#2a3650",
+  pixelPanelSoft: "#334465",
+  pixelBorder: "#8aa0c7",
+  pixelInk: "#f5f2e8",
+  pixelAccent: "#f3d080",
+  pixelSuccess: "#8fe0aa",
+  pixelDanger: "#f2a8a8",
 };

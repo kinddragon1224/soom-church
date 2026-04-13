@@ -2,6 +2,7 @@ import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 
 import { setAuthConnected } from "../../lib/auth-bridge";
+import { mabiTheme } from "../../lib/ui-theme";
 import { useWorldStore } from "../../lib/world-store";
 
 function TaskRow({
@@ -26,19 +27,19 @@ function TaskRow({
       onPress={onToggle}
       disabled={!onToggle}
       style={{
-        borderRadius: 18,
-        borderWidth: 1,
-        borderColor: done ? "rgba(74,222,128,0.35)" : runtime ? "rgba(125,211,252,0.4)" : "rgba(255,255,255,0.08)",
-        backgroundColor: done ? "rgba(34,197,94,0.12)" : runtime ? "rgba(56,189,248,0.08)" : "rgba(255,255,255,0.05)",
-        padding: 14,
-        opacity: done ? 0.82 : 1,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: done ? "rgba(143,224,170,0.6)" : runtime ? "rgba(243,208,128,0.6)" : mabiTheme.pixelBorder,
+        backgroundColor: done ? "rgba(143,224,170,0.12)" : runtime ? "rgba(243,208,128,0.1)" : mabiTheme.pixelPanel,
+        padding: 12,
+        opacity: done ? 0.85 : 1,
       }}
     >
-      {runtime ? <Text style={{ color: done ? "#86efac" : "#7dd3fc", fontSize: 11, fontWeight: "700" }}>{done ? "완료됨" : "채팅에서 추가됨"}</Text> : null}
-      <Text style={{ color: "#fff", fontSize: 15, fontWeight: "600", marginTop: runtime ? 4 : 0, textDecorationLine: done ? "line-through" : "none" }}>{title}</Text>
-      <Text style={{ color: "rgba(255,255,255,0.6)", marginTop: 4 }}>{due}</Text>
-      <Text style={{ color: "rgba(255,255,255,0.48)", marginTop: 4, fontSize: 12 }}>담당: {owner}</Text>
-      {onToggle ? <Text style={{ color: "rgba(255,255,255,0.55)", marginTop: 6, fontSize: 11 }}>{done ? "다시 누르면 미완료로 변경" : "눌러서 완료 처리"}</Text> : null}
+      {runtime ? <Text style={{ color: done ? mabiTheme.pixelSuccess : mabiTheme.pixelAccent, fontSize: 11, fontWeight: "700" }}>{done ? "완료됨" : "채팅에서 추가됨"}</Text> : null}
+      <Text style={{ color: mabiTheme.pixelInk, fontSize: 15, fontWeight: "700", marginTop: runtime ? 4 : 0, textDecorationLine: done ? "line-through" : "none" }}>{title}</Text>
+      <Text style={{ color: "rgba(245,242,232,0.68)", marginTop: 4 }}>{due}</Text>
+      <Text style={{ color: "rgba(245,242,232,0.52)", marginTop: 4, fontSize: 12 }}>담당: {owner}</Text>
+      {onToggle ? <Text style={{ color: "rgba(245,242,232,0.55)", marginTop: 6, fontSize: 11 }}>{done ? "다시 누르면 미완료" : "눌러서 완료 처리"}</Text> : null}
     </Pressable>
   );
 }
@@ -55,14 +56,14 @@ export default function TasksScreen() {
   const runtimeDone = runtimeTasks.filter((task) => task.completed);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 120, gap: 12 }}>
-        <Text style={{ color: "rgba(255,255,255,0.46)", fontSize: 11, letterSpacing: 2 }}>SOOM TASKS</Text>
-        <Text style={{ color: "#fff", fontSize: 29, fontWeight: "700", lineHeight: 34 }}>오늘 할 일</Text>
+        <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 2 }}>SOOM TASKS</Text>
+        <Text style={{ color: mabiTheme.textPrimary, fontSize: 29, fontWeight: "700", lineHeight: 34 }}>타이쿤 실행 목록</Text>
 
         {runtimeTasks.length ? (
-          <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(125,211,252,0.25)", backgroundColor: "rgba(56,189,248,0.08)", padding: 12 }}>
-            <Text style={{ color: "#dff4ff", fontSize: 12 }}>실행 대기 {runtimeTodo.length} · 완료 {runtimeDone.length}</Text>
+          <View style={{ borderRadius: 10, borderWidth: 2, borderColor: "rgba(243,208,128,0.5)", backgroundColor: "rgba(243,208,128,0.14)", padding: 10 }}>
+            <Text style={{ color: mabiTheme.pixelAccent, fontSize: 12, fontWeight: "700" }}>실행 대기 {runtimeTodo.length} · 완료 {runtimeDone.length}</Text>
           </View>
         ) : null}
 
@@ -82,9 +83,9 @@ export default function TasksScreen() {
 
         <Pressable
           onPress={logout}
-          style={{ marginTop: 8, minHeight: 50, borderRadius: 999, borderWidth: 1, borderColor: "rgba(255,255,255,0.12)", backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center" }}
+          style={{ marginTop: 8, minHeight: 48, borderRadius: 10, borderWidth: 2, borderColor: "rgba(242,168,168,0.45)", backgroundColor: "rgba(242,168,168,0.15)", alignItems: "center", justifyContent: "center" }}
         >
-          <Text style={{ color: "#fff", fontWeight: "600" }}>로그아웃(브리지 초기화)</Text>
+          <Text style={{ color: "#ffe8e8", fontWeight: "700" }}>로그아웃(브리지 초기화)</Text>
         </Pressable>
       </ScrollView>
     </SafeAreaView>

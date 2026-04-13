@@ -3,10 +3,11 @@ import { Tabs, router } from "expo-router";
 import { Text } from "react-native";
 
 import { getAuthConnected } from "../../lib/auth-bridge";
+import { mabiTheme } from "../../lib/ui-theme";
 import { WorldStoreProvider } from "../../lib/world-store";
 
 function TabIcon({ label, focused }: { label: string; focused: boolean }) {
-  return <Text style={{ fontSize: 16, opacity: focused ? 1 : 0.58 }}>{label}</Text>;
+  return <Text style={{ fontSize: 15, opacity: focused ? 1 : 0.62 }}>{label}</Text>;
 }
 
 export default function TabsLayout() {
@@ -27,17 +28,24 @@ export default function TabsLayout() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: "#08111f",
-            borderTopColor: "rgba(255,255,255,0.08)",
-            height: 84,
+            backgroundColor: "#1f2b42",
+            borderTopColor: "rgba(138,160,199,0.45)",
+            borderTopWidth: 2,
+            height: 86,
             paddingTop: 8,
             paddingBottom: 12,
           },
-          tabBarActiveTintColor: "#ffffff",
-          tabBarInactiveTintColor: "rgba(255,255,255,0.54)",
+          tabBarItemStyle: {
+            borderRadius: 8,
+            marginHorizontal: 2,
+            marginTop: 2,
+          },
+          tabBarActiveTintColor: mabiTheme.pixelInk,
+          tabBarInactiveTintColor: "rgba(245,242,232,0.56)",
           tabBarLabelStyle: {
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: "700",
+            letterSpacing: 0.4,
           },
         }}
       >

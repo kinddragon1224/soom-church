@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 
 import { sendChatCommand } from "../../lib/chat-source";
+import { mabiTheme } from "../../lib/ui-theme";
 import { useWorldStore } from "../../lib/world-store";
 
 type ChatMessage = {
@@ -14,9 +15,9 @@ function QuickAction({ label, onPress }: { label: string; onPress: () => void })
   return (
     <Pressable
       onPress={onPress}
-      style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.04)", paddingVertical: 12, paddingHorizontal: 12 }}
+      style={{ borderRadius: 10, borderWidth: 2, borderColor: "rgba(138,160,199,0.5)", backgroundColor: mabiTheme.pixelPanelSoft, paddingVertical: 10, paddingHorizontal: 10 }}
     >
-      <Text style={{ color: "#fff", fontSize: 13 }}>{label}</Text>
+      <Text style={{ color: mabiTheme.pixelInk, fontSize: 13 }}>{label}</Text>
     </Pressable>
   );
 }
@@ -53,13 +54,13 @@ export default function ChatScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 120, gap: 14 }}>
-        <Text style={{ color: "rgba(255,255,255,0.46)", fontSize: 11, letterSpacing: 2 }}>SOOM CHAT</Text>
-        <Text style={{ color: "#fff", fontSize: 29, fontWeight: "700", lineHeight: 34 }}>채팅으로 운영하기</Text>
+        <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 2 }}>SOOM CHAT</Text>
+        <Text style={{ color: mabiTheme.textPrimary, fontSize: 29, fontWeight: "700", lineHeight: 34 }}>포켓 대화 명령</Text>
 
-        <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.05)", padding: 16, gap: 10 }}>
-          <Text style={{ color: "rgba(255,255,255,0.62)", fontSize: 13 }}>추천 명령</Text>
+        <View style={{ borderRadius: 12, borderWidth: 2, borderColor: mabiTheme.pixelBorder, backgroundColor: mabiTheme.pixelPanel, padding: 12, gap: 10 }}>
+          <Text style={{ color: mabiTheme.pixelAccent, fontSize: 12, fontWeight: "700" }}>추천 명령</Text>
           {loading || !snapshot ? (
             <Text style={{ color: "rgba(255,255,255,0.7)" }}>추천 명령 로딩 중...</Text>
           ) : (
@@ -67,24 +68,24 @@ export default function ChatScreen() {
           )}
         </View>
 
-        <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "#0f1b2e", padding: 16, gap: 10 }}>
-          <Text style={{ color: "rgba(255,255,255,0.62)", fontSize: 12 }}>입력창</Text>
+        <View style={{ borderRadius: 12, borderWidth: 2, borderColor: mabiTheme.pixelBorder, backgroundColor: "#223149", padding: 12, gap: 10 }}>
+          <Text style={{ color: "rgba(245,242,232,0.62)", fontSize: 12 }}>입력창</Text>
 
           <TextInput
             value={chatDraft}
             onChangeText={setChatDraft}
             placeholder="예: 오늘 후속 3개만 뽑아줘"
-            placeholderTextColor="rgba(255,255,255,0.4)"
+            placeholderTextColor="rgba(245,242,232,0.4)"
             multiline
             style={{
-              minHeight: 86,
-              borderRadius: 14,
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.12)",
-              backgroundColor: "rgba(255,255,255,0.04)",
-              color: "#fff",
-              paddingHorizontal: 12,
-              paddingVertical: 10,
+              minHeight: 82,
+              borderRadius: 8,
+              borderWidth: 2,
+              borderColor: "rgba(138,160,199,0.45)",
+              backgroundColor: "rgba(10,18,30,0.32)",
+              color: mabiTheme.pixelInk,
+              paddingHorizontal: 10,
+              paddingVertical: 8,
               textAlignVertical: "top",
             }}
           />
@@ -94,8 +95,10 @@ export default function ChatScreen() {
             disabled={sending || !chatDraft.trim()}
             style={{
               minHeight: 44,
-              borderRadius: 999,
-              backgroundColor: "#fff",
+              borderRadius: 8,
+              borderWidth: 2,
+              borderColor: "rgba(243,208,128,0.55)",
+              backgroundColor: "rgba(243,208,128,0.2)",
               alignItems: "center",
               justifyContent: "center",
               opacity: sending || !chatDraft.trim() ? 0.55 : 1,
@@ -103,32 +106,34 @@ export default function ChatScreen() {
               gap: 8,
             }}
           >
-            {sending ? <ActivityIndicator color="#07111f" size="small" /> : null}
-            <Text style={{ color: "#07111f", fontSize: 13, fontWeight: "700" }}>{sending ? "전송 중..." : "명령 보내기"}</Text>
+            {sending ? <ActivityIndicator color="#f5f2e8" size="small" /> : null}
+            <Text style={{ color: mabiTheme.pixelInk, fontSize: 13, fontWeight: "700" }}>{sending ? "전송 중..." : "명령 보내기"}</Text>
           </Pressable>
         </View>
 
         {lastActionIds.length ? (
-          <View style={{ borderRadius: 18, borderWidth: 1, borderColor: "rgba(125,211,252,0.35)", backgroundColor: "rgba(56,189,248,0.08)", padding: 12 }}>
-            <Text style={{ color: "#dff4ff", fontSize: 12 }}>이번 응답의 실행 항목이 할 일 탭에 자동 추가됐어.</Text>
+          <View style={{ borderRadius: 10, borderWidth: 2, borderColor: "rgba(143,224,170,0.55)", backgroundColor: "rgba(143,224,170,0.13)", padding: 10 }}>
+            <Text style={{ color: mabiTheme.pixelSuccess, fontSize: 12, fontWeight: "700" }}>이번 응답 실행 항목이 할 일 탭에 자동 추가됨</Text>
           </View>
         ) : null}
 
         {messages.length ? (
-          <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.03)", padding: 12, gap: 8 }}>
+          <View style={{ borderRadius: 12, borderWidth: 2, borderColor: mabiTheme.pixelBorder, backgroundColor: "rgba(42,54,80,0.88)", padding: 10, gap: 8 }}>
             {messages.map((message) => (
               <View
                 key={message.id}
                 style={{
                   alignSelf: message.role === "user" ? "flex-end" : "flex-start",
                   maxWidth: "92%",
-                  borderRadius: 14,
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: message.role === "user" ? "rgba(243,208,128,0.55)" : "rgba(138,160,199,0.45)",
                   paddingHorizontal: 10,
                   paddingVertical: 8,
-                  backgroundColor: message.role === "user" ? "#ffffff" : "rgba(255,255,255,0.09)",
+                  backgroundColor: message.role === "user" ? "rgba(243,208,128,0.18)" : "rgba(255,255,255,0.06)",
                 }}
               >
-                <Text style={{ color: message.role === "user" ? "#07111f" : "#fff", fontSize: 13, lineHeight: 19 }}>{message.text}</Text>
+                <Text style={{ color: mabiTheme.pixelInk, fontSize: 13, lineHeight: 19 }}>{message.text}</Text>
               </View>
             ))}
           </View>
