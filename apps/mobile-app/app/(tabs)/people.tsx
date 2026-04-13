@@ -55,7 +55,7 @@ export default function PeopleScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 100 }}>
-        <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 1.5 }}>CARE MEMBERS</Text>
+        <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 1.5 }}>MEMBERS CARE</Text>
         <Text style={{ color: mabiTheme.textPrimary, fontSize: 28, fontWeight: "700", marginTop: 4 }}>목원 관리</Text>
 
         <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10, flexDirection: "row", gap: 8 }}>

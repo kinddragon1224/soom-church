@@ -122,6 +122,14 @@
 | command input | 모라 명령창 | 월드 중단 |
 | activity log | 목양 기록 / 자동 반영 로그 | 기록 탭 |
 
+### 현재 모바일 3탭 용어 고정
+
+| 탭 | 벤치마크식 표현 | 숨 운영 표현 |
+| --- | --- | --- |
+| 월드 | world / hub / status bar | 목양 / 오늘 목양 메인 / 오늘 운영 지표 |
+| 목원 | members / roster / unit stats | 목원 / 목원 관리 / 돌봄·기도·후속 상태 |
+| 기록 | records / activity log / mission log | 기록 / 목양 기록 / 자동 반영 로그 |
+
 ## 9. 구현 우선순위
 1. 월드/NPC 자연스러움
 2. 채팅 입력 미니멀 정리
