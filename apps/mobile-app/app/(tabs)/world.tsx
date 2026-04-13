@@ -2,9 +2,10 @@ import { useMemo } from "react";
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 
-import { useWorldStore } from "../../lib/world-store";
+import PixelSprite from "../../components/pixel-sprite";
 import { type WorldObject } from "../../lib/world-model";
 import { mabiTheme } from "../../lib/ui-theme";
+import { useWorldStore } from "../../lib/world-store";
 
 function tone(kind: WorldObject["kind"], active: boolean) {
   if (kind === "hub") {
@@ -57,9 +58,7 @@ export default function WorldScreen() {
       <View style={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 8 }}>
         <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 2 }}>SOOM WORLD</Text>
         <Text style={{ color: mabiTheme.textPrimary, fontSize: 31, fontWeight: "700", lineHeight: 36, marginTop: 6 }}>목장 월드</Text>
-        <Text style={{ color: mabiTheme.textMuted, fontSize: 14, lineHeight: 22, marginTop: 6 }}>
-          마을을 내려보며 오늘 해야 할 돌봄을 고른다.
-        </Text>
+        <Text style={{ color: mabiTheme.textMuted, fontSize: 14, lineHeight: 22, marginTop: 6 }}>마을을 내려보며 오늘 해야 할 돌봄을 고른다.</Text>
 
         <View style={{ marginTop: 10, alignSelf: "flex-start", borderRadius: 999, borderWidth: 1, borderColor: "rgba(214,178,112,0.55)", backgroundColor: "rgba(214,178,112,0.16)", paddingHorizontal: 12, paddingVertical: 5 }}>
           <Text style={{ color: "#f4e2bf", fontSize: 12 }}>오브젝트 {summary.objectCount} · 가정 {summary.householdCount} · 사람 {summary.peopleCount}</Text>
@@ -94,13 +93,13 @@ export default function WorldScreen() {
                   position: "absolute",
                   left: item.x,
                   top: item.y,
-                  minWidth: item.kind === "person" ? 74 : 96,
-                  borderRadius: 18,
-                  borderWidth: 1,
+                  minWidth: item.kind === "person" ? 82 : 102,
+                  borderRadius: 12,
+                  borderWidth: 2,
                   borderColor: colors.border,
                   backgroundColor: colors.bg,
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
+                  paddingVertical: 8,
+                  paddingHorizontal: 8,
                   alignItems: "center",
                   shadowColor: "#000",
                   shadowOpacity: isActive ? 0.32 : 0.12,
@@ -109,9 +108,9 @@ export default function WorldScreen() {
                   elevation: isActive ? 5 : 1,
                 }}
               >
-                <Text style={{ fontSize: item.kind === "person" ? 18 : 20 }}>{item.icon}</Text>
-                <Text style={{ color: colors.text, fontSize: 12, fontWeight: "700", marginTop: 4 }}>{item.name}</Text>
-                <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: 10, marginTop: 2 }}>{item.state}</Text>
+                <PixelSprite kind={item.kind} pixel={3} />
+                <Text style={{ color: colors.text, fontSize: 11, fontWeight: "700", marginTop: 5 }}>{item.name}</Text>
+                <Text style={{ color: "rgba(255,255,255,0.82)", fontSize: 10, marginTop: 1 }}>{item.state}</Text>
               </Pressable>
             );
           })}
