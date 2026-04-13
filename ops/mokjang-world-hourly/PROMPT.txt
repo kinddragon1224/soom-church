@@ -1,13 +1,13 @@
 [MOKJANG WORLD HOURLY LOOP]
-generatedAt=2026-04-13T16:13:46.291Z
-taskId=asset-01
-category=에셋구현
-title=이미지 제작 전 구조용 에셋 슬롯 체계 고정
+generatedAt=2026-04-13T17:00:30.820Z
+taskId=benchmark-01
+category=벤치마킹->우리화
+title=벤치마킹 요소를 목양 OS 용어/흐름으로 치환
 
 doneWhen:
-1. world/person/house/hub 슬롯 명명 규칙 통일
-2. fallback 에셋 경로 규칙 문서화
-3. 실에셋 교체 시 코드 수정 최소화 구조 확보
+1. 게임 용어 0개 유지(운영 용어로 치환)
+2. 참고한 UX 패턴과 우리 도메인 대응표 1개 업데이트
+3. 월드/목원/기록 3탭 모두 용어 톤 일관성 점검
 
 execute:
 1) task를 코드에 반영
