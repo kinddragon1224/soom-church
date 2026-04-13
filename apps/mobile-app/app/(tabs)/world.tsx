@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 
 import PixelSprite from "../../components/pixel-sprite";
+import { fetchAgentGrowthLoops, type AgentGrowthLoop } from "../../lib/agent-growth-source";
 import { sendChatCommand } from "../../lib/chat-source";
 import { type WorldObject } from "../../lib/world-model";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -45,11 +46,30 @@ function stateBadge(state: string) {
   return { label: "진행중", bg: "rgba(243,208,128,0.2)", border: "rgba(243,208,128,0.5)", text: "#ffeabf" };
 }
 
+function formatLoopTime(isoText: string) {
+  const date = new Date(isoText);
+  if (Number.isNaN(date.getTime())) return "방금";
+  return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+}
+
 export default function WorldScreen() {
   const { loading, snapshot, selectedId, setSelectedId, setChatDraft, addRuntimeTask } = useWorldStore();
   const [worldDraft, setWorldDraft] = useState("");
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
+  const [growthLoops, setGrowthLoops] = useState<AgentGrowthLoop[]>([]);
+  const [growthLoading, setGrowthLoading] = useState(false);
+
+  const refreshGrowthLoops = async () => {
+    setGrowthLoading(true);
+    const loops = await fetchAgentGrowthLoops();
+    setGrowthLoops(loops);
+    setGrowthLoading(false);
+  };
+
+  useEffect(() => {
+    refreshGrowthLoops();
+  }, []);
 
   if (loading || !snapshot) {
     return (
@@ -88,6 +108,13 @@ export default function WorldScreen() {
       setWorldMessages((prev) => [...prev, { id: `wg-${Date.now()}`, role: "assistant", text: `에이전트 루프: ${growthSummary}` }]);
     }
 
+    if (result.agentGrowth?.suggestedGithubIssue) {
+      setWorldMessages((prev) => [
+        ...prev,
+        { id: `wi-${Date.now()}`, role: "assistant", text: `GitHub 이슈 제안: ${result.agentGrowth?.suggestedGithubIssue}` },
+      ]);
+    }
+
     result.actions.forEach((action, index) => {
       addRuntimeTask({
         id: `${action.id}-world-${Date.now()}-${index}`,
@@ -97,6 +124,7 @@ export default function WorldScreen() {
       });
     });
 
+    await refreshGrowthLoops();
     setWorldSending(false);
   };
 
@@ -196,7 +224,7 @@ export default function WorldScreen() {
                 setChatDraft(`${selected.name} 관련 후속 진행 상황 요약해줘`);
                 router.push("/(tabs)/chat");
               }}
-              style={{ flex: 1, minHeight: 48, borderRadius: 999, borderWidth: 1, borderColor: "rgba(63,79,88,0.35)", backgroundColor: mabiTheme.parchmentSoft, alignItems: "center", justifyContent: "center" }}
+              style={{ flex: 1, minHeight: 48, borderWidth: 1, borderColor: "rgba(63,79,88,0.35)", borderRadius: 999, backgroundColor: mabiTheme.parchmentSoft, alignItems: "center", justifyContent: "center" }}
             >
               <Text style={{ color: "#39454d", fontWeight: "700" }}>채팅 탭으로 열기</Text>
             </Pressable>
@@ -266,6 +294,31 @@ export default function WorldScreen() {
               ))}
             </View>
           ) : null}
+        </View>
+
+        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 2, borderColor: "rgba(143,224,170,0.5)", backgroundColor: "rgba(143,224,170,0.1)", padding: 12, gap: 8 }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Text style={{ color: mabiTheme.pixelSuccess, fontSize: 12, fontWeight: "700" }}>에이전트 성장 로그</Text>
+            <Pressable onPress={refreshGrowthLoops} style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(143,224,170,0.5)", paddingHorizontal: 8, paddingVertical: 4 }}>
+              <Text style={{ color: "#d8ffe5", fontSize: 11 }}>새로고침</Text>
+            </Pressable>
+          </View>
+
+          {growthLoading ? (
+            <Text style={{ color: "rgba(216,255,229,0.7)", fontSize: 12 }}>불러오는 중...</Text>
+          ) : growthLoops.length === 0 ? (
+            <Text style={{ color: "rgba(216,255,229,0.7)", fontSize: 12 }}>아직 성장 로그가 없어. 월드 채팅을 실행해봐.</Text>
+          ) : (
+            growthLoops.slice(0, 3).map((loop) => (
+              <View key={loop.id} style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(143,224,170,0.35)", backgroundColor: "rgba(12,35,24,0.35)", padding: 8 }}>
+                <Text style={{ color: "#d8ffe5", fontSize: 11, fontWeight: "700" }}>{formatLoopTime(loop.createdAt)} · {loop.agentGrowth?.title ?? "Agent Loop"}</Text>
+                <Text style={{ color: "rgba(216,255,229,0.86)", fontSize: 12, marginTop: 4 }}>{loop.agentGrowth?.summary ?? "요약 없음"}</Text>
+                {loop.agentGrowth?.suggestedGithubIssue ? (
+                  <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 11, marginTop: 4 }}>이슈 제안: {loop.agentGrowth.suggestedGithubIssue}</Text>
+                ) : null}
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
