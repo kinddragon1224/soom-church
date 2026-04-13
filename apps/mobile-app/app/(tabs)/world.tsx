@@ -9,26 +9,33 @@ import { useWorldStore } from "../../lib/world-store";
 
 function tone(kind: WorldObject["kind"], active: boolean) {
   if (kind === "hub") {
-    return {
-      bg: active ? "#c99a4d" : "#9f7740",
-      border: "#f3ddb0",
-      text: "#fff8ea",
-    };
+    return { bg: active ? "#c99a4d" : "#9f7740", border: "#f3ddb0", text: "#fff8ea" };
   }
 
   if (kind === "house") {
-    return {
-      bg: active ? "#4c5f63" : "#3b4a4f",
-      border: active ? "#d9e7df" : "#9db1a7",
-      text: "#f8f5ed",
-    };
+    return { bg: active ? "#4c5f63" : "#3b4a4f", border: active ? "#d9e7df" : "#9db1a7", text: "#f8f5ed" };
   }
 
-  return {
-    bg: active ? "#4e86a8" : "#3e6e8c",
-    border: active ? "#d3e6f3" : "#9fbfd5",
-    text: "#f8f5ed",
-  };
+  return { bg: active ? "#4e86a8" : "#3e6e8c", border: active ? "#d3e6f3" : "#9fbfd5", text: "#f8f5ed" };
+}
+
+function stateFrame(state: string, isSelected: boolean): "normal" | "selected" | "alert" | "done" {
+  if (isSelected) return "selected";
+  if (state.includes("돌봄") || state.includes("후속") || state.includes("연락")) return "alert";
+  if (state.includes("안정") || state.includes("완료")) return "done";
+  return "normal";
+}
+
+function stateBadge(state: string) {
+  if (state.includes("돌봄") || state.includes("후속") || state.includes("연락")) {
+    return { label: "관리 필요", bg: "rgba(242,168,168,0.2)", border: "rgba(242,168,168,0.5)", text: "#ffd7d7" };
+  }
+
+  if (state.includes("안정") || state.includes("완료")) {
+    return { label: "안정", bg: "rgba(143,224,170,0.2)", border: "rgba(143,224,170,0.5)", text: "#d7ffe3" };
+  }
+
+  return { label: "진행중", bg: "rgba(243,208,128,0.2)", border: "rgba(243,208,128,0.5)", text: "#ffeabf" };
 }
 
 export default function WorldScreen() {
@@ -46,12 +53,13 @@ export default function WorldScreen() {
     objectCount: snapshot.worldObjects.length,
     householdCount: snapshot.worldObjects.filter((item) => item.kind === "house").length,
     peopleCount: snapshot.peopleRecords.length,
-    taskCount: snapshot.taskRecords.length,
   };
 
   const selected = useMemo(() => {
     return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
   }, [selectedId, snapshot.worldObjects]);
+
+  const selectedBadge = stateBadge(selected.state);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
@@ -84,6 +92,7 @@ export default function WorldScreen() {
           {snapshot.worldObjects.map((item) => {
             const isActive = selectedId === item.id;
             const colors = tone(item.kind, isActive);
+            const frame = stateFrame(item.state, isActive);
 
             return (
               <Pressable
@@ -108,7 +117,7 @@ export default function WorldScreen() {
                   elevation: isActive ? 5 : 1,
                 }}
               >
-                <PixelSprite kind={item.kind} pixel={3} />
+                <PixelSprite kind={item.kind} pixel={3} frame={frame} showBadge={frame !== "normal"} />
                 <Text style={{ color: colors.text, fontSize: 11, fontWeight: "700", marginTop: 5 }}>{item.name}</Text>
                 <Text style={{ color: "rgba(255,255,255,0.82)", fontSize: 10, marginTop: 1 }}>{item.state}</Text>
               </Pressable>
@@ -128,7 +137,10 @@ export default function WorldScreen() {
         >
           <Text style={{ color: "#7d6341", fontSize: 12 }}>선택된 오브젝트</Text>
           <Text style={{ color: "#2c2217", fontSize: 20, fontWeight: "700", marginTop: 6 }}>{selected.name}</Text>
-          <Text style={{ color: "#59462f", marginTop: 6, lineHeight: 20 }}>{selected.note}</Text>
+          <View style={{ marginTop: 7, alignSelf: "flex-start", borderRadius: 8, borderWidth: 1, borderColor: selectedBadge.border, backgroundColor: selectedBadge.bg, paddingHorizontal: 8, paddingVertical: 4 }}>
+            <Text style={{ color: selectedBadge.text, fontSize: 11, fontWeight: "700" }}>{selectedBadge.label}</Text>
+          </View>
+          <Text style={{ color: "#59462f", marginTop: 8, lineHeight: 20 }}>{selected.note}</Text>
 
           <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
             <Pressable
