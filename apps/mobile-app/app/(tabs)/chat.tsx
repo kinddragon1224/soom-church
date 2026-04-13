@@ -39,6 +39,12 @@ export default function ChatScreen() {
     const result = await sendChatCommand(text);
 
     setMessages((prev) => [...prev, { id: `a-${Date.now()}`, role: "assistant", text: result.reply }]);
+
+    const growthSummary = result.agentGrowth?.summary;
+    if (growthSummary) {
+      setMessages((prev) => [...prev, { id: `g-${Date.now()}`, role: "assistant", text: `에이전트 루프: ${growthSummary}` }]);
+    }
+
     setLastActionIds(result.actions.map((item) => item.id));
 
     result.actions.forEach((action, index) => {

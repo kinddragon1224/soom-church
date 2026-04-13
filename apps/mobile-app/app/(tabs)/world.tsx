@@ -83,6 +83,11 @@ export default function WorldScreen() {
 
     setWorldMessages((prev) => [...prev, { id: `wa-${Date.now()}`, role: "assistant", text: result.reply }]);
 
+    const growthSummary = result.agentGrowth?.summary;
+    if (growthSummary) {
+      setWorldMessages((prev) => [...prev, { id: `wg-${Date.now()}`, role: "assistant", text: `에이전트 루프: ${growthSummary}` }]);
+    }
+
     result.actions.forEach((action, index) => {
       addRuntimeTask({
         id: `${action.id}-world-${Date.now()}-${index}`,

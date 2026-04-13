@@ -13,6 +13,18 @@ export type ChatCommandAction = {
 export type ChatCommandResult = {
   reply: string;
   actions: ChatCommandAction[];
+  intents?: string[];
+  autoBuild?: {
+    workspace?: string;
+    shepherdingQueue?: string[];
+    memberOps?: string[];
+  };
+  agentGrowth?: {
+    loopId?: string;
+    title?: string;
+    summary?: string;
+    suggestedGithubIssue?: string;
+  };
 };
 
 function resolveChurchSlug(savedSlug: string | null) {
@@ -26,6 +38,7 @@ function fallbackResult(): ChatCommandResult {
       { id: "fallback-1", title: "후속 연락 대상 3명 확정", due: "오늘", owner: "목양 관리" },
       { id: "fallback-2", title: "연락 후 상태태그 갱신", due: "오늘", owner: "목양 관리" },
     ],
+    intents: ["GENERAL_SHEPHERDING"],
   };
 }
 
@@ -58,6 +71,9 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
     return {
       reply: data.reply,
       actions: Array.isArray(data.actions) ? data.actions : [],
+      intents: Array.isArray(data.intents) ? data.intents : [],
+      autoBuild: data.autoBuild,
+      agentGrowth: data.agentGrowth,
     };
   } catch {
     return fallbackResult();
