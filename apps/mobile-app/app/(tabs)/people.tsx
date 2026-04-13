@@ -1,6 +1,6 @@
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
 
-import { peopleRecords } from "../../lib/world-model";
+import { useWorldStore } from "../../lib/world-store";
 
 function PersonCard({ name, household, state, nextAction }: { name: string; household: string; state: string; nextAction: string }) {
   return (
@@ -14,15 +14,21 @@ function PersonCard({ name, household, state, nextAction }: { name: string; hous
 }
 
 export default function PeopleScreen() {
+  const { loading, snapshot } = useWorldStore();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 120, gap: 12 }}>
         <Text style={{ color: "rgba(255,255,255,0.46)", fontSize: 11, letterSpacing: 2 }}>SOOM PEOPLE</Text>
         <Text style={{ color: "#fff", fontSize: 29, fontWeight: "700", lineHeight: 34 }}>사람과 가정 흐름</Text>
 
-        {peopleRecords.map((person) => (
-          <PersonCard key={person.id} name={person.name} household={person.household} state={person.state} nextAction={person.nextAction} />
-        ))}
+        {loading || !snapshot ? (
+          <Text style={{ color: "rgba(255,255,255,0.7)" }}>사람 데이터를 불러오는 중...</Text>
+        ) : (
+          snapshot.peopleRecords.map((person) => (
+            <PersonCard key={person.id} name={person.name} household={person.household} state={person.state} nextAction={person.nextAction} />
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

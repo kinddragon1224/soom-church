@@ -1,6 +1,6 @@
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 
-import { chatQuickActions } from "../../lib/world-model";
+import { useWorldStore } from "../../lib/world-store";
 
 function QuickAction({ label }: { label: string }) {
   return (
@@ -11,6 +11,8 @@ function QuickAction({ label }: { label: string }) {
 }
 
 export default function ChatScreen() {
+  const { loading, snapshot } = useWorldStore();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 120, gap: 14 }}>
@@ -19,9 +21,11 @@ export default function ChatScreen() {
 
         <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.05)", padding: 16, gap: 10 }}>
           <Text style={{ color: "rgba(255,255,255,0.62)", fontSize: 13 }}>추천 명령</Text>
-          {chatQuickActions.map((item) => (
-            <QuickAction key={item} label={item} />
-          ))}
+          {loading || !snapshot ? (
+            <Text style={{ color: "rgba(255,255,255,0.7)" }}>추천 명령 로딩 중...</Text>
+          ) : (
+            snapshot.chatQuickActions.map((item) => <QuickAction key={item} label={item} />)
+          )}
         </View>
 
         <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "#0f1b2e", padding: 16 }}>

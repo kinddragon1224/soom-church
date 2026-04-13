@@ -2,7 +2,7 @@ import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 import { router } from "expo-router";
 
 import { setAuthConnected } from "../../lib/auth-bridge";
-import { taskRecords } from "../../lib/world-model";
+import { useWorldStore } from "../../lib/world-store";
 
 function TaskRow({ title, due, owner }: { title: string; due: string; owner: string }) {
   return (
@@ -15,6 +15,8 @@ function TaskRow({ title, due, owner }: { title: string; due: string; owner: str
 }
 
 export default function TasksScreen() {
+  const { loading, snapshot } = useWorldStore();
+
   const logout = async () => {
     await setAuthConnected(false);
     router.replace("/login");
@@ -26,9 +28,11 @@ export default function TasksScreen() {
         <Text style={{ color: "rgba(255,255,255,0.46)", fontSize: 11, letterSpacing: 2 }}>SOOM TASKS</Text>
         <Text style={{ color: "#fff", fontSize: 29, fontWeight: "700", lineHeight: 34 }}>오늘 할 일</Text>
 
-        {taskRecords.map((task) => (
-          <TaskRow key={task.id} title={task.title} due={task.due} owner={task.owner} />
-        ))}
+        {loading || !snapshot ? (
+          <Text style={{ color: "rgba(255,255,255,0.7)" }}>할 일 데이터를 불러오는 중...</Text>
+        ) : (
+          snapshot.taskRecords.map((task) => <TaskRow key={task.id} title={task.title} due={task.due} owner={task.owner} />)
+        )}
 
         <Pressable
           onPress={logout}

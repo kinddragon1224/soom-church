@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
 
-import { worldObjects, type WorldObject } from "../../lib/world-model";
-import { getWorldSummary } from "../../lib/world-summary";
+import { useWorldStore } from "../../lib/world-store";
+import { type WorldObject } from "../../lib/world-model";
 
 function tone(kind: WorldObject["kind"], active: boolean) {
   if (kind === "hub") {
@@ -29,12 +29,26 @@ function tone(kind: WorldObject["kind"], active: boolean) {
 }
 
 export default function WorldScreen() {
-  const [selectedId, setSelectedId] = useState("hub");
-  const summary = getWorldSummary();
+  const { loading, snapshot, selectedId, setSelectedId } = useWorldStore();
+
+  if (loading || !snapshot) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f", alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ color: "#fff" }}>월드 불러오는 중...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const summary = {
+    objectCount: snapshot.worldObjects.length,
+    householdCount: snapshot.worldObjects.filter((item) => item.kind === "house").length,
+    peopleCount: snapshot.peopleRecords.length,
+    taskCount: snapshot.taskRecords.length,
+  };
 
   const selected = useMemo(() => {
-    return worldObjects.find((item) => item.id === selectedId) ?? worldObjects[0];
-  }, [selectedId]);
+    return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
+  }, [selectedId, snapshot.worldObjects]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>
@@ -65,7 +79,7 @@ export default function WorldScreen() {
           <View style={{ position: "absolute", right: 30, top: 250, width: 128, height: 4, borderRadius: 999, backgroundColor: "rgba(202,191,159,0.5)", transform: [{ rotate: "-16deg" }] }} />
           <View style={{ position: "absolute", left: 120, bottom: 130, width: 120, height: 4, borderRadius: 999, backgroundColor: "rgba(202,191,159,0.5)" }} />
 
-          {worldObjects.map((item) => {
+          {snapshot.worldObjects.map((item) => {
             const isActive = selectedId === item.id;
             const colors = tone(item.kind, isActive);
 
