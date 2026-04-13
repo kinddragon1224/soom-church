@@ -19,13 +19,13 @@ export default async function LoginPage({
 }: {
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  const session = await auth();
-  if (session?.user?.id) {
-    redirect(await getPostLoginPath(session.user.id));
-  }
-
   const error = typeof searchParams?.error === "string" ? searchParams.error : null;
   const next = typeof searchParams?.next === "string" && searchParams.next.startsWith("/") ? searchParams.next : "/app";
+
+  const session = await auth();
+  if (session?.user?.id) {
+    redirect(next || (await getPostLoginPath(session.user.id)));
+  }
   const googleConfigured = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
   return (
