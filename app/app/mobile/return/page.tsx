@@ -3,11 +3,19 @@ import { redirect } from "next/navigation";
 
 import { getCurrentUserId } from "@/lib/auth";
 
-export default async function MobileAppReturnPage() {
+export default async function MobileAppReturnPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>;
+}) {
   const userId = await getCurrentUserId();
 
+  const appReturnRaw = typeof searchParams?.appReturnUrl === "string" ? decodeURIComponent(searchParams.appReturnUrl) : "";
+  const appReturnHref = appReturnRaw.startsWith("exp://") || appReturnRaw.startsWith("soom://") ? appReturnRaw : "soom://auth-complete";
+
   if (!userId) {
-    redirect("/login?next=/app/mobile/return");
+    const next = encodeURIComponent(`/app/mobile/return?appReturnUrl=${encodeURIComponent(appReturnHref)}`);
+    redirect(`/login?next=${next}`);
   }
 
   return (
@@ -23,7 +31,7 @@ export default async function MobileAppReturnPage() {
 
         <div className="grid gap-3">
           <a
-            href="soom://auth-complete"
+            href={appReturnHref}
             className="inline-flex min-h-14 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-[#0b1525]"
           >
             앱으로 돌아가기

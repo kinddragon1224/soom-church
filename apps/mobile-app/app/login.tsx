@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Linking, Pressable, SafeAreaView, Text, View } from "react-native";
+import * as ExpoLinking from "expo-linking";
 import { router } from "expo-router";
 
 import { setAuthConnected } from "../lib/auth-bridge";
@@ -10,7 +11,8 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const openWebLogin = async () => {
-    const next = encodeURIComponent("/app/mobile/return");
+    const appReturnUrl = encodeURIComponent(ExpoLinking.createURL("auth-complete"));
+    const next = encodeURIComponent(`/app/mobile/return?appReturnUrl=${appReturnUrl}`);
     const url = `${WEB_BASE_URL}/login?next=${next}`;
     await Linking.openURL(url);
   };
