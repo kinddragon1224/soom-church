@@ -2,17 +2,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
+import { fetchRuntimeTasks, syncRuntimeTasks, type RuntimeTask } from "./runtime-task-source";
 
 const RUNTIME_TASKS_KEY = "soom.mobile.runtime.tasks";
-
-type RuntimeTask = {
-  id: string;
-  title: string;
-  due: string;
-  owner: string;
-  completed: boolean;
-  createdAt: number;
-};
 
 type NewRuntimeTask = {
   id: string;
@@ -63,6 +55,7 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
   const [selectedId, setSelectedId] = useState("hub");
   const [chatDraft, setChatDraft] = useState("");
   const [runtimeTasks, setRuntimeTasks] = useState<RuntimeTask[]>([]);
+  const [runtimeHydrated, setRuntimeHydrated] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
@@ -96,25 +89,39 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const loadRuntimeTasks = async () => {
+    const bootstrapRuntimeTasks = async () => {
+      let localTasks: RuntimeTask[] = [];
+
       try {
         const raw = await AsyncStorage.getItem(RUNTIME_TASKS_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw) as unknown;
-        setRuntimeTasks(normalizeRuntimeTasks(parsed));
+        localTasks = normalizeRuntimeTasks(raw ? JSON.parse(raw) : []);
       } catch {
-        setRuntimeTasks([]);
+        localTasks = [];
       }
+
+      const remoteTasks = await fetchRuntimeTasks();
+      const nextTasks = remoteTasks.length ? remoteTasks : localTasks;
+
+      setRuntimeTasks(nextTasks);
+      setRuntimeHydrated(true);
     };
 
-    loadRuntimeTasks();
+    bootstrapRuntimeTasks();
   }, []);
 
   useEffect(() => {
+    if (!runtimeHydrated) return;
+
     AsyncStorage.setItem(RUNTIME_TASKS_KEY, JSON.stringify(runtimeTasks)).catch(() => {
       // ignore persistence failure
     });
-  }, [runtimeTasks]);
+
+    const timer = setTimeout(() => {
+      syncRuntimeTasks(runtimeTasks);
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [runtimeTasks, runtimeHydrated]);
 
   const value = useMemo<WorldStoreValue>(
     () => ({
