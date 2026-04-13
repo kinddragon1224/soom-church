@@ -1,11 +1,25 @@
-import { Tabs } from "expo-router";
+import { useEffect } from "react";
+import { Tabs, router } from "expo-router";
 import { Text } from "react-native";
+
+import { getAuthConnected } from "../../lib/auth-bridge";
 
 function TabIcon({ label, focused }: { label: string; focused: boolean }) {
   return <Text style={{ fontSize: 16, opacity: focused ? 1 : 0.58 }}>{label}</Text>;
 }
 
 export default function TabsLayout() {
+  useEffect(() => {
+    const guard = async () => {
+      const connected = await getAuthConnected();
+      if (!connected) {
+        router.replace("/login");
+      }
+    };
+
+    guard();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{
@@ -22,9 +36,6 @@ export default function TabsLayout() {
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: "700",
-        },
-        sceneContainerStyle: {
-          backgroundColor: "#07111f",
         },
       }}
     >
