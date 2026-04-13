@@ -1,60 +1,11 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import Naver from "next-auth/providers/naver";
-import Kakao from "next-auth/providers/kakao";
-import Credentials from "next-auth/providers/credentials";
+
 import { prisma } from "@/lib/prisma";
 import { getFirstChurchByUserId } from "@/lib/church-context";
-import { hashPassword, isHashedPassword, verifyPassword } from "@/lib/password";
-import { isPlatformAdminEmail, PLATFORM_ADMIN_EMAILS } from "@/lib/admin";
+import { isPlatformAdminEmail } from "@/lib/admin";
 
 const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "soom-temporary-prod-secret-change-me";
-
-
-function resolveCredentialEmails(rawIdentifier: string) {
-  const identifier = rawIdentifier.trim().toLowerCase();
-  if (!identifier) return [];
-
-  const candidates = new Set<string>();
-
-  if (identifier.includes("@")) {
-    candidates.add(identifier);
-  } else {
-    candidates.add(`${identifier}@soom.church`);
-    candidates.add(`${identifier}@beta.soom.local`);
-  }
-
-  return [...candidates];
-}
-
-const socialProviders = [];
-
-if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
-  socialProviders.push(
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    }),
-  );
-}
-
-if (process.env.AUTH_NAVER_ID && process.env.AUTH_NAVER_SECRET) {
-  socialProviders.push(
-    Naver({
-      clientId: process.env.AUTH_NAVER_ID,
-      clientSecret: process.env.AUTH_NAVER_SECRET,
-    }),
-  );
-}
-
-if (process.env.AUTH_KAKAO_ID && process.env.AUTH_KAKAO_SECRET) {
-  socialProviders.push(
-    Kakao({
-      clientId: process.env.AUTH_KAKAO_ID,
-      clientSecret: process.env.AUTH_KAKAO_SECRET,
-    }),
-  );
-}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -64,46 +15,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     maxAge: 60 * 60 * 12,
   },
   providers: [
-    Credentials({
-      name: "아이디 로그인",
-      credentials: {
-        identifier: { label: "아이디", type: "text" },
-        password: { label: "비밀번호", type: "password" },
-      },
-      async authorize(credentials) {
-        const identifier = String(credentials?.identifier ?? "").trim().toLowerCase();
-        const password = String(credentials?.password ?? "");
-        const candidateEmails = resolveCredentialEmails(identifier);
-        if (candidateEmails.length === 0 || !password) return null;
-
-        const user = await prisma.user.findFirst({
-          where: { email: { in: candidateEmails } },
-          orderBy: { email: "asc" },
-        });
-        if (!user || !user.isActive) return null;
-
-        const isValid = await verifyPassword(password, user.passwordHash);
-        if (!isValid) return null;
-
-        if (!isHashedPassword(user.passwordHash)) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { passwordHash: await hashPassword(password) },
-          });
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        };
-      },
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID ?? "",
+      clientSecret: process.env.AUTH_GOOGLE_SECRET ?? "",
     }),
-    ...socialProviders,
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider === "credentials") return true;
+      if (account?.provider !== "google") return false;
 
       const email = user.email?.trim().toLowerCase();
       if (!email) return false;
@@ -164,11 +83,7 @@ export async function getPostLoginPath(userId: string) {
   if (isPlatformAdminEmail(user.email)) return "/platform-admin";
 
   const church = await getFirstChurchByUserId(user.id);
-  if (church) return church.slug === "gido" ? "/app/beta" : `/app/${church.slug}/dashboard`;
+  if (church) return `/app/${church.slug}/world`;
 
-  if (user.email === "dev@soom.church") {
-    return "/app/soom-dev/dashboard";
-  }
-
-  return "/app/beta";
+  return "/app/onboarding";
 }
