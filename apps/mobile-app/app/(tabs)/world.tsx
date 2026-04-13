@@ -183,9 +183,9 @@ export default function WorldScreen() {
 
   const urgentCount = snapshot.peopleRecords.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
   const stableCount = snapshot.peopleRecords.filter((p) => p.state.includes("안정") || p.state.includes("기도")).length;
-  const teamPower = 28000 + summary.peopleCount * 1350 + urgentCount * 420;
-  const stageLabel = `STAGE ${summary.householdCount}-${summary.objectCount}`;
-  const autoReward = `${Math.max(1, stableCount) * 120}M`;
+  const operationIndex = 28000 + summary.peopleCount * 1350 + urgentCount * 420;
+  const phaseLabel = `운영 단계 ${summary.householdCount}-${summary.objectCount}`;
+  const autoAccumulation = `${Math.max(1, stableCount) * 120}건`;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
@@ -196,11 +196,11 @@ export default function WorldScreen() {
 
         <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "rgba(214,178,112,0.55)", backgroundColor: "rgba(24,33,50,0.92)", paddingHorizontal: 10, paddingVertical: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
           <View>
-            <Text style={{ color: "#8ea6d2", fontSize: 10 }}>{stageLabel}</Text>
-            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>목양 전투력 {teamPower.toLocaleString()}</Text>
+            <Text style={{ color: "#8ea6d2", fontSize: 10 }}>{phaseLabel}</Text>
+            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>목양 운영지수 {operationIndex.toLocaleString()}</Text>
           </View>
           <View style={{ alignItems: "flex-end" }}>
-            <Text style={{ color: "#ffd687", fontSize: 11 }}>AFK 수급 +{autoReward}</Text>
+            <Text style={{ color: "#ffd687", fontSize: 11 }}>자동 누적 +{autoAccumulation}</Text>
             <Text style={{ color: "#c9d9f5", fontSize: 10 }}>후속 {urgentCount} · 안정 {stableCount}</Text>
           </View>
         </View>
@@ -259,8 +259,8 @@ export default function WorldScreen() {
             >
               <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
               <View style={{ position: "absolute", left: 10, right: 10, top: 10, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.38)", backgroundColor: "rgba(13,31,24,0.68)", paddingHorizontal: 10, paddingVertical: 6, flexDirection: "row", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
-                <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>AUTO ON · 모라가 루프 실행중</Text>
-                <Text style={{ color: "#f4d38e", fontSize: 11 }}>+{autoReward}</Text>
+                <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>자동 운영 ON · 모라가 처리중</Text>
+                <Text style={{ color: "#f4d38e", fontSize: 11 }}>+{autoAccumulation}</Text>
               </View>
               <View style={{ position: "absolute", left: 18, top: 110, width: 140, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "11deg" }] }} />
               <View style={{ position: "absolute", right: 30, top: 250, width: 128, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "-16deg" }] }} />
