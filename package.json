@@ -15,6 +15,7 @@
     "mobile:dev": "npm --prefix apps/mobile-app run dev",
     "mobile:dev:clear": "npm --prefix apps/mobile-app run dev:clear",
     "mobile:dev:tunnel": "npm --prefix apps/mobile-app run dev:tunnel",
+    "mobile:dev:recover": "bash scripts/mobile-dev-recover.sh",
     "mobile:typecheck": "npm --prefix apps/mobile-app run typecheck"
   },
   "dependencies": {
