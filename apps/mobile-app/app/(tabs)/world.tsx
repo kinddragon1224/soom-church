@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { router } from "expo-router";
 
 import { useWorldStore } from "../../lib/world-store";
 import { type WorldObject } from "../../lib/world-model";
@@ -29,7 +30,7 @@ function tone(kind: WorldObject["kind"], active: boolean) {
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, selectedId, setSelectedId } = useWorldStore();
+  const { loading, snapshot, selectedId, setSelectedId, setChatDraft } = useWorldStore();
 
   if (loading || !snapshot) {
     return (
@@ -129,10 +130,22 @@ export default function WorldScreen() {
           <Text style={{ color: "rgba(255,255,255,0.72)", marginTop: 6, lineHeight: 20 }}>{selected.note}</Text>
 
           <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
-            <Pressable style={{ flex: 1, minHeight: 48, borderRadius: 999, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" }}>
+            <Pressable
+              onPress={() => {
+                setChatDraft(`${selected.name} 상태 기준으로 오늘 바로 할 1가지 행동만 추천해줘`);
+                router.push("/(tabs)/tasks");
+              }}
+              style={{ flex: 1, minHeight: 48, borderRadius: 999, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" }}
+            >
               <Text style={{ color: "#07111f", fontWeight: "700" }}>바로 실행</Text>
             </Pressable>
-            <Pressable style={{ flex: 1, minHeight: 48, borderRadius: 999, borderWidth: 1, borderColor: "rgba(255,255,255,0.14)", backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center" }}>
+            <Pressable
+              onPress={() => {
+                setChatDraft(`${selected.name} 관련 후속 진행 상황 요약해줘`);
+                router.push("/(tabs)/chat");
+              }}
+              style={{ flex: 1, minHeight: 48, borderRadius: 999, borderWidth: 1, borderColor: "rgba(255,255,255,0.14)", backgroundColor: "rgba(255,255,255,0.04)", alignItems: "center", justifyContent: "center" }}
+            >
               <Text style={{ color: "#fff", fontWeight: "600" }}>채팅으로 열기</Text>
             </Pressable>
           </View>

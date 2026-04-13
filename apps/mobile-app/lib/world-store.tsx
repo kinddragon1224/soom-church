@@ -7,6 +7,8 @@ type WorldStoreValue = {
   snapshot: WorldSnapshot | null;
   selectedId: string;
   setSelectedId: (id: string) => void;
+  chatDraft: string;
+  setChatDraft: (text: string) => void;
   refresh: () => Promise<void>;
 };
 
@@ -16,6 +18,7 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [snapshot, setSnapshot] = useState<WorldSnapshot | null>(null);
   const [selectedId, setSelectedId] = useState("hub");
+  const [chatDraft, setChatDraft] = useState("");
 
   const refresh = async () => {
     setLoading(true);
@@ -34,9 +37,11 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
       snapshot,
       selectedId,
       setSelectedId,
+      chatDraft,
+      setChatDraft,
       refresh,
     }),
-    [loading, snapshot, selectedId]
+    [loading, snapshot, selectedId, chatDraft]
   );
 
   return <WorldStoreContext.Provider value={value}>{children}</WorldStoreContext.Provider>;
