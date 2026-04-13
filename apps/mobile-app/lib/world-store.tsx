@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
 import { fetchRuntimeTasks, syncRuntimeTasks, type RuntimeTask } from "./runtime-task-source";
+import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
 
 const RUNTIME_TASKS_KEY = "soom.mobile.runtime.tasks";
 
@@ -59,9 +59,15 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
 
   const refresh = async () => {
     setLoading(true);
-    const next = await getWorldSnapshot();
-    setSnapshot(next);
-    setLoading(false);
+
+    try {
+      const next = await getWorldSnapshot();
+      setSnapshot(next);
+    } catch {
+      setSnapshot(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const addRuntimeTask = (task: NewRuntimeTask) => {

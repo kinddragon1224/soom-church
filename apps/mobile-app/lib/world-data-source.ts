@@ -41,16 +41,17 @@ function isSnapshotPayload(value: unknown): value is SnapshotPayload {
 }
 
 async function fetchRemoteSnapshot(churchSlug: string): Promise<WorldSnapshot> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 3000);
+  const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(churchSlug)}`;
 
-  try {
-    const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(churchSlug)}`;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error("snapshot timeout")), 4500);
+  });
+
+  const requestPromise = (async () => {
     const response = await fetch(endpoint, {
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store",
-      signal: controller.signal,
     });
 
     if (!response.ok) {
@@ -64,9 +65,9 @@ async function fetchRemoteSnapshot(churchSlug: string): Promise<WorldSnapshot> {
     }
 
     return data;
-  } finally {
-    clearTimeout(timeout);
-  }
+  })();
+
+  return Promise.race([requestPromise, timeoutPromise]);
 }
 
 function resolveChurchSlug(savedSlug: string | null) {
