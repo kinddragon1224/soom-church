@@ -1,11 +1,18 @@
-import { useMemo } from "react";
-import { Pressable, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { useMemo, useState } from "react";
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 
 import PixelSprite from "../../components/pixel-sprite";
+import { sendChatCommand } from "../../lib/chat-source";
 import { type WorldObject } from "../../lib/world-model";
 import { mabiTheme } from "../../lib/ui-theme";
 import { useWorldStore } from "../../lib/world-store";
+
+type WorldChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+};
 
 function tone(kind: WorldObject["kind"], active: boolean) {
   if (kind === "hub") {
@@ -39,7 +46,10 @@ function stateBadge(state: string) {
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, selectedId, setSelectedId, setChatDraft } = useWorldStore();
+  const { loading, snapshot, selectedId, setSelectedId, setChatDraft, addRuntimeTask } = useWorldStore();
+  const [worldDraft, setWorldDraft] = useState("");
+  const [worldSending, setWorldSending] = useState(false);
+  const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
 
   if (loading || !snapshot) {
     return (
@@ -60,6 +70,30 @@ export default function WorldScreen() {
   }, [selectedId, snapshot.worldObjects]);
 
   const selectedBadge = stateBadge(selected.state);
+
+  const submitWorldChat = async () => {
+    const text = worldDraft.trim();
+    if (!text || worldSending) return;
+
+    setWorldSending(true);
+    setWorldMessages((prev) => [...prev, { id: `wu-${Date.now()}`, role: "user", text }]);
+    setWorldDraft("");
+
+    const result = await sendChatCommand(text);
+
+    setWorldMessages((prev) => [...prev, { id: `wa-${Date.now()}`, role: "assistant", text: result.reply }]);
+
+    result.actions.forEach((action, index) => {
+      addRuntimeTask({
+        id: `${action.id}-world-${Date.now()}-${index}`,
+        title: action.title,
+        due: action.due,
+        owner: action.owner,
+      });
+    });
+
+    setWorldSending(false);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
@@ -159,9 +193,74 @@ export default function WorldScreen() {
               }}
               style={{ flex: 1, minHeight: 48, borderRadius: 999, borderWidth: 1, borderColor: "rgba(63,79,88,0.35)", backgroundColor: mabiTheme.parchmentSoft, alignItems: "center", justifyContent: "center" }}
             >
-              <Text style={{ color: "#39454d", fontWeight: "700" }}>채팅으로 열기</Text>
+              <Text style={{ color: "#39454d", fontWeight: "700" }}>채팅 탭으로 열기</Text>
             </Pressable>
           </View>
+        </View>
+
+        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 2, borderColor: mabiTheme.pixelBorder, backgroundColor: "#223149", padding: 12, gap: 10 }}>
+          <Text style={{ color: mabiTheme.pixelAccent, fontSize: 12, fontWeight: "700" }}>월드 내 채팅</Text>
+
+          <TextInput
+            value={worldDraft}
+            onChangeText={setWorldDraft}
+            placeholder="월드에서 바로 물어보기"
+            placeholderTextColor="rgba(245,242,232,0.4)"
+            multiline
+            style={{
+              minHeight: 76,
+              borderRadius: 8,
+              borderWidth: 2,
+              borderColor: "rgba(138,160,199,0.45)",
+              backgroundColor: "rgba(10,18,30,0.32)",
+              color: mabiTheme.pixelInk,
+              paddingHorizontal: 10,
+              paddingVertical: 8,
+              textAlignVertical: "top",
+            }}
+          />
+
+          <Pressable
+            onPress={submitWorldChat}
+            disabled={worldSending || !worldDraft.trim()}
+            style={{
+              minHeight: 42,
+              borderRadius: 8,
+              borderWidth: 2,
+              borderColor: "rgba(243,208,128,0.55)",
+              backgroundColor: "rgba(243,208,128,0.2)",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: worldSending || !worldDraft.trim() ? 0.55 : 1,
+              flexDirection: "row",
+              gap: 8,
+            }}
+          >
+            {worldSending ? <ActivityIndicator color="#f5f2e8" size="small" /> : null}
+            <Text style={{ color: mabiTheme.pixelInk, fontSize: 13, fontWeight: "700" }}>{worldSending ? "전송 중..." : "월드에서 실행"}</Text>
+          </Pressable>
+
+          {worldMessages.length ? (
+            <View style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(138,160,199,0.4)", backgroundColor: "rgba(42,54,80,0.7)", padding: 8, gap: 7 }}>
+              {worldMessages.slice(-4).map((message) => (
+                <View
+                  key={message.id}
+                  style={{
+                    alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+                    maxWidth: "92%",
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: message.role === "user" ? "rgba(243,208,128,0.55)" : "rgba(138,160,199,0.45)",
+                    backgroundColor: message.role === "user" ? "rgba(243,208,128,0.18)" : "rgba(255,255,255,0.06)",
+                    paddingHorizontal: 9,
+                    paddingVertical: 7,
+                  }}
+                >
+                  <Text style={{ color: mabiTheme.pixelInk, fontSize: 12, lineHeight: 17 }}>{message.text}</Text>
+                </View>
+              ))}
+            </View>
+          ) : null}
         </View>
       </ScrollView>
     </SafeAreaView>
