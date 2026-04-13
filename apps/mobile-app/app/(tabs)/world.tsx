@@ -80,7 +80,7 @@ export default function WorldScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 120 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84 }}>
         <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 11, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <View>
             <Text style={{ color: "#8ea6d2", fontSize: 10 }}>목양 월드 · 메인</Text>
@@ -91,7 +91,7 @@ export default function WorldScreen() {
 
         <View style={{
           marginTop: 10,
-          height: 360,
+          height: 560,
           borderRadius: 22,
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
@@ -100,7 +100,7 @@ export default function WorldScreen() {
         }}>
           <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
           <View style={{ position: "absolute", left: 10, right: 10, top: 10, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.38)", backgroundColor: "rgba(13,31,24,0.68)", paddingHorizontal: 10, paddingVertical: 6, flexDirection: "row", justifyContent: "space-between", zIndex: 10 }}>
-            <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>목장 자동 운영 ON</Text>
+            <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>목양 실행창 · 자동 운영 ON</Text>
             <Text style={{ color: "#f4d38e", fontSize: 11 }}>모라 처리중</Text>
           </View>
 
