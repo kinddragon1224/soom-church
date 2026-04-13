@@ -82,6 +82,7 @@ export default function WorldScreen() {
   const [worldDraft, setWorldDraft] = useState("");
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
+  const [autoRunning, setAutoRunning] = useState(false);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -108,22 +109,24 @@ export default function WorldScreen() {
   const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
   const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
+  const loopCommands = useMemo(() => {
+    return [
+      `모라, ${selected.name} 포함 후속 우선순위 3명 정리`,
+      "모라, 오늘 기도 요청 목록을 긴급도 순으로 재정렬",
+      "모라, 오늘 목양 운영 브리프 3줄로 작성",
+    ];
+  }, [selected]);
 
-  const submitWorldChat = async () => {
-    const text = worldDraft.trim();
-    if (!text || worldSending) return;
-
+  const executeCommand = async (text: string, source: "manual" | "auto" = "manual") => {
     const commandTs = Date.now();
 
-    setWorldSending(true);
     setWorldMessages((prev) => [...prev, { id: `wu-${commandTs}`, role: "user", text }]);
-    setWorldDraft("");
 
     addRuntimeTask({
       id: `command-log-${commandTs}`,
       title: `[명령 실행] ${text.replace(/^모라,?\s*/, "")}`,
       due: "방금",
-      owner: "모라 명령창",
+      owner: source === "auto" ? "모라 자동 루프" : "모라 명령창",
     });
 
     const result = await sendChatCommand(text);
@@ -138,8 +141,43 @@ export default function WorldScreen() {
         owner: action.owner,
       });
     });
+  };
+
+  const submitWorldChat = async () => {
+    const text = worldDraft.trim();
+    if (!text || worldSending || autoRunning) return;
+
+    setWorldSending(true);
+    setWorldDraft("");
+    await executeCommand(text, "manual");
 
     setWorldSending(false);
+  };
+
+  const runAutoLoop = async () => {
+    if (autoRunning || worldSending) return;
+    setAutoRunning(true);
+
+    addRuntimeTask({
+      id: `auto-loop-start-${Date.now()}`,
+      title: "[자동 루프] 오늘 목양 자동 루프 시작",
+      due: "방금",
+      owner: "모라 자동 루프",
+    });
+
+    for (const command of loopCommands) {
+      // eslint-disable-next-line no-await-in-loop
+      await executeCommand(command, "auto");
+    }
+
+    addRuntimeTask({
+      id: `auto-loop-done-${Date.now()}`,
+      title: "[자동 루프] 오늘 목양 자동 루프 완료",
+      due: "방금",
+      owner: "모라 자동 루프",
+    });
+
+    setAutoRunning(false);
   };
 
   return (
@@ -205,6 +243,27 @@ export default function WorldScreen() {
         <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", backgroundColor: "rgba(20,29,45,0.95)", padding: 12 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령창</Text>
 
+          <View style={{ marginTop: 8, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.4)", backgroundColor: "rgba(12,35,24,0.38)", padding: 8, gap: 6 }}>
+            <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>운영 루프 자동화</Text>
+            <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 10 }}>후속/기도/브리프 명령 3개를 순차 실행</Text>
+            <Pressable
+              onPress={runAutoLoop}
+              disabled={autoRunning || worldSending}
+              style={{
+                minHeight: 38,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "rgba(143,224,170,0.52)",
+                backgroundColor: "rgba(143,224,170,0.16)",
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: autoRunning || worldSending ? 0.5 : 1,
+              }}
+            >
+              <Text style={{ color: "#d7ffe3", fontWeight: "700" }}>{autoRunning ? "자동 루프 실행 중..." : "오늘 자동 루프 실행"}</Text>
+            </Pressable>
+          </View>
+
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8, marginBottom: 8 }}>
             {visiblePresets.map((preset) => (
               <Pressable
@@ -250,8 +309,8 @@ export default function WorldScreen() {
                 textAlignVertical: "top",
               }}
             />
-            <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: 72, minWidth: 70, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 12 }}>
-              {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
+            <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: 72, minWidth: 70, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 12 }}>
+              {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>{autoRunning ? "대기" : "전송"}</Text>}
             </Pressable>
           </View>
         </View>
