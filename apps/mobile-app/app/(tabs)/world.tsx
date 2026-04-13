@@ -107,6 +107,7 @@ export default function WorldScreen() {
   const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
   const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
+  const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
 
   const submitWorldChat = async () => {
     const text = worldDraft.trim();
@@ -145,7 +146,7 @@ export default function WorldScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84, gap: 12 }}>
         <View style={{
-          height: 430,
+          height: 392,
           borderRadius: 22,
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
@@ -153,20 +154,23 @@ export default function WorldScreen() {
           backgroundColor: mabiTheme.mapPanel,
         }}>
           <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
-          <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.28)", backgroundColor: "rgba(15,22,34,0.78)", paddingHorizontal: 12, paddingVertical: 9, zIndex: 10 }}>
-            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>오늘 목양 메인</Text>
-            <View style={{ marginTop: 6, flexDirection: "row", gap: 8 }}>
+          <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(120,157,214,0.28)", backgroundColor: "rgba(15,22,34,0.84)", paddingHorizontal: 12, paddingVertical: 10, zIndex: 10, gap: 8 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              <Text style={{ color: "#f4f7ff", fontSize: 15, fontWeight: "700" }}>오늘 목양 메인</Text>
+              <Text style={{ color: "rgba(220,232,255,0.62)", fontSize: 11 }}>{selected.name}</Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 8 }}>
               <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(242,168,168,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
                 <Text style={{ color: "#ffd7d7", fontSize: 10 }}>긴급 돌봄</Text>
-                <Text style={{ color: "#ffffff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
+                <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
               </View>
               <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(143,224,170,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
                 <Text style={{ color: "#d7ffe3", fontSize: 10 }}>기도 요청</Text>
-                <Text style={{ color: "#ffffff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{prayerCount}</Text>
+                <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700", marginTop: 2 }}>{prayerCount}</Text>
               </View>
               <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(120,157,214,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
                 <Text style={{ color: "#cfe0ff", fontSize: 10 }}>운영 지수</Text>
-                <Text style={{ color: "#ffffff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{operationIndex}</Text>
+                <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700", marginTop: 2 }}>{operationIndex}</Text>
               </View>
             </View>
           </View>
@@ -183,13 +187,13 @@ export default function WorldScreen() {
                 style={{
                   position: "absolute",
                   left: item.x,
-                  top: item.y,
-                  minWidth: item.kind === "person" ? 82 : 102,
+                  top: item.y - 18,
+                  minWidth: item.kind === "person" ? 78 : 96,
                   borderRadius: 12,
                   borderWidth: 2,
                   borderColor: colors.border,
                   backgroundColor: colors.bg,
-                  paddingVertical: 8,
+                  paddingVertical: 7,
                   paddingHorizontal: 8,
                   alignItems: "center",
                 }}
@@ -205,7 +209,7 @@ export default function WorldScreen() {
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령창</Text>
 
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8, marginBottom: 8 }}>
-            {WORLD_COMMAND_PRESETS.map((preset) => (
+            {visiblePresets.map((preset) => (
               <Pressable
                 key={preset.id}
                 onPress={() => setWorldDraft(preset.command)}
@@ -216,7 +220,7 @@ export default function WorldScreen() {
             ))}
           </View>
 
-          <View style={{ borderRadius: 12, backgroundColor: "rgba(11,18,29,0.78)", padding: 10, gap: 7, minHeight: 92 }}>
+          <View style={{ borderRadius: 12, backgroundColor: "rgba(11,18,29,0.78)", padding: 10, gap: 7, minHeight: 72 }}>
             {recentMessages.length ? (
               recentMessages.map((message) => (
                 <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "92%", borderRadius: 14, borderWidth: 1, borderColor: message.role === "user" ? "rgba(86,129,214,0.7)" : "rgba(255,255,255,0.14)", backgroundColor: message.role === "user" ? "rgba(52,86,156,0.72)" : "rgba(255,255,255,0.07)", paddingHorizontal: 10, paddingVertical: 7 }}>
@@ -224,7 +228,7 @@ export default function WorldScreen() {
                 </View>
               ))
             ) : (
-              <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>명령을 보내면 할 일과 기록에 바로 반영돼.</Text>
+              <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>후속, 기도, 심방 중 하나부터 바로 지시해줘.</Text>
             )}
           </View>
 
@@ -256,12 +260,9 @@ export default function WorldScreen() {
         </View>
 
         <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(148,171,212,0.35)", backgroundColor: "rgba(26,35,52,0.9)", padding: 12, gap: 10 }}>
-          <View>
-            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>오늘 운영</Text>
-            <Text style={{ color: "rgba(220,232,255,0.64)", fontSize: 11, marginTop: 3 }}>{selected.name} 중심으로 바로 실행할 수 있게 정리했어.</Text>
-          </View>
+          <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>오늘 운영</Text>
 
-          <View style={{ borderRadius: 12, backgroundColor: "rgba(255,255,255,0.04)", padding: 10, gap: 5 }}>
+          <View style={{ borderRadius: 12, backgroundColor: "rgba(255,255,255,0.04)", padding: 10, gap: 6 }}>
             <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>지금 볼 대상</Text>
             <Text style={{ color: "#ffffff", fontSize: 16, fontWeight: "700" }}>{selected.name}</Text>
             <Text style={{ color: "rgba(220,232,255,0.72)", fontSize: 12 }}>{selected.state}</Text>
