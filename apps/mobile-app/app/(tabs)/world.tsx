@@ -449,45 +449,66 @@ export default function WorldScreen() {
 
         <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(148,171,212,0.35)", backgroundColor: "rgba(26,35,52,0.9)", padding: 12, gap: 8 }}>
           <Text style={{ color: "#c9d9f5", fontSize: 12, fontWeight: "700" }}>목원 관리 · 캐릭터 스탯</Text>
-          {snapshot.peopleRecords.slice(0, 4).map((person) => {
-            const stats = memberStats(person.name, person.state);
-            return (
-              <Pressable
-                key={person.id}
-                onPress={() => {
-                  setMemberFocusId(person.id);
-                  setMemberPanelTab("stat");
-                }}
-                style={{
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: person.id === focusedMember?.id ? "rgba(243,208,128,0.65)" : "rgba(148,171,212,0.28)",
-                  backgroundColor: person.id === focusedMember?.id ? "rgba(243,208,128,0.1)" : "rgba(255,255,255,0.04)",
-                  padding: 9,
-                  gap: 6,
-                }}
-              >
-                <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>{person.name} · {person.household}</Text>
-                <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 11 }}>{person.nextAction}</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+            <Text style={{ color: "rgba(216,230,255,0.76)", fontSize: 11 }}>보유 {snapshot.peopleRecords.length}/{Math.max(snapshot.peopleRecords.length, 20)}</Text>
+            <View style={{ flexDirection: "row", gap: 6 }}>
+              {[
+                { label: "ALL" },
+                { label: "후속" },
+                { label: "기도" },
+              ].map((filter, idx) => (
+                <View
+                  key={filter.label}
+                  style={{
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: idx === 0 ? "rgba(243,208,128,0.6)" : "rgba(148,171,212,0.3)",
+                    backgroundColor: idx === 0 ? "rgba(243,208,128,0.18)" : "rgba(255,255,255,0.04)",
+                    paddingHorizontal: 8,
+                    paddingVertical: 4,
+                  }}
+                >
+                  <Text style={{ color: idx === 0 ? "#ffeabf" : "#d8e6ff", fontSize: 10, fontWeight: "700" }}>{filter.label}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
 
-                {[
-                  { label: "돌봄", value: stats.care, color: "#f2a8a8" },
-                  { label: "신앙", value: stats.faith, color: "#8fe0aa" },
-                  { label: "후속", value: stats.follow, color: "#f4d38e" },
-                ].map((bar) => (
-                  <View key={`${person.id}-${bar.label}`} style={{ gap: 3 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                      <Text style={{ color: "rgba(216,230,255,0.8)", fontSize: 10 }}>{bar.label}</Text>
-                      <Text style={{ color: "rgba(216,230,255,0.8)", fontSize: 10 }}>{bar.value}</Text>
-                    </View>
-                    <View style={{ height: 7, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.12)", overflow: "hidden" }}>
-                      <View style={{ width: `${bar.value}%`, height: "100%", backgroundColor: bar.color }} />
-                    </View>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            {snapshot.peopleRecords.slice(0, 12).map((person) => {
+              const lv = 20 + (statSeed(person.name, 5) % 80);
+              const starCount = 2 + (statSeed(person.name, 9) % 4);
+
+              return (
+                <Pressable
+                  key={person.id}
+                  onPress={() => {
+                    setMemberFocusId(person.id);
+                    setMemberPanelTab("stat");
+                  }}
+                  style={{
+                    width: "31%",
+                    minWidth: 96,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: person.id === focusedMember?.id ? "rgba(243,208,128,0.68)" : "rgba(148,171,212,0.28)",
+                    backgroundColor: person.id === focusedMember?.id ? "rgba(243,208,128,0.12)" : "rgba(255,255,255,0.04)",
+                    overflow: "hidden",
+                  }}
+                >
+                  <View style={{ height: 74, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(121,31,31,0.45)", borderBottomWidth: 1, borderBottomColor: "rgba(255,255,255,0.14)" }}>
+                    <PixelSprite kind="person" frame={person.id === focusedMember?.id ? "selected" : "normal"} showBadge={true} />
+                    <Text style={{ position: "absolute", left: 6, top: 5, color: "#f4f7ff", fontSize: 9, fontWeight: "700" }}>Lv {lv}</Text>
                   </View>
-                ))}
-              </Pressable>
-            );
-          })}
+                  <View style={{ paddingHorizontal: 7, paddingVertical: 6, gap: 4 }}>
+                    <Text numberOfLines={1} style={{ color: "#f4f7ff", fontSize: 11, fontWeight: "700" }}>{person.name}</Text>
+                    <Text style={{ color: "#ffd687", fontSize: 10 }}>{"★".repeat(starCount)}</Text>
+                    <Text numberOfLines={1} style={{ color: "rgba(216,230,255,0.72)", fontSize: 9 }}>{person.state}</Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
 
           {focusedMember && focusedStats ? (
             <View style={{ marginTop: 6, borderRadius: 12, borderWidth: 1, borderColor: "rgba(243,208,128,0.5)", backgroundColor: "rgba(11,18,29,0.88)", padding: 10 }}>
