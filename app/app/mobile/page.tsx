@@ -89,6 +89,10 @@ export default async function MobileAppEntryPage() {
               도입 문의
             </Link>
           </div>
+
+          <Link href="/app/mobile/return" className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#7dd3fc]/35 bg-[#38bdf81a] px-5 text-sm font-semibold text-[#dff4ff]">
+            앱 복귀 페이지 열기
+          </Link>
         </section>
       </div>
     </main>
