@@ -3,10 +3,9 @@ import { Image, View } from "react-native";
 import {
   type SpriteFrame,
   type WorldAssetSlot,
-  worldAssetFallbackSources,
+  getWorldAssetSpec,
   worldAssetFrameTone,
-  worldAssetResizeMode,
-  worldAssetSize,
+  worldAssetVariantKey,
   worldAssetSlotByKind,
 } from "../lib/world-asset-slots";
 import type { WorldObjectKind } from "../lib/world-model";
@@ -24,7 +23,7 @@ export default function PixelSprite({
 }) {
   const resolvedSlot = slot ?? worldAssetSlotByKind[kind];
   const tone = worldAssetFrameTone[frame];
-  const size = worldAssetSize(resolvedSlot);
+  const asset = getWorldAssetSpec(resolvedSlot);
 
   return (
     <View style={{ position: "relative" }}>
@@ -39,9 +38,10 @@ export default function PixelSprite({
         }}
       >
         <Image
-          source={worldAssetFallbackSources[resolvedSlot]}
-          style={{ width: size.width, height: size.height, borderRadius: 4 }}
-          resizeMode={worldAssetResizeMode(resolvedSlot)}
+          source={asset.source}
+          style={{ width: asset.size.width, height: asset.size.height, borderRadius: 4 }}
+          resizeMode={asset.resizeMode}
+          accessibilityLabel={worldAssetVariantKey(resolvedSlot, frame)}
         />
       </View>
       {showBadge ? (
