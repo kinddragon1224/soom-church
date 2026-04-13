@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getStatusUpdatePatch } from "@/lib/member-status";
 
 type ActionItem = {
   id: string;
@@ -10,6 +11,14 @@ type ActionItem = {
 type OrchestrateInput = {
   churchSlug: string;
   text: string;
+};
+
+type DbActionSummary = {
+  applied: boolean;
+  statusTag?: string;
+  updatedMembers: string[];
+  followUpRecords: number;
+  note?: string;
 };
 
 type OrchestrateOutput = {
@@ -28,6 +37,14 @@ type OrchestrateOutput = {
     summary: string;
     suggestedGithubIssue: string;
   };
+  dbActions?: DbActionSummary;
+};
+
+type StatusPatchPlan = {
+  statusTag: string;
+  requiresFollowUp: boolean;
+  recordCategory: "VISIT" | "NOTE";
+  reason: string;
 };
 
 function detectIntents(text: string) {
@@ -84,6 +101,141 @@ function buildActions(intents: string[], followupCount: number) {
   return actions;
 }
 
+function planStatusPatch(text: string): StatusPatchPlan | null {
+  if (/(심방|입원|수술|건강|회복|상담)/.test(text)) {
+    return {
+      statusTag: "심방필요",
+      requiresFollowUp: true,
+      recordCategory: "VISIT",
+      reason: "심방/돌봄 키워드 감지",
+    };
+  }
+
+  if (/(휴면|재연결|오랜만)/.test(text)) {
+    return {
+      statusTag: "휴면",
+      requiresFollowUp: true,
+      recordCategory: "NOTE",
+      reason: "휴면/재연결 키워드 감지",
+    };
+  }
+
+  if (/(새가족|등록)/.test(text)) {
+    return {
+      statusTag: "새가족",
+      requiresFollowUp: true,
+      recordCategory: "NOTE",
+      reason: "등록/새가족 키워드 감지",
+    };
+  }
+
+  if (/(정착|배정)/.test(text)) {
+    return {
+      statusTag: "정착중",
+      requiresFollowUp: true,
+      recordCategory: "NOTE",
+      reason: "정착/배정 키워드 감지",
+    };
+  }
+
+  if (/(봉사|사역)/.test(text)) {
+    return {
+      statusTag: "봉사연결",
+      requiresFollowUp: false,
+      recordCategory: "NOTE",
+      reason: "봉사/사역 키워드 감지",
+    };
+  }
+
+  return null;
+}
+
+async function applyDbActions(params: {
+  churchId: string;
+  text: string;
+  statusPlan: StatusPatchPlan | null;
+  intents: string[];
+}) {
+  const { churchId, text, statusPlan, intents } = params;
+
+  if (!statusPlan) {
+    return {
+      applied: false,
+      updatedMembers: [] as string[],
+      followUpRecords: 0,
+      note: "상태태그 변경 조건 없음",
+    };
+  }
+
+  const candidates = await prisma.member.findMany({
+    where: { churchId, isDeleted: false },
+    orderBy: [{ requiresFollowUp: "desc" }, { updatedAt: "desc" }],
+    take: 12,
+    select: { id: true, name: true },
+  });
+
+  const namedTargets = candidates.filter((member) => text.includes(member.name));
+  const fallbackTargets = candidates.slice(0, intents.includes("FOLLOWUP_MANAGEMENT") ? 2 : 1);
+  const targets = (namedTargets.length ? namedTargets : fallbackTargets).slice(0, 3);
+
+  if (!targets.length) {
+    return {
+      applied: false,
+      updatedMembers: [] as string[],
+      followUpRecords: 0,
+      note: "적용 대상 목원을 찾지 못함",
+    };
+  }
+
+  const now = new Date();
+
+  await prisma.$transaction(async (tx) => {
+    for (const member of targets) {
+      await tx.member.update({
+        where: { id: member.id },
+        data: getStatusUpdatePatch(statusPlan.statusTag, statusPlan.requiresFollowUp),
+      });
+
+      await tx.memberCareRecord.create({
+        data: {
+          churchId,
+          memberId: member.id,
+          category: statusPlan.recordCategory,
+          title: `[모바일 월드] ${statusPlan.statusTag} 후속 기록`,
+          summary: text,
+          details: `자동 적용 사유: ${statusPlan.reason}`,
+          happenedAt: now,
+          recordedBy: "mobile-world-orchestrator",
+        },
+      });
+    }
+
+    await tx.activityLog.create({
+      data: {
+        churchId,
+        action: "MOBILE_WORLD_DB_ACTION_APPLIED",
+        targetType: "MEMBER_STATUS_AND_FOLLOWUP",
+        metadata: JSON.stringify({
+          text,
+          statusTag: statusPlan.statusTag,
+          requiresFollowUp: statusPlan.requiresFollowUp,
+          targetMemberIds: targets.map((member) => member.id),
+          targetMemberNames: targets.map((member) => member.name),
+          reason: statusPlan.reason,
+        }),
+      },
+    });
+  });
+
+  return {
+    applied: true,
+    statusTag: statusPlan.statusTag,
+    updatedMembers: targets.map((member) => member.name),
+    followUpRecords: targets.length,
+    note: statusPlan.reason,
+  };
+}
+
 export async function orchestrateMobileWorldChat({ churchSlug, text }: OrchestrateInput): Promise<OrchestrateOutput> {
   const trimmedText = text.trim();
 
@@ -111,6 +263,12 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
         title: "Fallback Mobile World Loop",
         summary: "교회 식별 실패 상태에서 기본 루프를 생성함",
         suggestedGithubIssue: "[mobile-world] fallback orchestration and church binding",
+      },
+      dbActions: {
+        applied: false,
+        updatedMembers: [],
+        followUpRecords: 0,
+        note: "교회 식별 실패",
       },
     };
   }
@@ -146,11 +304,22 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
     suggestedGithubIssue: `[mobile-world] ${church.slug} auto-build loop: ${intents.join(", ")}`,
   };
 
+  const dbActions = await applyDbActions({
+    churchId: church.id,
+    text: trimmedText,
+    statusPlan: planStatusPatch(trimmedText),
+    intents,
+  });
+
+  const dbActionLine = dbActions.applied
+    ? ` DB 반영: ${dbActions.updatedMembers.join(", ")} → ${dbActions.statusTag}, 후속기록 ${dbActions.followUpRecords}건.`
+    : "";
+
   const reply = [
     `${church.name} 기준으로 월드 운영 시스템을 자동 구축했어.`,
     `핵심 의도: ${intents.join(", ")}`,
     `현재 후속 필요 ${followupCount}명, 가정 ${householdCount}개를 기준으로 실행 큐를 만들었어.`,
-    `요청 반영: "${trimmedText}"`,
+    `요청 반영: "${trimmedText}"${dbActionLine}`,
   ].join(" ");
 
   await prisma.activityLog.create({
@@ -164,6 +333,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
         actions,
         autoBuild,
         agentGrowth,
+        dbActions,
       }),
     },
   });
@@ -175,5 +345,6 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
     intents,
     autoBuild,
     agentGrowth,
+    dbActions,
   };
 }
