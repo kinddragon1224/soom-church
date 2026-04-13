@@ -22,9 +22,10 @@ function QuickAction({ label, onPress }: { label: string; onPress: () => void })
 }
 
 export default function ChatScreen() {
-  const { loading, snapshot, chatDraft, setChatDraft } = useWorldStore();
+  const { loading, snapshot, chatDraft, setChatDraft, addRuntimeTask } = useWorldStore();
   const [sending, setSending] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [lastActionIds, setLastActionIds] = useState<string[]>([]);
 
   const submitDraft = async () => {
     const text = chatDraft.trim();
@@ -34,9 +35,20 @@ export default function ChatScreen() {
     setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: "user", text }]);
     setChatDraft("");
 
-    const reply = await sendChatCommand(text);
+    const result = await sendChatCommand(text);
 
-    setMessages((prev) => [...prev, { id: `a-${Date.now()}`, role: "assistant", text: reply }]);
+    setMessages((prev) => [...prev, { id: `a-${Date.now()}`, role: "assistant", text: result.reply }]);
+    setLastActionIds(result.actions.map((item) => item.id));
+
+    result.actions.forEach((action, index) => {
+      addRuntimeTask({
+        id: `${action.id}-${Date.now()}-${index}`,
+        title: action.title,
+        due: action.due,
+        owner: action.owner,
+      });
+    });
+
     setSending(false);
   };
 
@@ -95,6 +107,12 @@ export default function ChatScreen() {
             <Text style={{ color: "#07111f", fontSize: 13, fontWeight: "700" }}>{sending ? "전송 중..." : "명령 보내기"}</Text>
           </Pressable>
         </View>
+
+        {lastActionIds.length ? (
+          <View style={{ borderRadius: 18, borderWidth: 1, borderColor: "rgba(125,211,252,0.35)", backgroundColor: "rgba(56,189,248,0.08)", padding: 12 }}>
+            <Text style={{ color: "#dff4ff", fontSize: 12 }}>이번 응답의 실행 항목이 할 일 탭에 자동 추가됐어.</Text>
+          </View>
+        ) : null}
 
         {messages.length ? (
           <View style={{ borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", backgroundColor: "rgba(255,255,255,0.03)", padding: 12, gap: 8 }}>
