@@ -5,5 +5,5 @@ export default function ChurchWorkspaceIndexPage({
 }: {
   params: { churchSlug: string };
 }) {
-  redirect(`/app/${params.churchSlug}/${params.churchSlug === "gido" ? "chat" : "dashboard"}`);
+  redirect(params.churchSlug === "gido" ? `/app/${params.churchSlug}/chat` : "/app/mobile");
 }

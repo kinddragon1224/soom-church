@@ -34,7 +34,7 @@ export default async function ChurchChatPage({ params }: { params: { churchSlug:
   if (!membership) return null;
 
   if (membership.church.slug !== "gido") {
-    redirect(`/app/${membership.church.slug}/dashboard`);
+    redirect("/app/mobile");
   }
 
   const [memberCount, followUpCount, pendingCandidates, recentLogs, worldMembers] = await Promise.all([

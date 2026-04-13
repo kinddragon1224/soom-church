@@ -29,7 +29,7 @@ export default async function ChurchWorldPage({ params }: { params: { churchSlug
   if (!membership) return null;
 
   if (membership.church.slug !== "gido") {
-    redirect(`/app/${membership.church.slug}/dashboard`);
+    redirect("/app/mobile");
   }
 
   const base = `/app/${membership.church.slug}`;
