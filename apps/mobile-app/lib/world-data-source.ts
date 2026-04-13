@@ -1,6 +1,7 @@
 import { chatQuickActions, peopleRecords, taskRecords, worldObjects } from "./world-model";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
+const CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
 
 type WorldObject = (typeof worldObjects)[number];
 type PersonRecord = (typeof peopleRecords)[number];
@@ -43,9 +44,11 @@ async function fetchRemoteSnapshot(): Promise<WorldSnapshot> {
   const timeout = setTimeout(() => controller.abort(), 3000);
 
   try {
-    const response = await fetch(`${WEB_BASE_URL}/api/mobile/world-snapshot`, {
+    const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(CHURCH_SLUG)}`;
+    const response = await fetch(endpoint, {
       method: "GET",
       headers: { Accept: "application/json" },
+      cache: "no-store",
       signal: controller.signal,
     });
 

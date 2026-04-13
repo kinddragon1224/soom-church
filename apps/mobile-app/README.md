@@ -11,6 +11,7 @@ Expo 기반 iOS / Android 앱 시작점.
 ```bash
 cd apps/mobile-app
 cp .env.example .env
+# .env에서 EXPO_PUBLIC_CHURCH_SLUG 확인
 npm install --legacy-peer-deps
 npm run dev:tunnel
 ```

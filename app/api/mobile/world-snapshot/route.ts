@@ -1,39 +1,208 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const worldObjects = [
+import { prisma } from "@/lib/prisma";
+
+const FALLBACK_WORLD_OBJECTS = [
   { id: "hub", name: "목양 관리", kind: "hub", state: "핵심 진입", note: "사람/기도/후속 흐름으로 들어간다.", x: 148, y: 60, icon: "⛪" },
   { id: "h1", name: "은혜 가정", kind: "house", state: "기도 2", note: "이번 주 중보 요청이 올라옴.", x: 28, y: 180, icon: "🏠" },
   { id: "h2", name: "소망 가정", kind: "house", state: "안정", note: "정착 흐름 유지 중.", x: 246, y: 190, icon: "🏠" },
-  { id: "h3", name: "기쁨 가정", kind: "house", state: "후속 1", note: "초신자 후속 필요.", x: 64, y: 368, icon: "🏠" },
-  { id: "h4", name: "평안 가정", kind: "house", state: "돌봄", note: "심방 일정 조정 필요.", x: 232, y: 382, icon: "🏠" },
   { id: "p1", name: "김요한", kind: "person", state: "✨ 기도", note: "기도제목 업데이트됨.", x: 132, y: 266, icon: "🙂" },
-  { id: "p2", name: "박마리아", kind: "person", state: "💧 돌봄", note: "상담 후속 필요.", x: 212, y: 292, icon: "🙂" },
-  { id: "p3", name: "이다니엘", kind: "person", state: "✉️ 후속", note: "연락 필요 3일 경과.", x: 162, y: 448, icon: "🙂" },
 ] as const;
 
-const peopleRecords = [
+const FALLBACK_PEOPLE_RECORDS = [
   { id: "p1", name: "김요한", household: "은혜 가정", state: "✨ 기도", nextAction: "수요일 기도제목 후속" },
   { id: "p2", name: "박마리아", household: "평안 가정", state: "💧 돌봄", nextAction: "목요일 상담 체크인" },
-  { id: "p3", name: "이다니엘", household: "기쁨 가정", state: "✉️ 후속", nextAction: "오늘 저녁 연락" },
 ] as const;
 
-const taskRecords = [
-  { id: "t1", title: "심방 대상 2명 확인", due: "오늘", owner: "목양 관리" },
+const FALLBACK_TASK_RECORDS = [
+  { id: "t1", title: "심방 대상 확인", due: "오늘", owner: "목양 관리" },
   { id: "t2", title: "기도요청 업데이트 반영", due: "오늘", owner: "김요한" },
-  { id: "t3", title: "주중 모임 공지 보내기", due: "내일 오전", owner: "박마리아" },
 ] as const;
 
-const chatQuickActions = [
+const FALLBACK_CHAT_QUICK_ACTIONS = [
   "이번 주 심방 필요한 사람 보여줘",
   "기도 요청 새로 들어온 것 정리해줘",
   "오늘 해야 할 후속 3개만 뽑아줘",
 ] as const;
 
-export async function GET() {
-  return NextResponse.json({
-    worldObjects,
-    peopleRecords,
-    taskRecords,
-    chatQuickActions,
-  });
+const HOUSE_POSITIONS = [
+  { x: 28, y: 180 },
+  { x: 246, y: 190 },
+  { x: 64, y: 368 },
+  { x: 232, y: 382 },
+  { x: 42, y: 500 },
+  { x: 250, y: 520 },
+];
+
+const PERSON_POSITIONS = [
+  { x: 132, y: 266 },
+  { x: 212, y: 292 },
+  { x: 162, y: 448 },
+  { x: 110, y: 538 },
+  { x: 198, y: 566 },
+  { x: 80, y: 610 },
+];
+
+function withFallback<T>(value: T | null | undefined, fallback: T) {
+  return value ?? fallback;
+}
+
+function safeStateTag(statusTag: string, requiresFollowUp: boolean) {
+  if (requiresFollowUp) return "💧 돌봄";
+  if (statusTag.includes("등록")) return "✉️ 후속";
+  if (statusTag.includes("정착") || statusTag.includes("배정")) return "✨ 기도";
+  return "안정";
+}
+
+function buildFallbackResponse() {
+  return {
+    worldObjects: [...FALLBACK_WORLD_OBJECTS],
+    peopleRecords: [...FALLBACK_PEOPLE_RECORDS],
+    taskRecords: [...FALLBACK_TASK_RECORDS],
+    chatQuickActions: [...FALLBACK_CHAT_QUICK_ACTIONS],
+  };
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
+
+    const church = await prisma.church.findFirst({
+      where: { slug: churchSlug, isActive: true },
+      select: { id: true, name: true },
+    });
+
+    if (!church) {
+      return NextResponse.json(buildFallbackResponse());
+    }
+
+    const [households, members] = await Promise.all([
+      prisma.household.findMany({
+        where: { churchId: church.id },
+        orderBy: { updatedAt: "desc" },
+        take: HOUSE_POSITIONS.length,
+        select: {
+          id: true,
+          name: true,
+          members: {
+            where: { isDeleted: false },
+            select: { id: true },
+          },
+        },
+      }),
+      prisma.member.findMany({
+        where: { churchId: church.id, isDeleted: false },
+        orderBy: [{ requiresFollowUp: "desc" }, { updatedAt: "desc" }],
+        take: PERSON_POSITIONS.length,
+        select: {
+          id: true,
+          name: true,
+          statusTag: true,
+          requiresFollowUp: true,
+          group: { select: { name: true } },
+          household: { select: { name: true } },
+        },
+      }),
+    ]);
+
+    if (!households.length && !members.length) {
+      return NextResponse.json(buildFallbackResponse());
+    }
+
+    const worldObjects = [
+      {
+        id: "hub",
+        name: `${church.name} 목양 관리`,
+        kind: "hub" as const,
+        state: "핵심 진입",
+        note: "사람/기도/후속 흐름으로 들어간다.",
+        x: 148,
+        y: 60,
+        icon: "⛪",
+      },
+      ...households.map((household, index) => {
+        const pos = withFallback(HOUSE_POSITIONS[index], HOUSE_POSITIONS[0]);
+        const memberCount = household.members.length;
+
+        return {
+          id: `h-${household.id}`,
+          name: household.name,
+          kind: "house" as const,
+          state: memberCount > 0 ? `가정원 ${memberCount}` : "가정원 미등록",
+          note: memberCount > 0 ? `${memberCount}명이 연결된 가정.` : "가정원 등록이 필요함.",
+          x: pos.x,
+          y: pos.y,
+          icon: "🏠",
+        };
+      }),
+      ...members.map((member, index) => {
+        const pos = withFallback(PERSON_POSITIONS[index], PERSON_POSITIONS[0]);
+        const state = safeStateTag(member.statusTag, member.requiresFollowUp);
+
+        return {
+          id: `p-${member.id}`,
+          name: member.name,
+          kind: "person" as const,
+          state,
+          note: member.requiresFollowUp
+            ? "돌봄 연락이 필요한 상태."
+            : member.group?.name
+              ? `${member.group.name} 흐름으로 연결됨.`
+              : "그룹 연결 정리가 필요함.",
+          x: pos.x,
+          y: pos.y,
+          icon: "🙂",
+        };
+      }),
+    ];
+
+    const peopleRecords = members.map((member) => ({
+      id: `p-${member.id}`,
+      name: member.name,
+      household: member.household?.name ?? "가정 미지정",
+      state: safeStateTag(member.statusTag, member.requiresFollowUp),
+      nextAction: member.requiresFollowUp
+        ? "오늘 안부 연락"
+        : member.group?.name
+          ? `${member.group.name} 소그룹 체크`
+          : "소그룹 배정 확인",
+    }));
+
+    const taskRecords = [
+      ...members
+        .filter((member) => member.requiresFollowUp)
+        .slice(0, 3)
+        .map((member, index) => ({
+          id: `t-followup-${index}`,
+          title: `${member.name} 후속 연락`,
+          due: "오늘",
+          owner: "목양 관리",
+        })),
+      ...households
+        .filter((household) => household.members.length === 0)
+        .slice(0, 2)
+        .map((household, index) => ({
+          id: `t-household-${index}`,
+          title: `${household.name} 가정원 등록`,
+          due: "이번 주",
+          owner: "가정 담당",
+        })),
+    ];
+
+    const chatQuickActions = [
+      "돌봄 연락 필요한 사람만 보여줘",
+      "가정원 미등록 가정 정리해줘",
+      "오늘 후속할 3개 행동만 뽑아줘",
+    ];
+
+    return NextResponse.json({
+      worldObjects,
+      peopleRecords: peopleRecords.length ? peopleRecords : [...FALLBACK_PEOPLE_RECORDS],
+      taskRecords: taskRecords.length ? taskRecords : [...FALLBACK_TASK_RECORDS],
+      chatQuickActions,
+    });
+  } catch {
+    return NextResponse.json(buildFallbackResponse());
+  }
 }
