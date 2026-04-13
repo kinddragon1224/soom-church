@@ -140,6 +140,8 @@ export default function WorldScreen() {
 
     if (result.ok && result.published) {
       setGrowthPublishStatus((prev) => ({ ...prev, [loop.id]: result.issueUrl ? `GitHub 발행 완료: ${result.issueUrl}` : "GitHub 발행 완료" }));
+    } else if (result.ok && result.alreadyPublished) {
+      setGrowthPublishStatus((prev) => ({ ...prev, [loop.id]: result.issueUrl ? `이미 발행됨: ${result.issueUrl}` : "이미 발행된 루프야" }));
     } else if (result.ok && !result.published) {
       setGrowthPublishStatus((prev) => ({ ...prev, [loop.id]: `작업 큐 저장 완료 (${result.reason ?? "GitHub 미설정"})` }));
     } else {
@@ -347,7 +349,7 @@ export default function WorldScreen() {
                   <View style={{ marginTop: 8, gap: 6 }}>
                     <Pressable
                       onPress={() => publishLoop(loop)}
-                      disabled={Boolean(growthPublishing[loop.id])}
+                      disabled={Boolean(growthPublishing[loop.id]) || Boolean(loop.publish)}
                       style={{
                         alignSelf: "flex-start",
                         borderRadius: 8,
@@ -356,16 +358,24 @@ export default function WorldScreen() {
                         backgroundColor: "rgba(243,208,128,0.18)",
                         paddingHorizontal: 9,
                         paddingVertical: 5,
-                        opacity: growthPublishing[loop.id] ? 0.6 : 1,
+                        opacity: growthPublishing[loop.id] || loop.publish ? 0.6 : 1,
                       }}
                     >
                       <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>
-                        {growthPublishing[loop.id] ? "발행 중..." : "이슈/작업큐 발행"}
+                        {growthPublishing[loop.id] ? "발행 중..." : loop.publish ? "발행 완료" : "이슈/작업큐 발행"}
                       </Text>
                     </Pressable>
 
                     {growthPublishStatus[loop.id] ? (
                       <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 10 }}>{growthPublishStatus[loop.id]}</Text>
+                    ) : loop.publish ? (
+                      <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 10 }}>
+                        {loop.publish.published
+                          ? loop.publish.issueUrl
+                            ? `GitHub 발행 완료: ${loop.publish.issueUrl}`
+                            : "GitHub 발행 완료"
+                          : `작업 큐 저장 완료 (${loop.publish.reason ?? "GitHub 미설정"})`}
+                      </Text>
                     ) : null}
                   </View>
                 ) : null}

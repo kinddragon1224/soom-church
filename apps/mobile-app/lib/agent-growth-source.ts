@@ -21,6 +21,12 @@ export type AgentGrowthLoop = {
     summary?: string;
     suggestedGithubIssue?: string;
   } | null;
+  publish?: {
+    publishedAt?: string;
+    published?: boolean;
+    issueUrl?: string | null;
+    reason?: string | null;
+  } | null;
 };
 
 function resolveChurchSlug(savedSlug: string | null) {
@@ -49,7 +55,7 @@ export async function fetchAgentGrowthLoops(): Promise<AgentGrowthLoop[]> {
   }
 }
 
-export async function publishAgentGrowthLoop(loopId: string): Promise<{ ok: boolean; published: boolean; issueUrl?: string | null; reason?: string | null }> {
+export async function publishAgentGrowthLoop(loopId: string): Promise<{ ok: boolean; published: boolean; alreadyPublished?: boolean; issueUrl?: string | null; reason?: string | null }> {
   try {
     const savedSlug = await getCurrentChurchSlug();
     const churchSlug = resolveChurchSlug(savedSlug);
@@ -63,6 +69,7 @@ export async function publishAgentGrowthLoop(loopId: string): Promise<{ ok: bool
     const data = (await response.json().catch(() => ({}))) as {
       ok?: boolean;
       published?: boolean;
+      alreadyPublished?: boolean;
       issueUrl?: string | null;
       reason?: string | null;
       message?: string;
@@ -79,6 +86,7 @@ export async function publishAgentGrowthLoop(loopId: string): Promise<{ ok: bool
     return {
       ok: true,
       published: Boolean(data.published),
+      alreadyPublished: Boolean(data.alreadyPublished),
       issueUrl: data.issueUrl ?? null,
       reason: data.reason ?? null,
     };

@@ -20,12 +20,24 @@ type LoopMetadata = {
   dbActions?: unknown;
 };
 
-function parseJsonMetadata(raw: string | null) {
-  if (!raw) return {} as LoopMetadata;
+type PublishMetadata = {
+  loopLogId?: string;
+  loopId?: string;
+  issueTitle?: string;
+  github?: {
+    published?: boolean;
+    issueUrl?: string | null;
+    reason?: string;
+  };
+  fallbackQueueOnly?: boolean;
+};
+
+function parseJson<T>(raw: string | null, fallback: T) {
+  if (!raw) return fallback;
   try {
-    return JSON.parse(raw) as LoopMetadata;
+    return JSON.parse(raw) as T;
   } catch {
-    return {} as LoopMetadata;
+    return fallback;
   }
 }
 
@@ -36,10 +48,7 @@ async function resolveChurch(churchSlug: string) {
   });
 }
 
-async function publishToGithub({ title, body }: {
-  title: string;
-  body: string;
-}) {
+async function publishToGithub({ title, body }: { title: string; body: string }) {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPO;
 
@@ -84,33 +93,146 @@ async function publishToGithub({ title, body }: {
   };
 }
 
+function buildIssuePayload(params: {
+  church: { name: string; slug: string };
+  loopCreatedAt: Date;
+  loopId: string;
+  metadata: LoopMetadata;
+}) {
+  const { church, loopCreatedAt, loopId, metadata } = params;
+  const growth = metadata.agentGrowth;
+  const issueTitle = growth?.suggestedGithubIssue || `[mobile-world] ${church.slug} agent growth loop`;
+  const issueBody = [
+    `- Church: ${church.name} (${church.slug})`,
+    `- LoopId: ${loopId}`,
+    `- CreatedAt: ${loopCreatedAt.toISOString()}`,
+    growth?.summary ? `- Summary: ${growth.summary}` : null,
+    metadata.text ? `- Source Text: ${metadata.text}` : null,
+    "",
+    "## Intents",
+    Array.isArray(metadata.intents) ? JSON.stringify(metadata.intents, null, 2) : "[]",
+    "",
+    "## Actions",
+    Array.isArray(metadata.actions) ? JSON.stringify(metadata.actions, null, 2) : "[]",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return { issueTitle, issueBody };
+}
+
+async function findLoopLog(churchId: string, loopId: string) {
+  const candidates = await prisma.activityLog.findMany({
+    where: {
+      churchId,
+      action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
+      metadata: { contains: loopId },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+    select: { id: true, createdAt: true, metadata: true },
+  });
+
+  for (const candidate of candidates) {
+    const parsed = parseJson<LoopMetadata>(candidate.metadata, {} as LoopMetadata);
+    const candidateLoopId = parsed.agentGrowth?.loopId;
+    if (candidateLoopId === loopId) {
+      return {
+        id: candidate.id,
+        createdAt: candidate.createdAt,
+        metadata: parsed,
+      };
+    }
+  }
+
+  return null;
+}
+
+async function findExistingPublish(churchId: string, loopId: string) {
+  const logs = await prisma.activityLog.findMany({
+    where: {
+      churchId,
+      action: "MOBILE_AGENT_GROWTH_PUBLISHED",
+      metadata: { contains: loopId },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+    select: { id: true, createdAt: true, metadata: true },
+  });
+
+  for (const log of logs) {
+    const parsed = parseJson<PublishMetadata>(log.metadata, {} as PublishMetadata);
+    if (parsed.loopId === loopId) {
+      return {
+        id: log.id,
+        createdAt: log.createdAt,
+        metadata: parsed,
+      };
+    }
+  }
+
+  return null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
 
     const church = await resolveChurch(churchSlug);
-
     if (!church) {
       return NextResponse.json({ ok: true, loops: [] });
     }
 
-    const logs = await prisma.activityLog.findMany({
-      where: {
-        churchId: church.id,
-        action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
-      },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-      select: {
-        id: true,
-        createdAt: true,
-        metadata: true,
-      },
-    });
+    const [loopLogs, publishLogs] = await Promise.all([
+      prisma.activityLog.findMany({
+        where: {
+          churchId: church.id,
+          action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: {
+          id: true,
+          createdAt: true,
+          metadata: true,
+        },
+      }),
+      prisma.activityLog.findMany({
+        where: {
+          churchId: church.id,
+          action: "MOBILE_AGENT_GROWTH_PUBLISHED",
+        },
+        orderBy: { createdAt: "desc" },
+        take: 100,
+        select: {
+          createdAt: true,
+          metadata: true,
+        },
+      }),
+    ]);
 
-    const loops = logs.map((log) => {
-      const parsed = parseJsonMetadata(log.metadata);
+    const publishMap = new Map<
+      string,
+      { createdAt: Date; published: boolean; issueUrl: string | null; reason: string | null }
+    >();
+
+    for (const publishLog of publishLogs) {
+      const parsed = parseJson<PublishMetadata>(publishLog.metadata, {} as PublishMetadata);
+      const loopId = parsed.loopId;
+      if (!loopId || publishMap.has(loopId)) continue;
+      publishMap.set(loopId, {
+        createdAt: publishLog.createdAt,
+        published: Boolean(parsed.github?.published),
+        issueUrl: parsed.github?.issueUrl ?? null,
+        reason: parsed.github?.reason ?? null,
+      });
+    }
+
+    const loops = loopLogs.map((log) => {
+      const parsed = parseJson<LoopMetadata>(log.metadata, {} as LoopMetadata);
+      const loopId = parsed.agentGrowth?.loopId ?? null;
+      const publish = loopId ? publishMap.get(loopId) : null;
 
       return {
         id: log.id,
@@ -120,6 +242,14 @@ export async function GET(request: NextRequest) {
         actions: parsed.actions ?? [],
         agentGrowth: parsed.agentGrowth ?? null,
         dbActions: parsed.dbActions ?? null,
+        publish: publish
+          ? {
+              publishedAt: publish.createdAt,
+              published: publish.published,
+              issueUrl: publish.issueUrl,
+              reason: publish.reason,
+            }
+          : null,
       };
     });
 
@@ -144,99 +274,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: false, message: "교회를 찾지 못했어." }, { status: 404 });
     }
 
-    const log = await prisma.activityLog.findFirst({
-      where: {
-        churchId: church.id,
-        action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
-      },
-      orderBy: { createdAt: "desc" },
-      select: { id: true, metadata: true, createdAt: true },
-    });
-
-    if (!log) {
-      return NextResponse.json({ ok: false, message: "발행할 성장 로그가 없어." }, { status: 404 });
-    }
-
-    const parsed = parseJsonMetadata(log.metadata);
-    const growth = parsed.agentGrowth;
-
-    if (!growth?.loopId || growth.loopId !== loopId) {
-      const loopMatchedLog = await prisma.activityLog.findFirst({
-        where: {
-          churchId: church.id,
-          action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
-          metadata: { contains: loopId },
-        },
-        orderBy: { createdAt: "desc" },
-        select: { id: true, metadata: true, createdAt: true },
-      });
-
-      if (!loopMatchedLog) {
-        return NextResponse.json({ ok: false, message: "요청한 loopId를 찾지 못했어." }, { status: 404 });
-      }
-
-      const matched = parseJsonMetadata(loopMatchedLog.metadata);
-      const matchedGrowth = matched.agentGrowth;
-
-      const issueTitle = matchedGrowth?.suggestedGithubIssue || `[mobile-world] ${church.slug} agent growth loop`;
-      const issueBody = [
-        `- Church: ${church.name} (${church.slug})`,
-        `- LoopId: ${matchedGrowth?.loopId ?? loopId}`,
-        `- CreatedAt: ${loopMatchedLog.createdAt.toISOString()}`,
-        matchedGrowth?.summary ? `- Summary: ${matchedGrowth.summary}` : null,
-        matched.text ? `- Source Text: ${matched.text}` : null,
-        "",
-        "## Intents",
-        Array.isArray(matched.intents) ? JSON.stringify(matched.intents, null, 2) : "[]",
-        "",
-        "## Actions",
-        Array.isArray(matched.actions) ? JSON.stringify(matched.actions, null, 2) : "[]",
-      ]
-        .filter(Boolean)
-        .join("\n");
-
-      const github = await publishToGithub({ title: issueTitle, body: issueBody });
-
-      await prisma.activityLog.create({
-        data: {
-          churchId: church.id,
-          action: "MOBILE_AGENT_GROWTH_PUBLISHED",
-          targetType: "MOBILE_AGENT_GROWTH_QUEUE",
-          metadata: JSON.stringify({
-            loopLogId: loopMatchedLog.id,
-            loopId: matchedGrowth?.loopId ?? loopId,
-            issueTitle,
-            github,
-            fallbackQueueOnly: !github.published,
-          }),
-        },
-      });
-
+    const existing = await findExistingPublish(church.id, loopId);
+    if (existing) {
       return NextResponse.json({
         ok: true,
-        published: github.published,
+        alreadyPublished: true,
+        published: Boolean(existing.metadata.github?.published),
         queueSaved: true,
-        issueUrl: github.published ? github.issueUrl ?? null : null,
-        reason: github.published ? null : github.reason,
+        issueUrl: existing.metadata.github?.issueUrl ?? null,
+        reason: existing.metadata.github?.reason ?? null,
       });
     }
 
-    const issueTitle = growth.suggestedGithubIssue || `[mobile-world] ${church.slug} agent growth loop`;
-    const issueBody = [
-      `- Church: ${church.name} (${church.slug})`,
-      `- LoopId: ${growth.loopId}`,
-      `- CreatedAt: ${log.createdAt.toISOString()}`,
-      growth.summary ? `- Summary: ${growth.summary}` : null,
-      parsed.text ? `- Source Text: ${parsed.text}` : null,
-      "",
-      "## Intents",
-      Array.isArray(parsed.intents) ? JSON.stringify(parsed.intents, null, 2) : "[]",
-      "",
-      "## Actions",
-      Array.isArray(parsed.actions) ? JSON.stringify(parsed.actions, null, 2) : "[]",
-    ]
-      .filter(Boolean)
-      .join("\n");
+    const loopLog = await findLoopLog(church.id, loopId);
+    if (!loopLog) {
+      return NextResponse.json({ ok: false, message: "요청한 loopId를 찾지 못했어." }, { status: 404 });
+    }
+
+    const { issueTitle, issueBody } = buildIssuePayload({
+      church: { name: church.name, slug: church.slug },
+      loopCreatedAt: loopLog.createdAt,
+      loopId,
+      metadata: loopLog.metadata,
+    });
 
     const github = await publishToGithub({ title: issueTitle, body: issueBody });
 
@@ -246,8 +306,8 @@ export async function POST(request: NextRequest) {
         action: "MOBILE_AGENT_GROWTH_PUBLISHED",
         targetType: "MOBILE_AGENT_GROWTH_QUEUE",
         metadata: JSON.stringify({
-          loopLogId: log.id,
-          loopId: growth.loopId,
+          loopLogId: loopLog.id,
+          loopId,
           issueTitle,
           github,
           fallbackQueueOnly: !github.published,
