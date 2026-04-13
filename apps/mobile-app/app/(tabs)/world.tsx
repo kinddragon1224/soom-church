@@ -254,69 +254,74 @@ export default function WorldScreen() {
           </View>
         </View>
 
-        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 2, borderColor: mabiTheme.pixelBorder, backgroundColor: "#223149", padding: 12, gap: 10 }}>
-          <Text style={{ color: mabiTheme.pixelAccent, fontSize: 12, fontWeight: "700" }}>월드 내 채팅</Text>
+        <View style={{ marginTop: 12, borderRadius: 18, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10 }}>
+          <Text style={{ color: "#a9c3ef", fontSize: 11, fontWeight: "700", marginBottom: 8 }}>월드 채팅</Text>
 
-          <TextInput
-            value={worldDraft}
-            onChangeText={setWorldDraft}
-            placeholder="월드에서 바로 물어보기"
-            placeholderTextColor="rgba(245,242,232,0.4)"
-            multiline
-            style={{
-              minHeight: 76,
-              borderRadius: 8,
-              borderWidth: 2,
-              borderColor: "rgba(138,160,199,0.45)",
-              backgroundColor: "rgba(10,18,30,0.32)",
-              color: mabiTheme.pixelInk,
-              paddingHorizontal: 10,
-              paddingVertical: 8,
-              textAlignVertical: "top",
-            }}
-          />
-
-          <Pressable
-            onPress={submitWorldChat}
-            disabled={worldSending || !worldDraft.trim()}
-            style={{
-              minHeight: 42,
-              borderRadius: 8,
-              borderWidth: 2,
-              borderColor: "rgba(243,208,128,0.55)",
-              backgroundColor: "rgba(243,208,128,0.2)",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: worldSending || !worldDraft.trim() ? 0.55 : 1,
-              flexDirection: "row",
-              gap: 8,
-            }}
-          >
-            {worldSending ? <ActivityIndicator color="#f5f2e8" size="small" /> : null}
-            <Text style={{ color: mabiTheme.pixelInk, fontSize: 13, fontWeight: "700" }}>{worldSending ? "전송 중..." : "월드에서 실행"}</Text>
-          </Pressable>
-
-          {worldMessages.length ? (
-            <View style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(138,160,199,0.4)", backgroundColor: "rgba(42,54,80,0.7)", padding: 8, gap: 7 }}>
-              {worldMessages.slice(-4).map((message) => (
+          <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.25)", backgroundColor: "rgba(11,18,29,0.7)", padding: 8, gap: 6, minHeight: 84 }}>
+            {worldMessages.length ? (
+              worldMessages.slice(-4).map((message) => (
                 <View
                   key={message.id}
                   style={{
                     alignSelf: message.role === "user" ? "flex-end" : "flex-start",
                     maxWidth: "92%",
-                    borderRadius: 8,
+                    borderRadius: 14,
                     borderWidth: 1,
-                    borderColor: message.role === "user" ? "rgba(243,208,128,0.55)" : "rgba(138,160,199,0.45)",
-                    backgroundColor: message.role === "user" ? "rgba(243,208,128,0.18)" : "rgba(255,255,255,0.06)",
-                    paddingHorizontal: 9,
+                    borderColor: message.role === "user" ? "rgba(86,129,214,0.7)" : "rgba(255,255,255,0.14)",
+                    backgroundColor: message.role === "user" ? "rgba(52,86,156,0.72)" : "rgba(255,255,255,0.07)",
+                    paddingHorizontal: 10,
                     paddingVertical: 7,
                   }}
                 >
-                  <Text style={{ color: mabiTheme.pixelInk, fontSize: 12, lineHeight: 17 }}>{message.text}</Text>
+                  <Text style={{ color: "#f4f7ff", fontSize: 12, lineHeight: 17 }}>{message.text}</Text>
                 </View>
-              ))}
-            </View>
-          ) : null}
+              ))
+            ) : (
+              <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>여기서 바로 채팅하면 할 일/DB까지 같이 반영돼.</Text>
+            )}
+          </View>
+
+          <View style={{ marginTop: 8, flexDirection: "row", alignItems: "flex-end", gap: 8 }}>
+            <TextInput
+              value={worldDraft}
+              onChangeText={setWorldDraft}
+              placeholder="메시지"
+              placeholderTextColor="rgba(220,232,255,0.46)"
+              multiline
+              style={{
+                flex: 1,
+                minHeight: 42,
+                maxHeight: 96,
+                borderRadius: 18,
+                borderWidth: 1,
+                borderColor: "rgba(120,157,214,0.45)",
+                backgroundColor: "rgba(255,255,255,0.08)",
+                color: "#f4f7ff",
+                paddingHorizontal: 12,
+                paddingVertical: 9,
+                textAlignVertical: "center",
+              }}
+            />
+
+            <Pressable
+              onPress={submitWorldChat}
+              disabled={worldSending || !worldDraft.trim()}
+              style={{
+                minHeight: 42,
+                minWidth: 58,
+                borderRadius: 18,
+                borderWidth: 1,
+                borderColor: "rgba(86,129,214,0.75)",
+                backgroundColor: "rgba(65,103,184,0.9)",
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: worldSending || !worldDraft.trim() ? 0.5 : 1,
+                paddingHorizontal: 12,
+              }}
+            >
+              {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
+            </Pressable>
+          </View>
         </View>
 
         <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 2, borderColor: "rgba(143,224,170,0.5)", backgroundColor: "rgba(143,224,170,0.1)", padding: 12, gap: 8 }}>
