@@ -1,34 +1,13 @@
-import { View } from "react-native";
+import { Image, View } from "react-native";
 
 type SpriteKind = "house" | "person" | "hub";
 type SpriteFrame = "normal" | "selected" | "alert" | "done";
 
-const palettes: Record<SpriteKind, Record<string, string>> = {
-  house: {
-    0: "transparent",
-    1: "#e8d3a5",
-    2: "#9a6b43",
-    3: "#5a3f2a",
-  },
-  person: {
-    0: "transparent",
-    1: "#f4d7b8",
-    2: "#5f7fa8",
-    3: "#2a3d58",
-  },
-  hub: {
-    0: "transparent",
-    1: "#f0d28b",
-    2: "#7f5b31",
-    3: "#384b63",
-  },
-};
-
-const patterns: Record<SpriteKind, string[]> = {
-  house: ["00022000", "00222200", "02211220", "22111122", "21133112", "21111112", "21111112", "22222222"],
-  person: ["00011000", "00111100", "00122100", "00011000", "00133100", "01133110", "01100110", "01000010"],
-  hub: ["00033000", "00333300", "03311330", "33111133", "31111113", "31133113", "31111113", "33333333"],
-};
+const spriteSource = {
+  house: require("../assets/sprites/house.jpg"),
+  person: require("../assets/sprites/person.png"),
+  hub: require("../assets/sprites/hub.jpg"),
+} as const;
 
 const frameTone: Record<SpriteFrame, { border: string; bg: string; badge: string }> = {
   normal: { border: "rgba(255,255,255,0.25)", bg: "rgba(9,14,24,0.45)", badge: "#9fb2c8" },
@@ -37,9 +16,14 @@ const frameTone: Record<SpriteFrame, { border: string; bg: string; badge: string
   done: { border: "#8fe0aa", bg: "rgba(22,54,37,0.5)", badge: "#8fe0aa" },
 };
 
+function spriteSize(kind: SpriteKind) {
+  if (kind === "person") return { width: 28, height: 36 };
+  if (kind === "hub") return { width: 40, height: 32 };
+  return { width: 40, height: 30 };
+}
+
 export default function PixelSprite({
   kind,
-  pixel = 3,
   frame = "normal",
   showBadge = false,
 }: {
@@ -48,27 +32,26 @@ export default function PixelSprite({
   frame?: SpriteFrame;
   showBadge?: boolean;
 }) {
-  const palette = palettes[kind];
-  const pattern = patterns[kind];
   const tone = frameTone[frame];
+  const size = spriteSize(kind);
 
   return (
     <View style={{ position: "relative" }}>
-      <View style={{ borderRadius: 4, borderWidth: 1, borderColor: tone.border, backgroundColor: tone.bg, padding: 3 }}>
-        {pattern.map((row, y) => (
-          <View key={`${kind}-${y}`} style={{ flexDirection: "row" }}>
-            {row.split("").map((cell, x) => (
-              <View
-                key={`${kind}-${y}-${x}`}
-                style={{
-                  width: pixel,
-                  height: pixel,
-                  backgroundColor: palette[cell] ?? "transparent",
-                }}
-              />
-            ))}
-          </View>
-        ))}
+      <View
+        style={{
+          borderRadius: 6,
+          borderWidth: 1,
+          borderColor: tone.border,
+          backgroundColor: tone.bg,
+          paddingHorizontal: 4,
+          paddingVertical: 3,
+        }}
+      >
+        <Image
+          source={spriteSource[kind]}
+          style={{ width: size.width, height: size.height, borderRadius: 4 }}
+          resizeMode={kind === "person" ? "contain" : "cover"}
+        />
       </View>
       {showBadge ? (
         <View
