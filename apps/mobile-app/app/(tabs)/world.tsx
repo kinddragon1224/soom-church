@@ -107,7 +107,7 @@ export default function WorldScreen() {
   const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
   const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
-  const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
+  const visiblePresets = WORLD_COMMAND_PRESETS;
 
   const submitWorldChat = async () => {
     const text = worldDraft.trim();
