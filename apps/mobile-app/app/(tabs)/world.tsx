@@ -52,6 +52,21 @@ function formatLoopTime(isoText: string) {
   return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
 }
 
+function statSeed(name: string, shift: number) {
+  return (name.charCodeAt(0) + name.length * 17 + shift) % 100;
+}
+
+function memberStats(name: string, state: string) {
+  const care = state.includes("돌봄") ? 88 : 58 + (statSeed(name, 11) % 25);
+  const faith = state.includes("기도") ? 86 : 52 + (statSeed(name, 23) % 30);
+  const follow = state.includes("후속") ? 84 : 46 + (statSeed(name, 37) % 36);
+  return {
+    care: Math.min(100, care),
+    faith: Math.min(100, faith),
+    follow: Math.min(100, follow),
+  };
+}
+
 export default function WorldScreen() {
   const { loading, snapshot, selectedId, setSelectedId, setChatDraft, addRuntimeTask } = useWorldStore();
   const [worldDraft, setWorldDraft] = useState("");
@@ -61,6 +76,7 @@ export default function WorldScreen() {
   const [growthLoading, setGrowthLoading] = useState(false);
   const [growthPublishing, setGrowthPublishing] = useState<Record<string, boolean>>({});
   const [growthPublishStatus, setGrowthPublishStatus] = useState<Record<string, string>>({});
+  const [topMode, setTopMode] = useState<"world" | "shepherd">("world");
 
   const refreshGrowthLoops = async () => {
     setGrowthLoading(true);
@@ -164,95 +180,151 @@ export default function WorldScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}>
-        <View
-          style={{
-            height: 620,
-            borderRadius: 28,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.08)",
-            overflow: "hidden",
-            backgroundColor: mabiTheme.mapPanel,
-          }}
-        >
-          <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
-          <View style={{ position: "absolute", left: 18, top: 110, width: 140, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "11deg" }] }} />
-          <View style={{ position: "absolute", right: 30, top: 250, width: 128, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "-16deg" }] }} />
-          <View style={{ position: "absolute", left: 120, bottom: 130, width: 120, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)" }} />
-
-          {snapshot.worldObjects.map((item) => {
-            const isActive = selectedId === item.id;
-            const colors = tone(item.kind, isActive);
-            const frame = stateFrame(item.state, isActive);
-
-            return (
-              <Pressable
-                key={item.id}
-                onPress={() => setSelectedId(item.id)}
-                style={{
-                  position: "absolute",
-                  left: item.x,
-                  top: item.y,
-                  minWidth: item.kind === "person" ? 82 : 102,
-                  borderRadius: 12,
-                  borderWidth: 2,
-                  borderColor: colors.border,
-                  backgroundColor: colors.bg,
-                  paddingVertical: 8,
-                  paddingHorizontal: 8,
-                  alignItems: "center",
-                  shadowColor: "#000",
-                  shadowOpacity: isActive ? 0.32 : 0.12,
-                  shadowRadius: isActive ? 10 : 4,
-                  shadowOffset: { width: 0, height: 3 },
-                  elevation: isActive ? 5 : 1,
-                }}
-              >
-                <PixelSprite kind={item.kind} pixel={3} frame={frame} showBadge={frame !== "normal"} />
-                <Text style={{ color: colors.text, fontSize: 11, fontWeight: "700", marginTop: 5 }}>{item.name}</Text>
-                <Text style={{ color: "rgba(255,255,255,0.82)", fontSize: 10, marginTop: 1 }}>{item.state}</Text>
-              </Pressable>
-            );
-          })}
+        <View style={{ marginTop: 8, flexDirection: "row", gap: 8 }}>
+          <Pressable
+            onPress={() => setTopMode("world")}
+            style={{
+              flex: 1,
+              minHeight: 42,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: topMode === "world" ? "rgba(214,178,112,0.65)" : "rgba(148,171,212,0.3)",
+              backgroundColor: topMode === "world" ? "rgba(214,178,112,0.22)" : "rgba(28,41,62,0.8)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: topMode === "world" ? "#ffeabf" : "#c9d9f5", fontWeight: "700" }}>월드</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setTopMode("shepherd")}
+            style={{
+              flex: 1,
+              minHeight: 42,
+              borderRadius: 999,
+              borderWidth: 1,
+              borderColor: topMode === "shepherd" ? "rgba(214,178,112,0.65)" : "rgba(148,171,212,0.3)",
+              backgroundColor: topMode === "shepherd" ? "rgba(214,178,112,0.22)" : "rgba(28,41,62,0.8)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={{ color: topMode === "shepherd" ? "#ffeabf" : "#c9d9f5", fontWeight: "700" }}>목양</Text>
+          </Pressable>
         </View>
 
-        <View
-          style={{
-            marginTop: 12,
-            borderRadius: 22,
-            borderWidth: 1,
-            borderColor: "rgba(193,167,120,0.4)",
-            backgroundColor: mabiTheme.parchment,
-            padding: 14,
-          }}
-        >
-          <Text style={{ color: "#7d6341", fontSize: 12 }}>선택된 오브젝트</Text>
-          <Text style={{ color: "#2c2217", fontSize: 20, fontWeight: "700", marginTop: 6 }}>{selected.name}</Text>
-          <View style={{ marginTop: 7, alignSelf: "flex-start", borderRadius: 8, borderWidth: 1, borderColor: selectedBadge.border, backgroundColor: selectedBadge.bg, paddingHorizontal: 8, paddingVertical: 4 }}>
-            <Text style={{ color: selectedBadge.text, fontSize: 11, fontWeight: "700" }}>{selectedBadge.label}</Text>
-          </View>
-          <Text style={{ color: "#59462f", marginTop: 8, lineHeight: 20 }}>{selected.note}</Text>
+        {topMode === "world" ? (
+          <>
+            <View
+              style={{
+                height: 620,
+                marginTop: 8,
+                borderRadius: 28,
+                borderWidth: 1,
+                borderColor: "rgba(255,255,255,0.08)",
+                overflow: "hidden",
+                backgroundColor: mabiTheme.mapPanel,
+              }}
+            >
+              <View style={{ position: "absolute", inset: 0, backgroundColor: mabiTheme.mist }} />
+              <View style={{ position: "absolute", left: 18, top: 110, width: 140, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "11deg" }] }} />
+              <View style={{ position: "absolute", right: 30, top: 250, width: 128, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)", transform: [{ rotate: "-16deg" }] }} />
+              <View style={{ position: "absolute", left: 120, bottom: 130, width: 120, height: 4, borderRadius: 999, backgroundColor: "rgba(220,198,159,0.55)" }} />
 
-          <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
-            <Pressable
-              onPress={() => {
-                setChatDraft(`${selected.name} 상태 기준으로 오늘 바로 할 1가지 행동만 추천해줘`);
-                router.push("/(tabs)/tasks");
+              {snapshot.worldObjects.map((item) => {
+                const isActive = selectedId === item.id;
+                const colors = tone(item.kind, isActive);
+                const frame = stateFrame(item.state, isActive);
+
+                return (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => setSelectedId(item.id)}
+                    style={{
+                      position: "absolute",
+                      left: item.x,
+                      top: item.y,
+                      minWidth: item.kind === "person" ? 82 : 102,
+                      borderRadius: 12,
+                      borderWidth: 2,
+                      borderColor: colors.border,
+                      backgroundColor: colors.bg,
+                      paddingVertical: 8,
+                      paddingHorizontal: 8,
+                      alignItems: "center",
+                      shadowColor: "#000",
+                      shadowOpacity: isActive ? 0.32 : 0.12,
+                      shadowRadius: isActive ? 10 : 4,
+                      shadowOffset: { width: 0, height: 3 },
+                      elevation: isActive ? 5 : 1,
+                    }}
+                  >
+                    <PixelSprite kind={item.kind} pixel={3} frame={frame} showBadge={frame !== "normal"} />
+                    <Text style={{ color: colors.text, fontSize: 11, fontWeight: "700", marginTop: 5 }}>{item.name}</Text>
+                    <Text style={{ color: "rgba(255,255,255,0.82)", fontSize: 10, marginTop: 1 }}>{item.state}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <View
+              style={{
+                marginTop: 12,
+                borderRadius: 22,
+                borderWidth: 1,
+                borderColor: "rgba(193,167,120,0.4)",
+                backgroundColor: mabiTheme.parchment,
+                padding: 14,
               }}
-              style={{ flex: 1, minHeight: 48, borderRadius: 999, backgroundColor: "#3f4f58", alignItems: "center", justifyContent: "center" }}
             >
-              <Text style={{ color: "#f7f1e4", fontWeight: "700" }}>바로 실행</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => {
-                setChatDraft(`${selected.name} 관련 후속 진행 상황 요약해줘`);
-                router.push("/(tabs)/chat");
-              }}
-              style={{ flex: 1, minHeight: 48, borderWidth: 1, borderColor: "rgba(63,79,88,0.35)", borderRadius: 999, backgroundColor: mabiTheme.parchmentSoft, alignItems: "center", justifyContent: "center" }}
-            >
-              <Text style={{ color: "#39454d", fontWeight: "700" }}>채팅 탭으로 열기</Text>
-            </Pressable>
+              <Text style={{ color: "#7d6341", fontSize: 12 }}>선택된 오브젝트</Text>
+              <Text style={{ color: "#2c2217", fontSize: 20, fontWeight: "700", marginTop: 6 }}>{selected.name}</Text>
+              <View style={{ marginTop: 7, alignSelf: "flex-start", borderRadius: 8, borderWidth: 1, borderColor: selectedBadge.border, backgroundColor: selectedBadge.bg, paddingHorizontal: 8, paddingVertical: 4 }}>
+                <Text style={{ color: selectedBadge.text, fontSize: 11, fontWeight: "700" }}>{selectedBadge.label}</Text>
+              </View>
+              <Text style={{ color: "#59462f", marginTop: 8, lineHeight: 20 }}>{selected.note}</Text>
+
+              <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
+                <Pressable
+                  onPress={() => {
+                    setChatDraft(`${selected.name} 상태 기준으로 오늘 바로 할 1가지 행동만 추천해줘`);
+                    router.push("/(tabs)/tasks");
+                  }}
+                  style={{ flex: 1, minHeight: 48, borderRadius: 999, backgroundColor: "#3f4f58", alignItems: "center", justifyContent: "center" }}
+                >
+                  <Text style={{ color: "#f7f1e4", fontWeight: "700" }}>바로 실행</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    setChatDraft(`${selected.name} 관련 후속 진행 상황 요약해줘`);
+                    router.push("/(tabs)/chat");
+                  }}
+                  style={{ flex: 1, minHeight: 48, borderWidth: 1, borderColor: "rgba(63,79,88,0.35)", borderRadius: 999, backgroundColor: mabiTheme.parchmentSoft, alignItems: "center", justifyContent: "center" }}
+                >
+                  <Text style={{ color: "#39454d", fontWeight: "700" }}>채팅 탭으로 열기</Text>
+                </Pressable>
+              </View>
+            </View>
+          </>
+        ) : (
+          <View style={{ marginTop: 10, borderRadius: 18, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 12, gap: 8 }}>
+            <Text style={{ color: "#a9c3ef", fontSize: 12, fontWeight: "700" }}>목양 운영 패널</Text>
+            <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.28)", backgroundColor: "rgba(255,255,255,0.04)", padding: 10 }}>
+              <Text style={{ color: "#d8e6ff", fontSize: 13, fontWeight: "700" }}>오늘 루프</Text>
+              <Text style={{ color: "rgba(216,230,255,0.8)", fontSize: 12, marginTop: 4 }}>후속, 기도, 상태태그를 모라 명령으로 바로 실행</Text>
+            </View>
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(242,168,168,0.45)", backgroundColor: "rgba(242,168,168,0.12)", padding: 9 }}>
+                <Text style={{ color: "#ffd7d7", fontSize: 11 }}>긴급 후속</Text>
+                <Text style={{ color: "#ffffff", fontSize: 18, fontWeight: "700", marginTop: 3 }}>{snapshot.peopleRecords.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length}</Text>
+              </View>
+              <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.45)", backgroundColor: "rgba(143,224,170,0.12)", padding: 9 }}>
+                <Text style={{ color: "#d7ffe3", fontSize: 11 }}>안정 상태</Text>
+                <Text style={{ color: "#ffffff", fontSize: 18, fontWeight: "700", marginTop: 3 }}>{snapshot.peopleRecords.filter((p) => p.state.includes("안정") || p.state.includes("기도")).length}</Text>
+              </View>
+            </View>
           </View>
-        </View>
+        )}
 
         <View style={{ marginTop: 12, borderRadius: 18, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10 }}>
           <Text style={{ color: "#a9c3ef", fontSize: 11, fontWeight: "700", marginBottom: 8 }}>월드 채팅</Text>
@@ -322,6 +394,35 @@ export default function WorldScreen() {
               {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
             </Pressable>
           </View>
+        </View>
+
+        <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(148,171,212,0.35)", backgroundColor: "rgba(26,35,52,0.9)", padding: 12, gap: 8 }}>
+          <Text style={{ color: "#c9d9f5", fontSize: 12, fontWeight: "700" }}>목원 관리 · 캐릭터 스탯</Text>
+          {snapshot.peopleRecords.slice(0, 4).map((person) => {
+            const stats = memberStats(person.name, person.state);
+            return (
+              <View key={person.id} style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(148,171,212,0.28)", backgroundColor: "rgba(255,255,255,0.04)", padding: 9, gap: 6 }}>
+                <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>{person.name} · {person.household}</Text>
+                <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 11 }}>{person.nextAction}</Text>
+
+                {[
+                  { label: "돌봄", value: stats.care, color: "#f2a8a8" },
+                  { label: "신앙", value: stats.faith, color: "#8fe0aa" },
+                  { label: "후속", value: stats.follow, color: "#f4d38e" },
+                ].map((bar) => (
+                  <View key={`${person.id}-${bar.label}`} style={{ gap: 3 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                      <Text style={{ color: "rgba(216,230,255,0.8)", fontSize: 10 }}>{bar.label}</Text>
+                      <Text style={{ color: "rgba(216,230,255,0.8)", fontSize: 10 }}>{bar.value}</Text>
+                    </View>
+                    <View style={{ height: 7, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.12)", overflow: "hidden" }}>
+                      <View style={{ width: `${bar.value}%`, height: "100%", backgroundColor: bar.color }} />
+                    </View>
+                  </View>
+                ))}
+              </View>
+            );
+          })}
         </View>
 
         <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 2, borderColor: "rgba(143,224,170,0.5)", backgroundColor: "rgba(143,224,170,0.1)", padding: 12, gap: 8 }}>
