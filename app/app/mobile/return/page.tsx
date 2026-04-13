@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getCurrentUserId } from "@/lib/auth";
-import { getFirstChurchByUserId } from "@/lib/church-context";
+import { getRecentChurchByUserId } from "@/lib/church-context";
 
 function appendChurchSlugToReturnHref(href: string, churchSlug: string | null) {
   if (!churchSlug) return href;
@@ -25,8 +25,8 @@ export default async function MobileAppReturnPage({
     redirect(`/login?next=${next}`);
   }
 
-  const firstChurch = await getFirstChurchByUserId(userId);
-  const appReturnHref = appendChurchSlugToReturnHref(baseReturnHref, firstChurch?.slug ?? null);
+  const recentChurch = await getRecentChurchByUserId(userId);
+  const appReturnHref = appendChurchSlugToReturnHref(baseReturnHref, recentChurch?.slug ?? null);
 
   return (
     <main className="min-h-screen bg-[#07111f] px-4 py-6 text-white sm:px-6">

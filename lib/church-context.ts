@@ -35,6 +35,28 @@ export async function getFirstChurchByUserId(userId: string) {
   return memberships[0]?.church ?? null;
 }
 
+export async function getRecentChurchByUserId(userId: string) {
+  const latestLog = await prisma.activityLog.findFirst({
+    where: {
+      actorId: userId,
+      churchId: { not: null },
+      church: { isActive: true },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      church: {
+        select: { id: true, slug: true, name: true },
+      },
+    },
+  });
+
+  if (latestLog?.church) {
+    return latestLog.church;
+  }
+
+  return getFirstChurchByUserId(userId);
+}
+
 export async function getCurrentUserOrRedirect(next?: string) {
   await requireAuth(next);
   const userId = await getCurrentUserId();
