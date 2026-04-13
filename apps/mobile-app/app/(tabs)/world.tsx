@@ -73,7 +73,12 @@ export default function WorldScreen() {
     refreshGrowthLoops();
   }, []);
 
-  if (loading || !snapshot) {
+  const selected = useMemo(() => {
+    if (!snapshot?.worldObjects?.length) return null;
+    return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
+  }, [selectedId, snapshot]);
+
+  if (loading || !snapshot || !selected) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ color: mabiTheme.textPrimary }}>월드 불러오는 중...</Text>
@@ -86,10 +91,6 @@ export default function WorldScreen() {
     householdCount: snapshot.worldObjects.filter((item) => item.kind === "house").length,
     peopleCount: snapshot.peopleRecords.length,
   };
-
-  const selected = useMemo(() => {
-    return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
-  }, [selectedId, snapshot.worldObjects]);
 
   const selectedBadge = stateBadge(selected.state);
 
