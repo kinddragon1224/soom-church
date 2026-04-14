@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Tabs, router } from "expo-router";
 import { Text } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getAuthConnected } from "../../lib/auth-bridge";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -11,6 +12,8 @@ function TabIcon({ label, focused }: { label: string; focused: boolean }) {
 }
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     const guard = async () => {
       const connected = await getAuthConnected();
@@ -31,9 +34,9 @@ export default function TabsLayout() {
             backgroundColor: "#1f2b42",
             borderTopColor: "rgba(138,160,199,0.45)",
             borderTopWidth: 2,
-            height: 86,
+            height: 78 + insets.bottom,
             paddingTop: 8,
-            paddingBottom: 12,
+            paddingBottom: Math.max(12, insets.bottom + 4),
           },
           tabBarItemStyle: {
             borderRadius: 8,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Image, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
@@ -183,8 +183,8 @@ export default function WorldScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84, gap: 12 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 10, paddingBottom: 132, gap: 12 }}>
         <View style={{
           height: 430,
           borderRadius: 22,
