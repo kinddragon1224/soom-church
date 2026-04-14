@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { Pressable, SafeAreaView, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { Alert, Pressable, SafeAreaView, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { router } from "expo-router";
 
+import { createMember, updateMember } from "../../lib/member-manage-source";
 import { mabiTheme } from "../../lib/ui-theme";
 import { useWorldStore } from "../../lib/world-store";
 
@@ -27,12 +28,18 @@ function careTone(state: string) {
 }
 
 export default function PeopleScreen() {
-  const { loading, snapshot, setChatDraft } = useWorldStore();
+  const { loading, snapshot, setChatDraft, refresh } = useWorldStore();
   const { width } = useWindowDimensions();
   const [query, setQuery] = useState("");
   const [householdFilter, setHouseholdFilter] = useState("전체");
   const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [formMode, setFormMode] = useState<"none" | "add" | "edit">("none");
+  const [formName, setFormName] = useState("");
+  const [formHousehold, setFormHousehold] = useState("");
+  const [formState, setFormState] = useState("");
+  const [formNextAction, setFormNextAction] = useState("");
+  const [formSaving, setFormSaving] = useState(false);
 
   if (loading || !snapshot) {
     return (
@@ -85,11 +92,119 @@ export default function PeopleScreen() {
     router.push("/(tabs)/world");
   };
 
+  const openAddForm = () => {
+    setFormMode("add");
+    setFormName("");
+    setFormHousehold("");
+    setFormState("");
+    setFormNextAction("");
+  };
+
+  const openEditForm = () => {
+    if (!selected) return;
+    setFormMode("edit");
+    setFormName(selected.name);
+    setFormHousehold(selected.household);
+    setFormState(selected.state);
+    setFormNextAction(selected.nextAction);
+  };
+
+  const submitForm = async () => {
+    if (!formName.trim() || formSaving) return;
+
+    setFormSaving(true);
+    try {
+      if (formMode === "add") {
+        await createMember({
+          name: formName.trim(),
+          household: formHousehold.trim(),
+          state: formState.trim(),
+          nextAction: formNextAction.trim(),
+        });
+      } else if (formMode === "edit" && selected) {
+        await updateMember({
+          id: selected.id,
+          name: formName.trim(),
+          household: formHousehold.trim(),
+          state: formState.trim(),
+          nextAction: formNextAction.trim(),
+        });
+      }
+
+      await refresh();
+      setFormMode("none");
+      Alert.alert("완료", formMode === "add" ? "목원을 추가했어." : "목원 정보를 수정했어.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "저장 중 오류가 발생했어.";
+      Alert.alert("저장 실패", message);
+    } finally {
+      setFormSaving(false);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 104 }}>
         <Text style={{ color: "rgba(230,230,230,0.56)", fontSize: 11, letterSpacing: 1.3 }}>ROSTER GRID</Text>
         <Text style={{ color: "#f5f5f5", fontSize: 26, fontWeight: "700", marginTop: 4 }}>목원 카드</Text>
+
+        <View style={{ marginTop: 8, flexDirection: "row", gap: 8 }}>
+          <Pressable
+            onPress={openAddForm}
+            style={{ flex: 1, minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#5aa36f", backgroundColor: "#152419", alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={{ color: "#d7ffe3", fontWeight: "700" }}>목원 직접 추가</Text>
+          </Pressable>
+          <Pressable
+            onPress={openEditForm}
+            disabled={!selected}
+            style={{ flex: 1, minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", alignItems: "center", justifyContent: "center", opacity: selected ? 1 : 0.5 }}
+          >
+            <Text style={{ color: "#ffeabf", fontWeight: "700" }}>선택 목원 수정</Text>
+          </Pressable>
+        </View>
+
+        {formMode !== "none" ? (
+          <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#121212", padding: 10, gap: 8 }}>
+            <Text style={{ color: "#f5f5f5", fontSize: 12, fontWeight: "700" }}>{formMode === "add" ? "목원 추가" : "목원 정보 수정"}</Text>
+            <TextInput
+              value={formName}
+              onChangeText={setFormName}
+              placeholder="이름"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }}
+            />
+            <TextInput
+              value={formHousehold}
+              onChangeText={setFormHousehold}
+              placeholder="가정 이름"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }}
+            />
+            <TextInput
+              value={formState}
+              onChangeText={setFormState}
+              placeholder="현재 상태 (예: ✉️ 후속)"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }}
+            />
+            <TextInput
+              value={formNextAction}
+              onChangeText={setFormNextAction}
+              placeholder="다음 액션"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }}
+            />
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <Pressable onPress={() => setFormMode("none")} style={{ flex: 1, minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#1a1a1a", alignItems: "center", justifyContent: "center" }}>
+                <Text style={{ color: "#d7d7d7", fontWeight: "700" }}>취소</Text>
+              </Pressable>
+              <Pressable onPress={submitForm} disabled={formSaving || !formName.trim()} style={{ flex: 1, minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#5aa36f", backgroundColor: "#152419", alignItems: "center", justifyContent: "center", opacity: formSaving || !formName.trim() ? 0.55 : 1 }}>
+                <Text style={{ color: "#d7ffe3", fontWeight: "700" }}>{formSaving ? "저장 중..." : "저장"}</Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : null}
 
         <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#2a2a2a", backgroundColor: "#141414", padding: 10, flexDirection: "row", gap: 8 }}>
           <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", padding: 8 }}>
