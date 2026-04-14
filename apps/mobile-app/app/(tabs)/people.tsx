@@ -41,16 +41,19 @@ export default function PeopleScreen() {
   const [formNextAction, setFormNextAction] = useState("");
   const [formSaving, setFormSaving] = useState(false);
   const [localRemovedIds, setLocalRemovedIds] = useState<string[]>([]);
+  const [localRemovedNames, setLocalRemovedNames] = useState<string[]>([]);
   const [localAddedMembers, setLocalAddedMembers] = useState<Array<{ id: string; name: string; household: string; state: string; nextAction: string }>>([]);
   const [localOverrides, setLocalOverrides] = useState<Record<string, { name: string; household: string; state: string; nextAction: string }>>({});
 
   const basePeople = (snapshot?.peopleRecords ?? [])
-    .filter((person) => !localRemovedIds.includes(person.id))
+    .filter((person) => !localRemovedIds.includes(person.id) && !localRemovedNames.includes(person.name))
     .map((person) => {
       const override = localOverrides[person.id];
       return override ? { ...person, ...override } : person;
     });
-  const people = [...localAddedMembers, ...basePeople].filter((person, index, arr) => arr.findIndex((x) => x.id === person.id) === index);
+  const people = [...localAddedMembers, ...basePeople]
+    .filter((person) => !localRemovedNames.includes(person.name))
+    .filter((person, index, arr) => arr.findIndex((x) => x.id === person.id) === index);
   const householdOptions = useMemo(() => {
     const households = Array.from(new Set(people.map((person) => person.household)));
     return ["전체", ...households];
@@ -136,6 +139,8 @@ export default function PeopleScreen() {
         };
 
         setLocalAddedMembers((prev) => [createdMember, ...prev.filter((item) => item.id !== createdMember.id)]);
+        setLocalRemovedIds((prev) => prev.filter((id) => id !== createdMember.id));
+        setLocalRemovedNames((prev) => prev.filter((name) => name !== createdMember.name));
         setSelectedId(createdMember.id);
         setHouseholdFilter("전체");
         setQuery("");
@@ -167,6 +172,7 @@ export default function PeopleScreen() {
           },
           ...prev,
         ]);
+        setLocalRemovedNames((prev) => prev.filter((name) => name !== formName.trim()));
         setSelectedId(fallbackId);
         setHouseholdFilter("전체");
         setQuery("");
@@ -208,13 +214,16 @@ export default function PeopleScreen() {
             await deleteMember({ id: selected.id, name: selected.name });
             setFormMode("none");
             setSelectedId(null);
+            setLocalRemovedIds((prev) => [...new Set([...prev, selected.id])]);
+            setLocalRemovedNames((prev) => [...new Set([...prev, selected.name])]);
             setLocalAddedMembers((prev) => prev.filter((item) => item.id !== selected.id));
             await refresh();
             Alert.alert("완료", "목원을 삭제했어.");
           } catch (error) {
             const message = error instanceof Error ? error.message : "삭제 중 오류가 발생했어.";
             if (message.includes("member not found") && selected) {
-              setLocalRemovedIds((prev) => [...prev, selected.id]);
+              setLocalRemovedIds((prev) => [...new Set([...prev, selected.id])]);
+              setLocalRemovedNames((prev) => [...new Set([...prev, selected.name])]);
               setLocalAddedMembers((prev) => prev.filter((item) => item.id !== selected.id));
               setFormMode("none");
               setSelectedId(null);
