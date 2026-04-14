@@ -29,14 +29,6 @@ export default function TasksScreen() {
     refreshLogs();
   }, []);
 
-  if (loading || !snapshot) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ color: mabiTheme.textPrimary }}>기록 불러오는 중...</Text>
-      </SafeAreaView>
-    );
-  }
-
   const doneCount = runtimeTasks.filter((task) => task.completed).length;
   const pendingCount = runtimeTasks.length - doneCount;
   const urgentCount = runtimeTasks.filter((task) => !task.completed && (task.title.includes("후속") || task.title.includes("심방") || task.title.includes("기도"))).length;
@@ -44,6 +36,14 @@ export default function TasksScreen() {
   const timeline = useMemo(() => {
     return [...runtimeTasks].sort((a, b) => b.createdAt - a.createdAt);
   }, [runtimeTasks]);
+
+  if (loading || !snapshot) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ color: mabiTheme.textPrimary }}>기록 불러오는 중...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
