@@ -3,12 +3,19 @@ import { ActivityIndicator, SafeAreaView, View } from "react-native";
 import { router } from "expo-router";
 
 import { getAuthConnected } from "../lib/auth-bridge";
+import { getWorldSetupState } from "../lib/world-setup";
 
 export default function IndexScreen() {
   useEffect(() => {
     const run = async () => {
       const connected = await getAuthConnected();
-      router.replace(connected ? "/(tabs)/world" : "/login");
+      if (!connected) {
+        router.replace("/login");
+        return;
+      }
+
+      const setup = await getWorldSetupState();
+      router.replace(setup?.completed ? "/(tabs)/world" : "/world-setup");
     };
 
     run();

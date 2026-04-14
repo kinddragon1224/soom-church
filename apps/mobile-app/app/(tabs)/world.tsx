@@ -4,6 +4,7 @@ import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
 import { mabiTheme } from "../../lib/ui-theme";
+import { getWorldSetupState, type WorldSetupState } from "../../lib/world-setup";
 import { useWorldStore } from "../../lib/world-store";
 
 type WorldChatMessage = {
@@ -70,6 +71,7 @@ export default function WorldScreen() {
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
   const [autoRunning, setAutoRunning] = useState(false);
+  const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -77,6 +79,12 @@ export default function WorldScreen() {
     setWorldDraft(incoming);
     setChatDraft("");
   }, [chatDraft, setChatDraft]);
+
+  useEffect(() => {
+    getWorldSetupState().then((value) => {
+      setWorldSetup(value);
+    });
+  }, []);
 
   const selected = useMemo(() => {
     if (!snapshot?.worldObjects?.length) return null;
@@ -230,6 +238,27 @@ export default function WorldScreen() {
         </View>
 
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 10, paddingBottom: 24 }}>
+          {worldSetup ? (
+            <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(243,208,128,0.35)", backgroundColor: "rgba(46,38,22,0.55)", padding: 12, gap: 8 }}>
+              <Text style={{ color: "#ffeabf", fontSize: 13, fontWeight: "800" }}>{worldSetup.mokjangName} 시작 액션</Text>
+              <Text style={{ color: "rgba(255,240,205,0.76)", fontSize: 11 }}>{worldSetup.churchName} · {worldSetup.region} | 목원 시작 방식: {worldSetup.memberSource === "csv" ? "CSV" : worldSetup.memberSource === "chat" ? "모라 명령" : "직접 입력"}</Text>
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
+                <Pressable onPress={() => router.push("/(tabs)/people")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
+                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>이번주 출석 체크</Text>
+                </Pressable>
+                <Pressable onPress={() => setWorldDraft("모라, 긴급 기도와 돌봄 대상 먼저 정리해줘")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
+                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>긴급 기도/돌봄 정리</Text>
+                </Pressable>
+                <Pressable onPress={() => setWorldDraft("모라, 이번 주 심방 예정 일정 초안 작성해줘")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
+                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>심방 일정 초안</Text>
+                </Pressable>
+                <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
+                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>목장 일정 기입</Text>
+                </Pressable>
+              </View>
+            </View>
+          ) : null}
+
           <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", backgroundColor: "rgba(20,29,45,0.95)", padding: 12 }}>
             <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령창</Text>
 

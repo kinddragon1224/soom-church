@@ -3,6 +3,7 @@ import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { setAuthConnected, setCurrentChurchSlug } from "../lib/auth-bridge";
+import { getWorldSetupState } from "../lib/world-setup";
 
 export default function AuthCompleteScreen() {
   const params = useLocalSearchParams<{ churchSlug?: string }>();
@@ -11,7 +12,9 @@ export default function AuthCompleteScreen() {
     const run = async () => {
       await setCurrentChurchSlug(typeof params.churchSlug === "string" ? params.churchSlug : null);
       await setAuthConnected(true);
-      router.replace("/(tabs)/world");
+
+      const setup = await getWorldSetupState();
+      router.replace(setup?.completed ? "/(tabs)/world" : "/world-setup");
     };
 
     run();
