@@ -27,6 +27,12 @@ function careTone(state: string) {
   return { border: "#8a7b54", bg: "#262117", label: "일반 관리" };
 }
 
+function statusStars(state: string) {
+  if (state.includes("돌봄") || state.includes("후속")) return 4;
+  if (state.includes("기도")) return 3;
+  return 2;
+}
+
 export default function PeopleScreen() {
   const { loading, snapshot, setChatDraft, refresh } = useWorldStore();
   const { width } = useWindowDimensions();
@@ -84,7 +90,8 @@ export default function PeopleScreen() {
 
   const urgentCount = people.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
   const householdCount = new Set(people.map((p) => p.household)).size;
-  const cardWidth = Math.floor((width - 32 - 16) / 3);
+  const columns = width >= 390 ? 4 : 3;
+  const cardWidth = Math.floor((width - 32 - (columns - 1) * 8) / columns);
   const cardsPerPage = 18;
   const totalPages = Math.max(1, Math.ceil(filtered.length / cardsPerPage));
   const currentPage = Math.min(page, totalPages);
@@ -386,19 +393,28 @@ export default function PeopleScreen() {
                 onPress={() => setSelectedId(person.id)}
                 style={{
                   width: cardWidth,
-                  borderRadius: 10,
+                  borderRadius: 8,
                   borderWidth: 1,
-                  borderColor: active ? "#d5bf82" : tone.border,
-                  backgroundColor: active ? "#1f1a11" : "#111111",
-                  padding: 8,
-                  gap: 6,
+                  borderColor: active ? "#ffd27d" : "#6f2f2f",
+                  backgroundColor: active ? "#732626" : "#5a1f1f",
+                  padding: 6,
+                  gap: 4,
                 }}
               >
-                <View style={{ height: 64, borderRadius: 7, backgroundColor: tone.bg, alignItems: "center", justifyContent: "center" }}>
-                  <Text style={{ color: "#f5f5f5", fontSize: 10, fontWeight: "700" }}>{person.name.slice(0, 2)}</Text>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                  <Text style={{ color: "#f7e0aa", fontSize: 9, fontWeight: "700" }}>Lv.1</Text>
+                  <Text style={{ color: "#d7d7d7", fontSize: 8 }}>{tone.label}</Text>
                 </View>
-                <Text numberOfLines={1} style={{ color: "#f5f5f5", fontSize: 11, fontWeight: "700" }}>{person.name}</Text>
-                <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.6)", fontSize: 9 }}>{person.household}</Text>
+                <View style={{ height: 60, borderRadius: 6, backgroundColor: tone.bg, alignItems: "center", justifyContent: "center" }}>
+                  <Text style={{ color: "#f5f5f5", fontSize: 11, fontWeight: "700" }}>{person.name.slice(0, 2)}</Text>
+                </View>
+                <View style={{ flexDirection: "row", gap: 1 }}>
+                  {Array.from({ length: 5 }).map((_, idx) => (
+                    <Text key={`${person.id}-s-${idx}`} style={{ color: idx < statusStars(person.state) ? "#ffd24a" : "#7c5a2b", fontSize: 9 }}>★</Text>
+                  ))}
+                </View>
+                <Text numberOfLines={1} style={{ color: "#fff5f5", fontSize: 10, fontWeight: "700" }}>{person.name}</Text>
+                <Text numberOfLines={1} style={{ color: "rgba(255,240,240,0.72)", fontSize: 8 }}>{person.household}</Text>
               </Pressable>
             );
           })}
@@ -425,8 +441,8 @@ export default function PeopleScreen() {
         </View>
 
         {selected ? (
-          <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#121212", padding: 12 }}>
-            <Text style={{ color: "#e3d4ab", fontSize: 11 }}>목원 상태창</Text>
+          <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "#3a435f", backgroundColor: "#121621", padding: 12 }}>
+            <Text style={{ color: "#d8e7ff", fontSize: 11 }}>목원 상세</Text>
             <View style={{ marginTop: 8, flexDirection: "row", gap: 10 }}>
               <View style={{ width: 128, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.38)", backgroundColor: "rgba(120,157,214,0.14)", padding: 8, alignItems: "center" }}>
                 <View style={{ width: 92, height: 116, borderRadius: 10, backgroundColor: "rgba(15,22,34,0.82)", alignItems: "center", justifyContent: "center" }}>
