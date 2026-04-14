@@ -1,12 +1,8 @@
 import { getCurrentChurchSlug } from "./auth-bridge";
-import { chatQuickActions, peopleRecords, taskRecords, worldObjects } from "./world-model";
+import { chatQuickActions, type PersonRecord, type TaskRecord, type WorldObject, worldObjects } from "./world-model";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
-
-type WorldObject = (typeof worldObjects)[number];
-type PersonRecord = (typeof peopleRecords)[number];
-type TaskRecord = (typeof taskRecords)[number];
 
 type SnapshotPayload = {
   worldObjects: WorldObject[];
@@ -20,8 +16,8 @@ export type WorldSnapshot = SnapshotPayload;
 function fallbackSnapshot(): WorldSnapshot {
   return {
     worldObjects,
-    peopleRecords,
-    taskRecords,
+    peopleRecords: [],
+    taskRecords: [],
     chatQuickActions,
   };
 }
