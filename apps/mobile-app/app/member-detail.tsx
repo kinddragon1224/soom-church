@@ -84,6 +84,19 @@ export default function MemberDetailScreen() {
     }
   };
 
+  const clearImage = async () => {
+    if (!id || uploading || saving) return;
+    setAvatarUrl("");
+    await saveLocalOverride({
+      name: name.trim() || "이름 미입력",
+      household: household.trim() || "가정 미지정",
+      state: state.trim() || "등록",
+      nextAction: nextAction.trim() || "다음 액션 미정",
+      avatarUrl: "",
+    });
+    Alert.alert("완료", "사진을 제거했어.");
+  };
+
   const save = async () => {
     if (!id || !name.trim() || saving) return;
     setSaving(true);
@@ -159,6 +172,11 @@ export default function MemberDetailScreen() {
               <Pressable onPress={pickImage} disabled={uploading || saving} style={{ marginTop: 8, width: "100%", minHeight: 34, borderRadius: 8, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "#182038", alignItems: "center", justifyContent: "center", opacity: uploading || saving ? 0.55 : 1 }}>
                 {uploading ? <ActivityIndicator size="small" color="#d8e7ff" /> : <Text style={{ color: "#d8e7ff", fontSize: 11, fontWeight: "700" }}>사진 업로드</Text>}
               </Pressable>
+              {avatarUrl ? (
+                <Pressable onPress={clearImage} disabled={uploading || saving} style={{ marginTop: 6, width: "100%", minHeight: 30, borderRadius: 8, borderWidth: 1, borderColor: "#6a4a4a", backgroundColor: "#251919", alignItems: "center", justifyContent: "center", opacity: uploading || saving ? 0.55 : 1 }}>
+                  <Text style={{ color: "#f1c2c2", fontSize: 11, fontWeight: "700" }}>사진 제거</Text>
+                </Pressable>
+              ) : null}
             </View>
 
             <View style={{ flex: 1, gap: 8 }}>
