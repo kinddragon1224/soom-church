@@ -213,10 +213,11 @@ export default function WorldScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior="padding"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 4}
       >
       <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10, gap: 10 }}>
+        {!keyboardVisible ? (
         <View style={{
           height: worldHeight,
           borderRadius: 22,
@@ -254,8 +255,9 @@ export default function WorldScreen() {
           </View>
 
         </View>
+        ) : null}
 
-        <View style={{ flex: 1, minHeight: 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+        <View style={{ flex: 1, minHeight: keyboardVisible ? 340 : 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 12 : 28 }} keyboardShouldPersistTaps="handled">
