@@ -18,12 +18,12 @@ function memberStats(name: string, state: string) {
 
 function careTone(state: string) {
   if (state.includes("돌봄") || state.includes("후속")) {
-    return { border: "rgba(242,168,168,0.72)", bg: "rgba(242,168,168,0.16)", label: "우선 돌봄" };
+    return { border: "#c95c5c", bg: "#2a1515", label: "우선 돌봄" };
   }
   if (state.includes("기도")) {
-    return { border: "rgba(143,224,170,0.72)", bg: "rgba(143,224,170,0.16)", label: "기도 진행" };
+    return { border: "#5aa36f", bg: "#152419", label: "기도 진행" };
   }
-  return { border: "rgba(120,157,214,0.72)", bg: "rgba(120,157,214,0.16)", label: "일반 관리" };
+  return { border: "#8a7b54", bg: "#262117", label: "일반 관리" };
 }
 
 export default function PeopleScreen() {
@@ -86,22 +86,22 @@ export default function PeopleScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 104 }}>
-        <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 1.3 }}>MOKJANG ROSTER</Text>
-        <Text style={{ color: mabiTheme.textPrimary, fontSize: 26, fontWeight: "700", marginTop: 4 }}>목원 카드</Text>
+        <Text style={{ color: "rgba(230,230,230,0.56)", fontSize: 11, letterSpacing: 1.3 }}>ROSTER GRID</Text>
+        <Text style={{ color: "#f5f5f5", fontSize: 26, fontWeight: "700", marginTop: 4 }}>목원 카드</Text>
 
-        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10, flexDirection: "row", gap: 8 }}>
-          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(243,208,128,0.45)", backgroundColor: "rgba(243,208,128,0.12)", padding: 8 }}>
-            <Text style={{ color: "#ffeabf", fontSize: 10 }}>가정 수</Text>
+        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#2a2a2a", backgroundColor: "#141414", padding: 10, flexDirection: "row", gap: 8 }}>
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", padding: 8 }}>
+            <Text style={{ color: "#e3d4ab", fontSize: 10 }}>가정 수</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{householdCount}</Text>
           </View>
-          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(120,157,214,0.45)", backgroundColor: "rgba(120,157,214,0.12)", padding: 8 }}>
-            <Text style={{ color: "#d8e7ff", fontSize: 10 }}>목원 수</Text>
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "#18202e", padding: 8 }}>
+            <Text style={{ color: "#cddcf5", fontSize: 10 }}>목원 수</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{people.length}</Text>
           </View>
-          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(242,168,168,0.45)", backgroundColor: "rgba(242,168,168,0.12)", padding: 8 }}>
-            <Text style={{ color: "#ffd7d7", fontSize: 10 }}>우선 돌봄</Text>
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#c95c5c", backgroundColor: "#2a1515", padding: 8 }}>
+            <Text style={{ color: "#f1c2c2", fontSize: 10 }}>우선 돌봄</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
           </View>
         </View>
@@ -116,9 +116,9 @@ export default function PeopleScreen() {
             minHeight: 44,
             borderRadius: 12,
             borderWidth: 1,
-            borderColor: "rgba(120,157,214,0.4)",
-            backgroundColor: "rgba(20,29,45,0.88)",
-            color: "#f4f7ff",
+            borderColor: "#2f2f2f",
+            backgroundColor: "#121212",
+            color: "#f5f5f5",
             paddingHorizontal: 12,
           }}
         />
@@ -160,45 +160,45 @@ export default function PeopleScreen() {
                   width: cardWidth,
                   borderRadius: 10,
                   borderWidth: 1,
-                  borderColor: active ? "rgba(243,208,128,0.7)" : tone.border,
-                  backgroundColor: active ? "rgba(243,208,128,0.12)" : "rgba(20,29,45,0.88)",
+                  borderColor: active ? "#d5bf82" : tone.border,
+                  backgroundColor: active ? "#1f1a11" : "#111111",
                   padding: 8,
                   gap: 6,
                 }}
               >
                 <View style={{ height: 64, borderRadius: 7, backgroundColor: tone.bg, alignItems: "center", justifyContent: "center" }}>
-                  <Text style={{ color: "#f4f7ff", fontSize: 10, fontWeight: "700" }}>{person.name.slice(0, 2)}</Text>
+                  <Text style={{ color: "#f5f5f5", fontSize: 10, fontWeight: "700" }}>{person.name.slice(0, 2)}</Text>
                 </View>
-                <Text numberOfLines={1} style={{ color: "#f4f7ff", fontSize: 11, fontWeight: "700" }}>{person.name}</Text>
-                <Text numberOfLines={1} style={{ color: "rgba(216,230,255,0.74)", fontSize: 9 }}>{person.household}</Text>
+                <Text numberOfLines={1} style={{ color: "#f5f5f5", fontSize: 11, fontWeight: "700" }}>{person.name}</Text>
+                <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.6)", fontSize: 9 }}>{person.household}</Text>
               </Pressable>
             );
           })}
         </View>
 
         <View style={{ marginTop: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-          <Text style={{ color: "rgba(216,230,255,0.7)", fontSize: 10 }}>{filtered.length}명 · {currentPage}/{totalPages}페이지</Text>
+          <Text style={{ color: "rgba(245,245,245,0.6)", fontSize: 10 }}>{filtered.length}명 · {currentPage}/{totalPages}페이지</Text>
           <View style={{ flexDirection: "row", gap: 6 }}>
             <Pressable
               onPress={() => setPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage <= 1}
-              style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(120,157,214,0.36)", backgroundColor: "rgba(20,29,45,0.7)", paddingHorizontal: 8, paddingVertical: 4, opacity: currentPage <= 1 ? 0.45 : 1 }}
+              style={{ borderRadius: 8, borderWidth: 1, borderColor: "#343434", backgroundColor: "#141414", paddingHorizontal: 8, paddingVertical: 4, opacity: currentPage <= 1 ? 0.45 : 1 }}
             >
-              <Text style={{ color: "#d8e7ff", fontSize: 10 }}>이전</Text>
+              <Text style={{ color: "#d7d7d7", fontSize: 10 }}>이전</Text>
             </Pressable>
             <Pressable
               onPress={() => setPage((prev) => Math.min(totalPages, prev + 1))}
               disabled={currentPage >= totalPages}
-              style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(120,157,214,0.36)", backgroundColor: "rgba(20,29,45,0.7)", paddingHorizontal: 8, paddingVertical: 4, opacity: currentPage >= totalPages ? 0.45 : 1 }}
+              style={{ borderRadius: 8, borderWidth: 1, borderColor: "#343434", backgroundColor: "#141414", paddingHorizontal: 8, paddingVertical: 4, opacity: currentPage >= totalPages ? 0.45 : 1 }}
             >
-              <Text style={{ color: "#d8e7ff", fontSize: 10 }}>다음</Text>
+              <Text style={{ color: "#d7d7d7", fontSize: 10 }}>다음</Text>
             </Pressable>
           </View>
         </View>
 
         {selected ? (
-          <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(243,208,128,0.55)", backgroundColor: "rgba(11,18,29,0.92)", padding: 12 }}>
-            <Text style={{ color: "#ffeabf", fontSize: 11 }}>목원 상태창</Text>
+          <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#121212", padding: 12 }}>
+            <Text style={{ color: "#e3d4ab", fontSize: 11 }}>목원 상태창</Text>
             <View style={{ marginTop: 8, flexDirection: "row", gap: 10 }}>
               <View style={{ width: 128, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.38)", backgroundColor: "rgba(120,157,214,0.14)", padding: 8, alignItems: "center" }}>
                 <View style={{ width: 92, height: 116, borderRadius: 10, backgroundColor: "rgba(15,22,34,0.82)", alignItems: "center", justifyContent: "center" }}>
