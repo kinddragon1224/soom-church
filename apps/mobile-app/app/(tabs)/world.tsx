@@ -177,7 +177,7 @@ export default function WorldScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
       >
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10, gap: 8 }}>
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 2, gap: 6 }}>
         {!keyboardVisible ? (
         <View style={{
           height: worldHeight,
@@ -218,10 +218,10 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ minHeight: keyboardVisible ? 300 : 290, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+        <View style={{ minHeight: keyboardVisible ? 300 : 300, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
-          <ScrollView style={{ maxHeight: keyboardVisible ? 230 : 210 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 8 : 12 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ maxHeight: keyboardVisible ? 230 : 220 }} contentContainerStyle={{ gap: 6, paddingBottom: keyboardVisible ? 6 : 6 }} keyboardShouldPersistTaps="handled">
             {!keyboardVisible ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                 {visiblePresets.map((preset) => (
@@ -236,7 +236,7 @@ export default function WorldScreen() {
               </View>
             ) : null}
 
-            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 100 : 72, maxHeight: keyboardVisible ? 170 : 120 }}>
+            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 98 : 68, maxHeight: keyboardVisible ? 164 : 112 }}>
               {recentMessages.length ? (
                 recentMessages.map((message) => (
                   <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "94%", borderRadius: 10, borderWidth: 1, borderColor: message.role === "user" ? "#4f678f" : "#333", backgroundColor: message.role === "user" ? "#1d2736" : "#1c1c1c", paddingHorizontal: 9, paddingVertical: 6, marginTop: 4 }}>
@@ -257,8 +257,8 @@ export default function WorldScreen() {
                 multiline
                 style={{
                   flex: 1,
-                  minHeight: keyboardVisible ? 72 : 60,
-                  maxHeight: keyboardVisible ? 140 : 104,
+                minHeight: keyboardVisible ? 70 : 56,
+                maxHeight: keyboardVisible ? 132 : 96,
                   borderRadius: 12,
                   borderWidth: 1,
                   borderColor: "#3a3a3a",
@@ -269,7 +269,7 @@ export default function WorldScreen() {
                   textAlignVertical: "top",
                 }}
               />
-              <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: keyboardVisible ? 72 : 60, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
+              <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: keyboardVisible ? 70 : 56, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
                 {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
               </Pressable>
             </View>
