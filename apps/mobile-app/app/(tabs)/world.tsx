@@ -115,6 +115,18 @@ export default function WorldScreen() {
     if (!snapshot?.worldObjects?.length) return null;
     return snapshot.worldObjects[0];
   }, [snapshot]);
+  const memberChips = useMemo(() => {
+    const people = snapshot?.peopleRecords ?? [];
+    return people.slice(0, 16).map((person) => {
+      const seed = hashSeed(person.id + person.name + person.household);
+      return {
+        id: person.id,
+        label: initials(person.name),
+        leftPct: 8 + (seed % 84),
+        topPct: 34 + ((seed >> 5) % 58),
+      };
+    });
+  }, [snapshot]);
   const worldHeight = keyboardVisible
     ? Math.max(220, Math.min(340, Math.floor(windowHeight * 0.34)))
     : Math.max(340, Math.min(560, Math.floor(windowHeight * 0.56)));
@@ -139,18 +151,6 @@ export default function WorldScreen() {
     "모라, 오늘 기도 요청 목록을 긴급도 순으로 재정렬",
     "모라, 오늘 목양 운영 브리프 3줄로 작성",
   ];
-  const memberChips = useMemo(() => {
-    return snapshot.peopleRecords.slice(0, 16).map((person) => {
-      const seed = hashSeed(person.id + person.name + person.household);
-      return {
-        id: person.id,
-        label: initials(person.name),
-        leftPct: 8 + (seed % 84),
-        topPct: 34 + ((seed >> 5) % 58),
-      };
-    });
-  }, [snapshot.peopleRecords]);
-
   const executeCommand = async (text: string, source: "manual" | "auto" = "manual") => {
     const commandTs = Date.now();
 
