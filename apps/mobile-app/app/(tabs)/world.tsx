@@ -220,7 +220,7 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ minHeight: keyboardVisible ? 220 : 170, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
+        <View style={{ minHeight: keyboardVisible ? 220 : 170, marginBottom: Platform.OS === "android" ? -6 : 0, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
           <View style={{ gap: 6 }}>
