@@ -41,14 +41,16 @@ export default function PeopleScreen() {
   const [formNextAction, setFormNextAction] = useState("");
   const [formSaving, setFormSaving] = useState(false);
   const [localRemovedIds, setLocalRemovedIds] = useState<string[]>([]);
+  const [localAddedMembers, setLocalAddedMembers] = useState<Array<{ id: string; name: string; household: string; state: string; nextAction: string }>>([]);
   const [localOverrides, setLocalOverrides] = useState<Record<string, { name: string; household: string; state: string; nextAction: string }>>({});
 
-  const people = (snapshot?.peopleRecords ?? [])
+  const basePeople = (snapshot?.peopleRecords ?? [])
     .filter((person) => !localRemovedIds.includes(person.id))
     .map((person) => {
       const override = localOverrides[person.id];
       return override ? { ...person, ...override } : person;
     });
+  const people = [...localAddedMembers, ...basePeople].filter((person, index, arr) => arr.findIndex((x) => x.id === person.id) === index);
   const householdOptions = useMemo(() => {
     const households = Array.from(new Set(people.map((person) => person.household)));
     return ["전체", ...households];
@@ -114,12 +116,30 @@ export default function PeopleScreen() {
     setFormSaving(true);
     try {
       if (formMode === "add") {
-        await createMember({
+        const result = await createMember({
           name: formName.trim(),
           household: formHousehold.trim(),
           state: formState.trim(),
           nextAction: formNextAction.trim(),
         });
+
+        const createdId = typeof (result as { id?: unknown })?.id === "string"
+          ? `p-${(result as { id: string }).id}`
+          : `local-${Date.now()}`;
+
+        const createdMember = {
+          id: createdId,
+          name: formName.trim(),
+          household: formHousehold.trim() || "가정 미지정",
+          state: formState.trim() || "등록",
+          nextAction: formNextAction.trim() || "다음 액션 미정",
+        };
+
+        setLocalAddedMembers((prev) => [createdMember, ...prev.filter((item) => item.id !== createdMember.id)]);
+        setSelectedId(createdMember.id);
+        setHouseholdFilter("전체");
+        setQuery("");
+        setPage(1);
       } else if (formMode === "edit" && selected) {
         await updateMember({
           id: selected.id,
@@ -135,6 +155,25 @@ export default function PeopleScreen() {
       Alert.alert("완료", formMode === "add" ? "목원을 추가했어." : "목원 정보를 수정했어.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "저장 중 오류가 발생했어.";
+      if (formMode === "add") {
+        const fallbackId = `local-${Date.now()}`;
+        setLocalAddedMembers((prev) => [
+          {
+            id: fallbackId,
+            name: formName.trim(),
+            household: formHousehold.trim() || "가정 미지정",
+            state: formState.trim() || "등록",
+            nextAction: formNextAction.trim() || "다음 액션 미정",
+          },
+          ...prev,
+        ]);
+        setSelectedId(fallbackId);
+        setHouseholdFilter("전체");
+        setQuery("");
+        setPage(1);
+        setFormMode("none");
+        Alert.alert("임시 추가", "서버 저장은 실패했지만 화면에는 추가했어. 나중에 다시 동기화할게.");
+      } else 
       if (formMode === "edit" && selected && message.includes("member not found")) {
         setLocalOverrides((prev) => ({
           ...prev,
@@ -169,12 +208,14 @@ export default function PeopleScreen() {
             await deleteMember({ id: selected.id, name: selected.name });
             setFormMode("none");
             setSelectedId(null);
+            setLocalAddedMembers((prev) => prev.filter((item) => item.id !== selected.id));
             await refresh();
             Alert.alert("완료", "목원을 삭제했어.");
           } catch (error) {
             const message = error instanceof Error ? error.message : "삭제 중 오류가 발생했어.";
             if (message.includes("member not found") && selected) {
               setLocalRemovedIds((prev) => [...prev, selected.id]);
+              setLocalAddedMembers((prev) => prev.filter((item) => item.id !== selected.id));
               setFormMode("none");
               setSelectedId(null);
               Alert.alert("완료", "현재 화면 기준으로 목원을 삭제했어.");
