@@ -1,4 +1,4 @@
-import { getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
@@ -41,8 +41,9 @@ export async function fetchRuntimeTasks(): Promise<RuntimeTask[]> {
   try {
     const savedSlug = await getCurrentChurchSlug();
     const churchSlug = resolveChurchSlug(savedSlug);
+    const accountKey = (await getCurrentAccountKey()) ?? "anon";
 
-    const response = await fetch(`${WEB_BASE_URL}/api/mobile/runtime-tasks?churchSlug=${encodeURIComponent(churchSlug)}`, {
+    const response = await fetch(`${WEB_BASE_URL}/api/mobile/runtime-tasks?churchSlug=${encodeURIComponent(churchSlug)}&accountKey=${encodeURIComponent(accountKey)}`, {
       method: "GET",
       headers: { Accept: "application/json" },
       cache: "no-store",
@@ -63,11 +64,12 @@ export async function syncRuntimeTasks(tasks: RuntimeTask[]): Promise<void> {
   try {
     const savedSlug = await getCurrentChurchSlug();
     const churchSlug = resolveChurchSlug(savedSlug);
+    const accountKey = (await getCurrentAccountKey()) ?? "anon";
 
     await fetch(`${WEB_BASE_URL}/api/mobile/runtime-tasks`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ churchSlug, tasks }),
+      body: JSON.stringify({ churchSlug, accountKey, tasks }),
     });
   } catch {
     // ignore sync failure

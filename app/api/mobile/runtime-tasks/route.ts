@@ -13,8 +13,19 @@ type RuntimeTask = {
 
 type SyncBody = {
   churchSlug?: string;
+  accountKey?: string;
   tasks?: RuntimeTask[];
 };
+
+function normalizeAccountKey(value: unknown) {
+  if (typeof value !== "string") return "anon";
+  const next = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "-")
+    .slice(0, 80);
+  return next || "anon";
+}
 
 function normalizeTasks(value: unknown): RuntimeTask[] {
   if (!Array.isArray(value)) return [];
@@ -50,6 +61,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
+    const accountKey = normalizeAccountKey(searchParams.get("accountKey"));
     const churchId = await resolveChurchId(churchSlug);
 
     if (!churchId) {
@@ -61,6 +73,7 @@ export async function GET(request: NextRequest) {
         churchId,
         action: "MOBILE_RUNTIME_TASKS_SYNC",
         targetType: "MOBILE_RUNTIME_TASKS",
+        targetId: accountKey,
       },
       orderBy: { createdAt: "desc" },
       select: { metadata: true },
@@ -80,6 +93,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => null)) as SyncBody | null;
   const churchSlug = body?.churchSlug?.trim() || "gido";
+  const accountKey = normalizeAccountKey(body?.accountKey);
   const tasks = normalizeTasks(body?.tasks);
 
   try {
@@ -94,6 +108,7 @@ export async function POST(request: NextRequest) {
         churchId,
         action: "MOBILE_RUNTIME_TASKS_SYNC",
         targetType: "MOBILE_RUNTIME_TASKS",
+        targetId: accountKey,
         metadata: JSON.stringify({ tasks }),
       },
     });
