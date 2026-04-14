@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Image, Platform, Pressable, SafeAreaView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
@@ -72,6 +72,7 @@ export default function WorldScreen() {
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
   const [autoRunning, setAutoRunning] = useState(false);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -86,11 +87,22 @@ export default function WorldScreen() {
     });
   }, []);
 
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener("keyboardDidHide", () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   const selected = useMemo(() => {
     if (!snapshot?.worldObjects?.length) return null;
     return snapshot.worldObjects[0];
   }, [snapshot]);
-  const worldHeight = Math.max(340, Math.min(560, Math.floor(windowHeight * 0.56)));
+  const worldHeight = keyboardVisible
+    ? Math.max(220, Math.min(340, Math.floor(windowHeight * 0.34)))
+    : Math.max(340, Math.min(560, Math.floor(windowHeight * 0.56)));
 
   if (loading || !snapshot || !selected) {
     return (
@@ -198,6 +210,11 @@ export default function WorldScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
+      >
       <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10, gap: 10 }}>
         <View style={{
           height: worldHeight,
@@ -240,7 +257,7 @@ export default function WorldScreen() {
 
         </View>
 
-        <View style={{ flex: 1, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+        <View style={{ flex: 1, minHeight: 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령 인풋 / 아웃풋</Text>
 
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
@@ -307,6 +324,7 @@ export default function WorldScreen() {
           </View>
         </View>
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
