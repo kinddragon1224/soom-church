@@ -60,8 +60,6 @@ const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.jpg");
 const WORLD_LAYER_BUILDINGS = require("../../assets/world-layers/buildings-layer.jpg");
-const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.jpg");
-const WORLD_LAYER_CHARACTERS = require("../../assets/world-layers/characters-layer.jpg");
 
 export default function WorldScreen() {
   const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
@@ -197,9 +195,7 @@ export default function WorldScreen() {
         }}>
           <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_BUILDINGS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.96 }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.98 }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_CHARACTERS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.92 }} resizeMode="cover" />
-          <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(20,24,38,0.22)" }} />
+          <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(20,24,38,0.12)" }} />
           <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(120,157,214,0.28)", backgroundColor: "rgba(15,22,34,0.84)", paddingHorizontal: 12, paddingVertical: 10, zIndex: 10, gap: 8 }}>
             <Text style={{ color: "#f4f7ff", fontSize: 15, fontWeight: "700" }}>오늘 목양 메인</Text>
             <View style={{ flexDirection: "row", gap: 8 }}>
