@@ -96,6 +96,8 @@ export default function WorldScreen() {
   const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
   const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
+  const latestAssistant = [...worldMessages].reverse().find((message) => message.role === "assistant");
+  const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected.name}부터 확인해줘.`;
   const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
   const loopCommands = [
     `모라, ${selected.name} 포함 후속 우선순위 3명 정리`,
@@ -218,6 +220,11 @@ export default function WorldScreen() {
                 <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{operationIndex}</Text>
               </View>
             </View>
+          </View>
+
+          <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "rgba(243,208,128,0.35)", backgroundColor: "rgba(22,30,45,0.74)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10 }}>
+            <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
+            <Text numberOfLines={2} style={{ color: "#f4f7ff", fontSize: 11, marginTop: 3 }}>{afkBrief}</Text>
           </View>
 
         </View>
