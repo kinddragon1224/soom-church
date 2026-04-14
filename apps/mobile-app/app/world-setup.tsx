@@ -16,7 +16,7 @@ export default function WorldSetupScreen() {
   const [region, setRegion] = useState("");
   const [mokjangName, setMokjangName] = useState("");
   const [memberSource, setMemberSource] = useState<MemberSource>("chat");
-  const [memberTargetCount, setMemberTargetCount] = useState("40");
+  const [memberTargetCount, setMemberTargetCount] = useState("");
   const [saving, setSaving] = useState(false);
 
   const canSubmit = useMemo(() => {
@@ -33,7 +33,7 @@ export default function WorldSetupScreen() {
         region,
         mokjangName,
         memberSource,
-        memberTargetCount: Number(memberTargetCount) || 40,
+        memberTargetCount: Number(memberTargetCount) || 0,
       });
       router.replace("/(tabs)/world");
     } finally {
@@ -78,7 +78,8 @@ export default function WorldSetupScreen() {
               </Pressable>
             );
           })}
-          <TextInput value={memberTargetCount} onChangeText={setMemberTargetCount} keyboardType="number-pad" placeholder="초기 예상 인원 (기본 40)" placeholderTextColor="rgba(220,232,255,0.46)" style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(120,157,214,0.45)", backgroundColor: "rgba(255,255,255,0.08)", color: "#f4f7ff", paddingHorizontal: 10, paddingVertical: 10 }} />
+          <TextInput value={memberTargetCount} onChangeText={setMemberTargetCount} keyboardType="number-pad" placeholder="초기 예상 인원 (선택 입력)" placeholderTextColor="rgba(220,232,255,0.46)" style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(120,157,214,0.45)", backgroundColor: "rgba(255,255,255,0.08)", color: "#f4f7ff", paddingHorizontal: 10, paddingVertical: 10 }} />
+          <Text style={{ color: "rgba(220,232,255,0.66)", fontSize: 11 }}>목장 규모는 고정값이 아니다. 5명~대규모까지 모두 지원하는 가변 구조로 처리.</Text>
         </View>
 
         <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(143,224,170,0.4)", backgroundColor: "rgba(12,35,24,0.38)", padding: 12, gap: 8 }}>

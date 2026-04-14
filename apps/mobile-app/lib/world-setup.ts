@@ -10,7 +10,7 @@ export type WorldSetupState = {
   region: string;
   mokjangName: string;
   memberSource: MemberSource;
-  memberTargetCount: number;
+  memberTargetCount: number; // 0 means "미정"
   createdAt: number;
 };
 
@@ -19,8 +19,8 @@ function normalizeText(value: string) {
 }
 
 function normalizeCount(value: number) {
-  if (!Number.isFinite(value)) return 40;
-  return Math.max(1, Math.min(500, Math.floor(value)));
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(1000, Math.floor(value)));
 }
 
 export async function getWorldSetupState(): Promise<WorldSetupState | null> {
@@ -39,7 +39,7 @@ export async function getWorldSetupState(): Promise<WorldSetupState | null> {
       region: normalizeText(String(parsed.region ?? "")),
       mokjangName: normalizeText(String(parsed.mokjangName ?? "")),
       memberSource: parsed.memberSource === "csv" || parsed.memberSource === "chat" ? parsed.memberSource : "manual",
-      memberTargetCount: normalizeCount(Number(parsed.memberTargetCount ?? 40)),
+      memberTargetCount: normalizeCount(Number(parsed.memberTargetCount ?? 0)),
       createdAt: typeof parsed.createdAt === "number" ? parsed.createdAt : Date.now(),
     };
   } catch {
