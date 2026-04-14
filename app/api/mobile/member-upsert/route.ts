@@ -116,19 +116,52 @@ export async function PATCH(request: NextRequest) {
       select: { id: true, churchId: true },
     });
 
+    const resolvedChurch = await resolveChurch(churchSlug);
+    let finalMemberId = memberId;
+    let churchId = exists?.churchId ?? resolvedChurch?.id ?? null;
+    let created = false;
+
     if (!exists) {
-      return NextResponse.json({ error: "member not found" }, { status: 404 });
+      if (!churchId || !name) {
+        return NextResponse.json({ error: "member not found" }, { status: 404 });
+      }
+
+      const byName = await prisma.member.findFirst({
+        where: { churchId, name, isDeleted: false },
+        select: { id: true, churchId: true },
+      });
+
+      if (byName) {
+        finalMemberId = byName.id;
+        churchId = byName.churchId;
+      } else {
+        const createdMember = await prisma.member.create({
+          data: {
+            churchId,
+            name,
+            gender: "OTHER",
+            birthDate: new Date("2000-01-01T00:00:00.000Z"),
+            phone: `pending-${Date.now()}`,
+            statusTag: "등록",
+            requiresFollowUp: false,
+          },
+          select: { id: true, churchId: true },
+        });
+        finalMemberId = createdMember.id;
+        churchId = createdMember.churchId;
+        created = true;
+      }
     }
 
-    if (!exists.churchId) {
+    if (!churchId) {
       return NextResponse.json({ error: "member church not linked" }, { status: 400 });
     }
 
-    const householdId = await findOrCreateHousehold(exists.churchId, household);
+    const householdId = await findOrCreateHousehold(churchId, household);
     const status = memberStatus(state);
 
     await prisma.member.update({
-      where: { id: memberId },
+      where: { id: finalMemberId },
       data: {
         name: name || undefined,
         householdId: householdId ?? undefined,
@@ -138,7 +171,7 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ ok: true, id: memberId });
+    return NextResponse.json({ ok: true, id: finalMemberId, created });
   } catch {
     return NextResponse.json({ error: "failed to update member" }, { status: 500 });
   }
