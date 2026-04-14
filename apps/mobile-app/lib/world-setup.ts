@@ -32,15 +32,18 @@ async function scopedKey() {
 
 export async function getWorldSetupState(): Promise<WorldSetupState | null> {
   try {
-    const raw = await AsyncStorage.getItem(await scopedKey());
-    if (!raw) return null;
+    const key = await scopedKey();
+    const raw = await AsyncStorage.getItem(key);
+    const legacyRaw = raw ? null : await AsyncStorage.getItem(WORLD_SETUP_KEY);
+    const source = raw ?? legacyRaw;
+    if (!source) return null;
 
-    const parsed = JSON.parse(raw) as Partial<WorldSetupState>;
+    const parsed = JSON.parse(source) as Partial<WorldSetupState>;
     if (!parsed || typeof parsed !== "object") return null;
 
     if (!parsed.completed) return null;
 
-    return {
+    const normalized: WorldSetupState = {
       completed: true,
       churchName: normalizeText(String(parsed.churchName ?? "")),
       region: normalizeText(String(parsed.region ?? "")),
@@ -49,6 +52,12 @@ export async function getWorldSetupState(): Promise<WorldSetupState | null> {
       memberTargetCount: normalizeCount(Number(parsed.memberTargetCount ?? 0)),
       createdAt: typeof parsed.createdAt === "number" ? parsed.createdAt : Date.now(),
     };
+
+    if (!raw && legacyRaw) {
+      await AsyncStorage.setItem(key, JSON.stringify(normalized));
+    }
+
+    return normalized;
   } catch {
     return null;
   }
