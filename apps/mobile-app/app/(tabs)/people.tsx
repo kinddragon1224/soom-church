@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { Alert, Pressable, SafeAreaView, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { Alert, Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 
 import { createMember } from "../../lib/member-manage-source";
@@ -135,6 +135,7 @@ export default function PeopleScreen() {
                     household: member.household,
                     state: member.state,
                     nextAction: member.nextAction,
+                    avatarUrl: member.avatarUrl,
                   },
                 });
               }}
@@ -152,8 +153,12 @@ export default function PeopleScreen() {
                 <Text style={{ color: "#f7e0aa", fontSize: 9, fontWeight: "700" }}>Lv.1</Text>
                 <Text style={{ color: "#d7d7d7", fontSize: 8 }}>{member.state}</Text>
               </View>
-              <View style={{ height: 60, borderRadius: 6, backgroundColor: "#2a1515", alignItems: "center", justifyContent: "center" }}>
-                <Text style={{ color: "#f5f5f5", fontSize: 11, fontWeight: "700" }}>{member.name.slice(0, 2)}</Text>
+              <View style={{ height: 60, borderRadius: 6, backgroundColor: "#2a1515", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                {member.avatarUrl ? (
+                  <Image source={{ uri: member.avatarUrl }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                ) : (
+                  <Text style={{ color: "#f5f5f5", fontSize: 11, fontWeight: "700" }}>{member.name.slice(0, 2)}</Text>
+                )}
               </View>
               <View style={{ flexDirection: "row", gap: 1 }}>
                 {Array.from({ length: 5 }).map((_, idx) => (

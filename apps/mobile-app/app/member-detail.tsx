@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Alert, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
 
 import { deleteMember, updateMember } from "../lib/member-manage-source";
 import { getMemberLocalCache, setMemberLocalCache, withMemberOverride, withRemovedMember } from "../lib/member-local-cache";
+import { uploadMemberImageFromUri } from "../lib/member-image-upload-source";
 
 function statSeed(name: string, shift: number) {
   return (name.charCodeAt(0) + name.length * 13 + shift) % 100;
@@ -17,39 +19,92 @@ function memberStats(name: string, state: string) {
 }
 
 export default function MemberDetailScreen() {
-  const params = useLocalSearchParams<{ id?: string; name?: string; household?: string; state?: string; nextAction?: string }>();
+  const params = useLocalSearchParams<{ id?: string; name?: string; household?: string; state?: string; nextAction?: string; avatarUrl?: string }>();
 
   const [name, setName] = useState(params.name ?? "");
   const [household, setHousehold] = useState(params.household ?? "");
   const [state, setState] = useState(params.state ?? "");
   const [nextAction, setNextAction] = useState(params.nextAction ?? "");
+  const [avatarUrl, setAvatarUrl] = useState(params.avatarUrl ?? "");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const id = typeof params.id === "string" ? params.id : "";
+
+  const saveLocalOverride = async (next: { name: string; household: string; state: string; nextAction: string; avatarUrl?: string }) => {
+    if (!id) return;
+    const cache = await getMemberLocalCache();
+    const nextCache = withMemberOverride(cache, id, next);
+    await setMemberLocalCache(nextCache);
+  };
+
+  const pickImage = async () => {
+    if (!id || uploading || saving) return;
+
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("권한 필요", "사진 선택 권한이 필요해.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.85,
+    });
+
+    if (result.canceled || !result.assets?.length) return;
+
+    const pickedUri = result.assets[0].uri;
+    setUploading(true);
+
+    try {
+      const uploadedUrl = await uploadMemberImageFromUri(pickedUri);
+      setAvatarUrl(uploadedUrl);
+      await saveLocalOverride({
+        name: name.trim() || "이름 미입력",
+        household: household.trim() || "가정 미지정",
+        state: state.trim() || "등록",
+        nextAction: nextAction.trim() || "다음 액션 미정",
+        avatarUrl: uploadedUrl,
+      });
+      Alert.alert("완료", "사진 업로드했어.");
+    } catch {
+      setAvatarUrl(pickedUri);
+      await saveLocalOverride({
+        name: name.trim() || "이름 미입력",
+        household: household.trim() || "가정 미지정",
+        state: state.trim() || "등록",
+        nextAction: nextAction.trim() || "다음 액션 미정",
+        avatarUrl: pickedUri,
+      });
+      Alert.alert("임시 저장", "서버 업로드는 실패했지만 기기에서는 저장했어.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const save = async () => {
     if (!id || !name.trim() || saving) return;
     setSaving(true);
     try {
       await updateMember({ id, name: name.trim(), household: household.trim(), state: state.trim(), nextAction: nextAction.trim() });
-      const cache = await getMemberLocalCache();
-      const nextCache = withMemberOverride(cache, id, {
+      await saveLocalOverride({
         name: name.trim(),
         household: household.trim() || "가정 미지정",
         state: state.trim() || "등록",
         nextAction: nextAction.trim() || "다음 액션 미정",
+        avatarUrl,
       });
-      await setMemberLocalCache(nextCache);
       Alert.alert("완료", "수정했어.", [{ text: "확인", onPress: () => router.back() }]);
     } catch {
-      const cache = await getMemberLocalCache();
-      const nextCache = withMemberOverride(cache, id, {
+      await saveLocalOverride({
         name: name.trim(),
         household: household.trim() || "가정 미지정",
         state: state.trim() || "등록",
         nextAction: nextAction.trim() || "다음 액션 미정",
+        avatarUrl,
       });
-      await setMemberLocalCache(nextCache);
       Alert.alert("완료", "서버는 실패했지만 화면 기준으로 수정 반영했어.", [{ text: "확인", onPress: () => router.back() }]);
     } finally {
       setSaving(false);
@@ -94,9 +149,16 @@ export default function MemberDetailScreen() {
           <Text style={{ color: "#d8e7ff", fontSize: 11 }}>목원 상세</Text>
           <View style={{ marginTop: 8, flexDirection: "row", gap: 10 }}>
             <View style={{ width: 132, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.38)", backgroundColor: "rgba(120,157,214,0.14)", padding: 8, alignItems: "center" }}>
-              <View style={{ width: 96, height: 118, borderRadius: 8, backgroundColor: "#0f1a31", alignItems: "center", justifyContent: "center" }}>
-                <Text style={{ color: "#f5f5f5", fontSize: 18, fontWeight: "700" }}>{name.slice(0, 2)}</Text>
+              <View style={{ width: 96, height: 118, borderRadius: 8, backgroundColor: "#0f1a31", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                {avatarUrl ? (
+                  <Image source={{ uri: avatarUrl }} style={{ width: "100%", height: "100%" }} resizeMode="cover" />
+                ) : (
+                  <Text style={{ color: "#f5f5f5", fontSize: 18, fontWeight: "700" }}>{name.slice(0, 2)}</Text>
+                )}
               </View>
+              <Pressable onPress={pickImage} disabled={uploading || saving} style={{ marginTop: 8, width: "100%", minHeight: 34, borderRadius: 8, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "#182038", alignItems: "center", justifyContent: "center", opacity: uploading || saving ? 0.55 : 1 }}>
+                {uploading ? <ActivityIndicator size="small" color="#d8e7ff" /> : <Text style={{ color: "#d8e7ff", fontSize: 11, fontWeight: "700" }}>사진 업로드</Text>}
+              </Pressable>
             </View>
 
             <View style={{ flex: 1, gap: 8 }}>
