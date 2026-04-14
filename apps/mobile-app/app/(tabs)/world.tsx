@@ -197,7 +197,7 @@ export default function WorldScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
       <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10, gap: 10 }}>
         <View style={{
           height: worldHeight,
@@ -205,32 +205,32 @@ export default function WorldScreen() {
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
           overflow: "hidden",
-          backgroundColor: mabiTheme.mapPanel,
+          backgroundColor: "#131313",
         }}>
           <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_BUILDINGS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.96 }} resizeMode="cover" />
           <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_CHARACTERS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-          <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(20,24,38,0.12)" }} />
-          <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.22)", backgroundColor: "rgba(15,22,34,0.66)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10, gap: 6 }}>
+          <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(8,8,8,0.16)" }} />
+          <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.7)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10, gap: 6 }}>
             <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>오늘 목양 메인</Text>
             <View style={{ flexDirection: "row", gap: 8 }}>
-              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(242,168,168,0.1)", paddingHorizontal: 9, paddingVertical: 6 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "#2a1515", paddingHorizontal: 9, paddingVertical: 6 }}>
                 <Text style={{ color: "#ffd7d7", fontSize: 10 }}>긴급 돌봄</Text>
                 <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{urgentCount}</Text>
               </View>
-              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(143,224,170,0.1)", paddingHorizontal: 9, paddingVertical: 6 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "#152419", paddingHorizontal: 9, paddingVertical: 6 }}>
                 <Text style={{ color: "#d7ffe3", fontSize: 10 }}>기도 요청</Text>
                 <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{prayerCount}</Text>
               </View>
-              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(120,157,214,0.1)", paddingHorizontal: 9, paddingVertical: 6 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "#18202e", paddingHorizontal: 9, paddingVertical: 6 }}>
                 <Text style={{ color: "#cfe0ff", fontSize: 10 }}>운영 지수</Text>
                 <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{operationIndex}</Text>
               </View>
             </View>
           </View>
 
-          <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "rgba(243,208,128,0.35)", backgroundColor: "rgba(22,30,45,0.74)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10 }}>
+          <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "rgba(17,17,17,0.76)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10 }}>
             <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
             <Text numberOfLines={2} style={{ color: "#f4f7ff", fontSize: 11, marginTop: 3 }}>{afkBrief}</Text>
           </View>
@@ -259,7 +259,7 @@ export default function WorldScreen() {
             </View>
           ) : null}
 
-          <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", backgroundColor: "rgba(20,29,45,0.95)", padding: 12 }}>
+          <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12 }}>
             <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령창</Text>
 
             <View style={{ marginTop: 8, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.4)", backgroundColor: "rgba(12,35,24,0.38)", padding: 8, gap: 6 }}>
@@ -334,7 +334,7 @@ export default function WorldScreen() {
             </View>
           </View>
 
-          <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(148,171,212,0.35)", backgroundColor: "rgba(26,35,52,0.9)", padding: 12, gap: 10 }}>
+          <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 10 }}>
             <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>오늘 운영</Text>
 
             <View style={{ borderRadius: 12, backgroundColor: "rgba(255,255,255,0.04)", padding: 10, gap: 8 }}>

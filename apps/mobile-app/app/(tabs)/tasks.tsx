@@ -46,29 +46,29 @@ export default function TasksScreen() {
   }, [runtimeTasks]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 100 }}>
-        <Text style={{ color: mabiTheme.textMuted, fontSize: 11, letterSpacing: 1.5 }}>MINISTRY RECORDS</Text>
-        <Text style={{ color: mabiTheme.textPrimary, fontSize: 28, fontWeight: "700", marginTop: 4 }}>기록</Text>
+        <Text style={{ color: "rgba(230,230,230,0.56)", fontSize: 11, letterSpacing: 1.5 }}>MINISTRY RECORDS</Text>
+        <Text style={{ color: "#f5f5f5", fontSize: 28, fontWeight: "700", marginTop: 4 }}>기록</Text>
 
-        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.92)", padding: 10, flexDirection: "row", gap: 8 }}>
-          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(243,208,128,0.45)", backgroundColor: "rgba(243,208,128,0.12)", padding: 8 }}>
-            <Text style={{ color: "#ffeabf", fontSize: 10 }}>대기</Text>
+        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#2a2a2a", backgroundColor: "#141414", padding: 10, flexDirection: "row", gap: 8 }}>
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", padding: 8 }}>
+            <Text style={{ color: "#e3d4ab", fontSize: 10 }}>대기</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{pendingCount}</Text>
           </View>
-          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.45)", backgroundColor: "rgba(143,224,170,0.12)", padding: 8 }}>
-            <Text style={{ color: "#d7ffe3", fontSize: 10 }}>완료</Text>
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#5aa36f", backgroundColor: "#152419", padding: 8 }}>
+            <Text style={{ color: "#c7f0d3", fontSize: 10 }}>완료</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{doneCount}</Text>
           </View>
-          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "rgba(242,168,168,0.45)", backgroundColor: "rgba(242,168,168,0.12)", padding: 8 }}>
-            <Text style={{ color: "#ffd7d7", fontSize: 10 }}>긴급</Text>
+          <View style={{ flex: 1, borderRadius: 10, borderWidth: 1, borderColor: "#c95c5c", backgroundColor: "#2a1515", padding: 8 }}>
+            <Text style={{ color: "#f1c2c2", fontSize: 10 }}>긴급</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
           </View>
         </View>
 
-        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.35)", backgroundColor: "rgba(20,29,45,0.9)", padding: 10 }}>
-          <Text style={{ color: "#a9c3ef", fontSize: 12, fontWeight: "700" }}>오늘 실행 로그</Text>
-          <Text style={{ color: "rgba(220,232,255,0.66)", fontSize: 11, marginTop: 4 }}>모라 명령 결과로 생성된 실행 항목 타임라인</Text>
+        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#131313", padding: 10 }}>
+          <Text style={{ color: "#d8d8d8", fontSize: 12, fontWeight: "700" }}>오늘 실행 로그</Text>
+          <Text style={{ color: "rgba(245,245,245,0.6)", fontSize: 11, marginTop: 4 }}>모라 명령 결과로 생성된 실행 항목 타임라인</Text>
 
           <View style={{ marginTop: 8, gap: 7 }}>
             {timeline.length ? (
@@ -79,19 +79,19 @@ export default function TasksScreen() {
                   style={{
                     borderRadius: 10,
                     borderWidth: 1,
-                    borderColor: task.completed ? "rgba(143,224,170,0.45)" : "rgba(120,157,214,0.3)",
-                    backgroundColor: task.completed ? "rgba(143,224,170,0.12)" : "rgba(255,255,255,0.04)",
+                    borderColor: task.completed ? "#5aa36f" : "#353535",
+                    backgroundColor: task.completed ? "#17221a" : "#171717",
                     padding: 9,
                     gap: 4,
                   }}
                 >
-                  <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>{task.title}</Text>
-                  <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 11 }}>{task.owner} · {task.due} · {formatTime(task.createdAt)}</Text>
-                  <Text style={{ color: task.completed ? "#d7ffe3" : "#ffeabf", fontSize: 11 }}>{task.completed ? "완료됨(다시 누르면 미완료)" : "대기중(눌러서 완료 처리)"}</Text>
+                  <Text style={{ color: "#f5f5f5", fontSize: 13, fontWeight: "700" }}>{task.title}</Text>
+                  <Text style={{ color: "rgba(245,245,245,0.64)", fontSize: 11 }}>{task.owner} · {task.due} · {formatTime(task.createdAt)}</Text>
+                  <Text style={{ color: task.completed ? "#c7f0d3" : "#e3d4ab", fontSize: 11 }}>{task.completed ? "완료됨(다시 누르면 미완료)" : "대기중(눌러서 완료 처리)"}</Text>
                 </Pressable>
               ))
             ) : (
-              <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>아직 실행 로그가 없어. 월드에서 모라 명령을 한 번 실행해봐.</Text>
+              <Text style={{ color: "rgba(245,245,245,0.56)", fontSize: 12 }}>아직 실행 로그가 없어. 월드에서 모라 명령을 한 번 실행해봐.</Text>
             )}
           </View>
         </View>
