@@ -7,10 +7,13 @@ import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
 
 const RUNTIME_TASKS_KEY = "soom.mobile.runtime.tasks";
 
-async function runtimeTasksScopedKey() {
+async function runtimeTasksScopedKeys() {
   const churchSlug = (await getCurrentChurchSlug()) ?? "default";
   const accountKey = (await getCurrentAccountKey()) ?? "anon";
-  return `${RUNTIME_TASKS_KEY}:${churchSlug}:${accountKey}`;
+  return {
+    current: `${RUNTIME_TASKS_KEY}:${churchSlug}:${accountKey}`,
+    legacy: RUNTIME_TASKS_KEY,
+  };
 }
 
 type NewRuntimeTask = {
@@ -106,8 +109,16 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
       let localTasks: RuntimeTask[] = [];
 
       try {
-        const raw = await AsyncStorage.getItem(await runtimeTasksScopedKey());
-        localTasks = normalizeRuntimeTasks(raw ? JSON.parse(raw) : []);
+        const keys = await runtimeTasksScopedKeys();
+        const raw = await AsyncStorage.getItem(keys.current);
+        const legacyRaw = raw ? null : await AsyncStorage.getItem(keys.legacy);
+        const source = raw ?? legacyRaw;
+
+        localTasks = normalizeRuntimeTasks(source ? JSON.parse(source) : []);
+
+        if (!raw && legacyRaw && localTasks.length) {
+          await AsyncStorage.setItem(keys.current, JSON.stringify(localTasks));
+        }
       } catch {
         localTasks = [];
       }
@@ -125,8 +136,8 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!runtimeHydrated) return;
 
-    runtimeTasksScopedKey()
-      .then((key) => AsyncStorage.setItem(key, JSON.stringify(runtimeTasks)))
+    runtimeTasksScopedKeys()
+      .then((keys) => AsyncStorage.setItem(keys.current, JSON.stringify(runtimeTasks)))
       .catch(() => {
         // ignore persistence failure
       });

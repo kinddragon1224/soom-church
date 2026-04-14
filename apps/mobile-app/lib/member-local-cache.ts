@@ -33,10 +33,13 @@ const EMPTY_CACHE: MemberLocalCache = {
   overrides: {},
 };
 
-async function scopedKey() {
+async function scopedKeys() {
   const slug = (await getCurrentChurchSlug()) ?? "default";
   const accountKey = (await getCurrentAccountKey()) ?? "anon";
-  return `${MEMBER_LOCAL_CACHE_KEY}:${slug}:${accountKey}`;
+  return {
+    current: `${MEMBER_LOCAL_CACHE_KEY}:${slug}:${accountKey}`,
+    legacy: `${MEMBER_LOCAL_CACHE_KEY}:${slug}`,
+  };
 }
 
 function normalizeMember(member: Partial<LocalMember>): LocalMember | null {
@@ -53,9 +56,13 @@ function normalizeMember(member: Partial<LocalMember>): LocalMember | null {
 
 export async function getMemberLocalCache(): Promise<MemberLocalCache> {
   try {
-    const raw = await AsyncStorage.getItem(await scopedKey());
-    if (!raw) return EMPTY_CACHE;
-    const parsed = JSON.parse(raw) as Partial<MemberLocalCache>;
+    const keys = await scopedKeys();
+    const raw = await AsyncStorage.getItem(keys.current);
+    const legacyRaw = raw ? null : await AsyncStorage.getItem(keys.legacy);
+    const source = raw ?? legacyRaw;
+
+    if (!source) return EMPTY_CACHE;
+    const parsed = JSON.parse(source) as Partial<MemberLocalCache>;
 
     const added = Array.isArray(parsed.added)
       ? parsed.added.map((item) => normalizeMember(item)).filter((item): item is LocalMember => Boolean(item))
@@ -66,18 +73,25 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
       ? parsed.removedNames.map((name) => String(name)).filter((name) => !SAMPLE_NAMES.has(name))
       : [];
 
-    return {
+    const normalized: MemberLocalCache = {
       added: cleanedAdded,
       removedNames: cleanedRemovedNames,
       overrides: parsed.overrides && typeof parsed.overrides === "object" ? (parsed.overrides as Record<string, MemberOverride>) : {},
     };
+
+    if (!raw && legacyRaw) {
+      await AsyncStorage.setItem(keys.current, JSON.stringify(normalized));
+    }
+
+    return normalized;
   } catch {
     return EMPTY_CACHE;
   }
 }
 
 export async function setMemberLocalCache(cache: MemberLocalCache) {
-  await AsyncStorage.setItem(await scopedKey(), JSON.stringify(cache));
+  const keys = await scopedKeys();
+  await AsyncStorage.setItem(keys.current, JSON.stringify(cache));
 }
 
 export function applyMemberLocalCache(remote: LocalMember[], cache: MemberLocalCache): LocalMember[] {
