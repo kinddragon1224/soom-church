@@ -76,7 +76,6 @@ export default function WorldScreen() {
   const [autoRunning, setAutoRunning] = useState(false);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -92,13 +91,11 @@ export default function WorldScreen() {
   }, []);
 
   useEffect(() => {
-    const showSub = Keyboard.addListener("keyboardDidShow", (event) => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () => {
       setKeyboardVisible(true);
-      setKeyboardHeight(event.endCoordinates?.height ?? 0);
     });
     const hideSub = Keyboard.addListener("keyboardDidHide", () => {
       setKeyboardVisible(false);
-      setKeyboardHeight(0);
     });
     return () => {
       showSub.remove();
@@ -220,10 +217,10 @@ export default function WorldScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "position"}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
       >
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: keyboardVisible ? Math.max(22, Math.floor(keyboardHeight * 0.08)) : 10, gap: 10 }}>
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10, gap: 10 }}>
         {!keyboardVisible ? (
         <View style={{
           height: worldHeight,
@@ -264,7 +261,7 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ flex: 1, minHeight: keyboardVisible ? 340 : 250, marginBottom: keyboardVisible ? 22 : 0, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+        <View style={{ flex: 1, minHeight: keyboardVisible ? 320 : 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
           <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 12 : 28 }} keyboardShouldPersistTaps="handled">

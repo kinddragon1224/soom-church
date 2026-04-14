@@ -36,6 +36,22 @@ async function findOrCreateHousehold(churchId: string, householdName: string) {
   return created.id;
 }
 
+async function resolveChurch(churchSlug: string) {
+  if (churchSlug) {
+    const bySlug = await prisma.church.findFirst({
+      where: { slug: churchSlug, isActive: true },
+      select: { id: true },
+    });
+    if (bySlug) return bySlug;
+  }
+
+  return prisma.church.findFirst({
+    where: { isActive: true },
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
@@ -45,14 +61,11 @@ export async function POST(request: NextRequest) {
     const state = normalizeText(body.state);
     const nextAction = normalizeText(body.nextAction);
 
-    if (!churchSlug || !name) {
-      return NextResponse.json({ error: "churchSlug and name are required" }, { status: 400 });
+    if (!name) {
+      return NextResponse.json({ error: "name is required" }, { status: 400 });
     }
 
-    const church = await prisma.church.findFirst({
-      where: { slug: churchSlug, isActive: true },
-      select: { id: true },
-    });
+    const church = await resolveChurch(churchSlug);
 
     if (!church) {
       return NextResponse.json({ error: "church not found" }, { status: 404 });
@@ -92,31 +105,26 @@ export async function PATCH(request: NextRequest) {
     const state = normalizeText(body.state);
     const nextAction = normalizeText(body.nextAction);
 
-    if (!churchSlug || !idRaw) {
-      return NextResponse.json({ error: "churchSlug and id are required" }, { status: 400 });
+    if (!idRaw) {
+      return NextResponse.json({ error: "id is required" }, { status: 400 });
     }
 
     const memberId = idRaw.startsWith("p-") ? idRaw.slice(2) : idRaw;
 
-    const church = await prisma.church.findFirst({
-      where: { slug: churchSlug, isActive: true },
-      select: { id: true },
-    });
-
-    if (!church) {
-      return NextResponse.json({ error: "church not found" }, { status: 404 });
-    }
-
     const exists = await prisma.member.findFirst({
-      where: { id: memberId, churchId: church.id, isDeleted: false },
-      select: { id: true },
+      where: { id: memberId, isDeleted: false },
+      select: { id: true, churchId: true },
     });
 
     if (!exists) {
       return NextResponse.json({ error: "member not found" }, { status: 404 });
     }
 
-    const householdId = await findOrCreateHousehold(church.id, household);
+    if (!exists.churchId) {
+      return NextResponse.json({ error: "member church not linked" }, { status: 400 });
+    }
+
+    const householdId = await findOrCreateHousehold(exists.churchId, household);
     const status = memberStatus(state);
 
     await prisma.member.update({
