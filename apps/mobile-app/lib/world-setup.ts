@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WORLD_SETUP_KEY = "soom.mobile.world.setup.v1";
 
@@ -23,9 +24,15 @@ function normalizeCount(value: number) {
   return Math.max(0, Math.min(1000, Math.floor(value)));
 }
 
+async function scopedKey() {
+  const churchSlug = (await getCurrentChurchSlug()) ?? "default";
+  const accountKey = (await getCurrentAccountKey()) ?? "anon";
+  return `${WORLD_SETUP_KEY}:${churchSlug}:${accountKey}`;
+}
+
 export async function getWorldSetupState(): Promise<WorldSetupState | null> {
   try {
-    const raw = await AsyncStorage.getItem(WORLD_SETUP_KEY);
+    const raw = await AsyncStorage.getItem(await scopedKey());
     if (!raw) return null;
 
     const parsed = JSON.parse(raw) as Partial<WorldSetupState>;
@@ -64,5 +71,5 @@ export async function saveWorldSetupState(input: {
     createdAt: Date.now(),
   };
 
-  await AsyncStorage.setItem(WORLD_SETUP_KEY, JSON.stringify(next));
+  await AsyncStorage.setItem(await scopedKey(), JSON.stringify(next));
 }

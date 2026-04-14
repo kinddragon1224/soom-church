@@ -1,4 +1,4 @@
-import { getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
@@ -14,6 +14,11 @@ type MemberInput = {
 async function resolveChurchSlug() {
   const saved = await getCurrentChurchSlug();
   return saved ?? DEFAULT_CHURCH_SLUG;
+}
+
+async function resolveAccountKey() {
+  const saved = await getCurrentAccountKey();
+  return saved ?? "anon";
 }
 
 async function requestJson(path: string, method: "POST" | "PATCH", body: Record<string, unknown>) {
@@ -36,8 +41,10 @@ async function requestJson(path: string, method: "POST" | "PATCH", body: Record<
 
 export async function createMember(input: MemberInput) {
   const churchSlug = await resolveChurchSlug();
+  const accountKey = await resolveAccountKey();
   return requestJson("/api/mobile/member-upsert", "POST", {
     churchSlug,
+    accountKey,
     name: input.name,
     household: input.household,
     state: input.state,
@@ -47,8 +54,10 @@ export async function createMember(input: MemberInput) {
 
 export async function updateMember(input: MemberInput & { id: string }) {
   const churchSlug = await resolveChurchSlug();
+  const accountKey = await resolveAccountKey();
   return requestJson("/api/mobile/member-upsert", "PATCH", {
     churchSlug,
+    accountKey,
     id: input.id,
     name: input.name,
     household: input.household,
@@ -59,6 +68,7 @@ export async function updateMember(input: MemberInput & { id: string }) {
 
 export async function deleteMember(input: { id?: string; name?: string }) {
   const churchSlug = await resolveChurchSlug();
+  const accountKey = await resolveAccountKey();
 
   const response = await fetch(`${WEB_BASE_URL}/api/mobile/member-upsert`, {
     method: "DELETE",
@@ -68,6 +78,7 @@ export async function deleteMember(input: { id?: string; name?: string }) {
     },
     body: JSON.stringify({
       churchSlug,
+      accountKey,
       id: input.id,
       name: input.name,
     }),

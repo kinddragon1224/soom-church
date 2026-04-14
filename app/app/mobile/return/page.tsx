@@ -10,6 +10,12 @@ function appendChurchSlugToReturnHref(href: string, churchSlug: string | null) {
   return `${href}${separator}churchSlug=${encodeURIComponent(churchSlug)}`;
 }
 
+function appendAccountKeyToReturnHref(href: string, accountKey: string | null) {
+  if (!accountKey) return href;
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}accountKey=${encodeURIComponent(accountKey)}`;
+}
+
 export default async function MobileAppReturnPage({
   searchParams,
 }: {
@@ -26,7 +32,8 @@ export default async function MobileAppReturnPage({
   }
 
   const recentChurch = await getRecentChurchByUserId(userId);
-  const appReturnHref = appendChurchSlugToReturnHref(baseReturnHref, recentChurch?.slug ?? null);
+  const withChurch = appendChurchSlugToReturnHref(baseReturnHref, recentChurch?.slug ?? null);
+  const appReturnHref = appendAccountKeyToReturnHref(withChurch, userId ?? null);
 
   return (
     <main className="min-h-screen bg-[#07111f] px-4 py-6 text-white sm:px-6">

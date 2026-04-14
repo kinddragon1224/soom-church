@@ -3,7 +3,7 @@ import { Linking, Pressable, SafeAreaView, Text, View } from "react-native";
 import * as ExpoLinking from "expo-linking";
 import { router } from "expo-router";
 
-import { setAuthConnected } from "../lib/auth-bridge";
+import { setAuthConnected, setCurrentAccountKey } from "../lib/auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 
@@ -19,6 +19,7 @@ export default function LoginScreen() {
 
   const completeLogin = async () => {
     setLoading(true);
+    await setCurrentAccountKey("manual-local");
     await setAuthConnected(true);
     router.replace("/(tabs)/world");
   };

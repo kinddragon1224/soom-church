@@ -2,15 +2,16 @@ import { useEffect } from "react";
 import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { setAuthConnected, setCurrentChurchSlug } from "../lib/auth-bridge";
+import { setAuthConnected, setCurrentAccountKey, setCurrentChurchSlug } from "../lib/auth-bridge";
 import { getWorldSetupState } from "../lib/world-setup";
 
 export default function AuthCompleteScreen() {
-  const params = useLocalSearchParams<{ churchSlug?: string }>();
+  const params = useLocalSearchParams<{ churchSlug?: string; accountKey?: string }>();
 
   useEffect(() => {
     const run = async () => {
       await setCurrentChurchSlug(typeof params.churchSlug === "string" ? params.churchSlug : null);
+      await setCurrentAccountKey(typeof params.accountKey === "string" ? params.accountKey : null);
       await setAuthConnected(true);
 
       const setup = await getWorldSetupState();
@@ -18,7 +19,7 @@ export default function AuthCompleteScreen() {
     };
 
     run();
-  }, [params.churchSlug]);
+  }, [params.accountKey, params.churchSlug]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#07111f" }}>

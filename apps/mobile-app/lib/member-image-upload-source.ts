@@ -1,3 +1,5 @@
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
+
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 
 export async function uploadMemberImageFromUri(uri: string) {
@@ -6,6 +8,11 @@ export async function uploadMemberImageFromUri(uri: string) {
   const mimeType = ext === "png" ? "image/png" : "image/jpeg";
 
   const formData = new FormData();
+  const churchSlug = (await getCurrentChurchSlug()) ?? "gido";
+  const accountKey = (await getCurrentAccountKey()) ?? "anon";
+
+  formData.append("churchSlug", churchSlug);
+  formData.append("accountKey", accountKey);
   formData.append("file", {
     uri,
     name: fileName,

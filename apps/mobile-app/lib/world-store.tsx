@@ -1,10 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 import { fetchRuntimeTasks, syncRuntimeTasks, type RuntimeTask } from "./runtime-task-source";
 import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
 
 const RUNTIME_TASKS_KEY = "soom.mobile.runtime.tasks";
+
+async function runtimeTasksScopedKey() {
+  const churchSlug = (await getCurrentChurchSlug()) ?? "default";
+  const accountKey = (await getCurrentAccountKey()) ?? "anon";
+  return `${RUNTIME_TASKS_KEY}:${churchSlug}:${accountKey}`;
+}
 
 type NewRuntimeTask = {
   id: string;
@@ -99,7 +106,7 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
       let localTasks: RuntimeTask[] = [];
 
       try {
-        const raw = await AsyncStorage.getItem(RUNTIME_TASKS_KEY);
+        const raw = await AsyncStorage.getItem(await runtimeTasksScopedKey());
         localTasks = normalizeRuntimeTasks(raw ? JSON.parse(raw) : []);
       } catch {
         localTasks = [];
@@ -118,9 +125,11 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!runtimeHydrated) return;
 
-    AsyncStorage.setItem(RUNTIME_TASKS_KEY, JSON.stringify(runtimeTasks)).catch(() => {
-      // ignore persistence failure
-    });
+    runtimeTasksScopedKey()
+      .then((key) => AsyncStorage.setItem(key, JSON.stringify(runtimeTasks)))
+      .catch(() => {
+        // ignore persistence failure
+      });
 
     const timer = setTimeout(() => {
       syncRuntimeTasks(runtimeTasks);

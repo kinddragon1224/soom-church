@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const MEMBER_LOCAL_CACHE_KEY = "soom.mobile.members.local-cache.v2";
 const SAMPLE_NAMES = new Set(["김요한", "박마리아", "김요", "박마"]);
@@ -35,7 +35,8 @@ const EMPTY_CACHE: MemberLocalCache = {
 
 async function scopedKey() {
   const slug = (await getCurrentChurchSlug()) ?? "default";
-  return `${MEMBER_LOCAL_CACHE_KEY}:${slug}`;
+  const accountKey = (await getCurrentAccountKey()) ?? "anon";
+  return `${MEMBER_LOCAL_CACHE_KEY}:${slug}:${accountKey}`;
 }
 
 function normalizeMember(member: Partial<LocalMember>): LocalMember | null {
