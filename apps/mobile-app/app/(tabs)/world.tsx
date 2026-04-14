@@ -218,10 +218,10 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ minHeight: keyboardVisible ? 300 : 300, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
+        <View style={{ minHeight: keyboardVisible ? 260 : 220, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
-          <ScrollView style={{ maxHeight: keyboardVisible ? 230 : 220 }} contentContainerStyle={{ gap: 6, paddingBottom: keyboardVisible ? 6 : 6 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ maxHeight: keyboardVisible ? 170 : 150 }} contentContainerStyle={{ gap: 6, paddingBottom: 6 }} keyboardShouldPersistTaps="handled">
             {!keyboardVisible ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                 {visiblePresets.map((preset) => (
