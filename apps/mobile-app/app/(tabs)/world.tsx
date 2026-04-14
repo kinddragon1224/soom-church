@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
 
 import { sendChatCommand } from "../../lib/chat-source";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -223,7 +223,7 @@ export default function WorldScreen() {
         <View style={{ flex: 1, minHeight: keyboardVisible ? 240 : 200, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
-          <ScrollView style={{ maxHeight: keyboardVisible ? 170 : 150 }} contentContainerStyle={{ gap: 6, paddingBottom: 6 }} keyboardShouldPersistTaps="handled">
+          <View style={{ gap: 6 }}>
             {!keyboardVisible ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                 {visiblePresets.map((preset) => (
@@ -275,7 +275,7 @@ export default function WorldScreen() {
                 {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
               </Pressable>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </View>
       </KeyboardAvoidingView>
