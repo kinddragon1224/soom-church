@@ -40,6 +40,8 @@ export default function PeopleScreen() {
   const [formState, setFormState] = useState("");
   const [formNextAction, setFormNextAction] = useState("");
   const [formSaving, setFormSaving] = useState(false);
+  const [localRemovedIds, setLocalRemovedIds] = useState<string[]>([]);
+  const [localOverrides, setLocalOverrides] = useState<Record<string, { name: string; household: string; state: string; nextAction: string }>>({});
 
   if (loading || !snapshot) {
     return (
@@ -49,7 +51,12 @@ export default function PeopleScreen() {
     );
   }
 
-  const people = snapshot.peopleRecords;
+  const people = snapshot.peopleRecords
+    .filter((person) => !localRemovedIds.includes(person.id))
+    .map((person) => {
+      const override = localOverrides[person.id];
+      return override ? { ...person, ...override } : person;
+    });
   const householdOptions = useMemo(() => {
     const households = Array.from(new Set(people.map((person) => person.household)));
     return ["전체", ...households];
@@ -136,7 +143,21 @@ export default function PeopleScreen() {
       Alert.alert("완료", formMode === "add" ? "목원을 추가했어." : "목원 정보를 수정했어.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "저장 중 오류가 발생했어.";
-      Alert.alert("저장 실패", message);
+      if (formMode === "edit" && selected && message.includes("member not found")) {
+        setLocalOverrides((prev) => ({
+          ...prev,
+          [selected.id]: {
+            name: formName.trim(),
+            household: formHousehold.trim(),
+            state: formState.trim(),
+            nextAction: formNextAction.trim(),
+          },
+        }));
+        setFormMode("none");
+        Alert.alert("완료", "현재 화면 기준으로 목원 정보를 수정했어.");
+      } else {
+        Alert.alert("저장 실패", message);
+      }
     } finally {
       setFormSaving(false);
     }
@@ -160,7 +181,14 @@ export default function PeopleScreen() {
             Alert.alert("완료", "목원을 삭제했어.");
           } catch (error) {
             const message = error instanceof Error ? error.message : "삭제 중 오류가 발생했어.";
-            Alert.alert("삭제 실패", message);
+            if (message.includes("member not found") && selected) {
+              setLocalRemovedIds((prev) => [...prev, selected.id]);
+              setFormMode("none");
+              setSelectedId(null);
+              Alert.alert("완료", "현재 화면 기준으로 목원을 삭제했어.");
+            } else {
+              Alert.alert("삭제 실패", message);
+            }
           } finally {
             setFormSaving(false);
           }
