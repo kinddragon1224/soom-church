@@ -107,7 +107,9 @@ export default function WorldScreen() {
   }, [snapshot]);
   const worldHeight = keyboardVisible
     ? Math.max(170, Math.min(290, Math.floor(windowHeight * 0.28)))
-    : Math.max(260, Math.min(500, Math.floor(windowHeight * 0.5)));
+    : Platform.OS === "web"
+      ? Math.max(300, Math.min(620, Math.floor(windowHeight * 0.58)))
+      : Math.max(280, Math.min(520, Math.floor(windowHeight * 0.54)));
 
   if (loading || !snapshot || !selected) {
     return (
@@ -177,7 +179,7 @@ export default function WorldScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0}
       >
-      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 2, gap: 6 }}>
+      <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 0, gap: 6 }}>
         {!keyboardVisible ? (
         <View style={{
           height: worldHeight,
@@ -218,7 +220,7 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ minHeight: keyboardVisible ? 260 : 220, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
+        <View style={{ flex: 1, minHeight: keyboardVisible ? 240 : 200, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
           <ScrollView style={{ maxHeight: keyboardVisible ? 170 : 150 }} contentContainerStyle={{ gap: 6, paddingBottom: 6 }} keyboardShouldPersistTaps="handled">
