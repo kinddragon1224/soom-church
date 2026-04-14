@@ -186,7 +186,7 @@ export default function WorldScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 84, gap: 12 }}>
         <View style={{
-          height: 344,
+          height: 430,
           borderRadius: 22,
           borderWidth: 1,
           borderColor: "rgba(255,255,255,0.08)",
@@ -196,20 +196,20 @@ export default function WorldScreen() {
           <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_BUILDINGS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.96 }} resizeMode="cover" />
           <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(20,24,38,0.12)" }} />
-          <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(120,157,214,0.28)", backgroundColor: "rgba(15,22,34,0.84)", paddingHorizontal: 12, paddingVertical: 10, zIndex: 10, gap: 8 }}>
-            <Text style={{ color: "#f4f7ff", fontSize: 15, fontWeight: "700" }}>오늘 목양 메인</Text>
+          <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.22)", backgroundColor: "rgba(15,22,34,0.66)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10, gap: 6 }}>
+            <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>오늘 목양 메인</Text>
             <View style={{ flexDirection: "row", gap: 8 }}>
-              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(242,168,168,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(242,168,168,0.1)", paddingHorizontal: 9, paddingVertical: 6 }}>
                 <Text style={{ color: "#ffd7d7", fontSize: 10 }}>긴급 돌봄</Text>
-                <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
+                <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{urgentCount}</Text>
               </View>
-              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(143,224,170,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(143,224,170,0.1)", paddingHorizontal: 9, paddingVertical: 6 }}>
                 <Text style={{ color: "#d7ffe3", fontSize: 10 }}>기도 요청</Text>
-                <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700", marginTop: 2 }}>{prayerCount}</Text>
+                <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{prayerCount}</Text>
               </View>
-              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(120,157,214,0.12)", paddingHorizontal: 10, paddingVertical: 8 }}>
+              <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(120,157,214,0.1)", paddingHorizontal: 9, paddingVertical: 6 }}>
                 <Text style={{ color: "#cfe0ff", fontSize: 10 }}>운영 지수</Text>
-                <Text style={{ color: "#ffffff", fontSize: 17, fontWeight: "700", marginTop: 2 }}>{operationIndex}</Text>
+                <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 1 }}>{operationIndex}</Text>
               </View>
             </View>
           </View>
@@ -245,14 +245,14 @@ export default function WorldScreen() {
               <Pressable
                 key={preset.id}
                 onPress={() => setWorldDraft(preset.command)}
-                style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 9, paddingVertical: 6 }}
+                style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 8, paddingVertical: 5 }}
               >
-                <Text style={{ color: "#dbe8ff", fontSize: 10 }}>{preset.label}</Text>
+                <Text style={{ color: "#dbe8ff", fontSize: 9 }}>{preset.label}</Text>
               </Pressable>
             ))}
           </View>
 
-          <View style={{ borderRadius: 12, backgroundColor: "rgba(11,18,29,0.78)", padding: 10, gap: 7, minHeight: 72 }}>
+          <View style={{ borderRadius: 12, backgroundColor: "rgba(11,18,29,0.78)", padding: 9, gap: 6, minHeight: 62 }}>
             {recentMessages.length ? (
               recentMessages.map((message) => (
                 <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "92%", borderRadius: 14, borderWidth: 1, borderColor: message.role === "user" ? "rgba(86,129,214,0.7)" : "rgba(255,255,255,0.14)", backgroundColor: message.role === "user" ? "rgba(52,86,156,0.72)" : "rgba(255,255,255,0.07)", paddingHorizontal: 10, paddingVertical: 7 }}>
@@ -273,8 +273,8 @@ export default function WorldScreen() {
               multiline
               style={{
                 flex: 1,
-                minHeight: 72,
-                maxHeight: 160,
+                minHeight: 58,
+                maxHeight: 128,
                 borderRadius: 18,
                 borderWidth: 1,
                 borderColor: "rgba(120,157,214,0.45)",
@@ -285,7 +285,7 @@ export default function WorldScreen() {
                 textAlignVertical: "top",
               }}
             />
-            <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: 72, minWidth: 70, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 12 }}>
+            <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: 58, minWidth: 64, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
               {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>{autoRunning ? "대기" : "전송"}</Text>}
             </Pressable>
           </View>
