@@ -4,6 +4,7 @@ import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
 import { mabiTheme } from "../../lib/ui-theme";
+import { WORLD_MVP_TEMPLATE } from "../../lib/world-template";
 import { getWorldSetupState, type WorldSetupState } from "../../lib/world-setup";
 import { useWorldStore } from "../../lib/world-store";
 
@@ -61,8 +62,22 @@ const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
 const WORLD_LAYER_BUILDINGS = require("../../assets/world-layers/buildings-layer.png");
+const WORLD_LAYER_FIG_TREE = require("../../assets/world-layers/fig-tree-layer.png");
+const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.png");
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
 const WORLD_LAYER_CHARACTERS = require("../../assets/world-layers/characters-layer.png");
+
+function hashSeed(input: string) {
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+function initials(name: string) {
+  return name.trim().slice(0, 2);
+}
 
 export default function WorldScreen() {
   const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
@@ -124,6 +139,17 @@ export default function WorldScreen() {
     "모라, 오늘 기도 요청 목록을 긴급도 순으로 재정렬",
     "모라, 오늘 목양 운영 브리프 3줄로 작성",
   ];
+  const memberChips = useMemo(() => {
+    return snapshot.peopleRecords.slice(0, 16).map((person) => {
+      const seed = hashSeed(person.id + person.name + person.household);
+      return {
+        id: person.id,
+        label: initials(person.name),
+        leftPct: 8 + (seed % 84),
+        topPct: 34 + ((seed >> 5) % 58),
+      };
+    });
+  }, [snapshot.peopleRecords]);
 
   const executeCommand = async (text: string, source: "manual" | "auto" = "manual") => {
     const commandTs = Date.now();
@@ -226,13 +252,17 @@ export default function WorldScreen() {
         }}>
           <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_BUILDINGS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.96 }} resizeMode="cover" />
+          <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+          <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.95 }} resizeMode="cover" />
           <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_CHARACTERS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(8,8,8,0.16)" }} />
           <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10, gap: 6 }}>
+            <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
             <Text style={{ color: "#f4f7ff", fontSize: 12, fontWeight: "700" }}>
               {worldSetup?.churchName ?? "교회 미설정"} · {worldSetup?.mokjangName ?? "목장 미설정"}
             </Text>
+            <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.68)", fontSize: 10 }}>{WORLD_MVP_TEMPLATE.scripture}</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
               <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", paddingHorizontal: 8, paddingVertical: 4 }}>
                 <Text style={{ color: "#ffeabf", fontSize: 10 }}>지역 {worldSetup?.region ?? "미설정"}</Text>
@@ -242,6 +272,27 @@ export default function WorldScreen() {
               </View>
             </View>
           </View>
+
+          {memberChips.map((chip) => (
+            <View
+              key={`chip-${chip.id}`}
+              style={{
+                position: "absolute",
+                left: `${chip.leftPct}%`,
+                top: `${chip.topPct}%`,
+                width: 20,
+                height: 20,
+                borderRadius: 999,
+                borderWidth: 1,
+                borderColor: "rgba(255,255,255,0.42)",
+                backgroundColor: "rgba(17,17,17,0.56)",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ color: "#f5f5f5", fontSize: 9, fontWeight: "700" }}>{chip.label}</Text>
+            </View>
+          ))}
 
           <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "rgba(17,17,17,0.76)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10 }}>
             <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
