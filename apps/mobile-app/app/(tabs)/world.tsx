@@ -261,10 +261,10 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ flex: 1, minHeight: keyboardVisible ? 330 : 330, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+        <View style={{ minHeight: keyboardVisible ? 280 : 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 12 : 28 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ maxHeight: keyboardVisible ? 190 : 170 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 8 : 12 }} keyboardShouldPersistTaps="handled">
             {!keyboardVisible ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                 {visiblePresets.map((preset) => (
@@ -279,7 +279,7 @@ export default function WorldScreen() {
               </View>
             ) : null}
 
-            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 96 : 62, maxHeight: keyboardVisible ? 170 : 110 }}>
+            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 84 : 56, maxHeight: keyboardVisible ? 140 : 92 }}>
               {recentMessages.length ? (
                 recentMessages.map((message) => (
                   <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "94%", borderRadius: 10, borderWidth: 1, borderColor: message.role === "user" ? "#4f678f" : "#333", backgroundColor: message.role === "user" ? "#1d2736" : "#1c1c1c", paddingHorizontal: 9, paddingVertical: 6, marginTop: 4 }}>
