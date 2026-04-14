@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
-import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -73,7 +72,6 @@ export default function WorldScreen() {
   const [worldDraft, setWorldDraft] = useState("");
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
-  const [autoRunning, setAutoRunning] = useState(false);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -109,7 +107,7 @@ export default function WorldScreen() {
   }, [snapshot]);
   const worldHeight = keyboardVisible
     ? Math.max(170, Math.min(290, Math.floor(windowHeight * 0.28)))
-    : Math.max(230, Math.min(420, Math.floor(windowHeight * 0.42)));
+    : Math.max(260, Math.min(500, Math.floor(windowHeight * 0.5)));
 
   if (loading || !snapshot || !selected) {
     return (
@@ -125,11 +123,6 @@ export default function WorldScreen() {
   const latestAssistant = [...worldMessages].reverse().find((message) => message.role === "assistant");
   const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected.name}부터 확인해줘.`;
   const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
-  const loopCommands = [
-    `모라, ${selected.name} 포함 후속 우선순위 3명 정리`,
-    "모라, 오늘 기도 요청 목록을 긴급도 순으로 재정렬",
-    "모라, 오늘 목양 운영 브리프 3줄로 작성",
-  ];
   const executeCommand = async (text: string, source: "manual" | "auto" = "manual") => {
     const commandTs = Date.now();
 
@@ -158,7 +151,7 @@ export default function WorldScreen() {
 
   const submitWorldChat = async () => {
     const text = worldDraft.trim();
-    if (!text || worldSending || autoRunning) return;
+    if (!text || worldSending) return;
 
     setWorldSending(true);
     setWorldDraft("");
@@ -174,42 +167,6 @@ export default function WorldScreen() {
       setWorldMessages((prev) => [...prev, { id: `wa-fail-${Date.now()}`, role: "assistant", text: "명령 실행 중 오류가 났어. 다시 시도해줘." }]);
     } finally {
       setWorldSending(false);
-    }
-  };
-
-  const runAutoLoop = async () => {
-    if (autoRunning || worldSending) return;
-    setAutoRunning(true);
-
-    addRuntimeTask({
-      id: `auto-loop-start-${Date.now()}`,
-      title: "[자동 루프] 오늘 목양 자동 루프 시작",
-      due: "방금",
-      owner: "모라 자동 루프",
-    });
-
-    try {
-      for (const command of loopCommands) {
-        // eslint-disable-next-line no-await-in-loop
-        await executeCommand(command, "auto");
-      }
-
-      addRuntimeTask({
-        id: `auto-loop-done-${Date.now()}`,
-        title: "[자동 루프] 오늘 목양 자동 루프 완료",
-        due: "방금",
-        owner: "모라 자동 루프",
-      });
-    } catch {
-      addRuntimeTask({
-        id: `auto-loop-fail-${Date.now()}`,
-        title: "[자동 루프 실패] 일부 명령 실행 중 오류",
-        due: "방금",
-        owner: "모라 자동 루프",
-      });
-      setWorldMessages((prev) => [...prev, { id: `wa-auto-fail-${Date.now()}`, role: "assistant", text: "자동 루프 실행 중 오류가 나서 중단했어. 다시 실행해줘." }]);
-    } finally {
-      setAutoRunning(false);
     }
   };
 
@@ -261,10 +218,10 @@ export default function WorldScreen() {
         </View>
         ) : null}
 
-        <View style={{ minHeight: keyboardVisible ? 280 : 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+        <View style={{ minHeight: keyboardVisible ? 300 : 290, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
           <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
-          <ScrollView style={{ maxHeight: keyboardVisible ? 190 : 170 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 8 : 12 }} keyboardShouldPersistTaps="handled">
+          <ScrollView style={{ maxHeight: keyboardVisible ? 230 : 210 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 8 : 12 }} keyboardShouldPersistTaps="handled">
             {!keyboardVisible ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                 {visiblePresets.map((preset) => (
@@ -279,7 +236,7 @@ export default function WorldScreen() {
               </View>
             ) : null}
 
-            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 84 : 56, maxHeight: keyboardVisible ? 140 : 92 }}>
+            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 100 : 72, maxHeight: keyboardVisible ? 170 : 120 }}>
               {recentMessages.length ? (
                 recentMessages.map((message) => (
                   <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "94%", borderRadius: 10, borderWidth: 1, borderColor: message.role === "user" ? "#4f678f" : "#333", backgroundColor: message.role === "user" ? "#1d2736" : "#1c1c1c", paddingHorizontal: 9, paddingVertical: 6, marginTop: 4 }}>
@@ -300,8 +257,8 @@ export default function WorldScreen() {
                 multiline
                 style={{
                   flex: 1,
-                  minHeight: keyboardVisible ? 68 : 52,
-                  maxHeight: keyboardVisible ? 128 : 88,
+                  minHeight: keyboardVisible ? 72 : 60,
+                  maxHeight: keyboardVisible ? 140 : 104,
                   borderRadius: 12,
                   borderWidth: 1,
                   borderColor: "#3a3a3a",
@@ -312,25 +269,10 @@ export default function WorldScreen() {
                   textAlignVertical: "top",
                 }}
               />
-              <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: keyboardVisible ? 68 : 52, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
+              <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: keyboardVisible ? 72 : 60, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
                 {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
               </Pressable>
             </View>
-
-            {!keyboardVisible ? (
-              <View style={{ flexDirection: "row", gap: 8 }}>
-              <Pressable
-                onPress={runAutoLoop}
-                disabled={autoRunning || worldSending}
-                style={{ flex: 1, minHeight: 38, borderRadius: 10, borderWidth: 1, borderColor: "#5aa36f", backgroundColor: "#152419", alignItems: "center", justifyContent: "center", opacity: autoRunning || worldSending ? 0.5 : 1 }}
-              >
-                <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>{autoRunning ? "자동 루프 실행 중..." : "자동 루프"}</Text>
-              </Pressable>
-              <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ flex: 1, minHeight: 38, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", alignItems: "center", justifyContent: "center" }}>
-                <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>실행 기록 보기</Text>
-              </Pressable>
-              </View>
-            ) : null}
           </ScrollView>
         </View>
       </View>
