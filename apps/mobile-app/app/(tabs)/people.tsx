@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Alert, Pressable, SafeAreaView, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { router } from "expo-router";
 
-import { createMember, updateMember } from "../../lib/member-manage-source";
+import { createMember, deleteMember, updateMember } from "../../lib/member-manage-source";
 import { mabiTheme } from "../../lib/ui-theme";
 import { useWorldStore } from "../../lib/world-store";
 
@@ -142,6 +142,33 @@ export default function PeopleScreen() {
     }
   };
 
+  const removeSelected = () => {
+    if (!selected || formSaving) return;
+
+    Alert.alert("목원 삭제", `${selected.name}을(를) 삭제할까?`, [
+      { text: "취소", style: "cancel" },
+      {
+        text: "삭제",
+        style: "destructive",
+        onPress: async () => {
+          setFormSaving(true);
+          try {
+            await deleteMember({ id: selected.id, name: selected.name });
+            setFormMode("none");
+            setSelectedId(null);
+            await refresh();
+            Alert.alert("완료", "목원을 삭제했어.");
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "삭제 중 오류가 발생했어.";
+            Alert.alert("삭제 실패", message);
+          } finally {
+            setFormSaving(false);
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 104 }}>
@@ -163,6 +190,14 @@ export default function PeopleScreen() {
             <Text style={{ color: "#ffeabf", fontWeight: "700" }}>선택 목원 수정</Text>
           </Pressable>
         </View>
+
+        <Pressable
+          onPress={removeSelected}
+          disabled={!selected || formSaving}
+          style={{ marginTop: 8, minHeight: 38, borderRadius: 10, borderWidth: 1, borderColor: "#c95c5c", backgroundColor: "#2a1515", alignItems: "center", justifyContent: "center", opacity: selected && !formSaving ? 1 : 0.5 }}
+        >
+          <Text style={{ color: "#f1c2c2", fontWeight: "700" }}>선택 목원 삭제</Text>
+        </Pressable>
 
         {formMode !== "none" ? (
           <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#121212", padding: 10, gap: 8 }}>

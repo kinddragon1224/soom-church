@@ -56,3 +56,27 @@ export async function updateMember(input: MemberInput & { id: string }) {
     nextAction: input.nextAction,
   });
 }
+
+export async function deleteMember(input: { id?: string; name?: string }) {
+  const churchSlug = await resolveChurchSlug();
+
+  const response = await fetch(`${WEB_BASE_URL}/api/mobile/member-upsert`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      churchSlug,
+      id: input.id,
+      name: input.name,
+    }),
+  });
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(payload?.error ?? `member delete failed: ${response.status}`);
+  }
+
+  return response.json();
+}

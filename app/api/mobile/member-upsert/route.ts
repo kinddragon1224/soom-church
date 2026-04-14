@@ -176,3 +176,45 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "failed to update member" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = (await request.json()) as Record<string, unknown>;
+    const churchSlug = normalizeText(body.churchSlug);
+    const idRaw = normalizeText(body.id);
+    const name = normalizeText(body.name);
+
+    const memberId = idRaw.startsWith("p-") ? idRaw.slice(2) : idRaw;
+
+    let target = memberId
+      ? await prisma.member.findFirst({
+          where: { id: memberId, isDeleted: false },
+          select: { id: true, churchId: true, name: true },
+        })
+      : null;
+
+    if (!target && name) {
+      const church = await resolveChurch(churchSlug);
+      if (church) {
+        target = await prisma.member.findFirst({
+          where: { churchId: church.id, name, isDeleted: false },
+          orderBy: { updatedAt: "desc" },
+          select: { id: true, churchId: true, name: true },
+        });
+      }
+    }
+
+    if (!target) {
+      return NextResponse.json({ error: "member not found" }, { status: 404 });
+    }
+
+    await prisma.member.update({
+      where: { id: target.id },
+      data: { isDeleted: true },
+    });
+
+    return NextResponse.json({ ok: true, id: target.id, name: target.name });
+  } catch {
+    return NextResponse.json({ error: "failed to delete member" }, { status: 500 });
+  }
+}
