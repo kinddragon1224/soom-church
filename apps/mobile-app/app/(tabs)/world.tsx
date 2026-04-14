@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Image, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { ActivityIndicator, Image, Platform, Pressable, SafeAreaView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
@@ -213,6 +213,9 @@ export default function WorldScreen() {
           <Image source={WORLD_LAYER_CHARACTERS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(8,8,8,0.16)" }} />
           <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.7)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10, gap: 6 }}>
+            <Text style={{ color: "rgba(245,245,245,0.7)", fontSize: 10 }}>
+              {worldSetup ? `${worldSetup.churchName} · ${worldSetup.mokjangName}` : "목장 월드"}
+            </Text>
             <Text style={{ color: "#f4f7ff", fontSize: 13, fontWeight: "700" }}>오늘 목양 메인</Text>
             <View style={{ flexDirection: "row", gap: 8 }}>
               <View style={{ flex: 1, borderRadius: 10, backgroundColor: "#2a1515", paddingHorizontal: 9, paddingVertical: 6 }}>
@@ -237,130 +240,72 @@ export default function WorldScreen() {
 
         </View>
 
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 10, paddingBottom: 24 }}>
-          {worldSetup ? (
-            <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(243,208,128,0.35)", backgroundColor: "rgba(46,38,22,0.55)", padding: 12, gap: 8 }}>
-              <Text style={{ color: "#ffeabf", fontSize: 13, fontWeight: "800" }}>{worldSetup.mokjangName} 시작 액션</Text>
-              <Text style={{ color: "rgba(255,240,205,0.76)", fontSize: 11 }}>{worldSetup.churchName} · {worldSetup.region} | 목원 시작 방식: {worldSetup.memberSource === "csv" ? "CSV" : worldSetup.memberSource === "chat" ? "모라 명령" : "직접 입력"}</Text>
-              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-                <Pressable onPress={() => router.push("/(tabs)/people")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
-                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>이번주 출석 체크</Text>
-                </Pressable>
-                <Pressable onPress={() => setWorldDraft("모라, 긴급 기도와 돌봄 대상 먼저 정리해줘")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
-                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>긴급 기도/돌봄 정리</Text>
-                </Pressable>
-                <Pressable onPress={() => setWorldDraft("모라, 이번 주 심방 예정 일정 초안 작성해줘")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
-                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>심방 일정 초안</Text>
-                </Pressable>
-                <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ borderRadius: 999, backgroundColor: "rgba(243,208,128,0.16)", paddingHorizontal: 9, paddingVertical: 5 }}>
-                  <Text style={{ color: "#ffeabf", fontSize: 10 }}>목장 일정 기입</Text>
-                </Pressable>
-              </View>
-            </View>
-          ) : null}
+        <View style={{ flex: 1, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
+          <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령 인풋 / 아웃풋</Text>
 
-          <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12 }}>
-            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령창</Text>
-
-            <View style={{ marginTop: 8, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.4)", backgroundColor: "rgba(12,35,24,0.38)", padding: 8, gap: 6 }}>
-              <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>운영 루프 자동화</Text>
-              <Text style={{ color: "rgba(216,255,229,0.72)", fontSize: 10 }}>후속/기도/브리프 명령 3개를 순차 실행</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {visiblePresets.map((preset) => (
               <Pressable
-                onPress={runAutoLoop}
-                disabled={autoRunning || worldSending}
-                style={{
-                  minHeight: 36,
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: "rgba(143,224,170,0.52)",
-                  backgroundColor: "rgba(143,224,170,0.16)",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  opacity: autoRunning || worldSending ? 0.5 : 1,
-                }}
+                key={preset.id}
+                onPress={() => setWorldDraft(preset.command)}
+                style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 8, paddingVertical: 5 }}
               >
-                <Text style={{ color: "#d7ffe3", fontWeight: "700" }}>{autoRunning ? "자동 루프 실행 중..." : "오늘 자동 루프 실행"}</Text>
+                <Text style={{ color: "#dbe8ff", fontSize: 9 }}>{preset.label}</Text>
               </Pressable>
-            </View>
-
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8, marginBottom: 8 }}>
-              {visiblePresets.map((preset) => (
-                <Pressable
-                  key={preset.id}
-                  onPress={() => setWorldDraft(preset.command)}
-                  style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 8, paddingVertical: 5 }}
-                >
-                  <Text style={{ color: "#dbe8ff", fontSize: 9 }}>{preset.label}</Text>
-                </Pressable>
-              ))}
-            </View>
-
-            <View style={{ borderRadius: 12, backgroundColor: "rgba(11,18,29,0.78)", padding: 9, gap: 6, minHeight: 62, maxHeight: 120 }}>
-              {recentMessages.length ? (
-                recentMessages.map((message) => (
-                  <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "92%", borderRadius: 14, borderWidth: 1, borderColor: message.role === "user" ? "rgba(86,129,214,0.7)" : "rgba(255,255,255,0.14)", backgroundColor: message.role === "user" ? "rgba(52,86,156,0.72)" : "rgba(255,255,255,0.07)", paddingHorizontal: 10, paddingVertical: 7 }}>
-                    <Text style={{ color: "#f4f7ff", fontSize: 12 }}>{message.text}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text style={{ color: "rgba(220,232,255,0.56)", fontSize: 12 }}>후속, 기도, 심방 중 하나만 바로 지시해줘.</Text>
-              )}
-            </View>
-
-            <View style={{ marginTop: 10, flexDirection: "row", alignItems: "stretch", gap: 8 }}>
-              <TextInput
-                value={worldDraft}
-                onChangeText={setWorldDraft}
-                placeholder="모라에게 실행 명령 입력"
-                placeholderTextColor="rgba(220,232,255,0.46)"
-                multiline
-                style={{
-                  flex: 1,
-                  minHeight: 52,
-                  maxHeight: 110,
-                  borderRadius: 18,
-                  borderWidth: 1,
-                  borderColor: "rgba(120,157,214,0.45)",
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  color: "#f4f7ff",
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  textAlignVertical: "top",
-                }}
-              />
-              <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: 52, minWidth: 62, borderRadius: 18, borderWidth: 1, borderColor: "rgba(86,129,214,0.75)", backgroundColor: "rgba(65,103,184,0.9)", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
-                {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>{autoRunning ? "대기" : "전송"}</Text>}
-              </Pressable>
-            </View>
+            ))}
           </View>
 
-          <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 10 }}>
-            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>오늘 운영</Text>
-
-            <View style={{ borderRadius: 12, backgroundColor: "rgba(255,255,255,0.04)", padding: 10, gap: 8 }}>
-              <View>
-                <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>지금 볼 대상</Text>
-                <Text style={{ color: "#ffffff", fontSize: 16, fontWeight: "700", marginTop: 3 }}>{selected.name}</Text>
-                <Text style={{ color: "rgba(220,232,255,0.72)", fontSize: 12, marginTop: 2 }}>{selected.state}</Text>
-              </View>
-
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(243,208,128,0.08)", paddingHorizontal: 10, paddingVertical: 8 }}>
-                  <Text style={{ color: "rgba(255,234,191,0.72)", fontSize: 10 }}>긴급</Text>
-                  <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
+          <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: 62, maxHeight: 100 }}>
+            {recentMessages.length ? (
+              recentMessages.map((message) => (
+                <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "94%", borderRadius: 10, borderWidth: 1, borderColor: message.role === "user" ? "#4f678f" : "#333", backgroundColor: message.role === "user" ? "#1d2736" : "#1c1c1c", paddingHorizontal: 9, paddingVertical: 6, marginTop: 4 }}>
+                  <Text style={{ color: "#f4f7ff", fontSize: 11 }}>{message.text}</Text>
                 </View>
-                <View style={{ flex: 1, borderRadius: 10, backgroundColor: "rgba(120,157,214,0.08)", paddingHorizontal: 10, paddingVertical: 8 }}>
-                  <Text style={{ color: "rgba(207,224,255,0.72)", fontSize: 10 }}>운영</Text>
-                  <Text style={{ color: "#ffffff", fontSize: 15, fontWeight: "700", marginTop: 2 }}>{operationIndex}</Text>
-                </View>
-              </View>
-            </View>
+              ))
+            ) : (
+              <Text style={{ color: "rgba(245,245,245,0.56)", fontSize: 11 }}>여기에 모라 응답이 표시돼.</Text>
+            )}
+          </View>
 
-            <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ minHeight: 46, borderRadius: 12, borderWidth: 1, borderColor: "rgba(243,208,128,0.55)", backgroundColor: "rgba(243,208,128,0.18)", alignItems: "center", justifyContent: "center" }}>
-              <Text style={{ color: "#ffeabf", fontWeight: "700" }}>오늘 실행안 보기</Text>
+          <View style={{ flexDirection: "row", alignItems: "stretch", gap: 8 }}>
+            <TextInput
+              value={worldDraft}
+              onChangeText={setWorldDraft}
+              placeholder="모라에게 실행 명령 입력"
+              placeholderTextColor="rgba(220,232,255,0.46)"
+              multiline
+              style={{
+                flex: 1,
+                minHeight: 52,
+                maxHeight: 88,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: "#3a3a3a",
+                backgroundColor: "#121212",
+                color: "#f4f7ff",
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                textAlignVertical: "top",
+              }}
+            />
+            <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: 52, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
+              {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
             </Pressable>
           </View>
-        </ScrollView>
+
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <Pressable
+              onPress={runAutoLoop}
+              disabled={autoRunning || worldSending}
+              style={{ flex: 1, minHeight: 38, borderRadius: 10, borderWidth: 1, borderColor: "#5aa36f", backgroundColor: "#152419", alignItems: "center", justifyContent: "center", opacity: autoRunning || worldSending ? 0.5 : 1 }}
+            >
+              <Text style={{ color: "#d7ffe3", fontSize: 11, fontWeight: "700" }}>{autoRunning ? "자동 루프 실행 중..." : "자동 루프"}</Text>
+            </Pressable>
+            <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ flex: 1, minHeight: 38, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", alignItems: "center", justifyContent: "center" }}>
+              <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>실행 기록 보기</Text>
+            </Pressable>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
