@@ -10,7 +10,8 @@
       "bundleIdentifier": "kr.io.soom.mobile"
     },
     "android": {
-      "package": "kr.io.soom.mobile"
+      "package": "kr.io.soom.mobile",
+      "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": ["expo-router"]
   }
