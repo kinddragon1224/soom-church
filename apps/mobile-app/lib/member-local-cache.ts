@@ -38,6 +38,7 @@ async function scopedKeys() {
   const accountKey = (await getCurrentAccountKey()) ?? "anon";
   return {
     current: `${MEMBER_LOCAL_CACHE_KEY}:${slug}:${accountKey}`,
+    backup: `${MEMBER_LOCAL_CACHE_KEY}:${slug}:${accountKey}:backup`,
     legacy: `${MEMBER_LOCAL_CACHE_KEY}:${slug}`,
   };
 }
@@ -58,8 +59,9 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
   try {
     const keys = await scopedKeys();
     const raw = await AsyncStorage.getItem(keys.current);
-    const legacyRaw = raw ? null : await AsyncStorage.getItem(keys.legacy);
-    const source = raw ?? legacyRaw;
+    const backupRaw = raw ? null : await AsyncStorage.getItem(keys.backup);
+    const legacyRaw = raw || backupRaw ? null : await AsyncStorage.getItem(keys.legacy);
+    const source = raw ?? backupRaw ?? legacyRaw;
 
     if (!source) return EMPTY_CACHE;
     const parsed = JSON.parse(source) as Partial<MemberLocalCache>;
@@ -79,8 +81,12 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
       overrides: parsed.overrides && typeof parsed.overrides === "object" ? (parsed.overrides as Record<string, MemberOverride>) : {},
     };
 
-    if (!raw && legacyRaw) {
+    if (!raw) {
       await AsyncStorage.setItem(keys.current, JSON.stringify(normalized));
+    }
+
+    if (!backupRaw || backupRaw !== JSON.stringify(normalized)) {
+      await AsyncStorage.setItem(keys.backup, JSON.stringify(normalized));
     }
 
     return normalized;
@@ -91,7 +97,11 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
 
 export async function setMemberLocalCache(cache: MemberLocalCache) {
   const keys = await scopedKeys();
-  await AsyncStorage.setItem(keys.current, JSON.stringify(cache));
+  const serialized = JSON.stringify(cache);
+  await AsyncStorage.multiSet([
+    [keys.current, serialized],
+    [keys.backup, serialized],
+  ]);
 }
 
 export function applyMemberLocalCache(remote: LocalMember[], cache: MemberLocalCache): LocalMember[] {
