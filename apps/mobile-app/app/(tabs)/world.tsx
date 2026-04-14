@@ -147,9 +147,19 @@ export default function WorldScreen() {
 
     setWorldSending(true);
     setWorldDraft("");
-    await executeCommand(text, "manual");
-
-    setWorldSending(false);
+    try {
+      await executeCommand(text, "manual");
+    } catch {
+      addRuntimeTask({
+        id: `command-fail-${Date.now()}`,
+        title: "[명령 실패] 모라 명령 실행 중 오류",
+        due: "방금",
+        owner: "모라 명령창",
+      });
+      setWorldMessages((prev) => [...prev, { id: `wa-fail-${Date.now()}`, role: "assistant", text: "명령 실행 중 오류가 났어. 다시 시도해줘." }]);
+    } finally {
+      setWorldSending(false);
+    }
   };
 
   const runAutoLoop = async () => {
@@ -163,19 +173,29 @@ export default function WorldScreen() {
       owner: "모라 자동 루프",
     });
 
-    for (const command of loopCommands) {
-      // eslint-disable-next-line no-await-in-loop
-      await executeCommand(command, "auto");
+    try {
+      for (const command of loopCommands) {
+        // eslint-disable-next-line no-await-in-loop
+        await executeCommand(command, "auto");
+      }
+
+      addRuntimeTask({
+        id: `auto-loop-done-${Date.now()}`,
+        title: "[자동 루프] 오늘 목양 자동 루프 완료",
+        due: "방금",
+        owner: "모라 자동 루프",
+      });
+    } catch {
+      addRuntimeTask({
+        id: `auto-loop-fail-${Date.now()}`,
+        title: "[자동 루프 실패] 일부 명령 실행 중 오류",
+        due: "방금",
+        owner: "모라 자동 루프",
+      });
+      setWorldMessages((prev) => [...prev, { id: `wa-auto-fail-${Date.now()}`, role: "assistant", text: "자동 루프 실행 중 오류가 나서 중단했어. 다시 실행해줘." }]);
+    } finally {
+      setAutoRunning(false);
     }
-
-    addRuntimeTask({
-      id: `auto-loop-done-${Date.now()}`,
-      title: "[자동 루프] 오늘 목양 자동 루프 완료",
-      due: "방금",
-      owner: "모라 자동 루프",
-    });
-
-    setAutoRunning(false);
   };
 
   return (
