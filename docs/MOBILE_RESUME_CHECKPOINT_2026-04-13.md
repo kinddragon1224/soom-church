@@ -44,4 +44,4 @@ npm run mobile:dev:recover
 - 이후 월드 화면 작업은 이 문서 원칙을 우선 적용한다.
 
 ## 세션 재개용 한 줄 프롬프트
-"soom-church 모바일 작업 재개. docs/MOBILE_WORLD_UI_LOCK_2026-04-14.md 잠금 기준을 먼저 읽고, world.tsx를 상단40/하단60 고정 원칙으로 계속 다듬어줘."
+"soom-church 모바일 작업 재개. docs/MOBILE_WORLD_UI_LOCK_2026-04-14.md 잠금 기준을 먼저 읽고, world.tsx를 상단55~60/하단40~45 고정 원칙으로 계속 다듬어줘."

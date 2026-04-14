@@ -82,7 +82,7 @@ export default function WorldScreen() {
     if (!snapshot?.worldObjects?.length) return null;
     return snapshot.worldObjects[0];
   }, [snapshot]);
-  const worldHeight = Math.max(290, Math.min(460, Math.floor(windowHeight * 0.4)));
+  const worldHeight = Math.max(340, Math.min(560, Math.floor(windowHeight * 0.56)));
 
   if (loading || !snapshot || !selected) {
     return (
