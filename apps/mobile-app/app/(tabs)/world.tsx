@@ -109,13 +109,11 @@ export default function WorldScreen() {
   const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
   const visiblePresets = WORLD_COMMAND_PRESETS.slice(0, 4);
-  const loopCommands = useMemo(() => {
-    return [
-      `모라, ${selected.name} 포함 후속 우선순위 3명 정리`,
-      "모라, 오늘 기도 요청 목록을 긴급도 순으로 재정렬",
-      "모라, 오늘 목양 운영 브리프 3줄로 작성",
-    ];
-  }, [selected]);
+  const loopCommands = [
+    `모라, ${selected.name} 포함 후속 우선순위 3명 정리`,
+    "모라, 오늘 기도 요청 목록을 긴급도 순으로 재정렬",
+    "모라, 오늘 목양 운영 브리프 3줄로 작성",
+  ];
 
   const executeCommand = async (text: string, source: "manual" | "auto" = "manual") => {
     const commandTs = Date.now();
