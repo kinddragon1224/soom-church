@@ -34,9 +34,9 @@ export default function TabsLayout() {
             backgroundColor: "#1f2b42",
             borderTopColor: "rgba(138,160,199,0.45)",
             borderTopWidth: 2,
-            height: 78 + insets.bottom,
-            paddingTop: 8,
-            paddingBottom: Math.max(12, insets.bottom + 4),
+            height: 64 + insets.bottom,
+            paddingTop: 4,
+            paddingBottom: Math.max(8, insets.bottom + 2),
           },
           tabBarItemStyle: {
             borderRadius: 8,
