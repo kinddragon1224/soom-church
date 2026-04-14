@@ -3,7 +3,6 @@ import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, Te
 import { router } from "expo-router";
 
 import { sendChatCommand } from "../../lib/chat-source";
-import { type WorldObject } from "../../lib/world-model";
 import { mabiTheme } from "../../lib/ui-theme";
 import { useWorldStore } from "../../lib/world-store";
 
@@ -64,25 +63,8 @@ const WORLD_LAYER_BUILDINGS = require("../../assets/world-layers/buildings-layer
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.jpg");
 const WORLD_LAYER_CHARACTERS = require("../../assets/world-layers/characters-layer.jpg");
 
-function tone(kind: WorldObject["kind"], active: boolean) {
-  if (kind === "hub") {
-    return { bg: active ? "#c99a4d" : "#9f7740", border: "#f3ddb0", text: "#fff8ea" };
-  }
-  if (kind === "house") {
-    return { bg: active ? "#4c5f63" : "#3b4a4f", border: active ? "#d9e7df" : "#9db1a7", text: "#f8f5ed" };
-  }
-  return { bg: active ? "#4e86a8" : "#3e6e8c", border: active ? "#d3e6f3" : "#9fbfd5", text: "#f8f5ed" };
-}
-
-function stateFrame(state: string, isSelected: boolean): "normal" | "selected" | "alert" | "done" {
-  if (isSelected) return "selected";
-  if (state.includes("돌봄") || state.includes("후속") || state.includes("연락")) return "alert";
-  if (state.includes("안정") || state.includes("완료")) return "done";
-  return "normal";
-}
-
 export default function WorldScreen() {
-  const { loading, snapshot, selectedId, setSelectedId, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
+  const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
   const [worldDraft, setWorldDraft] = useState("");
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
@@ -97,8 +79,8 @@ export default function WorldScreen() {
 
   const selected = useMemo(() => {
     if (!snapshot?.worldObjects?.length) return null;
-    return snapshot.worldObjects.find((item) => item.id === selectedId) ?? snapshot.worldObjects[0];
-  }, [selectedId, snapshot]);
+    return snapshot.worldObjects[0];
+  }, [snapshot]);
 
   if (loading || !snapshot || !selected) {
     return (
@@ -236,38 +218,6 @@ export default function WorldScreen() {
             </View>
           </View>
 
-          {snapshot.worldObjects.map((item) => {
-            const isActive = selectedId === item.id;
-
-            return (
-              <Pressable
-                key={item.id}
-                onPress={() => setSelectedId(item.id)}
-                style={{
-                  position: "absolute",
-                  left: item.x + 10,
-                  top: item.y + 10,
-                  width: 26,
-                  height: 26,
-                  borderRadius: 999,
-                  borderWidth: isActive ? 2 : 1,
-                  borderColor: isActive ? "rgba(243,208,128,0.9)" : "rgba(255,255,255,0.35)",
-                  backgroundColor: isActive ? "rgba(243,208,128,0.28)" : "rgba(10,16,26,0.28)",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <View
-                  style={{
-                    width: isActive ? 10 : 7,
-                    height: isActive ? 10 : 7,
-                    borderRadius: 999,
-                    backgroundColor: isActive ? "#ffe7b3" : "rgba(235,244,255,0.82)",
-                  }}
-                />
-              </Pressable>
-            );
-          })}
         </View>
 
         <View style={{ borderRadius: 16, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", backgroundColor: "rgba(20,29,45,0.95)", padding: 12 }}>
