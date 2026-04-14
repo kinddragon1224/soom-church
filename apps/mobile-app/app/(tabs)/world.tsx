@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 
-import PixelSprite from "../../components/pixel-sprite";
 import { sendChatCommand } from "../../lib/chat-source";
 import { type WorldObject } from "../../lib/world-model";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -239,8 +238,6 @@ export default function WorldScreen() {
 
           {snapshot.worldObjects.map((item) => {
             const isActive = selectedId === item.id;
-            const colors = tone(item.kind, isActive);
-            const frame = stateFrame(item.state, isActive);
 
             return (
               <Pressable
@@ -248,20 +245,26 @@ export default function WorldScreen() {
                 onPress={() => setSelectedId(item.id)}
                 style={{
                   position: "absolute",
-                  left: item.x,
-                  top: item.y - 34,
-                  minWidth: item.kind === "person" ? 74 : 92,
-                  borderRadius: 12,
-                  borderWidth: 2,
-                  borderColor: colors.border,
-                  backgroundColor: colors.bg,
-                  paddingVertical: 6,
-                  paddingHorizontal: 7,
+                  left: item.x + 10,
+                  top: item.y + 10,
+                  width: 26,
+                  height: 26,
+                  borderRadius: 999,
+                  borderWidth: isActive ? 2 : 1,
+                  borderColor: isActive ? "rgba(243,208,128,0.9)" : "rgba(255,255,255,0.35)",
+                  backgroundColor: isActive ? "rgba(243,208,128,0.28)" : "rgba(10,16,26,0.28)",
                   alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                <PixelSprite kind={item.kind} frame={frame} showBadge={frame !== "normal"} />
-                <Text style={{ color: colors.text, fontSize: 11, fontWeight: "700", marginTop: 5 }}>{item.name}</Text>
+                <View
+                  style={{
+                    width: isActive ? 10 : 7,
+                    height: isActive ? 10 : 7,
+                    borderRadius: 999,
+                    backgroundColor: isActive ? "#ffe7b3" : "rgba(235,244,255,0.82)",
+                  }}
+                />
               </Pressable>
             );
           })}
