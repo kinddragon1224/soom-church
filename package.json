@@ -16,7 +16,8 @@
     "mobile:dev:clear": "npm --prefix apps/mobile-app run dev:clear",
     "mobile:dev:tunnel": "npm --prefix apps/mobile-app run dev:tunnel",
     "mobile:dev:recover": "bash scripts/mobile-dev-recover.sh",
-    "mobile:typecheck": "npm --prefix apps/mobile-app run typecheck"
+    "mobile:typecheck": "npm --prefix apps/mobile-app run typecheck",
+    "mobile:view": "bash scripts/mobile-view.sh"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
