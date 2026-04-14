@@ -10,8 +10,15 @@ export default function AuthCompleteScreen() {
 
   useEffect(() => {
     const run = async () => {
+      const accountKey = typeof params.accountKey === "string" ? params.accountKey : null;
+      if (!accountKey) {
+        await setAuthConnected(false);
+        router.replace("/login");
+        return;
+      }
+
       await setCurrentChurchSlug(typeof params.churchSlug === "string" ? params.churchSlug : null);
-      await setCurrentAccountKey(typeof params.accountKey === "string" ? params.accountKey : null);
+      await setCurrentAccountKey(accountKey);
       await setAuthConnected(true);
 
       const setup = await getWorldSetupState();
