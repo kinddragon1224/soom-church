@@ -39,5 +39,9 @@ npm run mobile:dev:recover
 - tunnel 실패 시 자동으로 LAN 모드로 전환됨.
 - 참고: WSL + ngrok 환경에서 `remote gone away` 재발 가능.
 
+## UI/UX 잠금 기준 (최우선)
+- `docs/MOBILE_WORLD_UI_LOCK_2026-04-14.md`
+- 이후 월드 화면 작업은 이 문서 원칙을 우선 적용한다.
+
 ## 세션 재개용 한 줄 프롬프트
-"soom-church 모바일 작업 재개. docs/MOBILE_RESUME_CHECKPOINT_2026-04-13.md 기준으로 다음 우선순위 1번부터 바로 진행해줘."
+"soom-church 모바일 작업 재개. docs/MOBILE_WORLD_UI_LOCK_2026-04-14.md 잠금 기준을 먼저 읽고, world.tsx를 상단40/하단60 고정 원칙으로 계속 다듬어줘."
