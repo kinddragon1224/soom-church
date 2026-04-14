@@ -8,7 +8,7 @@ import { mabiTheme } from "../../lib/ui-theme";
 import { WorldStoreProvider } from "../../lib/world-store";
 
 function TabIcon({ label, focused }: { label: string; focused: boolean }) {
-  return <Text style={{ fontSize: 15, opacity: focused ? 1 : 0.62 }}>{label}</Text>;
+  return <Text style={{ fontSize: 13, opacity: focused ? 1 : 0.62 }}>{label}</Text>;
 }
 
 export default function TabsLayout() {
@@ -34,9 +34,9 @@ export default function TabsLayout() {
             backgroundColor: "#1f2b42",
             borderTopColor: "rgba(138,160,199,0.45)",
             borderTopWidth: 2,
-            height: 64 + insets.bottom,
-            paddingTop: 4,
-            paddingBottom: Math.max(8, insets.bottom + 2),
+            height: 56 + insets.bottom,
+            paddingTop: 2,
+            paddingBottom: Math.max(6, insets.bottom + 1),
           },
           tabBarItemStyle: {
             borderRadius: 8,
@@ -46,7 +46,7 @@ export default function TabsLayout() {
           tabBarActiveTintColor: mabiTheme.pixelInk,
           tabBarInactiveTintColor: "rgba(245,242,232,0.56)",
           tabBarLabelStyle: {
-            fontSize: 10,
+            fontSize: 9,
             fontWeight: "700",
             letterSpacing: 0.4,
           },

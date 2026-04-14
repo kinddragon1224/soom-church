@@ -67,18 +67,6 @@ const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
 const WORLD_LAYER_CHARACTERS = require("../../assets/world-layers/characters-layer.png");
 
-function hashSeed(input: string) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
-  }
-  return hash;
-}
-
-function initials(name: string) {
-  return name.trim().slice(0, 2);
-}
-
 export default function WorldScreen() {
   const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
   const { height: windowHeight } = useWindowDimensions();
@@ -115,20 +103,8 @@ export default function WorldScreen() {
     if (!snapshot?.worldObjects?.length) return null;
     return snapshot.worldObjects[0];
   }, [snapshot]);
-  const memberChips = useMemo(() => {
-    const people = snapshot?.peopleRecords ?? [];
-    return people.slice(0, 16).map((person) => {
-      const seed = hashSeed(person.id + person.name + person.household);
-      return {
-        id: person.id,
-        label: initials(person.name),
-        leftPct: 8 + (seed % 84),
-        topPct: 34 + ((seed >> 5) % 58),
-      };
-    });
-  }, [snapshot]);
   const worldHeight = keyboardVisible
-    ? Math.max(220, Math.min(340, Math.floor(windowHeight * 0.34)))
+    ? Math.max(170, Math.min(290, Math.floor(windowHeight * 0.28)))
     : Math.max(340, Math.min(560, Math.floor(windowHeight * 0.56)));
 
   if (loading || !snapshot || !selected) {
@@ -141,7 +117,6 @@ export default function WorldScreen() {
 
   const urgentCount = snapshot.peopleRecords.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
   const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
-  const operationIndex = 120 + snapshot.peopleRecords.length * 3 + urgentCount * 2;
   const recentMessages = worldMessages.slice(-2);
   const latestAssistant = [...worldMessages].reverse().find((message) => message.role === "assistant");
   const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected.name}부터 확인해줘.`;
@@ -273,27 +248,6 @@ export default function WorldScreen() {
             </View>
           </View>
 
-          {memberChips.map((chip) => (
-            <View
-              key={`chip-${chip.id}`}
-              style={{
-                position: "absolute",
-                left: `${chip.leftPct}%`,
-                top: `${chip.topPct}%`,
-                width: 20,
-                height: 20,
-                borderRadius: 999,
-                borderWidth: 1,
-                borderColor: "rgba(255,255,255,0.42)",
-                backgroundColor: "rgba(17,17,17,0.56)",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text style={{ color: "#f5f5f5", fontSize: 9, fontWeight: "700" }}>{chip.label}</Text>
-            </View>
-          ))}
-
           <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "rgba(17,17,17,0.76)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 10 }}>
             <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
             <Text numberOfLines={2} style={{ color: "#f4f7ff", fontSize: 11, marginTop: 3 }}>{afkBrief}</Text>
@@ -302,22 +256,24 @@ export default function WorldScreen() {
         </View>
 
         <View style={{ flex: 1, minHeight: 250, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
-          <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>모라 명령 인풋 / 아웃풋</Text>
+          <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
 
-          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: 28 }} keyboardShouldPersistTaps="handled">
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
-              {visiblePresets.map((preset) => (
-                <Pressable
-                  key={preset.id}
-                  onPress={() => setWorldDraft(preset.command)}
-                  style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 8, paddingVertical: 5 }}
-                >
-                  <Text style={{ color: "#dbe8ff", fontSize: 9 }}>{preset.label}</Text>
-                </Pressable>
-              ))}
-            </View>
+          <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 8, paddingBottom: keyboardVisible ? 12 : 28 }} keyboardShouldPersistTaps="handled">
+            {!keyboardVisible ? (
+              <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+                {visiblePresets.map((preset) => (
+                  <Pressable
+                    key={preset.id}
+                    onPress={() => setWorldDraft(preset.command)}
+                    style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 8, paddingVertical: 5 }}
+                  >
+                    <Text style={{ color: "#dbe8ff", fontSize: 9 }}>{preset.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ) : null}
 
-            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: 62, maxHeight: 100 }}>
+            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 96 : 62, maxHeight: keyboardVisible ? 170 : 110 }}>
               {recentMessages.length ? (
                 recentMessages.map((message) => (
                   <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "94%", borderRadius: 10, borderWidth: 1, borderColor: message.role === "user" ? "#4f678f" : "#333", backgroundColor: message.role === "user" ? "#1d2736" : "#1c1c1c", paddingHorizontal: 9, paddingVertical: 6, marginTop: 4 }}>
@@ -338,8 +294,8 @@ export default function WorldScreen() {
                 multiline
                 style={{
                   flex: 1,
-                  minHeight: 52,
-                  maxHeight: 88,
+                  minHeight: keyboardVisible ? 68 : 52,
+                  maxHeight: keyboardVisible ? 128 : 88,
                   borderRadius: 12,
                   borderWidth: 1,
                   borderColor: "#3a3a3a",
@@ -350,12 +306,13 @@ export default function WorldScreen() {
                   textAlignVertical: "top",
                 }}
               />
-              <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: 52, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
+              <Pressable onPress={submitWorldChat} disabled={worldSending || autoRunning || !worldDraft.trim()} style={{ minHeight: keyboardVisible ? 68 : 52, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || autoRunning || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
                 {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
               </Pressable>
             </View>
 
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            {!keyboardVisible ? (
+              <View style={{ flexDirection: "row", gap: 8 }}>
               <Pressable
                 onPress={runAutoLoop}
                 disabled={autoRunning || worldSending}
@@ -366,7 +323,8 @@ export default function WorldScreen() {
               <Pressable onPress={() => router.push("/(tabs)/tasks")} style={{ flex: 1, minHeight: 38, borderRadius: 10, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", alignItems: "center", justifyContent: "center" }}>
                 <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>실행 기록 보기</Text>
               </Pressable>
-            </View>
+              </View>
+            ) : null}
           </ScrollView>
         </View>
       </View>
