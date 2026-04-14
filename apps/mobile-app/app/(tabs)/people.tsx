@@ -43,15 +43,7 @@ export default function PeopleScreen() {
   const [localRemovedIds, setLocalRemovedIds] = useState<string[]>([]);
   const [localOverrides, setLocalOverrides] = useState<Record<string, { name: string; household: string; state: string; nextAction: string }>>({});
 
-  if (loading || !snapshot) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ color: mabiTheme.textPrimary }}>목원 불러오는 중...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  const people = snapshot.peopleRecords
+  const people = (snapshot?.peopleRecords ?? [])
     .filter((person) => !localRemovedIds.includes(person.id))
     .map((person) => {
       const override = localOverrides[person.id];
@@ -196,6 +188,14 @@ export default function PeopleScreen() {
       },
     ]);
   };
+
+  if (loading || !snapshot) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ color: mabiTheme.textPrimary }}>목원 불러오는 중...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
