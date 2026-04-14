@@ -30,6 +30,8 @@ export default function PeopleScreen() {
   const { loading, snapshot, setChatDraft } = useWorldStore();
   const { width } = useWindowDimensions();
   const [query, setQuery] = useState("");
+  const [householdFilter, setHouseholdFilter] = useState("전체");
+  const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   if (loading || !snapshot) {
@@ -41,11 +43,20 @@ export default function PeopleScreen() {
   }
 
   const people = snapshot.peopleRecords;
+  const householdOptions = useMemo(() => {
+    const households = Array.from(new Set(people.map((person) => person.household)));
+    return ["전체", ...households];
+  }, [people]);
+
   const filtered = useMemo(() => {
     const q = query.trim();
-    if (!q) return people;
-    return people.filter((person) => person.name.includes(q) || person.household.includes(q) || person.state.includes(q));
-  }, [people, query]);
+    return people.filter((person) => {
+      const passHousehold = householdFilter === "전체" || person.household === householdFilter;
+      if (!passHousehold) return false;
+      if (!q) return true;
+      return person.name.includes(q) || person.household.includes(q) || person.state.includes(q);
+    });
+  }, [people, query, householdFilter]);
 
   const selected = useMemo(() => {
     if (!filtered.length) return null;
@@ -63,6 +74,11 @@ export default function PeopleScreen() {
   const urgentCount = people.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
   const householdCount = new Set(people.map((p) => p.household)).size;
   const cardWidth = Math.floor((width - 32 - 16) / 3);
+  const cardsPerPage = 18;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / cardsPerPage));
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = (currentPage - 1) * cardsPerPage;
+  const paged = filtered.slice(startIndex, startIndex + cardsPerPage);
 
   const runCommand = (command: string) => {
     setChatDraft(command);
@@ -107,8 +123,33 @@ export default function PeopleScreen() {
           }}
         />
 
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }} contentContainerStyle={{ gap: 6, paddingRight: 8 }}>
+          {householdOptions.map((household) => {
+            const active = householdFilter === household;
+            return (
+              <Pressable
+                key={household}
+                onPress={() => {
+                  setHouseholdFilter(household);
+                  setPage(1);
+                }}
+                style={{
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: active ? "rgba(243,208,128,0.62)" : "rgba(120,157,214,0.36)",
+                  backgroundColor: active ? "rgba(243,208,128,0.16)" : "rgba(20,29,45,0.65)",
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                }}
+              >
+                <Text style={{ color: active ? "#ffeabf" : "#d8e7ff", fontSize: 10 }}>{household}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
         <View style={{ marginTop: 10, flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-          {filtered.map((person) => {
+          {paged.map((person) => {
             const active = selected?.id === person.id;
             const tone = careTone(person.state);
             return (
@@ -133,6 +174,26 @@ export default function PeopleScreen() {
               </Pressable>
             );
           })}
+        </View>
+
+        <View style={{ marginTop: 8, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <Text style={{ color: "rgba(216,230,255,0.7)", fontSize: 10 }}>{filtered.length}명 · {currentPage}/{totalPages}페이지</Text>
+          <View style={{ flexDirection: "row", gap: 6 }}>
+            <Pressable
+              onPress={() => setPage((prev) => Math.max(1, prev - 1))}
+              disabled={currentPage <= 1}
+              style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(120,157,214,0.36)", backgroundColor: "rgba(20,29,45,0.7)", paddingHorizontal: 8, paddingVertical: 4, opacity: currentPage <= 1 ? 0.45 : 1 }}
+            >
+              <Text style={{ color: "#d8e7ff", fontSize: 10 }}>이전</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+              disabled={currentPage >= totalPages}
+              style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(120,157,214,0.36)", backgroundColor: "rgba(20,29,45,0.7)", paddingHorizontal: 8, paddingVertical: 4, opacity: currentPage >= totalPages ? 0.45 : 1 }}
+            >
+              <Text style={{ color: "#d8e7ff", fontSize: 10 }}>다음</Text>
+            </Pressable>
+          </View>
         </View>
 
         {selected ? (
@@ -187,6 +248,10 @@ export default function PeopleScreen() {
             </View>
 
             <View style={{ marginTop: 10, gap: 7 }}>
+              <View style={{ borderRadius: 10, borderWidth: 1, borderColor: "rgba(148,171,212,0.35)", backgroundColor: "rgba(255,255,255,0.04)", padding: 8, gap: 4 }}>
+                <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>아바타 기준</Text>
+                <Text style={{ color: "rgba(220,232,255,0.72)", fontSize: 10 }}>기본은 가상 아바타(이름/가정/상태 기반). 사진 등록 시 실제 사진 우선 표시.</Text>
+              </View>
               <Pressable
                 onPress={() => runCommand(`모라, ${selected.name} 중심으로 이번 주 돌봄/기도/심방 실행안 정리해줘`) }
                 style={{ minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "rgba(243,208,128,0.45)", backgroundColor: "rgba(243,208,128,0.14)", alignItems: "center", justifyContent: "center" }}
@@ -198,6 +263,12 @@ export default function PeopleScreen() {
                 style={{ minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "rgba(120,157,214,0.45)", backgroundColor: "rgba(120,157,214,0.14)", alignItems: "center", justifyContent: "center" }}
               >
                 <Text style={{ color: "#d8e7ff", fontWeight: "700" }}>가정 단위로 정리 요청</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => runCommand(`모라, ${selected.name} 프로필 사진 등록 흐름 시작해줘`) }
+                style={{ minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.45)", backgroundColor: "rgba(143,224,170,0.14)", alignItems: "center", justifyContent: "center" }}
+              >
+                <Text style={{ color: "#d7ffe3", fontWeight: "700" }}>사진 등록 요청</Text>
               </Pressable>
             </View>
           </View>
