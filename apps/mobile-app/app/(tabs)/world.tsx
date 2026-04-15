@@ -65,7 +65,7 @@ export default function WorldScreen() {
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
-  const [panelVisible, setPanelVisible] = useState({ header: true, brief: true, attendance: true });
+  const [panelVisible, setPanelVisible] = useState({ header: true, brief: true });
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.59 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
@@ -375,7 +375,7 @@ export default function WorldScreen() {
                   />
                   <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
                 </View>
-              ) : panelVisible.attendance ? (
+              ) : (
                 <View
                   style={{
                     position: "absolute",
@@ -393,7 +393,7 @@ export default function WorldScreen() {
                   <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>7일 출석 보상: 마리아 NPC</Text>
                   <Text style={{ color: "rgba(245,245,245,0.8)", fontSize: 10, marginTop: 2 }}>남은 일수 {mariaDaysLeft}일</Text>
                 </View>
-              ) : null}
+              )}
 
               {panelVisible.header ? (
                 <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
@@ -446,9 +446,6 @@ export default function WorldScreen() {
               </Pressable>
               <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, brief: !prev.brief }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: panelVisible.brief ? "#8a7b54" : "#3a3a3a", backgroundColor: panelVisible.brief ? "#211d14" : "#171717", paddingHorizontal: 8, paddingVertical: 4 }}>
                 <Text style={{ color: panelVisible.brief ? "#ffeabf" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>브리프 {panelVisible.brief ? "ON" : "OFF"}</Text>
-              </Pressable>
-              <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, attendance: !prev.attendance }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: panelVisible.attendance ? "#4e6590" : "#3a3a3a", backgroundColor: panelVisible.attendance ? "#18202e" : "#171717", paddingHorizontal: 8, paddingVertical: 4 }}>
-                <Text style={{ color: panelVisible.attendance ? "#d8e7ff" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>출석보상 {panelVisible.attendance ? "ON" : "OFF"}</Text>
               </Pressable>
             </View>
             <View style={{ gap: 6 }}>
