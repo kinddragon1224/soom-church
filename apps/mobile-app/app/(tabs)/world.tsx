@@ -18,6 +18,7 @@ import {
 } from "react-native";
 
 import { sendChatCommand } from "../../lib/chat-source";
+import { registerWorldAttendanceToday, type WorldAttendanceRewardState } from "../../lib/world-attendance-reward";
 import { mabiTheme } from "../../lib/ui-theme";
 import { WORLD_MVP_TEMPLATE } from "../../lib/world-template";
 import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
@@ -49,6 +50,7 @@ const WORLD_LAYER_FIG_TREE = require("../../assets/world-layers/fig-tree-layer.p
 const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.png");
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
+const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a.jpg");
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
@@ -64,6 +66,7 @@ export default function WorldScreen() {
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
+  const [attendance, setAttendance] = useState<WorldAttendanceRewardState | null>(null);
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
 
@@ -85,6 +88,7 @@ export default function WorldScreen() {
   useEffect(() => {
     getWorldSetupState().then(setWorldSetup).catch(() => undefined);
     getWorldNpcLayout().then((layout) => setJesusAnchor(layout.jesus)).catch(() => undefined);
+    registerWorldAttendanceToday().then(setAttendance).catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -126,6 +130,8 @@ export default function WorldScreen() {
   const jesusH = Math.max(96, Math.floor(worldSize.height * 0.12));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
+  const mariaUnlocked = attendance?.mariaUnlocked ?? false;
+  const mariaDaysLeft = Math.max(0, (attendance?.rewardTargetDays ?? 7) - (attendance?.streakCount ?? 0));
 
   useEffect(() => {
     jesusAnchorRef.current = jesusAnchor;
@@ -263,6 +269,40 @@ export default function WorldScreen() {
                   }}
                 />
               </Animated.View>
+
+              {mariaUnlocked ? (
+                <Animated.View
+                  style={{
+                    position: "absolute",
+                    left: worldSize.width * 0.73,
+                    top: worldSize.height * 0.59,
+                    width: Math.max(60, Math.floor(worldSize.width * 0.095)),
+                    height: Math.max(92, Math.floor(worldSize.height * 0.12)),
+                    transform: [{ translateY: npcFloat.interpolate({ inputRange: [-2.2, 0], outputRange: [0, -1.3] }) }],
+                    zIndex: 12,
+                  }}
+                >
+                  <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+                </Animated.View>
+              ) : (
+                <View
+                  style={{
+                    position: "absolute",
+                    right: 12,
+                    bottom: 90,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    borderColor: "rgba(255,234,191,0.55)",
+                    backgroundColor: "rgba(22,22,22,0.72)",
+                    paddingHorizontal: 9,
+                    paddingVertical: 6,
+                    zIndex: 21,
+                  }}
+                >
+                  <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>7일 출석 보상: 마리아 NPC</Text>
+                  <Text style={{ color: "rgba(245,245,245,0.8)", fontSize: 10, marginTop: 2 }}>남은 일수 {mariaDaysLeft}일</Text>
+                </View>
+              )}
 
               <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
                 <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
