@@ -55,6 +55,10 @@ function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
 }
 
+function clampZoom(value: number) {
+  return Math.max(1, Math.min(1.8, value));
+}
+
 export default function WorldScreen() {
   const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft, attendanceReward } = useWorldStore();
   const { height: windowHeight } = useWindowDimensions();
@@ -66,6 +70,7 @@ export default function WorldScreen() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [panelVisible, setPanelVisible] = useState({ header: true, brief: true });
+  const [worldZoom, setWorldZoom] = useState(1);
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.59 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
@@ -138,8 +143,8 @@ export default function WorldScreen() {
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
-  const mariaW = jesusW;
-  const mariaH = jesusH;
+  const mariaW = Math.max(46, Math.floor(jesusW * 0.88));
+  const mariaH = Math.max(72, Math.floor(jesusH * 0.9));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
   const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
@@ -206,6 +211,10 @@ export default function WorldScreen() {
     setTimeout(() => setNpcReaction(null), 1300);
   };
 
+  const adjustWorldZoom = (delta: number) => {
+    setWorldZoom((prev) => clampZoom(Number((prev + delta).toFixed(2))));
+  };
+
   const executeCommand = async (text: string) => {
     const ts = Date.now();
     setWorldMessages((prev) => [...prev, { id: `wu-${ts}`, role: "user", text }]);
@@ -249,8 +258,10 @@ export default function WorldScreen() {
         onPanResponderMove: (_, gesture) => {
           const maxX = Math.max(1, worldSize.width - jesusW);
           const maxY = Math.max(1, worldSize.height - jesusH);
-          const nextX = Math.max(0, Math.min(maxX, dragStartRef.current.x + gesture.dx));
-          const nextY = Math.max(0, Math.min(maxY, dragStartRef.current.y + gesture.dy));
+          const scaledDx = gesture.dx / worldZoom;
+          const scaledDy = gesture.dy / worldZoom;
+          const nextX = Math.max(0, Math.min(maxX, dragStartRef.current.x + scaledDx));
+          const nextY = Math.max(0, Math.min(maxY, dragStartRef.current.y + scaledDy));
           const nextAnchor = { nx: nextX / maxX, ny: nextY / maxY };
           jesusAnchorRef.current = nextAnchor;
           setJesusAnchor(nextAnchor);
@@ -262,7 +273,7 @@ export default function WorldScreen() {
           void persistJesusAnchor(jesusAnchorRef.current.nx, jesusAnchorRef.current.ny);
         },
       }),
-    [jesusH, jesusW, worldSize.height, worldSize.width]
+    [jesusH, jesusW, worldSize.height, worldSize.width, worldZoom]
   );
 
   const mariaPanResponder = useMemo(
@@ -280,8 +291,10 @@ export default function WorldScreen() {
           if (!mariaUnlocked) return;
           const maxX = Math.max(1, worldSize.width - mariaW);
           const maxY = Math.max(1, worldSize.height - mariaH);
-          const nextX = Math.max(0, Math.min(maxX, mariaDragStartRef.current.x + gesture.dx));
-          const nextY = Math.max(0, Math.min(maxY, mariaDragStartRef.current.y + gesture.dy));
+          const scaledDx = gesture.dx / worldZoom;
+          const scaledDy = gesture.dy / worldZoom;
+          const nextX = Math.max(0, Math.min(maxX, mariaDragStartRef.current.x + scaledDx));
+          const nextY = Math.max(0, Math.min(maxY, mariaDragStartRef.current.y + scaledDy));
           const nextAnchor = { nx: nextX / maxX, ny: nextY / maxY };
           mariaAnchorRef.current = nextAnchor;
           setMariaAnchor(nextAnchor);
@@ -291,7 +304,7 @@ export default function WorldScreen() {
           void persistMariaAnchor(mariaAnchorRef.current.nx, mariaAnchorRef.current.ny);
         },
       }),
-    [mariaH, mariaUnlocked, mariaW, worldSize.height, worldSize.width]
+    [mariaH, mariaUnlocked, mariaW, worldSize.height, worldSize.width, worldZoom]
   );
 
   if (loading || !snapshot || !selected) {
@@ -311,57 +324,13 @@ export default function WorldScreen() {
               onLayout={(e) => setWorldSize({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
               style={{ height: worldHeight, borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", overflow: "hidden", backgroundColor: "#131313" }}
             >
-              <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-              <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-              <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-              <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+              <View style={{ position: "absolute", inset: 0, transform: [{ scale: worldZoom }] }}>
+                <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+                <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+                <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+                <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
 
-              <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, zIndex: 13 }} {...panResponder.panHandlers}>
-                <View
-                  style={{
-                    position: "absolute",
-                    left: "18%",
-                    right: "18%",
-                    bottom: -2,
-                    height: 8,
-                    borderRadius: 999,
-                    backgroundColor: "rgba(0,0,0,0.18)",
-                  }}
-                />
-                <View style={{ flex: 1 }}>
-                  <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
-                </View>
-                <Animated.View
-                  pointerEvents="none"
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    top: "50%",
-                    width: 72,
-                    height: 72,
-                    marginLeft: -36,
-                    marginTop: -36,
-                    borderRadius: 999,
-                    borderWidth: 2,
-                    borderColor: "rgba(255,234,191,0.95)",
-                    opacity: npcPulseOpacity,
-                    transform: [{ scale: npcPulseScale }],
-                  }}
-                />
-              </Animated.View>
-
-              {mariaUnlocked ? (
-                <View
-                  {...mariaPanResponder.panHandlers}
-                  style={{
-                    position: "absolute",
-                    left: mariaLeft,
-                    top: mariaTop,
-                    width: mariaW,
-                    height: mariaH,
-                    zIndex: 13,
-                  }}
-                >
+                <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, zIndex: 13 }} {...panResponder.panHandlers}>
                   <View
                     style={{
                       position: "absolute",
@@ -373,9 +342,57 @@ export default function WorldScreen() {
                       backgroundColor: "rgba(0,0,0,0.18)",
                     }}
                   />
-                  <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
-                </View>
-              ) : (
+                  <View style={{ flex: 1 }}>
+                    <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+                  </View>
+                  <Animated.View
+                    pointerEvents="none"
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      top: "50%",
+                      width: 72,
+                      height: 72,
+                      marginLeft: -36,
+                      marginTop: -36,
+                      borderRadius: 999,
+                      borderWidth: 2,
+                      borderColor: "rgba(255,234,191,0.95)",
+                      opacity: npcPulseOpacity,
+                      transform: [{ scale: npcPulseScale }],
+                    }}
+                  />
+                </Animated.View>
+
+                {mariaUnlocked ? (
+                  <View
+                    {...mariaPanResponder.panHandlers}
+                    style={{
+                      position: "absolute",
+                      left: mariaLeft,
+                      top: mariaTop,
+                      width: mariaW,
+                      height: mariaH,
+                      zIndex: 13,
+                    }}
+                  >
+                    <View
+                      style={{
+                        position: "absolute",
+                        left: "18%",
+                        right: "18%",
+                        bottom: -2,
+                        height: 8,
+                        borderRadius: 999,
+                        backgroundColor: "rgba(0,0,0,0.18)",
+                      }}
+                    />
+                    <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+                  </View>
+                ) : null}
+              </View>
+
+              {!mariaUnlocked ? (
                 <View
                   style={{
                     position: "absolute",
@@ -393,7 +410,19 @@ export default function WorldScreen() {
                   <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>7일 출석 보상: 마리아 NPC</Text>
                   <Text style={{ color: "rgba(245,245,245,0.8)", fontSize: 10, marginTop: 2 }}>남은 일수 {mariaDaysLeft}일</Text>
                 </View>
-              )}
+              ) : null}
+
+              <View style={{ position: "absolute", right: 12, bottom: 84, zIndex: 24, gap: 6 }}>
+                <Pressable onPress={() => adjustWorldZoom(0.1)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(22,32,46,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text style={{ color: "#d8e7ff", fontSize: 12, fontWeight: "700" }}>줌 +</Text>
+                </Pressable>
+                <Pressable onPress={() => adjustWorldZoom(-0.1)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(22,32,46,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text style={{ color: "#d8e7ff", fontSize: 12, fontWeight: "700" }}>줌 -</Text>
+                </Pressable>
+                <Pressable onPress={() => setWorldZoom(1)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "rgba(23,23,23,0.88)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text style={{ color: "#d0d0d0", fontSize: 10, fontWeight: "700" }}>{Math.round(worldZoom * 100)}%</Text>
+                </Pressable>
+              </View>
 
               {panelVisible.header ? (
                 <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
