@@ -56,6 +56,7 @@ export default function TabsLayout() {
         <Tabs.Screen name="world" options={{ title: "목양", tabBarIcon: ({ focused }) => <TabIcon label="🌍" focused={focused} /> }} />
         <Tabs.Screen name="chat" options={{ href: null }} />
         <Tabs.Screen name="people" options={{ title: "목원", tabBarIcon: ({ focused }) => <TabIcon label="👥" focused={focused} /> }} />
+        <Tabs.Screen name="attendance" options={{ title: "출석", tabBarIcon: ({ focused }) => <TabIcon label="🎁" focused={focused} /> }} />
         <Tabs.Screen name="tasks" options={{ title: "기록", tabBarIcon: ({ focused }) => <TabIcon label="📝" focused={focused} /> }} />
       </Tabs>
     </WorldStoreProvider>
