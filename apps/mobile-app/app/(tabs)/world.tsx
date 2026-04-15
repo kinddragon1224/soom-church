@@ -316,7 +316,18 @@ export default function WorldScreen() {
               <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
               <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
 
-              <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, transform: [{ translateY: npcFloat }], zIndex: 13 }} {...panResponder.panHandlers}>
+              <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, zIndex: 13 }} {...panResponder.panHandlers}>
+                <View
+                  style={{
+                    position: "absolute",
+                    left: "18%",
+                    right: "18%",
+                    bottom: -2,
+                    height: 8,
+                    borderRadius: 999,
+                    backgroundColor: "rgba(0,0,0,0.18)",
+                  }}
+                />
                 <View style={{ flex: 1 }}>
                   <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
                 </View>
