@@ -261,12 +261,7 @@ export default function WorldScreen() {
               </Animated.View>
 
               <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                  <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
-                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(24,32,46,0.7)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                    <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>드래그 이동</Text>
-                  </View>
-                </View>
+                <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
                 <Text style={{ color: "#f4f7ff", fontSize: 12, fontWeight: "700" }}>{worldSetup?.churchName ?? "교회 미설정"} · {worldSetup?.mokjangName ?? "목장 미설정"}</Text>
                 <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.68)", fontSize: 10 }}>{WORLD_MVP_TEMPLATE.scripture}</Text>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
