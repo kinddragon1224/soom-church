@@ -2,19 +2,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
-const WORLD_NPC_LAYOUT_KEY = "soom.mobile.world.npc-layout.v1";
+const WORLD_NPC_LAYOUT_KEY = "soom.mobile.world.npc-layout.v2";
 
-export type NpcAnchor = {
+type NpcAnchor = {
   nx: number;
   ny: number;
 };
 
 export type WorldNpcLayout = {
   jesus: NpcAnchor;
+  maria: NpcAnchor;
 };
 
 const DEFAULT_LAYOUT: WorldNpcLayout = {
   jesus: { nx: 0.5, ny: 0.64 },
+  maria: { nx: 0.73, ny: 0.59 },
 };
 
 function clamp01(value: number) {
@@ -39,6 +41,10 @@ export async function getWorldNpcLayout(): Promise<WorldNpcLayout> {
         nx: clamp01(Number(parsed.jesus?.nx ?? DEFAULT_LAYOUT.jesus.nx)),
         ny: clamp01(Number(parsed.jesus?.ny ?? DEFAULT_LAYOUT.jesus.ny)),
       },
+      maria: {
+        nx: clamp01(Number(parsed.maria?.nx ?? DEFAULT_LAYOUT.maria.nx)),
+        ny: clamp01(Number(parsed.maria?.ny ?? DEFAULT_LAYOUT.maria.ny)),
+      },
     };
   } catch {
     return DEFAULT_LAYOUT;
@@ -50,6 +56,10 @@ export async function setWorldNpcLayout(layout: WorldNpcLayout) {
     jesus: {
       nx: clamp01(layout.jesus.nx),
       ny: clamp01(layout.jesus.ny),
+    },
+    maria: {
+      nx: clamp01(layout.maria.nx),
+      ny: clamp01(layout.maria.ny),
     },
   };
 

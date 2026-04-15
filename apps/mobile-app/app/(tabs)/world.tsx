@@ -49,7 +49,7 @@ const WORLD_LAYER_FIG_TREE = require("../../assets/world-layers/fig-tree-layer.p
 const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.png");
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
-const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a.jpg");
+const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cutout.png");
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
@@ -67,15 +67,20 @@ export default function WorldScreen() {
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [panelVisible, setPanelVisible] = useState({ header: true, brief: true, attendance: true });
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
+  const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.59 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
 
   const npcFloat = useRef(new Animated.Value(0)).current;
   const npcPulseScale = useRef(new Animated.Value(0.86)).current;
   const npcPulseOpacity = useRef(new Animated.Value(0)).current;
   const dragStartRef = useRef({ x: 0, y: 0 });
+  const mariaDragStartRef = useRef({ x: 0, y: 0 });
   const jesusAnchorRef = useRef(jesusAnchor);
+  const mariaAnchorRef = useRef(mariaAnchor);
   const jesusLeftRef = useRef(0);
   const jesusTopRef = useRef(0);
+  const mariaLeftRef = useRef(0);
+  const mariaTopRef = useRef(0);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -86,7 +91,12 @@ export default function WorldScreen() {
 
   useEffect(() => {
     getWorldSetupState().then(setWorldSetup).catch(() => undefined);
-    getWorldNpcLayout().then((layout) => setJesusAnchor(layout.jesus)).catch(() => undefined);
+    getWorldNpcLayout()
+      .then((layout) => {
+        setJesusAnchor(layout.jesus);
+        setMariaAnchor(layout.maria);
+      })
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -128,6 +138,10 @@ export default function WorldScreen() {
   const jesusH = Math.max(96, Math.floor(worldSize.height * 0.12));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
+  const mariaW = Math.max(60, Math.floor(worldSize.width * 0.095));
+  const mariaH = Math.max(92, Math.floor(worldSize.height * 0.12));
+  const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
   const mariaDaysLeft = Math.max(0, (attendanceReward?.rewardTargetDays ?? 7) - (attendanceReward?.streakCount ?? 0));
 
@@ -136,15 +150,34 @@ export default function WorldScreen() {
   }, [jesusAnchor]);
 
   useEffect(() => {
+    mariaAnchorRef.current = mariaAnchor;
+  }, [mariaAnchor]);
+
+  useEffect(() => {
     jesusLeftRef.current = jesusLeft;
     jesusTopRef.current = jesusTop;
   }, [jesusLeft, jesusTop]);
 
-  const persistAnchor = async (nx: number, ny: number) => {
+  useEffect(() => {
+    mariaLeftRef.current = mariaLeft;
+    mariaTopRef.current = mariaTop;
+  }, [mariaLeft, mariaTop]);
+
+  const persistJesusAnchor = async (nx: number, ny: number) => {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
     setJesusAnchor(next);
     try {
-      await setWorldNpcLayout({ jesus: next });
+      await setWorldNpcLayout({ jesus: next, maria: mariaAnchorRef.current });
+    } catch {
+      // ignore local persistence failure to avoid unhandled promise banner
+    }
+  };
+
+  const persistMariaAnchor = async (nx: number, ny: number) => {
+    const next = { nx: clamp01(nx), ny: clamp01(ny) };
+    setMariaAnchor(next);
+    try {
+      await setWorldNpcLayout({ jesus: jesusAnchorRef.current, maria: next });
     } catch {
       // ignore local persistence failure to avoid unhandled promise banner
     }
@@ -217,10 +250,39 @@ export default function WorldScreen() {
           if (Math.abs(gesture.dx) + Math.abs(gesture.dy) < 6) {
             reactNpcTouch();
           }
-          void persistAnchor(jesusAnchorRef.current.nx, jesusAnchorRef.current.ny);
+          void persistJesusAnchor(jesusAnchorRef.current.nx, jesusAnchorRef.current.ny);
         },
       }),
     [jesusH, jesusW, worldSize.height, worldSize.width]
+  );
+
+  const mariaPanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => mariaUnlocked,
+        onMoveShouldSetPanResponder: () => mariaUnlocked,
+        onStartShouldSetPanResponderCapture: () => mariaUnlocked,
+        onMoveShouldSetPanResponderCapture: () => mariaUnlocked,
+        onPanResponderTerminationRequest: () => false,
+        onPanResponderGrant: () => {
+          mariaDragStartRef.current = { x: mariaLeftRef.current, y: mariaTopRef.current };
+        },
+        onPanResponderMove: (_, gesture) => {
+          if (!mariaUnlocked) return;
+          const maxX = Math.max(1, worldSize.width - mariaW);
+          const maxY = Math.max(1, worldSize.height - mariaH);
+          const nextX = Math.max(0, Math.min(maxX, mariaDragStartRef.current.x + gesture.dx));
+          const nextY = Math.max(0, Math.min(maxY, mariaDragStartRef.current.y + gesture.dy));
+          const nextAnchor = { nx: nextX / maxX, ny: nextY / maxY };
+          mariaAnchorRef.current = nextAnchor;
+          setMariaAnchor(nextAnchor);
+        },
+        onPanResponderRelease: () => {
+          if (!mariaUnlocked) return;
+          void persistMariaAnchor(mariaAnchorRef.current.nx, mariaAnchorRef.current.ny);
+        },
+      }),
+    [mariaH, mariaUnlocked, mariaW, worldSize.height, worldSize.width]
   );
 
   if (loading || !snapshot || !selected) {
@@ -270,14 +332,15 @@ export default function WorldScreen() {
 
               {mariaUnlocked ? (
                 <Animated.View
+                  {...mariaPanResponder.panHandlers}
                   style={{
                     position: "absolute",
-                    left: worldSize.width * 0.73,
-                    top: worldSize.height * 0.59,
-                    width: Math.max(60, Math.floor(worldSize.width * 0.095)),
-                    height: Math.max(92, Math.floor(worldSize.height * 0.12)),
-                    transform: [{ translateY: npcFloat.interpolate({ inputRange: [-2.2, 0], outputRange: [0, -1.3] }) }],
-                    zIndex: 12,
+                    left: mariaLeft,
+                    top: mariaTop,
+                    width: mariaW,
+                    height: mariaH,
+                    transform: [{ translateY: npcFloat }],
+                    zIndex: 13,
                   }}
                 >
                   <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
