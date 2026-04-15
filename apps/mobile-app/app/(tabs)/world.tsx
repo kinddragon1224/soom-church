@@ -67,6 +67,7 @@ export default function WorldScreen() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [attendance, setAttendance] = useState<WorldAttendanceRewardState | null>(null);
+  const [panelVisible, setPanelVisible] = useState({ header: true, brief: true, attendance: true });
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
 
@@ -284,7 +285,7 @@ export default function WorldScreen() {
                 >
                   <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
                 </Animated.View>
-              ) : (
+              ) : panelVisible.attendance ? (
                 <View
                   style={{
                     position: "absolute",
@@ -302,26 +303,40 @@ export default function WorldScreen() {
                   <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>7일 출석 보상: 마리아 NPC</Text>
                   <Text style={{ color: "rgba(245,245,245,0.8)", fontSize: 10, marginTop: 2 }}>남은 일수 {mariaDaysLeft}일</Text>
                 </View>
-              )}
+              ) : null}
 
-              <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
-                <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
-                <Text style={{ color: "#f4f7ff", fontSize: 12, fontWeight: "700" }}>{worldSetup?.churchName ?? "교회 미설정"} · {worldSetup?.mokjangName ?? "목장 미설정"}</Text>
-                <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.68)", fontSize: 10 }}>{WORLD_MVP_TEMPLATE.scripture}</Text>
-                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
-                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", paddingHorizontal: 8, paddingVertical: 4 }}>
-                    <Text style={{ color: "#ffeabf", fontSize: 10 }}>지역 {worldSetup?.region ?? "미설정"}</Text>
+              {panelVisible.header ? (
+                <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
+                    <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, header: false }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#3d4d70", backgroundColor: "rgba(22,32,46,0.78)", paddingHorizontal: 8, paddingVertical: 2 }}>
+                      <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>X</Text>
+                    </Pressable>
                   </View>
-                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "#18202e", paddingHorizontal: 8, paddingVertical: 4 }}>
-                    <Text style={{ color: "#d8e7ff", fontSize: 10 }}>목원 {snapshot.peopleRecords.length}명</Text>
+                  <Text style={{ color: "#f4f7ff", fontSize: 12, fontWeight: "700" }}>{worldSetup?.churchName ?? "교회 미설정"} · {worldSetup?.mokjangName ?? "목장 미설정"}</Text>
+                  <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.68)", fontSize: 10 }}>{WORLD_MVP_TEMPLATE.scripture}</Text>
+                  <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+                    <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "#211d14", paddingHorizontal: 8, paddingVertical: 4 }}>
+                      <Text style={{ color: "#ffeabf", fontSize: 10 }}>지역 {worldSetup?.region ?? "미설정"}</Text>
+                    </View>
+                    <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "#18202e", paddingHorizontal: 8, paddingVertical: 4 }}>
+                      <Text style={{ color: "#d8e7ff", fontSize: 10 }}>목원 {snapshot.peopleRecords.length}명</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
+              ) : null}
 
-              <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "rgba(17,17,17,0.76)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20 }}>
-                <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
-                <Text numberOfLines={2} style={{ color: "#f4f7ff", fontSize: 11, marginTop: 3 }}>{afkBrief}</Text>
-              </View>
+              {panelVisible.brief ? (
+                <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "rgba(17,17,17,0.76)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20 }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
+                    <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, brief: false }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#6b5d3a", backgroundColor: "rgba(33,29,20,0.74)", paddingHorizontal: 8, paddingVertical: 2 }}>
+                      <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>X</Text>
+                    </Pressable>
+                  </View>
+                  <Text numberOfLines={2} style={{ color: "#f4f7ff", fontSize: 11, marginTop: 3 }}>{afkBrief}</Text>
+                </View>
+              ) : null}
 
               {npcReaction ? (
                 <View style={{ position: "absolute", left: 16, right: 16, bottom: 88, alignItems: "center", zIndex: 23 }}>
@@ -335,6 +350,17 @@ export default function WorldScreen() {
 
           <View style={{ minHeight: keyboardVisible ? 220 : 170, marginBottom: Platform.OS === "android" ? -10 : 0, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
             <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
+            <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
+              <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, header: !prev.header }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: panelVisible.header ? "#5aa36f" : "#3a3a3a", backgroundColor: panelVisible.header ? "#152419" : "#171717", paddingHorizontal: 8, paddingVertical: 4 }}>
+                <Text style={{ color: panelVisible.header ? "#d7ffe3" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>상단정보 {panelVisible.header ? "ON" : "OFF"}</Text>
+              </Pressable>
+              <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, brief: !prev.brief }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: panelVisible.brief ? "#8a7b54" : "#3a3a3a", backgroundColor: panelVisible.brief ? "#211d14" : "#171717", paddingHorizontal: 8, paddingVertical: 4 }}>
+                <Text style={{ color: panelVisible.brief ? "#ffeabf" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>브리프 {panelVisible.brief ? "ON" : "OFF"}</Text>
+              </Pressable>
+              <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, attendance: !prev.attendance }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: panelVisible.attendance ? "#4e6590" : "#3a3a3a", backgroundColor: panelVisible.attendance ? "#18202e" : "#171717", paddingHorizontal: 8, paddingVertical: 4 }}>
+                <Text style={{ color: panelVisible.attendance ? "#d8e7ff" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>출석보상 {panelVisible.attendance ? "ON" : "OFF"}</Text>
+              </Pressable>
+            </View>
             <View style={{ gap: 6 }}>
               {!keyboardVisible ? (
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
