@@ -138,8 +138,8 @@ export default function WorldScreen() {
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
-  const mariaW = Math.max(44, Math.floor(jesusW * 0.84));
-  const mariaH = Math.max(68, Math.floor(jesusH * 0.86));
+  const mariaW = Math.max(50, Math.floor(jesusW * 0.95));
+  const mariaH = Math.max(75, Math.floor(jesusH * 0.95));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
   const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
