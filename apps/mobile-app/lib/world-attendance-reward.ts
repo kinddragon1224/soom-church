@@ -10,6 +10,9 @@ const PREUNLOCK_ACCOUNT_KEYS = new Set([
   "cmnocwsvb0001sv2912ncfy4m", // gido.mokja1@soom.church
   "cmn2z946b0005svizfauahe9a", // dev@soom.church
   "cmn2z94hd0008svizx28ms8py", // platform-admin@soom.church
+  "anon", // fallback: accountKey 미동기화 기기
+  "default",
+  "manual-local",
 ]);
 
 export type WorldAttendanceRewardState = {
