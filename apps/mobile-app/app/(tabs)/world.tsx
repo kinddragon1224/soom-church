@@ -230,7 +230,7 @@ export default function WorldScreen() {
           />
           <Pressable
             onPress={reactNpcTouch}
-            style={{ position: "absolute", left: "33%", top: "41%", width: "34%", height: "44%", zIndex: 12 }}
+            style={{ position: "absolute", left: "38%", top: "56%", width: "24%", height: "29%", zIndex: 12 }}
           >
             <Animated.View
               pointerEvents="none"
