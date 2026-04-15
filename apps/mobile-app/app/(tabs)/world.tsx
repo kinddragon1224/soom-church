@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ActivityIndicator, Animated, Easing, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StatusBar, Text, TextInput, View, useWindowDimensions } from "react-native";
 
 import { sendChatCommand } from "../../lib/chat-source";
 import { mabiTheme } from "../../lib/ui-theme";
@@ -74,6 +74,10 @@ export default function WorldScreen() {
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [npcReaction, setNpcReaction] = useState<string | null>(null);
+  const npcFloat = useRef(new Animated.Value(0)).current;
+  const npcPulseScale = useRef(new Animated.Value(0.86)).current;
+  const npcPulseOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -100,6 +104,17 @@ export default function WorldScreen() {
       hideSub.remove();
     };
   }, []);
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(npcFloat, { toValue: -2.4, duration: 1100, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+        Animated.timing(npcFloat, { toValue: 0, duration: 1100, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [npcFloat]);
 
   const selected = useMemo(() => {
     if (!snapshot?.worldObjects?.length) return null;
@@ -172,6 +187,22 @@ export default function WorldScreen() {
     }
   };
 
+  const reactNpcTouch = () => {
+    const messages = ["좋아, 바로 도울게.", "오늘도 함께 가자.", "지금 필요한 일부터 보자."];
+    setNpcReaction(messages[Math.floor(Math.random() * messages.length)]);
+
+    npcPulseScale.setValue(0.86);
+    npcPulseOpacity.setValue(0.58);
+    Animated.parallel([
+      Animated.timing(npcPulseScale, { toValue: 1.28, duration: 520, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(npcPulseOpacity, { toValue: 0, duration: 520, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+    ]).start();
+
+    setTimeout(() => {
+      setNpcReaction(null);
+    }, 1400);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
       <KeyboardAvoidingView
@@ -192,7 +223,33 @@ export default function WorldScreen() {
           <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_BUILDINGS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.96 }} resizeMode="cover" />
           <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.95 }} resizeMode="cover" />
+          <Animated.Image
+            source={WORLD_LAYER_NPCS}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.95, transform: [{ translateY: npcFloat }] }}
+            resizeMode="cover"
+          />
+          <Pressable
+            onPress={reactNpcTouch}
+            style={{ position: "absolute", left: "33%", top: "41%", width: "34%", height: "44%", zIndex: 12 }}
+          >
+            <Animated.View
+              pointerEvents="none"
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "52%",
+                width: 72,
+                height: 72,
+                marginLeft: -36,
+                marginTop: -36,
+                borderRadius: 999,
+                borderWidth: 2,
+                borderColor: "rgba(255,234,191,0.95)",
+                opacity: npcPulseOpacity,
+                transform: [{ scale: npcPulseScale }],
+              }}
+            />
+          </Pressable>
           <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_CHARACTERS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <View style={{ position: "absolute", inset: 0, backgroundColor: "rgba(8,8,8,0.16)" }} />
@@ -216,6 +273,14 @@ export default function WorldScreen() {
             <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
             <Text numberOfLines={2} style={{ color: "#f4f7ff", fontSize: 11, marginTop: 3 }}>{afkBrief}</Text>
           </View>
+
+          {npcReaction ? (
+            <View style={{ position: "absolute", left: 16, right: 16, bottom: 88, alignItems: "center", zIndex: 13 }}>
+              <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "rgba(255,234,191,0.65)", backgroundColor: "rgba(24,24,24,0.86)", paddingHorizontal: 12, paddingVertical: 6 }}>
+                <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>{npcReaction}</Text>
+              </View>
+            </View>
+          ) : null}
 
         </View>
         ) : null}
