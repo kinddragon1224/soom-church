@@ -114,19 +114,11 @@ export default function WorldScreen() {
       ? Math.max(300, Math.min(620, Math.floor(windowHeight * 0.58)))
       : Math.max(280, Math.min(520, Math.floor(windowHeight * 0.54)));
 
-  if (loading || !snapshot || !selected) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ color: mabiTheme.textPrimary }}>목양 월드 불러오는 중...</Text>
-      </SafeAreaView>
-    );
-  }
-
-  const urgentCount = snapshot.peopleRecords.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length;
-  const prayerCount = snapshot.peopleRecords.filter((p) => p.state.includes("기도")).length;
+  const urgentCount = snapshot?.peopleRecords?.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length ?? 0;
+  const prayerCount = snapshot?.peopleRecords?.filter((p) => p.state.includes("기도")).length ?? 0;
   const recentMessages = worldMessages.slice(-2);
   const latestAssistant = [...worldMessages].reverse().find((m) => m.role === "assistant");
-  const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected.name}부터 확인해줘.`;
+  const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected?.name ?? "오늘 대상"}부터 확인해줘.`;
   const visiblePresets = WORLD_COMMAND_PRESETS;
 
   const jesusW = Math.max(64, Math.floor(worldSize.width * 0.1));
@@ -213,6 +205,14 @@ export default function WorldScreen() {
     const py = jesusTop + dy;
     await persistAnchor(px / maxX, py / maxY);
   };
+
+  if (loading || !snapshot || !selected) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: mabiTheme.background, alignItems: "center", justifyContent: "center" }}>
+        <Text style={{ color: mabiTheme.textPrimary }}>목양 월드 불러오는 중...</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", paddingTop: Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0 }}>
