@@ -134,12 +134,12 @@ export default function WorldScreen() {
   const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected?.name ?? "오늘 대상"}부터 확인해줘.`;
   const visiblePresets = WORLD_COMMAND_PRESETS;
 
-  const jesusW = Math.max(64, Math.floor(worldSize.width * 0.1));
-  const jesusH = Math.max(96, Math.floor(worldSize.height * 0.12));
+  const jesusW = Math.max(52, Math.floor(worldSize.width * 0.078));
+  const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
-  const mariaW = jesusW;
-  const mariaH = jesusH;
+  const mariaW = Math.max(48, Math.floor(worldSize.width * 0.072));
+  const mariaH = Math.max(72, Math.floor(worldSize.height * 0.092));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
   const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
