@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "name": "soom-world-ground-template",
+    "tileSize": 32,
+    "widthTiles": 29,
+    "heightTiles": 36,
+    "canvas": "928x1152",
+    "notes": "0=empty, 1~N=tile index (MVP ground-only template)"
+  },
+  "layers": [
+    {
+      "id": "ground",
+      "visible": true,
+      "data": []
+    }
+  ]
+}
