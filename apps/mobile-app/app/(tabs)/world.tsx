@@ -64,7 +64,6 @@ export default function WorldScreen() {
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
-  const [editMode, setEditMode] = useState(false);
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
 
@@ -177,34 +176,27 @@ export default function WorldScreen() {
   const panResponder = useMemo(
     () =>
       PanResponder.create({
-        onStartShouldSetPanResponder: () => editMode,
-        onMoveShouldSetPanResponder: () => editMode,
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
-          if (!editMode) return;
           dragStartRef.current = { x: jesusLeft, y: jesusTop };
         },
         onPanResponderMove: (_, gesture) => {
-          if (!editMode) return;
           const maxX = Math.max(1, worldSize.width - jesusW);
           const maxY = Math.max(1, worldSize.height - jesusH);
           const nextX = Math.max(0, Math.min(maxX, dragStartRef.current.x + gesture.dx));
           const nextY = Math.max(0, Math.min(maxY, dragStartRef.current.y + gesture.dy));
           setJesusAnchor({ nx: nextX / maxX, ny: nextY / maxY });
         },
-        onPanResponderRelease: async () => {
+        onPanResponderRelease: async (_, gesture) => {
+          if (Math.abs(gesture.dx) + Math.abs(gesture.dy) < 6) {
+            reactNpcTouch();
+          }
           await persistAnchor(jesusAnchor.nx, jesusAnchor.ny);
         },
       }),
-    [editMode, jesusAnchor.nx, jesusAnchor.ny, jesusH, jesusLeft, jesusW, worldSize.height, worldSize.width]
+    [jesusAnchor.nx, jesusAnchor.ny, jesusH, jesusLeft, jesusW, worldSize.height, worldSize.width]
   );
-
-  const nudgeJesus = async (dx: number, dy: number) => {
-    const maxX = Math.max(1, worldSize.width - jesusW);
-    const maxY = Math.max(1, worldSize.height - jesusH);
-    const px = jesusLeft + dx;
-    const py = jesusTop + dy;
-    await persistAnchor(px / maxX, py / maxY);
-  };
 
   if (loading || !snapshot || !selected) {
     return (
@@ -229,15 +221,9 @@ export default function WorldScreen() {
               <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
 
               <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, transform: [{ translateY: npcFloat }], zIndex: 13 }} {...panResponder.panHandlers}>
-                {editMode ? (
-                  <View style={{ flex: 1 }}>
-                    <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
-                  </View>
-                ) : (
-                  <Pressable onPress={reactNpcTouch} style={{ flex: 1 }}>
-                    <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
-                  </Pressable>
-                )}
+                <View style={{ flex: 1 }}>
+                  <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+                </View>
                 <Animated.View
                   pointerEvents="none"
                   style={{
@@ -260,9 +246,9 @@ export default function WorldScreen() {
               <View style={{ position: "absolute", left: 12, right: 12, top: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "rgba(14,14,14,0.72)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20, gap: 6 }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                   <Text style={{ color: "rgba(255,234,191,0.86)", fontSize: 10, fontWeight: "700" }}>{WORLD_MVP_TEMPLATE.backgroundStory}</Text>
-                  <Pressable onPress={() => setEditMode((v) => !v)} style={{ borderRadius: 999, borderWidth: 1, borderColor: editMode ? "#ffeabf" : "#4e6590", backgroundColor: editMode ? "rgba(255,234,191,0.15)" : "rgba(24,32,46,0.7)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                    <Text style={{ color: editMode ? "#ffeabf" : "#d8e7ff", fontSize: 10, fontWeight: "700" }}>{editMode ? "배치 중" : "배치"}</Text>
-                  </Pressable>
+                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(24,32,46,0.7)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                    <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>드래그 이동</Text>
+                  </View>
                 </View>
                 <Text style={{ color: "#f4f7ff", fontSize: 12, fontWeight: "700" }}>{worldSetup?.churchName ?? "교회 미설정"} · {worldSetup?.mokjangName ?? "목장 미설정"}</Text>
                 <Text numberOfLines={1} style={{ color: "rgba(245,245,245,0.68)", fontSize: 10 }}>{WORLD_MVP_TEMPLATE.scripture}</Text>
@@ -275,21 +261,6 @@ export default function WorldScreen() {
                   </View>
                 </View>
               </View>
-
-              {editMode ? (
-                <View style={{ position: "absolute", right: 12, bottom: 92, zIndex: 22, gap: 6 }}>
-                  <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    <Pressable onPress={() => nudgeJesus(0, -12)} style={{ minWidth: 40, minHeight: 32, borderRadius: 8, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(24,32,46,0.8)", alignItems: "center", justifyContent: "center" }}><Text style={{ color: "#d8e7ff" }}>↑</Text></Pressable>
-                  </View>
-                  <View style={{ flexDirection: "row", gap: 6 }}>
-                    <Pressable onPress={() => nudgeJesus(-12, 0)} style={{ minWidth: 40, minHeight: 32, borderRadius: 8, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(24,32,46,0.8)", alignItems: "center", justifyContent: "center" }}><Text style={{ color: "#d8e7ff" }}>←</Text></Pressable>
-                    <Pressable onPress={() => nudgeJesus(12, 0)} style={{ minWidth: 40, minHeight: 32, borderRadius: 8, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(24,32,46,0.8)", alignItems: "center", justifyContent: "center" }}><Text style={{ color: "#d8e7ff" }}>→</Text></Pressable>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    <Pressable onPress={() => nudgeJesus(0, 12)} style={{ minWidth: 40, minHeight: 32, borderRadius: 8, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(24,32,46,0.8)", alignItems: "center", justifyContent: "center" }}><Text style={{ color: "#d8e7ff" }}>↓</Text></Pressable>
-                  </View>
-                </View>
-              ) : null}
 
               <View style={{ position: "absolute", left: 12, right: 12, bottom: 12, borderRadius: 11, borderWidth: 1, borderColor: "#8a7b54", backgroundColor: "rgba(17,17,17,0.76)", paddingHorizontal: 10, paddingVertical: 8, zIndex: 20 }}>
                 <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>모라 브리프</Text>
