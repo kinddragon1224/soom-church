@@ -16,7 +16,7 @@ export type WorldNpcLayout = {
 
 const DEFAULT_LAYOUT: WorldNpcLayout = {
   jesus: { nx: 0.5, ny: 0.64 },
-  maria: { nx: 0.73, ny: 0.59 },
+  maria: { nx: 0.73, ny: 0.64 },
 };
 
 function clamp01(value: number) {

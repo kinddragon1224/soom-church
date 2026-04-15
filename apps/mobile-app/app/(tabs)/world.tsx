@@ -183,6 +183,15 @@ export default function WorldScreen() {
     }
   };
 
+  useEffect(() => {
+    if (!mariaUnlocked) return;
+    if (mariaAnchor.ny >= 0.63) return;
+    const next = { nx: mariaAnchor.nx, ny: 0.64 };
+    setMariaAnchor(next);
+    mariaAnchorRef.current = next;
+    void persistMariaAnchor(next.nx, next.ny);
+  }, [mariaAnchor.nx, mariaAnchor.ny, mariaUnlocked]);
+
   const reactNpcTouch = () => {
     const messages = ["좋아, 바로 도울게.", "오늘도 함께 가자.", "지금 필요한 일부터 보자."];
     setNpcReaction(messages[Math.floor(Math.random() * messages.length)]);
@@ -331,7 +340,7 @@ export default function WorldScreen() {
               </Animated.View>
 
               {mariaUnlocked ? (
-                <Animated.View
+                <View
                   {...mariaPanResponder.panHandlers}
                   style={{
                     position: "absolute",
@@ -339,12 +348,22 @@ export default function WorldScreen() {
                     top: mariaTop,
                     width: mariaW,
                     height: mariaH,
-                    transform: [{ translateY: npcFloat }],
                     zIndex: 13,
                   }}
                 >
+                  <View
+                    style={{
+                      position: "absolute",
+                      left: "18%",
+                      right: "18%",
+                      bottom: -2,
+                      height: 8,
+                      borderRadius: 999,
+                      backgroundColor: "rgba(0,0,0,0.18)",
+                    }}
+                  />
                   <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
-                </Animated.View>
+                </View>
               ) : panelVisible.attendance ? (
                 <View
                   style={{
