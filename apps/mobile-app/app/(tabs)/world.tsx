@@ -45,11 +45,9 @@ const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
 ];
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
-const WORLD_LAYER_BUILDINGS = require("../../assets/world-layers/buildings-layer.png");
 const WORLD_LAYER_FIG_TREE = require("../../assets/world-layers/fig-tree-layer.png");
 const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.png");
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
-const WORLD_LAYER_CHARACTERS = require("../../assets/world-layers/characters-layer.png");
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
 
 function clamp01(value: number) {
@@ -73,6 +71,7 @@ export default function WorldScreen() {
   const npcFloat = useRef(new Animated.Value(0)).current;
   const npcPulseScale = useRef(new Animated.Value(0.86)).current;
   const npcPulseOpacity = useRef(new Animated.Value(0)).current;
+  const dragStartRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -182,20 +181,21 @@ export default function WorldScreen() {
         onMoveShouldSetPanResponder: () => editMode,
         onPanResponderGrant: () => {
           if (!editMode) return;
+          dragStartRef.current = { x: jesusLeft, y: jesusTop };
         },
         onPanResponderMove: (_, gesture) => {
           if (!editMode) return;
           const maxX = Math.max(1, worldSize.width - jesusW);
           const maxY = Math.max(1, worldSize.height - jesusH);
-          const nextX = Math.max(0, Math.min(maxX, jesusLeft + gesture.dx));
-          const nextY = Math.max(0, Math.min(maxY, jesusTop + gesture.dy));
+          const nextX = Math.max(0, Math.min(maxX, dragStartRef.current.x + gesture.dx));
+          const nextY = Math.max(0, Math.min(maxY, dragStartRef.current.y + gesture.dy));
           setJesusAnchor({ nx: nextX / maxX, ny: nextY / maxY });
         },
         onPanResponderRelease: async () => {
           await persistAnchor(jesusAnchor.nx, jesusAnchor.ny);
         },
       }),
-    [editMode, jesusAnchor.nx, jesusAnchor.ny, jesusH, jesusLeft, jesusTop, jesusW, worldSize.height, worldSize.width]
+    [editMode, jesusAnchor.nx, jesusAnchor.ny, jesusH, jesusLeft, jesusW, worldSize.height, worldSize.width]
   );
 
   const nudgeJesus = async (dx: number, dy: number) => {
@@ -224,16 +224,20 @@ export default function WorldScreen() {
               style={{ height: worldHeight, borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", overflow: "hidden", backgroundColor: "#131313" }}
             >
               <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-              <Image source={WORLD_LAYER_BUILDINGS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
               <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
               <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
               <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-              <Image source={WORLD_LAYER_CHARACTERS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
 
               <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, transform: [{ translateY: npcFloat }], zIndex: 13 }} {...panResponder.panHandlers}>
-                <Pressable onPress={() => (!editMode ? reactNpcTouch() : undefined)} style={{ flex: 1 }}>
-                  <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
-                </Pressable>
+                {editMode ? (
+                  <View style={{ flex: 1 }}>
+                    <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+                  </View>
+                ) : (
+                  <Pressable onPress={reactNpcTouch} style={{ flex: 1 }}>
+                    <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+                  </Pressable>
+                )}
                 <Animated.View
                   pointerEvents="none"
                   style={{
