@@ -83,8 +83,8 @@ export default function WorldScreen() {
   }, [chatDraft, setChatDraft]);
 
   useEffect(() => {
-    getWorldSetupState().then(setWorldSetup);
-    getWorldNpcLayout().then((layout) => setJesusAnchor(layout.jesus));
+    getWorldSetupState().then(setWorldSetup).catch(() => undefined);
+    getWorldNpcLayout().then((layout) => setJesusAnchor(layout.jesus)).catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -139,7 +139,11 @@ export default function WorldScreen() {
   const persistAnchor = async (nx: number, ny: number) => {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
     setJesusAnchor(next);
-    await setWorldNpcLayout({ jesus: next });
+    try {
+      await setWorldNpcLayout({ jesus: next });
+    } catch {
+      // ignore local persistence failure to avoid unhandled promise banner
+    }
   };
 
   const reactNpcTouch = () => {
@@ -205,11 +209,11 @@ export default function WorldScreen() {
           jesusAnchorRef.current = nextAnchor;
           setJesusAnchor(nextAnchor);
         },
-        onPanResponderRelease: async (_, gesture) => {
+        onPanResponderRelease: (_, gesture) => {
           if (Math.abs(gesture.dx) + Math.abs(gesture.dy) < 6) {
             reactNpcTouch();
           }
-          await persistAnchor(jesusAnchorRef.current.nx, jesusAnchorRef.current.ny);
+          void persistAnchor(jesusAnchorRef.current.nx, jesusAnchorRef.current.ny);
         },
       }),
     [jesusH, jesusW, worldSize.height, worldSize.width]
