@@ -71,6 +71,9 @@ export default function WorldScreen() {
   const npcPulseScale = useRef(new Animated.Value(0.86)).current;
   const npcPulseOpacity = useRef(new Animated.Value(0)).current;
   const dragStartRef = useRef({ x: 0, y: 0 });
+  const jesusAnchorRef = useRef(jesusAnchor);
+  const jesusLeftRef = useRef(0);
+  const jesusTopRef = useRef(0);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -123,6 +126,15 @@ export default function WorldScreen() {
   const jesusH = Math.max(96, Math.floor(worldSize.height * 0.12));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
+
+  useEffect(() => {
+    jesusAnchorRef.current = jesusAnchor;
+  }, [jesusAnchor]);
+
+  useEffect(() => {
+    jesusLeftRef.current = jesusLeft;
+    jesusTopRef.current = jesusTop;
+  }, [jesusLeft, jesusTop]);
 
   const persistAnchor = async (nx: number, ny: number) => {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
@@ -178,24 +190,29 @@ export default function WorldScreen() {
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponderCapture: () => true,
+        onMoveShouldSetPanResponderCapture: () => true,
+        onPanResponderTerminationRequest: () => false,
         onPanResponderGrant: () => {
-          dragStartRef.current = { x: jesusLeft, y: jesusTop };
+          dragStartRef.current = { x: jesusLeftRef.current, y: jesusTopRef.current };
         },
         onPanResponderMove: (_, gesture) => {
           const maxX = Math.max(1, worldSize.width - jesusW);
           const maxY = Math.max(1, worldSize.height - jesusH);
           const nextX = Math.max(0, Math.min(maxX, dragStartRef.current.x + gesture.dx));
           const nextY = Math.max(0, Math.min(maxY, dragStartRef.current.y + gesture.dy));
-          setJesusAnchor({ nx: nextX / maxX, ny: nextY / maxY });
+          const nextAnchor = { nx: nextX / maxX, ny: nextY / maxY };
+          jesusAnchorRef.current = nextAnchor;
+          setJesusAnchor(nextAnchor);
         },
         onPanResponderRelease: async (_, gesture) => {
           if (Math.abs(gesture.dx) + Math.abs(gesture.dy) < 6) {
             reactNpcTouch();
           }
-          await persistAnchor(jesusAnchor.nx, jesusAnchor.ny);
+          await persistAnchor(jesusAnchorRef.current.nx, jesusAnchorRef.current.ny);
         },
       }),
-    [jesusAnchor.nx, jesusAnchor.ny, jesusH, jesusLeft, jesusW, worldSize.height, worldSize.width]
+    [jesusH, jesusW, worldSize.height, worldSize.width]
   );
 
   if (loading || !snapshot || !selected) {
