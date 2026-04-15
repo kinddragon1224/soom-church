@@ -8,6 +8,8 @@ const REWARD_TARGET_DAYS = 7;
 // 선용 계정(현재 운영 계정) 즉시 지급 오버라이드
 const PREUNLOCK_ACCOUNT_KEYS = new Set([
   "cmnocwsvb0001sv2912ncfy4m", // gido.mokja1@soom.church
+  "cmn2z946b0005svizfauahe9a", // dev@soom.church
+  "cmn2z94hd0008svizx28ms8py", // platform-admin@soom.church
 ]);
 
 export type WorldAttendanceRewardState = {
