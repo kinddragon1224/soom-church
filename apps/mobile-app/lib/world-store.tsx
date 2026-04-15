@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 import { fetchRuntimeTasks, syncRuntimeTasks, type RuntimeTask } from "./runtime-task-source";
+import { registerWorldAttendanceToday, type WorldAttendanceRewardState } from "./world-attendance-reward";
 import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
 
 const RUNTIME_TASKS_KEY = "soom.mobile.runtime.tasks";
@@ -31,8 +32,10 @@ type WorldStoreValue = {
   chatDraft: string;
   setChatDraft: (text: string) => void;
   runtimeTasks: RuntimeTask[];
+  attendanceReward: WorldAttendanceRewardState | null;
   addRuntimeTask: (task: NewRuntimeTask) => void;
   toggleRuntimeTask: (taskId: string) => void;
+  refreshAttendance: () => Promise<void>;
   refresh: () => Promise<void>;
 };
 
@@ -65,6 +68,7 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
   const [selectedId, setSelectedId] = useState("hub");
   const [chatDraft, setChatDraft] = useState("");
   const [runtimeTasks, setRuntimeTasks] = useState<RuntimeTask[]>([]);
+  const [attendanceReward, setAttendanceReward] = useState<WorldAttendanceRewardState | null>(null);
   const [runtimeHydrated, setRuntimeHydrated] = useState(false);
 
   const refresh = async () => {
@@ -100,8 +104,18 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
     setRuntimeTasks((prev) => prev.map((task) => (task.id === taskId ? { ...task, completed: !task.completed } : task)));
   };
 
+  const refreshAttendance = async () => {
+    try {
+      const next = await registerWorldAttendanceToday();
+      setAttendanceReward(next);
+    } catch {
+      setAttendanceReward(null);
+    }
+  };
+
   useEffect(() => {
     refresh();
+    refreshAttendance();
   }, []);
 
   useEffect(() => {
@@ -158,11 +172,13 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
       chatDraft,
       setChatDraft,
       runtimeTasks,
+      attendanceReward,
       addRuntimeTask,
       toggleRuntimeTask,
+      refreshAttendance,
       refresh,
     }),
-    [loading, snapshot, selectedId, chatDraft, runtimeTasks]
+    [loading, snapshot, selectedId, chatDraft, runtimeTasks, attendanceReward]
   );
 
   return <WorldStoreContext.Provider value={value}>{children}</WorldStoreContext.Provider>;

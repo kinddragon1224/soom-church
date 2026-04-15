@@ -18,7 +18,6 @@ import {
 } from "react-native";
 
 import { sendChatCommand } from "../../lib/chat-source";
-import { registerWorldAttendanceToday, type WorldAttendanceRewardState } from "../../lib/world-attendance-reward";
 import { mabiTheme } from "../../lib/ui-theme";
 import { WORLD_MVP_TEMPLATE } from "../../lib/world-template";
 import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
@@ -57,7 +56,7 @@ function clamp01(value: number) {
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft } = useWorldStore();
+  const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft, attendanceReward } = useWorldStore();
   const { height: windowHeight } = useWindowDimensions();
 
   const [worldDraft, setWorldDraft] = useState("");
@@ -66,7 +65,6 @@ export default function WorldScreen() {
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
-  const [attendance, setAttendance] = useState<WorldAttendanceRewardState | null>(null);
   const [panelVisible, setPanelVisible] = useState({ header: true, brief: true, attendance: true });
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
@@ -89,7 +87,6 @@ export default function WorldScreen() {
   useEffect(() => {
     getWorldSetupState().then(setWorldSetup).catch(() => undefined);
     getWorldNpcLayout().then((layout) => setJesusAnchor(layout.jesus)).catch(() => undefined);
-    registerWorldAttendanceToday().then(setAttendance).catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -131,8 +128,8 @@ export default function WorldScreen() {
   const jesusH = Math.max(96, Math.floor(worldSize.height * 0.12));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
-  const mariaUnlocked = attendance?.mariaUnlocked ?? false;
-  const mariaDaysLeft = Math.max(0, (attendance?.rewardTargetDays ?? 7) - (attendance?.streakCount ?? 0));
+  const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
+  const mariaDaysLeft = Math.max(0, (attendanceReward?.rewardTargetDays ?? 7) - (attendanceReward?.streakCount ?? 0));
 
   useEffect(() => {
     jesusAnchorRef.current = jesusAnchor;

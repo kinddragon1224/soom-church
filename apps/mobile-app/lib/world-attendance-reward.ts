@@ -12,7 +12,9 @@ const PREUNLOCK_ACCOUNT_KEYS = new Set([
 
 export type WorldAttendanceRewardState = {
   lastAttendanceDate: string | null;
+  totalAttendanceDays: number;
   streakCount: number;
+  lastCheckWasConsecutive: boolean;
   mariaUnlocked: boolean;
   mariaUnlockedAt: string | null;
   rewardTargetDays: number;
@@ -20,7 +22,9 @@ export type WorldAttendanceRewardState = {
 
 const EMPTY_STATE: WorldAttendanceRewardState = {
   lastAttendanceDate: null,
+  totalAttendanceDays: 0,
   streakCount: 0,
+  lastCheckWasConsecutive: false,
   mariaUnlocked: false,
   mariaUnlockedAt: null,
   rewardTargetDays: REWARD_TARGET_DAYS,
@@ -41,11 +45,19 @@ function toKstDateToken(date = new Date()) {
   return `${y}-${m}-${d}`;
 }
 
-function isYesterday(prev: string, next: string) {
-  const a = Date.parse(`${prev}T00:00:00.000Z`);
-  const b = Date.parse(`${next}T00:00:00.000Z`);
-  if (!Number.isFinite(a) || !Number.isFinite(b)) return false;
-  return b - a === 24 * 60 * 60 * 1000;
+function isValidDateToken(value: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function previousDateToken(dateToken: string) {
+  if (!isValidDateToken(dateToken)) return null;
+  const [y, m, d] = dateToken.split("-").map(Number);
+  if (!y || !m || !d) return null;
+  const utc = new Date(Date.UTC(y, m - 1, d) - 24 * 60 * 60 * 1000);
+  const py = utc.getUTCFullYear();
+  const pm = `${utc.getUTCMonth() + 1}`.padStart(2, "0");
+  const pd = `${utc.getUTCDate()}`.padStart(2, "0");
+  return `${py}-${pm}-${pd}`;
 }
 
 async function scopedKey() {
@@ -59,7 +71,9 @@ function normalizeState(value: unknown): WorldAttendanceRewardState {
   const parsed = value as Partial<WorldAttendanceRewardState>;
   return {
     lastAttendanceDate: typeof parsed.lastAttendanceDate === "string" ? parsed.lastAttendanceDate : null,
+    totalAttendanceDays: Number.isFinite(parsed.totalAttendanceDays) ? Math.max(0, Number(parsed.totalAttendanceDays)) : 0,
     streakCount: Number.isFinite(parsed.streakCount) ? Math.max(0, Number(parsed.streakCount)) : 0,
+    lastCheckWasConsecutive: Boolean(parsed.lastCheckWasConsecutive),
     mariaUnlocked: Boolean(parsed.mariaUnlocked),
     mariaUnlockedAt: typeof parsed.mariaUnlockedAt === "string" ? parsed.mariaUnlockedAt : null,
     rewardTargetDays: REWARD_TARGET_DAYS,
@@ -82,12 +96,18 @@ export async function registerWorldAttendanceToday(): Promise<WorldAttendanceRew
   }
 
   if (next.lastAttendanceDate !== today) {
-    if (next.lastAttendanceDate && isYesterday(next.lastAttendanceDate, today)) {
+    const yesterday = previousDateToken(today);
+    const wasConsecutive = Boolean(next.lastAttendanceDate && yesterday && next.lastAttendanceDate === yesterday);
+
+    if (wasConsecutive) {
       next.streakCount += 1;
+      next.lastCheckWasConsecutive = true;
     } else {
-      next.streakCount = Math.max(next.streakCount, 1);
+      next.streakCount = 1;
+      next.lastCheckWasConsecutive = false;
     }
 
+    next.totalAttendanceDays += 1;
     next.lastAttendanceDate = today;
 
     if (next.streakCount >= REWARD_TARGET_DAYS && !next.mariaUnlocked) {

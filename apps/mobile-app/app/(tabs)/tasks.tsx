@@ -14,7 +14,7 @@ function formatTime(value: string | number) {
 }
 
 export default function TasksScreen() {
-  const { loading, snapshot, runtimeTasks, toggleRuntimeTask } = useWorldStore();
+  const { loading, snapshot, runtimeTasks, toggleRuntimeTask, attendanceReward, refreshAttendance } = useWorldStore();
   const [growthLogs, setGrowthLogs] = useState<AgentGrowthLoop[]>([]);
   const [growthLoading, setGrowthLoading] = useState(false);
 
@@ -64,6 +64,23 @@ export default function TasksScreen() {
             <Text style={{ color: "#f1c2c2", fontSize: 10 }}>긴급</Text>
             <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", marginTop: 2 }}>{urgentCount}</Text>
           </View>
+        </View>
+
+        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.45)", backgroundColor: "rgba(24,32,46,0.55)", padding: 10 }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Text style={{ color: "#d8e7ff", fontSize: 12, fontWeight: "700" }}>출석 현황</Text>
+            <Pressable onPress={refreshAttendance} style={{ borderRadius: 8, borderWidth: 1, borderColor: "rgba(120,157,214,0.5)", paddingHorizontal: 8, paddingVertical: 4 }}>
+              <Text style={{ color: "#d8e7ff", fontSize: 11 }}>갱신</Text>
+            </Pressable>
+          </View>
+          <Text style={{ color: "rgba(216,231,255,0.86)", fontSize: 11, marginTop: 6 }}>
+            총 접속 {attendanceReward?.totalAttendanceDays ?? 0}일차 · 연속 {attendanceReward?.streakCount ?? 0}일
+          </Text>
+          <Text style={{ color: "rgba(216,231,255,0.74)", fontSize: 10, marginTop: 3 }}>
+            {attendanceReward?.lastAttendanceDate ? `최근 출석 ${attendanceReward.lastAttendanceDate}` : "최근 출석 기록 없음"}
+            {" · "}
+            {attendanceReward?.lastCheckWasConsecutive ? "연속 출석 유지" : "연속 출석 재시작/미유지"}
+          </Text>
         </View>
 
         <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#131313", padding: 10 }}>
