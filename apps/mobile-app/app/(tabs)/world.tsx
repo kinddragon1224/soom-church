@@ -59,6 +59,13 @@ function clampZoom(value: number) {
   return Math.max(1, Math.min(1.8, value));
 }
 
+function getTouchDistance(touches: readonly { pageX: number; pageY: number }[]) {
+  if (touches.length < 2) return 0;
+  const dx = touches[0].pageX - touches[1].pageX;
+  const dy = touches[0].pageY - touches[1].pageY;
+  return Math.hypot(dx, dy);
+}
+
 export default function WorldScreen() {
   const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft, attendanceReward } = useWorldStore();
   const { height: windowHeight } = useWindowDimensions();
@@ -86,6 +93,8 @@ export default function WorldScreen() {
   const jesusTopRef = useRef(0);
   const mariaLeftRef = useRef(0);
   const mariaTopRef = useRef(0);
+  const pinchStartDistanceRef = useRef(0);
+  const pinchStartZoomRef = useRef(1);
 
   useEffect(() => {
     const incoming = chatDraft.trim();
@@ -143,8 +152,8 @@ export default function WorldScreen() {
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
   const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
-  const mariaW = Math.max(46, Math.floor(jesusW * 0.88));
-  const mariaH = Math.max(72, Math.floor(jesusH * 0.9));
+  const mariaW = Math.max(44, Math.floor(jesusW * 0.84));
+  const mariaH = Math.max(68, Math.floor(jesusH * 0.86));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
   const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
@@ -211,9 +220,39 @@ export default function WorldScreen() {
     setTimeout(() => setNpcReaction(null), 1300);
   };
 
-  const adjustWorldZoom = (delta: number) => {
-    setWorldZoom((prev) => clampZoom(Number((prev + delta).toFixed(2))));
-  };
+  const pinchZoomResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: (evt) => evt.nativeEvent.touches.length >= 2,
+        onMoveShouldSetPanResponder: (evt) => evt.nativeEvent.touches.length >= 2,
+        onStartShouldSetPanResponderCapture: (evt) => evt.nativeEvent.touches.length >= 2,
+        onMoveShouldSetPanResponderCapture: (evt) => evt.nativeEvent.touches.length >= 2,
+        onPanResponderTerminationRequest: () => false,
+        onPanResponderGrant: (evt) => {
+          const distance = getTouchDistance(evt.nativeEvent.touches);
+          pinchStartDistanceRef.current = distance;
+          pinchStartZoomRef.current = worldZoom;
+        },
+        onPanResponderMove: (evt) => {
+          if (evt.nativeEvent.touches.length < 2) return;
+          const distance = getTouchDistance(evt.nativeEvent.touches);
+          if (!pinchStartDistanceRef.current) {
+            pinchStartDistanceRef.current = distance;
+            pinchStartZoomRef.current = worldZoom;
+            return;
+          }
+          const ratio = distance / pinchStartDistanceRef.current;
+          setWorldZoom(clampZoom(Number((pinchStartZoomRef.current * ratio).toFixed(3))));
+        },
+        onPanResponderRelease: () => {
+          pinchStartDistanceRef.current = 0;
+        },
+        onPanResponderTerminate: () => {
+          pinchStartDistanceRef.current = 0;
+        },
+      }),
+    [worldZoom]
+  );
 
   const executeCommand = async (text: string) => {
     const ts = Date.now();
@@ -321,6 +360,7 @@ export default function WorldScreen() {
         <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 0, gap: 6 }}>
           {!keyboardVisible ? (
             <View
+              {...pinchZoomResponder.panHandlers}
               onLayout={(e) => setWorldSize({ width: e.nativeEvent.layout.width, height: e.nativeEvent.layout.height })}
               style={{ height: worldHeight, borderRadius: 22, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)", overflow: "hidden", backgroundColor: "#131313" }}
             >
@@ -412,16 +452,10 @@ export default function WorldScreen() {
                 </View>
               ) : null}
 
-              <View style={{ position: "absolute", right: 12, bottom: 84, zIndex: 24, gap: 6 }}>
-                <Pressable onPress={() => adjustWorldZoom(0.1)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(22,32,46,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                  <Text style={{ color: "#d8e7ff", fontSize: 12, fontWeight: "700" }}>줌 +</Text>
-                </Pressable>
-                <Pressable onPress={() => adjustWorldZoom(-0.1)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4e6590", backgroundColor: "rgba(22,32,46,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                  <Text style={{ color: "#d8e7ff", fontSize: 12, fontWeight: "700" }}>줌 -</Text>
-                </Pressable>
-                <Pressable onPress={() => setWorldZoom(1)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "rgba(23,23,23,0.88)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                  <Text style={{ color: "#d0d0d0", fontSize: 10, fontWeight: "700" }}>{Math.round(worldZoom * 100)}%</Text>
-                </Pressable>
+              <View style={{ position: "absolute", right: 12, bottom: 86, zIndex: 24 }}>
+                <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "rgba(23,23,23,0.88)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text style={{ color: "#d0d0d0", fontSize: 10, fontWeight: "700" }}>핀치 줌 {Math.round(worldZoom * 100)}%</Text>
+                </View>
               </View>
 
               {panelVisible.header ? (
