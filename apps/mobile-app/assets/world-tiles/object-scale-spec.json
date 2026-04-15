@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "tileSize": 32,
+    "notes": "All world assets should be designed in tile units first, then exported to pixels."
+  },
+  "sizes": {
+    "npc": {
+      "widthTiles": 2,
+      "heightTiles": 3,
+      "pixel": "64x96",
+      "variants": {
+        "leader": "2x3",
+        "disciple": "2x3",
+        "small": "1.5x2.5"
+      }
+    },
+    "house": {
+      "widthTiles": 4,
+      "heightTiles": 4,
+      "pixel": "128x128",
+      "variants": {
+        "smallHouse": "4x4",
+        "mediumHouse": "5x4"
+      }
+    },
+    "building": {
+      "widthTiles": 6,
+      "heightTiles": 5,
+      "pixel": "192x160",
+      "variants": {
+        "chapel": "6x5",
+        "hall": "7x5"
+      }
+    },
+    "figTree": {
+      "widthTiles": 3,
+      "heightTiles": 5,
+      "pixel": "96x160",
+      "variants": {
+        "main": "3x5",
+        "small": "2x4"
+      }
+    },
+    "flower": {
+      "widthTiles": 1,
+      "heightTiles": 1,
+      "pixel": "32x32",
+      "variants": {
+        "single": "1x1",
+        "cluster": "2x1"
+      }
+    }
+  }
+}
