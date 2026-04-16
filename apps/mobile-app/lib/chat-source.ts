@@ -1,4 +1,4 @@
-import { getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
@@ -27,6 +27,18 @@ export type ChatCommandResult = {
   };
 };
 
+type ChatBackupResponse = {
+  backups?: Array<{
+    id?: string;
+    createdAt?: string;
+    data?: {
+      output?: {
+        actions?: ChatCommandAction[];
+      };
+    } | null;
+  }>;
+};
+
 function resolveChurchSlug(savedSlug: string | null) {
   return savedSlug ?? DEFAULT_CHURCH_SLUG;
 }
@@ -48,11 +60,13 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
 
   try {
     const savedSlug = await getCurrentChurchSlug();
+    const accountKey = (await getCurrentAccountKey()) ?? "anon";
     const response = await fetch(`${WEB_BASE_URL}/api/mobile/chat-command`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
         churchSlug: resolveChurchSlug(savedSlug),
+        accountKey,
         text,
       }),
       signal: controller.signal,
@@ -79,5 +93,55 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
     return fallbackResult();
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+export async function fetchLatestChatBackupActions(limit = 20): Promise<ChatCommandAction[]> {
+  try {
+    const savedSlug = await getCurrentChurchSlug();
+    const churchSlug = resolveChurchSlug(savedSlug);
+    const accountKey = (await getCurrentAccountKey()) ?? "anon";
+
+    const response = await fetch(
+      `${WEB_BASE_URL}/api/mobile/chat-command?churchSlug=${encodeURIComponent(churchSlug)}&accountKey=${encodeURIComponent(accountKey)}&limit=${encodeURIComponent(String(limit))}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`chat backup fetch failed: ${response.status}`);
+    }
+
+    const data = (await response.json()) as ChatBackupResponse;
+    if (!Array.isArray(data.backups)) return [];
+
+    const dedupe = new Set<string>();
+    const actions: ChatCommandAction[] = [];
+
+    for (const backup of data.backups) {
+      const items = backup?.data?.output?.actions;
+      if (!Array.isArray(items)) continue;
+
+      for (const action of items) {
+        if (!action?.title) continue;
+        const key = `${action.title}|${action.due ?? ""}|${action.owner ?? ""}`;
+        if (dedupe.has(key)) continue;
+        dedupe.add(key);
+
+        actions.push({
+          id: action.id || `backup-${actions.length + 1}`,
+          title: action.title,
+          due: action.due || "오늘",
+          owner: action.owner || "모라",
+        });
+      }
+    }
+
+    return actions;
+  } catch {
+    return [];
   }
 }

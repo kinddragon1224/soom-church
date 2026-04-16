@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
+import { fetchLatestChatBackupActions } from "./chat-source";
 import { fetchRuntimeTasks, syncRuntimeTasks, type RuntimeTask } from "./runtime-task-source";
 import { registerWorldAttendanceToday, type WorldAttendanceRewardState } from "./world-attendance-reward";
 import { getWorldSnapshot, type WorldSnapshot } from "./world-data-source";
@@ -138,7 +139,21 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
       }
 
       const remoteTasks = await fetchRuntimeTasks();
-      const nextTasks = remoteTasks.length ? remoteTasks : localTasks;
+      let nextTasks = remoteTasks.length ? remoteTasks : localTasks;
+
+      if (!nextTasks.length) {
+        const backupActions = await fetchLatestChatBackupActions(24);
+        if (backupActions.length) {
+          nextTasks = backupActions.map((action, index) => ({
+            id: `backup-${action.id}-${index}`,
+            title: action.title,
+            due: action.due,
+            owner: action.owner,
+            completed: false,
+            createdAt: Date.now() - index,
+          }));
+        }
+      }
 
       setRuntimeTasks(nextTasks);
       setRuntimeHydrated(true);

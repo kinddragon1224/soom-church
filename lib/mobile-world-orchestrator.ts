@@ -11,6 +11,7 @@ type ActionItem = {
 type OrchestrateInput = {
   churchSlug: string;
   text: string;
+  accountKey?: string;
 };
 
 type DbActionSummary = {
@@ -47,6 +48,32 @@ type StatusPatchPlan = {
   reason: string;
 };
 
+type LlmResult = {
+  reply?: string;
+  intents?: string[];
+  actions?: ActionItem[];
+  autoBuild?: {
+    workspace?: string;
+    shepherdingQueue?: string[];
+    memberOps?: string[];
+  };
+};
+
+function normalizeAccountKey(value: unknown) {
+  if (typeof value !== "string") return "anon";
+  const next = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "-")
+    .slice(0, 80);
+  return next || "anon";
+}
+
+function sanitizeJsonText(value: string) {
+  const fenced = value.match(/```json\s*([\s\S]*?)```/i) || value.match(/```\s*([\s\S]*?)```/i);
+  return (fenced?.[1] ?? value).trim();
+}
+
 function detectIntents(text: string) {
   const intents: string[] = [];
 
@@ -57,6 +84,35 @@ function detectIntents(text: string) {
 
   if (!intents.length) intents.push("GENERAL_SHEPHERDING");
   return intents;
+}
+
+function sanitizeActions(value: unknown): ActionItem[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((item, index) => {
+      if (!item || typeof item !== "object") return null;
+      const maybe = item as Partial<ActionItem>;
+      const title = typeof maybe.title === "string" ? maybe.title.trim() : "";
+      if (!title) return null;
+
+      return {
+        id: typeof maybe.id === "string" && maybe.id.trim() ? maybe.id.trim() : `action-${index + 1}`,
+        title,
+        due: typeof maybe.due === "string" && maybe.due.trim() ? maybe.due.trim() : "오늘",
+        owner: typeof maybe.owner === "string" && maybe.owner.trim() ? maybe.owner.trim() : "모라",
+      };
+    })
+    .filter((item): item is ActionItem => Boolean(item))
+    .slice(0, 8);
+}
+
+function sanitizeIntents(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => (typeof item === "string" ? item.trim().toUpperCase() : ""))
+    .filter(Boolean)
+    .slice(0, 8);
 }
 
 function buildActions(intents: string[], followupCount: number) {
@@ -150,6 +206,74 @@ function planStatusPatch(text: string): StatusPatchPlan | null {
   return null;
 }
 
+async function runLlmCommandPlan(params: {
+  churchName: string;
+  churchSlug: string;
+  text: string;
+  followupCount: number;
+  householdCount: number;
+  memberOps: string[];
+}) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+
+  const baseUrl = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
+  const model = process.env.OPENAI_MODEL || process.env.LLM_MODEL || "gpt-4.1-mini";
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 18000);
+
+  try {
+    const response = await fetch(`${baseUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.35,
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are Mora, an execution-focused assistant for a Korean church operations app. Return JSON only with keys: reply(string), intents(string[]), actions([{id,title,due,owner}]), autoBuild({workspace,shepherdingQueue,memberOps}). Keep reply concise and actionable Korean. Prefer practical tasks and concrete next steps. Do not include markdown.",
+          },
+          {
+            role: "user",
+            content: JSON.stringify({
+              churchName: params.churchName,
+              churchSlug: params.churchSlug,
+              text: params.text,
+              context: {
+                followupCount: params.followupCount,
+                householdCount: params.householdCount,
+                memberOps: params.memberOps,
+              },
+              instruction: "목장 관련이든 일반 운영이든 일단 전체 기능 실행 가능성 확인이 우선이다. API 연결 확인 목적의 실행 액션을 포함해줘.",
+            }),
+          },
+        ],
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const content = data?.choices?.[0]?.message?.content;
+    if (typeof content !== "string" || !content.trim()) return null;
+
+    const parsed = JSON.parse(sanitizeJsonText(content)) as LlmResult;
+    return parsed;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function applyDbActions(params: {
   churchId: string;
   text: string;
@@ -236,8 +360,9 @@ async function applyDbActions(params: {
   };
 }
 
-export async function orchestrateMobileWorldChat({ churchSlug, text }: OrchestrateInput): Promise<OrchestrateOutput> {
+export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey }: OrchestrateInput): Promise<OrchestrateOutput> {
   const trimmedText = text.trim();
+  const safeAccountKey = normalizeAccountKey(accountKey);
 
   const church = await prisma.church.findFirst({
     where: { slug: churchSlug, isActive: true },
@@ -284,16 +409,31 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
     }),
   ]);
 
-  const intents = detectIntents(trimmedText);
-  const actions = buildActions(intents, followupCount);
-
   const memberOps = recentMembers.map((member) => `${member.name}: ${member.requiresFollowUp ? "후속 필요" : member.statusTag}`);
-  const queue = actions.map((item) => item.title);
+
+  const llmPlan = await runLlmCommandPlan({
+    churchName: church.name,
+    churchSlug: church.slug,
+    text: trimmedText,
+    followupCount,
+    householdCount,
+    memberOps,
+  });
+
+  const intents = sanitizeIntents(llmPlan?.intents);
+  const finalIntents = intents.length ? intents : detectIntents(trimmedText);
+
+  const llmActions = sanitizeActions(llmPlan?.actions);
+  const actions = llmActions.length ? llmActions : buildActions(finalIntents, followupCount);
 
   const autoBuild = {
-    workspace: `${church.slug}-mobile-world-ops`,
-    shepherdingQueue: queue,
-    memberOps,
+    workspace: llmPlan?.autoBuild?.workspace?.trim() || `${church.slug}-mobile-world-ops`,
+    shepherdingQueue: Array.isArray(llmPlan?.autoBuild?.shepherdingQueue) && llmPlan?.autoBuild?.shepherdingQueue.length
+      ? llmPlan.autoBuild.shepherdingQueue.map((item) => String(item).trim()).filter(Boolean)
+      : actions.map((item) => item.title),
+    memberOps: Array.isArray(llmPlan?.autoBuild?.memberOps) && llmPlan?.autoBuild?.memberOps.length
+      ? llmPlan.autoBuild.memberOps.map((item) => String(item).trim()).filter(Boolean)
+      : memberOps,
   };
 
   const loopId = `loop-${church.slug}-${Date.now()}`;
@@ -301,26 +441,38 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
     loopId,
     title: `${church.name} Mobile World Agent Loop`,
     summary: `후속 ${followupCount}명, 가정 ${householdCount}개 기준으로 월드 채팅 운영 루프 생성`,
-    suggestedGithubIssue: `[mobile-world] ${church.slug} auto-build loop: ${intents.join(", ")}`,
+    suggestedGithubIssue: `[mobile-world] ${church.slug} auto-build loop: ${finalIntents.join(", ")}`,
   };
 
   const dbActions = await applyDbActions({
     churchId: church.id,
     text: trimmedText,
     statusPlan: planStatusPatch(trimmedText),
-    intents,
+    intents: finalIntents,
   });
 
   const dbActionLine = dbActions.applied
     ? ` DB 반영: ${dbActions.updatedMembers.join(", ")} → ${dbActions.statusTag}, 후속기록 ${dbActions.followUpRecords}건.`
     : "";
 
-  const reply = [
+  const fallbackReply = [
     `${church.name} 기준으로 월드 운영 시스템을 자동 구축했어.`,
-    `핵심 의도: ${intents.join(", ")}`,
+    `핵심 의도: ${finalIntents.join(", ")}`,
     `현재 후속 필요 ${followupCount}명, 가정 ${householdCount}개를 기준으로 실행 큐를 만들었어.`,
     `요청 반영: "${trimmedText}"${dbActionLine}`,
   ].join(" ");
+
+  const reply = typeof llmPlan?.reply === "string" && llmPlan.reply.trim() ? `${llmPlan.reply.trim()}${dbActionLine}` : fallbackReply;
+
+  const output: OrchestrateOutput = {
+    ok: true,
+    reply,
+    actions,
+    intents: finalIntents,
+    autoBuild,
+    agentGrowth,
+    dbActions,
+  };
 
   await prisma.activityLog.create({
     data: {
@@ -328,8 +480,9 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
       action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
       targetType: "MOBILE_WORLD_CHAT",
       metadata: JSON.stringify({
+        source: llmPlan ? "llm" : "rule",
         text: trimmedText,
-        intents,
+        intents: finalIntents,
         actions,
         autoBuild,
         agentGrowth,
@@ -338,13 +491,21 @@ export async function orchestrateMobileWorldChat({ churchSlug, text }: Orchestra
     },
   });
 
-  return {
-    ok: true,
-    reply,
-    actions,
-    intents,
-    autoBuild,
-    agentGrowth,
-    dbActions,
-  };
+  await prisma.activityLog.create({
+    data: {
+      churchId: church.id,
+      action: "MOBILE_WORLD_CHAT_BACKUP",
+      targetType: "MOBILE_CHAT_COMMAND",
+      targetId: safeAccountKey,
+      metadata: JSON.stringify({
+        accountKey: safeAccountKey,
+        churchSlug: church.slug,
+        input: { text: trimmedText },
+        output,
+        savedAt: new Date().toISOString(),
+      }),
+    },
+  });
+
+  return output;
 }
