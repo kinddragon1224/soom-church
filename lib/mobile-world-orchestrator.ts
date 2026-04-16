@@ -77,6 +77,87 @@ function normalizeAccountKey(value: unknown) {
   return next || "anon";
 }
 
+function safeSlugPart(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 40);
+}
+
+function normalizeChurchSlugInput(value: string | null | undefined) {
+  const normalized = safeSlugPart(value ?? "");
+  return normalized || "mobile";
+}
+
+function slugTitle(slug: string) {
+  return `${slug.toUpperCase()} 목장`;
+}
+
+async function resolveOrCreateChurch(churchSlug: string, safeAccountKey: string) {
+  const normalizedSlug = normalizeChurchSlugInput(churchSlug);
+  const user = safeAccountKey !== "anon"
+    ? await prisma.user.findUnique({ where: { id: safeAccountKey }, select: { id: true, name: true, isActive: true } })
+    : null;
+
+  const bySlug = await prisma.church.findFirst({
+    where: { slug: normalizedSlug, isActive: true },
+    select: { id: true, slug: true, name: true },
+  });
+  if (bySlug) {
+    if (user?.id) {
+      await prisma.churchMembership.upsert({
+        where: { userId_churchId: { userId: user.id, churchId: bySlug.id } },
+        create: { userId: user.id, churchId: bySlug.id, role: "OWNER", isActive: true },
+        update: { isActive: true },
+      });
+    }
+    return bySlug;
+  }
+
+  if (user?.id) {
+    const membership = await prisma.churchMembership.findFirst({
+      where: { userId: user.id, isActive: true, church: { isActive: true } },
+      orderBy: { updatedAt: "desc" },
+      select: { church: { select: { id: true, slug: true, name: true } } },
+    });
+    if (membership?.church) return membership.church;
+  }
+
+  const byAnySlug = await prisma.church.findFirst({
+    where: { slug: normalizedSlug },
+    select: { id: true, slug: true, name: true },
+  });
+  if (byAnySlug) {
+    if (user?.id) {
+      await prisma.churchMembership.upsert({
+        where: { userId_churchId: { userId: user.id, churchId: byAnySlug.id } },
+        create: { userId: user.id, churchId: byAnySlug.id, role: "OWNER", isActive: true },
+        update: { isActive: true },
+      });
+    }
+    return byAnySlug;
+  }
+
+  return prisma.church.create({
+    data: {
+      slug: normalizedSlug,
+      name: user?.name ? `${user.name} 목장` : slugTitle(normalizedSlug),
+      memberships: user?.id
+        ? {
+            create: {
+              userId: user.id,
+              role: "OWNER",
+              isActive: true,
+            },
+          }
+        : undefined,
+    },
+    select: { id: true, slug: true, name: true },
+  });
+}
+
 function sanitizeJsonText(value: string) {
   const fenced = value.match(/```json\s*([\s\S]*?)```/i) || value.match(/```\s*([\s\S]*?)```/i);
   return (fenced?.[1] ?? value).trim();
@@ -544,44 +625,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey,
     };
   }
 
-  let church = await prisma.church.findFirst({
-    where: { slug: churchSlug, isActive: true },
-    select: { id: true, slug: true, name: true },
-  });
-
-  if (!church) {
-    const intents = detectIntents(trimmedText);
-    const actions = buildActions(intents, 0);
-
-    return {
-      ok: true,
-      reply: `교회 정보를 아직 찾지 못했어. 그래도 "${trimmedText}" 기준으로 바로 실행 가능한 기본 목양 플로우를 만들었어.`,
-      actions,
-      intents,
-      autoBuild: {
-        workspace: "fallback-workspace",
-        shepherdingQueue: actions.map((item) => item.title),
-        memberOps: ["상태태그 점검", "후속 연락 큐 정렬"],
-      },
-      agentGrowth: {
-        loopId: `loop-${Date.now()}`,
-        title: "Fallback Mobile World Loop",
-        summary: "교회 식별 실패 상태에서 기본 루프를 생성함",
-        suggestedGithubIssue: "[mobile-world] fallback orchestration and church binding",
-      },
-      dbActions: {
-        applied: false,
-        updatedMembers: [],
-        followUpRecords: 0,
-        note: "교회 식별 실패",
-      },
-      diagnostics: {
-        mode: "rule",
-        provider: "rule-fallback",
-        reason: "활성 교회 없음",
-      },
-    };
-  }
+  let church = await resolveOrCreateChurch(churchSlug, safeAccountKey);
 
   const [followupCount, householdCount, recentMembers] = await Promise.all([
     prisma.member.count({ where: { churchId: church.id, isDeleted: false, requiresFollowUp: true } }),
