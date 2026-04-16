@@ -27,7 +27,6 @@ type ChatDiagnostics = {
   mode: "openclaw" | "rule";
   provider: string;
   reason?: string;
-  model?: string;
 };
 
 type OrchestrateOutput = {
@@ -322,7 +321,6 @@ async function chooseCommandPlan(params: {
       diagnostics: {
         mode: "openclaw",
         provider: "openclaw-bridge",
-        model: params.model || process.env.OPENCLAW_BRIDGE_MODEL || "default",
       } as ChatDiagnostics,
     } as const;
   }

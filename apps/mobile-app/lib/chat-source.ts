@@ -19,13 +19,6 @@ export type ChatCommandResult = {
     mode?: "openclaw" | "llm" | "rule";
     provider?: string;
     reason?: string;
-    model?: string;
-  };
-  modelConfig?: {
-    requested?: string | null;
-    persisted?: boolean;
-    isAdmin?: boolean;
-    effective?: string | null;
   };
   autoBuild?: {
     workspace?: string;
@@ -76,10 +69,6 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
   try {
     const savedSlug = await getCurrentChurchSlug();
     const accountKey = (await getCurrentAccountKey()) ?? "anon";
-    const trimmed = text.trim();
-    const modelMatch = trimmed.match(/^\/model\s+([a-zA-Z0-9._:/-]{2,120})$/i);
-    const modelOverride = modelMatch?.[1] ?? undefined;
-    const persistModel = Boolean(modelOverride);
     const bases = [WEB_BASE_URL, WEB_BASE_URL_FALLBACK]
       .map((value) => value.trim())
       .filter(Boolean)
@@ -98,8 +87,6 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
           body: JSON.stringify({
             churchSlug: resolveChurchSlug(savedSlug),
             accountKey,
-            model: modelOverride,
-            persistModel,
             text,
           }),
           signal: controller.signal,
@@ -122,7 +109,6 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
           actions: Array.isArray(data.actions) ? data.actions : [],
           intents: Array.isArray(data.intents) ? data.intents : [],
           diagnostics: data.diagnostics,
-          modelConfig: data.modelConfig,
           autoBuild: data.autoBuild,
           agentGrowth: data.agentGrowth,
         };
