@@ -79,7 +79,7 @@ export function WorldStoreProvider({ children }: { children: ReactNode }) {
       const next = await getWorldSnapshot();
       setSnapshot(next);
     } catch {
-      setSnapshot(null);
+      // keep previous snapshot on transient fetch failure
     } finally {
       setLoading(false);
     }

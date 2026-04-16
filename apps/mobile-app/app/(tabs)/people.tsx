@@ -27,6 +27,7 @@ export default function PeopleScreen() {
   useFocusEffect(
     useCallback(() => {
       let mounted = true;
+      void refresh();
       getMemberLocalCache().then((loaded) => {
         if (mounted) setCache(loaded);
       });

@@ -71,6 +71,10 @@ const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-la
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
 const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cutout.png");
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
 }
@@ -252,6 +256,10 @@ const executeCommand = async (text: string) => {
     });
 
     await refresh();
+    if (result.dbActions?.applied) {
+      await sleep(280);
+      await refresh();
+    }
   };
 
   const connectionLabel =

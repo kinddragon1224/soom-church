@@ -14,6 +14,12 @@ export type ChatCommandAction = {
 export type ChatCommandResult = {
   reply: string;
   actions: ChatCommandAction[];
+  dbActions?: {
+    applied?: boolean;
+    updatedMembers?: string[];
+    followUpRecords?: number;
+    note?: string;
+  };
   intents?: string[];
   diagnostics?: {
     mode?: "openclaw" | "llm" | "rule";
@@ -110,6 +116,7 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
         return {
           reply: data.reply,
           actions: Array.isArray(data.actions) ? data.actions : [],
+          dbActions: data.dbActions,
           intents: Array.isArray(data.intents) ? data.intents : [],
           diagnostics: data.diagnostics,
           autoBuild: data.autoBuild,

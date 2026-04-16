@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 import { chatQuickActions, type PersonRecord, type TaskRecord, type WorldObject, worldObjects } from "./world-model";
 
@@ -12,6 +14,8 @@ type SnapshotPayload = {
 };
 
 export type WorldSnapshot = SnapshotPayload;
+
+const SNAPSHOT_CACHE_KEY = "soom.mobile.world.snapshot.v1";
 
 function fallbackSnapshot(): WorldSnapshot {
   return {
@@ -70,12 +74,40 @@ function resolveChurchSlug(savedSlug: string | null) {
   return savedSlug ?? DEFAULT_CHURCH_SLUG;
 }
 
-export async function getWorldSnapshot(): Promise<WorldSnapshot> {
+async function snapshotScopedKey(churchSlug: string, accountKey: string | null) {
+  return `${SNAPSHOT_CACHE_KEY}:${churchSlug}:${accountKey ?? "anon"}`;
+}
+
+async function readCachedSnapshot(churchSlug: string, accountKey: string | null): Promise<WorldSnapshot | null> {
   try {
-    const savedSlug = await getCurrentChurchSlug();
-    const accountKey = await getCurrentAccountKey();
-    return await fetchRemoteSnapshot(resolveChurchSlug(savedSlug), accountKey);
+    const raw = await AsyncStorage.getItem(await snapshotScopedKey(churchSlug, accountKey));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as unknown;
+    return isSnapshotPayload(parsed) ? parsed : null;
   } catch {
-    return fallbackSnapshot();
+    return null;
+  }
+}
+
+async function writeCachedSnapshot(churchSlug: string, accountKey: string | null, snapshot: WorldSnapshot) {
+  try {
+    await AsyncStorage.setItem(await snapshotScopedKey(churchSlug, accountKey), JSON.stringify(snapshot));
+  } catch {
+    // ignore cache write failure
+  }
+}
+
+export async function getWorldSnapshot(): Promise<WorldSnapshot> {
+  const savedSlug = await getCurrentChurchSlug();
+  const churchSlug = resolveChurchSlug(savedSlug);
+  const accountKey = await getCurrentAccountKey();
+
+  try {
+    const remote = await fetchRemoteSnapshot(churchSlug, accountKey);
+    await writeCachedSnapshot(churchSlug, accountKey, remote);
+    return remote;
+  } catch {
+    const cached = await readCachedSnapshot(churchSlug, accountKey);
+    return cached ?? fallbackSnapshot();
   }
 }
