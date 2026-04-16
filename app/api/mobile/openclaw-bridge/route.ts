@@ -92,3 +92,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function GET() {
+  const configuredToken = process.env.OPENCLAW_BRIDGE_TOKEN?.trim();
+
+  return NextResponse.json({
+    ok: true,
+    bridge: "openclaw-local-cli",
+    hasToken: Boolean(configuredToken),
+  });
+}

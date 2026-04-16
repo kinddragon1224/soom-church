@@ -13,20 +13,16 @@ export async function GET() {
     });
   }
 
+  const startedAt = Date.now();
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), 4000);
 
   try {
     const response = await fetch(bridgeUrl, {
-      method: "POST",
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         ...(hasToken ? { Authorization: `Bearer ${process.env.OPENCLAW_BRIDGE_TOKEN}` } : {}),
       },
-      body: JSON.stringify({
-        model: process.env.OPENCLAW_BRIDGE_MODEL || "default",
-        messages: [{ role: "user", content: "health-check" }],
-      }),
       signal: controller.signal,
     });
 
@@ -35,6 +31,7 @@ export async function GET() {
       bridgeConfigured: true,
       bridgeReachable: response.ok,
       status: response.status,
+      latencyMs: Date.now() - startedAt,
       hasToken,
     });
   } catch (error) {
@@ -51,4 +48,3 @@ export async function GET() {
     clearTimeout(timeout);
   }
 }
-
