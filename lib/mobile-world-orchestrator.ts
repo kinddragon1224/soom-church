@@ -268,8 +268,12 @@ function buildActions(intents: string[], followupCount: number) {
 }
 
 function extractRequestedMemberName(text: string) {
-  const normalized = text.replace(/\s+/g, " ").trim();
+  const normalized = text
+    .replace(/^\s*(모라|mora|assistant)[,\s]*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
   const nameToken = "([가-힣A-Za-z]{1,20}(?:\s?[가-힣A-Za-z]{1,20})?)";
+  const ignored = new Set(["모라", "mora", "assistant", "에이전트"]);
 
   const patterns = [
     new RegExp(`${nameToken}\\s*목원\\s*추가`, "i"),
@@ -284,7 +288,9 @@ function extractRequestedMemberName(text: string) {
   for (const pattern of patterns) {
     const match = normalized.match(pattern);
     if (match?.[1]) {
-      return match[1].trim();
+      const candidate = match[1].trim();
+      if (ignored.has(candidate.toLowerCase())) continue;
+      return candidate;
     }
   }
 
@@ -470,6 +476,15 @@ async function applyDbActions(params: {
   const { churchId, text, statusPlan, intents } = params;
 
   const requestedName = intents.includes("MEMBER_ADD") ? extractRequestedMemberName(text) : null;
+
+  if (intents.includes("MEMBER_ADD") && !requestedName) {
+    return {
+      applied: false,
+      updatedMembers: [],
+      followUpRecords: 0,
+      note: "목원 이름이 없어 추가를 실행하지 않음",
+    };
+  }
 
   if (requestedName) {
     const existing = await prisma.member.findFirst({

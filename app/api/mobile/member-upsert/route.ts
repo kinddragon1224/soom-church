@@ -1,9 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { getRecentChurchByUserId } from "@/lib/church-context";
 import { prisma } from "@/lib/prisma";
 
 function normalizeText(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeAccountKey(value: unknown) {
+  if (typeof value !== "string") return "anon";
+  const next = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "-")
+    .slice(0, 80);
+  return next || "anon";
+}
+
+function safeSlugPart(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 40);
+}
+
+function normalizeChurchSlugInput(value: string | null | undefined) {
+  const normalized = safeSlugPart(value ?? "");
+  return normalized || "mobile";
+}
+
+function slugTitle(slug: string) {
+  return `${slug.toUpperCase()} 목장`;
 }
 
 function memberStatus(state: string) {
@@ -36,7 +65,47 @@ async function findOrCreateHousehold(churchId: string, householdName: string) {
   return created.id;
 }
 
-async function resolveChurch(churchSlug: string) {
+async function ensureChurchBySlug(churchSlug: string, accountKey: string) {
+  const slug = normalizeChurchSlugInput(churchSlug);
+  const user = accountKey !== "anon"
+    ? await prisma.user.findUnique({ where: { id: accountKey }, select: { id: true, name: true, isActive: true } })
+    : null;
+
+  const existing = await prisma.church.findFirst({
+    where: { slug },
+    select: { id: true },
+  });
+
+  if (existing) {
+    if (user?.id && user.isActive) {
+      await prisma.churchMembership.upsert({
+        where: { userId_churchId: { userId: user.id, churchId: existing.id } },
+        create: { userId: user.id, churchId: existing.id, role: "OWNER", isActive: true },
+        update: { isActive: true },
+      });
+    }
+    return existing;
+  }
+
+  return prisma.church.create({
+    data: {
+      slug,
+      name: user?.name ? `${user.name} 목장` : slugTitle(slug),
+      memberships: user?.id && user.isActive
+        ? {
+            create: {
+              userId: user.id,
+              role: "OWNER",
+              isActive: true,
+            },
+          }
+        : undefined,
+    },
+    select: { id: true },
+  });
+}
+
+async function resolveChurch(churchSlug: string, accountKey: string) {
   if (churchSlug) {
     const bySlug = await prisma.church.findFirst({
       where: { slug: churchSlug, isActive: true },
@@ -45,17 +114,21 @@ async function resolveChurch(churchSlug: string) {
     if (bySlug) return bySlug;
   }
 
-  return prisma.church.findFirst({
-    where: { isActive: true },
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  if (accountKey !== "anon") {
+    const recent = await getRecentChurchByUserId(accountKey);
+    if (recent?.id) {
+      return { id: recent.id };
+    }
+  }
+
+  return ensureChurchBySlug(churchSlug, accountKey);
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const churchSlug = normalizeText(body.churchSlug);
+    const accountKey = normalizeAccountKey(body.accountKey);
     const name = normalizeText(body.name);
     const household = normalizeText(body.household);
     const state = normalizeText(body.state);
@@ -65,7 +138,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "name is required" }, { status: 400 });
     }
 
-    const church = await resolveChurch(churchSlug);
+    const church = await resolveChurch(churchSlug, accountKey);
 
     if (!church) {
       return NextResponse.json({ error: "church not found" }, { status: 404 });
@@ -99,6 +172,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const churchSlug = normalizeText(body.churchSlug);
+    const accountKey = normalizeAccountKey(body.accountKey);
     const idRaw = normalizeText(body.id);
     const name = normalizeText(body.name);
     const household = normalizeText(body.household);
@@ -116,9 +190,9 @@ export async function PATCH(request: NextRequest) {
       select: { id: true, churchId: true },
     });
 
-    const resolvedChurch = await resolveChurch(churchSlug);
+    const resolvedChurch = await resolveChurch(churchSlug, accountKey);
     let finalMemberId = memberId;
-    let churchId = exists?.churchId ?? resolvedChurch?.id ?? null;
+    let churchId: string | null = exists?.churchId ?? resolvedChurch?.id ?? null;
     let created = false;
 
     if (!exists) {
@@ -181,6 +255,7 @@ export async function DELETE(request: NextRequest) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const churchSlug = normalizeText(body.churchSlug);
+    const accountKey = normalizeAccountKey(body.accountKey);
     const idRaw = normalizeText(body.id);
     const name = normalizeText(body.name);
 
@@ -194,7 +269,7 @@ export async function DELETE(request: NextRequest) {
       : null;
 
     if (!target && name) {
-      const church = await resolveChurch(churchSlug);
+      const church = await resolveChurch(churchSlug, accountKey);
       if (church) {
         target = await prisma.member.findFirst({
           where: { churchId: church.id, name, isDeleted: false },

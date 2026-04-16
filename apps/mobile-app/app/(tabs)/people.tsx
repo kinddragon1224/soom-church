@@ -93,15 +93,7 @@ export default function PeopleScreen() {
       setNewHousehold("");
       Alert.alert("완료", "목원을 추가했어.");
     } catch {
-      const member: LocalMember = { id: `local-${Date.now()}`, name, household, state: "등록", nextAction: "다음 액션 미정" };
-      const nextCache = withAddedMember(cache, member);
-      setCache(nextCache);
-      await setMemberLocalCache(nextCache);
-      setSelectedId(member.id);
-      setPage(1);
-      setNewName("");
-      setNewHousehold("");
-      Alert.alert("임시 추가", "서버 저장은 실패했지만 화면에 바로 추가했어.");
+      Alert.alert("실패", "서버 저장에 실패했어. 다시 시도해줘.");
     } finally {
       setAdding(false);
     }
