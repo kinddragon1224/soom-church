@@ -77,9 +77,11 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
 
     const errors: string[] = [];
 
-    for (const base of bases) {
+    for (let index = 0; index < bases.length; index += 1) {
+      const base = bases[index];
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 45000);
+      const timeoutMs = index === 0 ? 12000 : 8000;
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
       try {
         const response = await fetch(`${base}/api/mobile/chat-command`, {
