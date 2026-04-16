@@ -48,7 +48,7 @@ function resolveChurchSlug(savedSlug: string | null) {
   return savedSlug ?? DEFAULT_CHURCH_SLUG;
 }
 
-function fallbackResult(): ChatCommandResult {
+function fallbackResult(reason: string): ChatCommandResult {
   return {
     reply: "지금은 네트워크가 불안정해서 임시 응답으로 진행할게. 오늘 후속 3개부터 바로 처리해보자.",
     actions: [
@@ -56,6 +56,11 @@ function fallbackResult(): ChatCommandResult {
       { id: "fallback-2", title: "연락 후 상태태그 갱신", due: "오늘", owner: "목양 관리" },
     ],
     intents: ["GENERAL_SHEPHERDING"],
+    diagnostics: {
+      mode: "rule",
+      provider: "mobile-fetch-fallback",
+      reason,
+    },
   };
 }
 
@@ -95,8 +100,8 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
       autoBuild: data.autoBuild,
       agentGrowth: data.agentGrowth,
     };
-  } catch {
-    return fallbackResult();
+  } catch (error) {
+    return fallbackResult(error instanceof Error ? error.message : "unknown fetch error");
   } finally {
     clearTimeout(timeout);
   }

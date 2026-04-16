@@ -37,6 +37,12 @@ type WorldCommandPreset = {
   accent: string;
 };
 
+type ChatConnectionState = {
+  mode: "openclaw" | "llm" | "rule";
+  provider?: string;
+  reason?: string;
+};
+
 const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
   { id: "followup-today", label: "오늘 후속 배정", command: "모라, 오늘 후속 필요한 사람 3명 골라서 연락 순서까지 정리해줘", accent: "rgba(92,132,214,0.28)" },
   { id: "prayer-priority", label: "기도 우선 정리", command: "모라, 기도 요청 들어온 순서대로 오늘 우선순위 정리해줘", accent: "rgba(107,163,128,0.26)" },
@@ -63,6 +69,7 @@ export default function WorldScreen() {
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
+  const [chatConnection, setChatConnection] = useState<ChatConnectionState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [panelVisible, setPanelVisible] = useState({ header: true, brief: true });
@@ -213,12 +220,33 @@ export default function WorldScreen() {
     addRuntimeTask({ id: `command-log-${ts}`, title: `[명령 실행] ${text.replace(/^모라,?\s*/, "")}`, due: "방금", owner: "모라 명령창" });
 
     const result = await sendChatCommand(text);
+    setChatConnection({
+      mode: result.diagnostics?.mode ?? "rule",
+      provider: result.diagnostics?.provider,
+      reason: result.diagnostics?.reason,
+    });
     setWorldMessages((prev) => [...prev, { id: `wa-${Date.now()}`, role: "assistant", text: result.reply }]);
 
     result.actions.forEach((action, index) => {
       addRuntimeTask({ id: `${action.id}-world-${ts}-${index}`, title: action.title, due: action.due, owner: action.owner });
     });
   };
+
+  const connectionLabel =
+    chatConnection?.mode === "openclaw"
+      ? "OpenClaw 연결"
+      : chatConnection?.mode === "llm"
+        ? "LLM 연결"
+        : chatConnection?.mode === "rule"
+          ? "규칙 모드"
+          : "연결 대기";
+
+  const connectionColor =
+    chatConnection?.mode === "openclaw"
+      ? "#57b67b"
+      : chatConnection?.mode === "llm"
+        ? "#5f86c9"
+        : "#a18658";
 
   const submitWorldChat = async () => {
     const text = worldDraft.trim();
@@ -472,6 +500,17 @@ export default function WorldScreen() {
                 ) : (
                   <Text style={{ color: "rgba(245,245,245,0.56)", fontSize: 11 }}>여기에 모라 응답이 표시돼.</Text>
                 )}
+              </View>
+
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <View style={{ borderRadius: 999, borderWidth: 1, borderColor: connectionColor, backgroundColor: "rgba(23,23,23,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text style={{ color: "#f4f7ff", fontSize: 10, fontWeight: "700" }}>{connectionLabel}</Text>
+                </View>
+                {chatConnection?.reason ? (
+                  <Text numberOfLines={1} style={{ flex: 1, textAlign: "right", color: "rgba(245,245,245,0.55)", fontSize: 10 }}>
+                    {chatConnection.reason}
+                  </Text>
+                ) : null}
               </View>
 
               <View style={{ flexDirection: "row", alignItems: "stretch", gap: 8 }}>
