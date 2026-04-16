@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { getStatusUpdatePatch } from "@/lib/member-status";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 
 type ActionItem = {
   id: string;
@@ -241,68 +245,54 @@ async function runOpenClawPlan(params: {
   householdCount: number;
   memberOps: string[];
 }) {
-  const url = process.env.OPENCLAW_CHAT_URL;
-  const oauthToken = process.env.OPENCLAW_OAUTH_TOKEN;
+  const openclawBin = process.env.OPENCLAW_BIN || "openclaw";
+  const sessionId = process.env.OPENCLAW_AGENT_SESSION_ID || "soom-mobile-chat";
 
-  if (!url) {
-    return { plan: null, reason: "OPENCLAW_CHAT_URL 없음" } as const;
-  }
+  const promptPayload = {
+    churchName: params.churchName,
+    churchSlug: params.churchSlug,
+    text: params.text,
+    context: {
+      followupCount: params.followupCount,
+      householdCount: params.householdCount,
+      memberOps: params.memberOps,
+    },
+    outputSpec: {
+      type: "json",
+      keys: ["reply", "intents", "actions", "autoBuild"],
+      actionShape: { id: "string", title: "string", due: "string", owner: "string" },
+    },
+    instruction: "한국어로 짧고 실행형. JSON만 출력. markdown 금지.",
+  };
 
-  if (!oauthToken) {
-    return { plan: null, reason: "OPENCLAW_OAUTH_TOKEN 없음" } as const;
-  }
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 18000);
+  const message = `너는 모라다. 아래 입력으로 실행 계획을 JSON으로만 반환해.\n${JSON.stringify(promptPayload)}`;
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${oauthToken}`,
-      },
-      body: JSON.stringify({
-        model: process.env.OPENCLAW_CHAT_MODEL || "default",
-        messages: [
-          {
-            role: "system",
-            content:
-              "너는 모라다. 한국어로 짧고 실행형으로 답한다. JSON만 반환: reply, intents, actions[{id,title,due,owner}], autoBuild{workspace,shepherdingQueue,memberOps}",
-          },
-          {
-            role: "user",
-            content: JSON.stringify({
-              churchName: params.churchName,
-              churchSlug: params.churchSlug,
-              text: params.text,
-              context: {
-                followupCount: params.followupCount,
-                householdCount: params.householdCount,
-                memberOps: params.memberOps,
-              },
-            }),
-          },
-        ],
-      }),
-      signal: controller.signal,
-    });
+    const { stdout } = await execFileAsync(openclawBin, [
+      "agent",
+      "--session-id",
+      sessionId,
+      "--message",
+      message,
+      "--json",
+      "--timeout",
+      "90",
+    ], { timeout: 95000, maxBuffer: 1024 * 1024 * 4 });
 
-    if (!response.ok) {
-      return { plan: null, reason: `OpenClaw HTTP ${response.status}` } as const;
+    const wrapper = JSON.parse(stdout);
+    const payloadText = wrapper?.result?.payloads?.[0]?.text;
+    if (typeof payloadText !== "string" || !payloadText.trim()) {
+      return { plan: null, reason: "OpenClaw payload text 없음" } as const;
     }
 
-    const data = await response.json();
-    const parsed = parseProviderPlan(data);
+    const parsed = parseProviderPlan({ choices: [{ message: { content: payloadText } }] });
     if (!parsed) {
       return { plan: null, reason: "OpenClaw 응답 파싱 실패" } as const;
     }
 
     return { plan: parsed, reason: "ok" } as const;
   } catch {
-    return { plan: null, reason: "OpenClaw 호출 예외" } as const;
-  } finally {
-    clearTimeout(timeout);
+    return { plan: null, reason: "OpenClaw CLI 호출 예외" } as const;
   }
 }
 
