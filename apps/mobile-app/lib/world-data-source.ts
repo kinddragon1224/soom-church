@@ -1,4 +1,4 @@
-import { getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 import { chatQuickActions, type PersonRecord, type TaskRecord, type WorldObject, worldObjects } from "./world-model";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
@@ -36,8 +36,8 @@ function isSnapshotPayload(value: unknown): value is SnapshotPayload {
   );
 }
 
-async function fetchRemoteSnapshot(churchSlug: string): Promise<WorldSnapshot> {
-  const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(churchSlug)}`;
+async function fetchRemoteSnapshot(churchSlug: string, accountKey: string | null): Promise<WorldSnapshot> {
+  const endpoint = `${WEB_BASE_URL}/api/mobile/world-snapshot?churchSlug=${encodeURIComponent(churchSlug)}&accountKey=${encodeURIComponent(accountKey ?? "anon")}`;
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error("snapshot timeout")), 4500);
@@ -73,7 +73,8 @@ function resolveChurchSlug(savedSlug: string | null) {
 export async function getWorldSnapshot(): Promise<WorldSnapshot> {
   try {
     const savedSlug = await getCurrentChurchSlug();
-    return await fetchRemoteSnapshot(resolveChurchSlug(savedSlug));
+    const accountKey = await getCurrentAccountKey();
+    return await fetchRemoteSnapshot(resolveChurchSlug(savedSlug), accountKey);
   } catch {
     return fallbackSnapshot();
   }

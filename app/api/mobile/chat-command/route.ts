@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { getRecentChurchByUserId } from "@/lib/church-context";
 import { orchestrateMobileWorldChat } from "@/lib/mobile-world-orchestrator";
 import { prisma } from "@/lib/prisma";
 
@@ -27,12 +28,28 @@ function normalizeAccountKey(value: unknown) {
   return next || "anon";
 }
 
-async function resolveChurchId(churchSlug: string) {
+async function resolveChurch(churchSlug: string, accountKey?: string | null) {
   const church = await prisma.church.findFirst({
     where: { slug: churchSlug, isActive: true },
-    select: { id: true },
+    select: { id: true, slug: true },
   });
 
+  if (church) return church;
+
+  const key = normalizeAccountKey(accountKey);
+  if (!key || key === "anon") return null;
+
+  const recent = await getRecentChurchByUserId(key);
+  if (!recent) return null;
+
+  return {
+    id: recent.id,
+    slug: recent.slug,
+  };
+}
+
+async function resolveChurchId(churchSlug: string, accountKey?: string | null) {
+  const church = await resolveChurch(churchSlug, accountKey);
   return church?.id ?? null;
 }
 
@@ -66,7 +83,7 @@ export async function GET(request: NextRequest) {
     const limitRaw = Number(searchParams.get("limit") || 20);
     const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 100) : 20;
 
-    const churchId = await resolveChurchId(churchSlug);
+    const churchId = await resolveChurchId(churchSlug, accountKey);
     if (!churchId) {
       return NextResponse.json({ ok: true, backups: [] });
     }
@@ -118,11 +135,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const churchId = await resolveChurchId(churchSlug);
+    const resolvedChurch = await resolveChurch(churchSlug, accountKey);
+    const churchId = resolvedChurch?.id ?? null;
     const model = churchId ? await readChatModelConfig(churchId) : null;
 
     const result = await orchestrateMobileWorldChat({
-      churchSlug,
+      churchSlug: resolvedChurch?.slug ?? churchSlug,
       accountKey,
       model: model || undefined,
       text,

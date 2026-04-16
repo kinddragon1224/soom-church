@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { getRecentChurchByUserId } from "@/lib/church-context";
 import { prisma } from "@/lib/prisma";
 
 const FALLBACK_WORLD_OBJECTS = [
@@ -58,11 +59,22 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
+    const accountKey = searchParams.get("accountKey")?.trim().toLowerCase() || "anon";
 
-    const church = await prisma.church.findFirst({
+    let church = await prisma.church.findFirst({
       where: { slug: churchSlug, isActive: true },
       select: { id: true, name: true },
     });
+
+    if (!church && accountKey !== "anon") {
+      const recent = await getRecentChurchByUserId(accountKey);
+      if (recent) {
+        church = {
+          id: recent.id,
+          name: recent.name,
+        };
+      }
+    }
 
     if (!church) {
       return NextResponse.json(buildFallbackResponse());
