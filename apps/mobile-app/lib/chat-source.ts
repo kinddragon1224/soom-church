@@ -66,7 +66,7 @@ function fallbackResult(reason: string): ChatCommandResult {
 
 export async function sendChatCommand(text: string): Promise<ChatCommandResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 45000);
+  const timeout = setTimeout(() => controller.abort(new Error(`timeout:${WEB_BASE_URL}`)), 45000);
 
   try {
     const savedSlug = await getCurrentChurchSlug();
@@ -101,7 +101,11 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
       agentGrowth: data.agentGrowth,
     };
   } catch (error) {
-    return fallbackResult(error instanceof Error ? error.message : "unknown fetch error");
+    let reason = "unknown fetch error";
+    if (error instanceof Error) {
+      reason = error.message;
+    }
+    return fallbackResult(reason);
   } finally {
     clearTimeout(timeout);
   }

@@ -33,15 +33,15 @@ detect_host_ip() {
   return 1
 }
 
-if [[ -z "${EXPO_PUBLIC_WEB_BASE_URL:-}" ]]; then
-  if host_ip=$(detect_host_ip); then
-    export EXPO_PUBLIC_WEB_BASE_URL="http://${host_ip}:3000"
-    echo "[mobile-recover] EXPO_PUBLIC_WEB_BASE_URL auto-set to ${EXPO_PUBLIC_WEB_BASE_URL}"
-  else
-    echo "[mobile-recover] warning: host LAN IP detection failed (keeping existing EXPO_PUBLIC_WEB_BASE_URL)"
-  fi
+if host_ip=$(detect_host_ip); then
+  export EXPO_PUBLIC_WEB_BASE_URL="http://${host_ip}:3000"
+  echo "[mobile-recover] EXPO_PUBLIC_WEB_BASE_URL forced to ${EXPO_PUBLIC_WEB_BASE_URL}"
+  cat > "$APP/.env" <<EOF
+EXPO_PUBLIC_WEB_BASE_URL=${EXPO_PUBLIC_WEB_BASE_URL}
+EOF
+  echo "[mobile-recover] wrote $APP/.env"
 else
-  echo "[mobile-recover] EXPO_PUBLIC_WEB_BASE_URL preset: ${EXPO_PUBLIC_WEB_BASE_URL}"
+  echo "[mobile-recover] warning: host LAN IP detection failed"
 fi
 
 ensure_web_bridge() {
