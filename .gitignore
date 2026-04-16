@@ -142,3 +142,13 @@ vite.config.ts.timestamp-*
 # Private local data for church/mokjang pilot
 /data/private/
 /.local/
+
+# Mobile world local/generated artifacts
+apps/mobile-app/.expo/
+apps/mobile-app/assets/world-layers/*preview*.png
+apps/mobile-app/assets/world-layers/*.backup-before-*.png
+apps/mobile-app/assets/world-layers/world-current-composite.png
+apps/mobile-app/assets/world-npcs/**/frames/
+apps/mobile-app/assets/world-npcs/maria/*-preview*.png
+apps/mobile-app/assets/world-npcs/maria/*options*.jpg
+public/uploads/
