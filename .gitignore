@@ -152,3 +152,8 @@ apps/mobile-app/assets/world-npcs/**/frames/
 apps/mobile-app/assets/world-npcs/maria/*-preview*.png
 apps/mobile-app/assets/world-npcs/maria/*options*.jpg
 public/uploads/
+
+# Hourly loop generated state
+ops/mokjang-world-hourly/current.json
+ops/mokjang-world-hourly/state.json
+ops/mokjang-world-hourly/PROMPT.txt
