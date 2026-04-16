@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, SafeAreaView, View } from "react-native";
 import { router } from "expo-router";
 
-import { getAuthConnected } from "../lib/auth-bridge";
+import { getAuthConnected, getCurrentAccountKey, setAuthConnected } from "../lib/auth-bridge";
 import { getWorldSetupState } from "../lib/world-setup";
 
 export default function IndexScreen() {
@@ -10,6 +10,13 @@ export default function IndexScreen() {
     const run = async () => {
       const connected = await getAuthConnected();
       if (!connected) {
+        router.replace("/login");
+        return;
+      }
+
+      const accountKey = await getCurrentAccountKey();
+      if (!accountKey) {
+        await setAuthConnected(false);
         router.replace("/login");
         return;
       }

@@ -284,10 +284,12 @@ const executeCommand = async (text: string) => {
     setWorldDraft("");
     try {
       await executeCommand(text);
-    } catch {
-      setLatestBrief("명령 실행 중 오류가 났어. 네트워크 상태를 확인하고 다시 시도해줘.");
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "";
+      const loginRequired = reason.includes("ACCOUNT_LOGIN_REQUIRED") || reason.includes("401");
+      setLatestBrief(loginRequired ? "로그인 연결이 필요해. 다시 로그인하고 시도해줘." : "명령 실행 중 오류가 났어. 네트워크 상태를 확인하고 다시 시도해줘.");
       setLatestPlannedActions([]);
-      setWorldMessages((prev) => [...prev, { id: `wa-fail-${Date.now()}`, role: "assistant", text: "명령 실행 중 오류가 났어. 다시 시도해줘." }]);
+      setWorldMessages((prev) => [...prev, { id: `wa-fail-${Date.now()}`, role: "assistant", text: loginRequired ? "로그인 연결이 필요해. 다시 로그인해줘." : "명령 실행 중 오류가 났어. 다시 시도해줘." }]);
     } finally {
       setWorldSending(false);
     }

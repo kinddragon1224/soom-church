@@ -55,6 +55,14 @@ export async function getCurrentAccountKey() {
   return normalizeAccountKey(value);
 }
 
+export async function getRequiredAccountKey() {
+  const accountKey = await getCurrentAccountKey();
+  if (!accountKey) {
+    throw new Error("ACCOUNT_LOGIN_REQUIRED");
+  }
+  return accountKey;
+}
+
 export async function setCurrentAccountKey(accountKey: string | null | undefined) {
   const normalized = normalizeAccountKey(accountKey);
 

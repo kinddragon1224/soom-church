@@ -1,4 +1,4 @@
-import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentChurchSlug, getRequiredAccountKey } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const WEB_BASE_URL_FALLBACK = process.env.EXPO_PUBLIC_WEB_BASE_URL_FALLBACK ?? "https://soom.io.kr";
@@ -57,6 +57,19 @@ function resolveChurchSlug(savedSlug: string | null) {
 }
 
 function fallbackResult(reason: string): ChatCommandResult {
+  if (reason.includes("ACCOUNT_LOGIN_REQUIRED") || reason.includes("http-401")) {
+    return {
+      reply: "로그인 연결이 필요해. 다시 로그인하고 시도해줘.",
+      actions: [{ id: "login-required", title: "구글 로그인 다시 연결", due: "지금", owner: "목자" }],
+      intents: ["AUTH_REQUIRED"],
+      diagnostics: {
+        mode: "rule",
+        provider: "mobile-fetch-fallback",
+        reason,
+      },
+    };
+  }
+
   return {
     reply: "지금은 네트워크가 불안정해서 임시 응답으로 진행할게. 오늘 후속 3개부터 바로 처리해보자.",
     actions: [
@@ -75,7 +88,7 @@ function fallbackResult(reason: string): ChatCommandResult {
 export async function sendChatCommand(text: string): Promise<ChatCommandResult> {
   try {
     const savedSlug = await getCurrentChurchSlug();
-    const accountKey = (await getCurrentAccountKey()) ?? "anon";
+    const accountKey = await getRequiredAccountKey();
     const bases = [WEB_BASE_URL, WEB_BASE_URL_FALLBACK]
       .map((value) => value.trim())
       .filter(Boolean)
@@ -149,7 +162,7 @@ export async function fetchLatestChatBackupActions(limit = 20): Promise<ChatComm
   try {
     const savedSlug = await getCurrentChurchSlug();
     const churchSlug = resolveChurchSlug(savedSlug);
-    const accountKey = (await getCurrentAccountKey()) ?? "anon";
+    const accountKey = await getRequiredAccountKey();
 
     const response = await fetch(
       `${WEB_BASE_URL}/api/mobile/chat-command?churchSlug=${encodeURIComponent(churchSlug)}&accountKey=${encodeURIComponent(accountKey)}&limit=${encodeURIComponent(String(limit))}`,

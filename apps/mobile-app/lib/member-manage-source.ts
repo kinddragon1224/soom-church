@@ -1,4 +1,4 @@
-import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
+import { getCurrentChurchSlug, getRequiredAccountKey } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "mobile";
@@ -17,8 +17,7 @@ async function resolveChurchSlug() {
 }
 
 async function resolveAccountKey() {
-  const saved = await getCurrentAccountKey();
-  return saved ?? "anon";
+  return getRequiredAccountKey();
 }
 
 async function requestJson(path: string, method: "POST" | "PATCH", body: Record<string, unknown>) {
