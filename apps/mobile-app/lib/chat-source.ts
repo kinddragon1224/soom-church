@@ -66,7 +66,7 @@ function fallbackResult(reason: string): ChatCommandResult {
 
 export async function sendChatCommand(text: string): Promise<ChatCommandResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), 45000);
 
   try {
     const savedSlug = await getCurrentChurchSlug();
