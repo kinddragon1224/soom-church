@@ -245,6 +245,10 @@ async function runOpenClawPlan(params: {
   householdCount: number;
   memberOps: string[];
 }) {
+  if (process.env.OPENCLAW_AGENT_ENABLED !== "true") {
+    return { plan: null, reason: "OPENCLAW_AGENT_ENABLED!=true" } as const;
+  }
+
   const openclawBin = process.env.OPENCLAW_BIN || "openclaw";
   const sessionId = process.env.OPENCLAW_AGENT_SESSION_ID || "soom-mobile-chat";
 
