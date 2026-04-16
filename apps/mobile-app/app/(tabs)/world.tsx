@@ -237,9 +237,7 @@ export default function WorldScreen() {
       ? "OpenClaw 연결"
       : chatConnection?.mode === "llm"
         ? "LLM 연결"
-        : chatConnection?.mode === "rule"
-          ? "규칙 모드"
-          : "연결 대기";
+        : "규칙 모드";
 
   const connectionColor =
     chatConnection?.mode === "openclaw"
@@ -502,16 +500,18 @@ export default function WorldScreen() {
                 )}
               </View>
 
-              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <View style={{ borderRadius: 999, borderWidth: 1, borderColor: connectionColor, backgroundColor: "rgba(23,23,23,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                  <Text style={{ color: "#f4f7ff", fontSize: 10, fontWeight: "700" }}>{connectionLabel}</Text>
+              {chatConnection ? (
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: connectionColor, backgroundColor: "rgba(23,23,23,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
+                    <Text style={{ color: "#f4f7ff", fontSize: 10, fontWeight: "700" }}>{connectionLabel}</Text>
+                  </View>
+                  {chatConnection.reason ? (
+                    <Text numberOfLines={1} style={{ flex: 1, textAlign: "right", color: "rgba(245,245,245,0.55)", fontSize: 10 }}>
+                      {chatConnection.reason}
+                    </Text>
+                  ) : null}
                 </View>
-                {chatConnection?.reason ? (
-                  <Text numberOfLines={1} style={{ flex: 1, textAlign: "right", color: "rgba(245,245,245,0.55)", fontSize: 10 }}>
-                    {chatConnection.reason}
-                  </Text>
-                ) : null}
-              </View>
+              ) : null}
 
               <View style={{ flexDirection: "row", alignItems: "stretch", gap: 8 }}>
                 <TextInput
