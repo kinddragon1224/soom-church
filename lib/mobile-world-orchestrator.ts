@@ -291,8 +291,9 @@ async function runOpenClawPlan(params: {
     }
 
     return { plan: parsed, reason: "ok" } as const;
-  } catch {
-    return { plan: null, reason: "OpenClaw CLI 호출 예외" } as const;
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : "unknown";
+    return { plan: null, reason: `OpenClaw CLI 호출 예외: ${detail}` } as const;
   }
 }
 
