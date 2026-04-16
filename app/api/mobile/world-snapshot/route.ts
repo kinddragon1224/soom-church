@@ -55,11 +55,78 @@ function buildFallbackResponse() {
   };
 }
 
+function normalizeAccountKey(value: string | null | undefined) {
+  if (!value) return "anon";
+  const next = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, "-")
+    .slice(0, 80);
+  return next || "anon";
+}
+
+function safeSlugPart(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 20);
+}
+
+async function ensureChurchForAccount(accountKey: string) {
+  if (!accountKey || accountKey === "anon") return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: accountKey },
+    select: { id: true, name: true, isActive: true },
+  });
+
+  if (!user || !user.isActive) return null;
+
+  const basePart = safeSlugPart(user.name || accountKey) || safeSlugPart(accountKey) || "mobile";
+  for (let i = 0; i < 20; i += 1) {
+    const suffix = i === 0 ? "" : `-${i + 1}`;
+    const slug = `acct-${basePart}${suffix}`;
+    const existing = await prisma.church.findFirst({
+      where: { slug },
+      select: { id: true, name: true },
+    });
+    if (existing) {
+      await prisma.churchMembership.upsert({
+        where: { userId_churchId: { userId: user.id, churchId: existing.id } },
+        create: { userId: user.id, churchId: existing.id, role: "OWNER", isActive: true },
+        update: { isActive: true, role: "OWNER" },
+      });
+      return existing;
+    }
+
+    const created = await prisma.church.create({
+      data: {
+        slug,
+        name: `${user.name || "개인"} 목장`,
+        memberships: {
+          create: {
+            userId: user.id,
+            role: "OWNER",
+            isActive: true,
+          },
+        },
+      },
+      select: { id: true, name: true },
+    });
+
+    return created;
+  }
+
+  return null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
-    const accountKey = searchParams.get("accountKey")?.trim().toLowerCase() || "anon";
+    const accountKey = normalizeAccountKey(searchParams.get("accountKey"));
 
     let church = await prisma.church.findFirst({
       where: { slug: churchSlug, isActive: true },
@@ -74,6 +141,10 @@ export async function GET(request: NextRequest) {
           name: recent.name,
         };
       }
+    }
+
+    if (!church) {
+      church = await ensureChurchForAccount(accountKey);
     }
 
     if (!church) {

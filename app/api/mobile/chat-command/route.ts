@@ -48,8 +48,72 @@ async function resolveChurch(churchSlug: string, accountKey?: string | null) {
   };
 }
 
+function safeSlugPart(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 20);
+}
+
+async function ensureChurchForAccount(accountKey?: string | null) {
+  const key = normalizeAccountKey(accountKey);
+  if (!key || key === "anon") return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: key },
+    select: { id: true, name: true, isActive: true },
+  });
+
+  if (!user || !user.isActive) return null;
+
+  const basePart = safeSlugPart(user.name || key) || safeSlugPart(key) || "mobile";
+  for (let i = 0; i < 20; i += 1) {
+    const suffix = i === 0 ? "" : `-${i + 1}`;
+    const slug = `acct-${basePart}${suffix}`;
+    const existing = await prisma.church.findFirst({
+      where: { slug },
+      select: { id: true, slug: true },
+    });
+    if (existing) {
+      await prisma.churchMembership.upsert({
+        where: { userId_churchId: { userId: user.id, churchId: existing.id } },
+        create: { userId: user.id, churchId: existing.id, role: "OWNER", isActive: true },
+        update: { isActive: true, role: "OWNER" },
+      });
+      return existing;
+    }
+
+    const created = await prisma.church.create({
+      data: {
+        slug,
+        name: `${user.name || "개인"} 목장`,
+        memberships: {
+          create: {
+            userId: user.id,
+            role: "OWNER",
+            isActive: true,
+          },
+        },
+      },
+      select: { id: true, slug: true },
+    });
+
+    return created;
+  }
+
+  return null;
+}
+
+async function resolveOrEnsureChurch(churchSlug: string, accountKey?: string | null) {
+  const resolved = await resolveChurch(churchSlug, accountKey);
+  if (resolved) return resolved;
+  return ensureChurchForAccount(accountKey);
+}
+
 async function resolveChurchId(churchSlug: string, accountKey?: string | null) {
-  const church = await resolveChurch(churchSlug, accountKey);
+  const church = await resolveOrEnsureChurch(churchSlug, accountKey);
   return church?.id ?? null;
 }
 
@@ -135,7 +199,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const resolvedChurch = await resolveChurch(churchSlug, accountKey);
+    const resolvedChurch = await resolveOrEnsureChurch(churchSlug, accountKey);
     const churchId = resolvedChurch?.id ?? null;
     const model = churchId ? await readChatModelConfig(churchId) : null;
 
