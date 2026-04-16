@@ -123,6 +123,11 @@ function sanitizeIntents(value: unknown) {
     .slice(0, 8);
 }
 
+function sanitizeTextValue(value: unknown) {
+  if (typeof value !== "string") return "";
+  return value.trim();
+}
+
 function buildActions(intents: string[], followupCount: number) {
   const actions: ActionItem[] = [];
 
@@ -502,7 +507,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey,
   const actions = planActions.length ? planActions : buildActions(finalIntents, followupCount);
 
   const autoBuild = {
-    workspace: planned.plan?.autoBuild?.workspace?.trim() || `${church.slug}-mobile-world-ops`,
+    workspace: sanitizeTextValue(planned.plan?.autoBuild?.workspace) || `${church.slug}-mobile-world-ops`,
     shepherdingQueue: Array.isArray(planned.plan?.autoBuild?.shepherdingQueue) && planned.plan.autoBuild.shepherdingQueue.length
       ? planned.plan.autoBuild.shepherdingQueue.map((item) => String(item).trim()).filter(Boolean)
       : actions.map((item) => item.title),
