@@ -85,6 +85,8 @@ function sanitizeJsonText(value: string) {
 function detectIntents(text: string) {
   const intents: string[] = [];
 
+  if (/(목원\s*추가|추가해줘|등록해줘)/.test(text) && /(목원|멤버)/.test(text)) intents.push("MEMBER_ADD");
+
   if (text.includes("기도")) intents.push("PRAYER_MANAGEMENT");
   if (text.includes("후속") || text.includes("연락") || text.includes("심방")) intents.push("FOLLOWUP_MANAGEMENT");
   if (text.includes("가정") || text.includes("목장") || text.includes("목원")) intents.push("MEMBER_CARE_MANAGEMENT");
@@ -131,6 +133,15 @@ function sanitizeTextValue(value: unknown) {
 function buildActions(intents: string[], followupCount: number) {
   const actions: ActionItem[] = [];
 
+  if (intents.includes("MEMBER_ADD")) {
+    actions.push({
+      id: "member-add",
+      title: "신규 목원 등록 및 기본 상태 반영",
+      due: "지금",
+      owner: "목양 관리",
+    });
+  }
+
   if (intents.includes("FOLLOWUP_MANAGEMENT")) {
     actions.push({
       id: "followup-priority",
@@ -168,6 +179,27 @@ function buildActions(intents: string[], followupCount: number) {
   }
 
   return actions;
+}
+
+function extractRequestedMemberName(text: string) {
+  const normalized = text.replace(/\s+/g, " ").trim();
+
+  const patterns = [
+    /([가-힣]{2,8})\s*목원\s*추가/i,
+    /목원\s*([가-힣]{2,8})\s*추가/i,
+    /([가-힣]{2,8})\s*멤버\s*추가/i,
+    /멤버\s*([가-힣]{2,8})\s*추가/i,
+    /([가-힣]{2,8})\s*(등록|추가)해줘/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = normalized.match(pattern);
+    if (match?.[1]) {
+      return match[1].trim();
+    }
+  }
+
+  return null;
 }
 
 function planStatusPatch(text: string): StatusPatchPlan | null {
@@ -347,6 +379,53 @@ async function applyDbActions(params: {
   intents: string[];
 }) {
   const { churchId, text, statusPlan, intents } = params;
+
+  const requestedName = intents.includes("MEMBER_ADD") ? extractRequestedMemberName(text) : null;
+
+  if (requestedName) {
+    const existing = await prisma.member.findFirst({
+      where: { churchId, isDeleted: false, name: requestedName },
+      select: { id: true, name: true },
+    });
+
+    if (!existing) {
+      await prisma.member.create({
+        data: {
+          churchId,
+          name: requestedName,
+          gender: "OTHER",
+          birthDate: new Date("2000-01-01T00:00:00.000Z"),
+          phone: "",
+          statusTag: "등록",
+          requiresFollowUp: false,
+          notes: "모바일 월드 명령으로 등록됨",
+        },
+      });
+
+      await prisma.activityLog.create({
+        data: {
+          churchId,
+          action: "MOBILE_WORLD_MEMBER_ADDED",
+          targetType: "MEMBER",
+          metadata: JSON.stringify({ requestedName, text, source: "chat-command" }),
+        },
+      });
+
+      return {
+        applied: true,
+        updatedMembers: [requestedName],
+        followUpRecords: 0,
+        note: `신규 목원 ${requestedName} 등록 완료`,
+      };
+    }
+
+    return {
+      applied: false,
+      updatedMembers: [requestedName],
+      followUpRecords: 0,
+      note: `${requestedName} 목원은 이미 존재함`,
+    };
+  }
 
   if (!statusPlan) {
     return {
@@ -532,8 +611,12 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey,
   });
 
   const dbActionLine = dbActions.applied
-    ? ` DB 반영: ${dbActions.updatedMembers.join(", ")} → ${dbActions.statusTag}, 후속기록 ${dbActions.followUpRecords}건.`
-    : "";
+    ? dbActions.statusTag
+      ? ` DB 반영: ${dbActions.updatedMembers.join(", ")} → ${dbActions.statusTag}, 후속기록 ${dbActions.followUpRecords}건.`
+      : ` DB 반영: ${dbActions.note ?? dbActions.updatedMembers.join(", ")}.`
+    : dbActions.note
+      ? ` (${dbActions.note})`
+      : "";
 
   const fallbackReply = [
     `${church.name} 기준으로 월드 운영 시스템을 자동 구축했어.`,
