@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT="/home/kinddragon/.openclaw/workspace/soom-church"
 APP="$ROOT/apps/mobile-app"
+WEB_LOG="/tmp/soom-web-dev.log"
 
 detect_host_ip() {
   local ips
@@ -42,6 +43,37 @@ if [[ -z "${EXPO_PUBLIC_WEB_BASE_URL:-}" ]]; then
 else
   echo "[mobile-recover] EXPO_PUBLIC_WEB_BASE_URL preset: ${EXPO_PUBLIC_WEB_BASE_URL}"
 fi
+
+ensure_web_bridge() {
+  local local_ok=""
+  if curl -fsS --max-time 2 "http://127.0.0.1:3000/api/mobile/chat-command" >/dev/null 2>&1; then
+    local_ok="yes"
+  fi
+
+  if [[ -n "$local_ok" ]]; then
+    echo "[mobile-recover] web bridge already running on :3000"
+    return 0
+  fi
+
+  echo "[mobile-recover] starting web bridge (next dev -H 0.0.0.0 -p 3000)..."
+  pkill -f "next dev" || true
+
+  cd "$ROOT"
+  nohup npm run dev -- --hostname 0.0.0.0 --port 3000 >"$WEB_LOG" 2>&1 &
+
+  for i in {1..20}; do
+    if curl -fsS --max-time 2 "http://127.0.0.1:3000/api/mobile/chat-command" >/dev/null 2>&1; then
+      echo "[mobile-recover] web bridge ready (:3000)"
+      return 0
+    fi
+    sleep 1
+  done
+
+  echo "[mobile-recover] warning: web bridge failed to boot, check $WEB_LOG"
+  return 1
+}
+
+ensure_web_bridge || true
 
 cd "$ROOT"
 pkill -f "expo start" || true
