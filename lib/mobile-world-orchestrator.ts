@@ -12,6 +12,7 @@ type OrchestrateInput = {
   churchSlug: string;
   text: string;
   accountKey?: string;
+  model?: string;
 };
 
 type DbActionSummary = {
@@ -26,6 +27,7 @@ type ChatDiagnostics = {
   mode: "openclaw" | "rule";
   provider: string;
   reason?: string;
+  model?: string;
 };
 
 type OrchestrateOutput = {
@@ -239,10 +241,11 @@ async function runOpenClawBridgePlan(params: {
   followupCount: number;
   householdCount: number;
   memberOps: string[];
+  model?: string;
 }) {
   const bridgeUrl = process.env.OPENCLAW_BRIDGE_URL?.trim();
   const bridgeToken = process.env.OPENCLAW_BRIDGE_TOKEN?.trim();
-  const bridgeModel = process.env.OPENCLAW_BRIDGE_MODEL || "default";
+  const bridgeModel = params.model || process.env.OPENCLAW_BRIDGE_MODEL || "default";
 
   if (!bridgeUrl) {
     return { plan: null, reason: "OPENCLAW_BRIDGE_URL 없음" } as const;
@@ -310,6 +313,7 @@ async function chooseCommandPlan(params: {
   followupCount: number;
   householdCount: number;
   memberOps: string[];
+  model?: string;
 }) {
   const bridge = await runOpenClawBridgePlan(params);
   if (bridge.plan) {
@@ -318,6 +322,7 @@ async function chooseCommandPlan(params: {
       diagnostics: {
         mode: "openclaw",
         provider: "openclaw-bridge",
+        model: params.model || process.env.OPENCLAW_BRIDGE_MODEL || "default",
       } as ChatDiagnostics,
     } as const;
   }
@@ -418,7 +423,7 @@ async function applyDbActions(params: {
   };
 }
 
-export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey }: OrchestrateInput): Promise<OrchestrateOutput> {
+export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey, model }: OrchestrateInput): Promise<OrchestrateOutput> {
   const trimmedText = text.trim();
   const safeAccountKey = normalizeAccountKey(accountKey);
 
@@ -489,6 +494,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
     followupCount,
     householdCount,
     memberOps,
+    model,
   });
 
   const intents = sanitizeIntents(planned.plan?.intents);
