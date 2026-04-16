@@ -57,6 +57,15 @@ function safeSlugPart(value: string) {
     .slice(0, 20);
 }
 
+function normalizeChurchSlugInput(value: string | null | undefined) {
+  const normalized = safeSlugPart(value ?? "");
+  return normalized || "mobile";
+}
+
+function slugTitle(slug: string) {
+  return `${slug.toUpperCase()} 목장`;
+}
+
 async function ensureChurchForAccount(accountKey?: string | null) {
   const key = normalizeAccountKey(accountKey);
   if (!key || key === "anon") return null;
@@ -106,10 +115,60 @@ async function ensureChurchForAccount(accountKey?: string | null) {
   return null;
 }
 
+async function ensureChurchBySlug(churchSlug: string, accountKey?: string | null) {
+  const slug = normalizeChurchSlugInput(churchSlug);
+  const key = normalizeAccountKey(accountKey);
+  const user = key && key !== "anon"
+    ? await prisma.user.findUnique({ where: { id: key }, select: { id: true } })
+    : null;
+  const existing = await prisma.church.findFirst({
+    where: { slug },
+    select: { id: true, slug: true },
+  });
+
+  if (existing) {
+    if (user?.id) {
+      await prisma.churchMembership.upsert({
+        where: { userId_churchId: { userId: user.id, churchId: existing.id } },
+        create: { userId: user.id, churchId: existing.id, role: "OWNER", isActive: true },
+        update: { isActive: true },
+      });
+    }
+    return existing;
+  }
+
+  if (user?.id) {
+    return prisma.church.create({
+      data: {
+        slug,
+        name: slugTitle(slug),
+        memberships: {
+          create: {
+            userId: user.id,
+            role: "OWNER",
+            isActive: true,
+          },
+        },
+      },
+      select: { id: true, slug: true },
+    });
+  }
+
+  return prisma.church.create({
+    data: {
+      slug,
+      name: slugTitle(slug),
+    },
+    select: { id: true, slug: true },
+  });
+}
+
 async function resolveOrEnsureChurch(churchSlug: string, accountKey?: string | null) {
   const resolved = await resolveChurch(churchSlug, accountKey);
   if (resolved) return resolved;
-  return ensureChurchForAccount(accountKey);
+  const ensuredByAccount = await ensureChurchForAccount(accountKey);
+  if (ensuredByAccount) return ensuredByAccount;
+  return ensureChurchBySlug(churchSlug, accountKey);
 }
 
 async function resolveChurchId(churchSlug: string, accountKey?: string | null) {
