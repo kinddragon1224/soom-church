@@ -188,15 +188,16 @@ function buildActions(intents: string[], followupCount: number) {
 
 function extractRequestedMemberName(text: string) {
   const normalized = text.replace(/\s+/g, " ").trim();
+  const nameToken = "([가-힣A-Za-z]{1,20}(?:\s?[가-힣A-Za-z]{1,20})?)";
 
   const patterns = [
-    /([가-힣]{2,8})\s*목원\s*추가/i,
-    /목원\s*추가\s*([가-힣]{2,8})/i,
-    /목원\s*([가-힣]{2,8})\s*추가/i,
-    /([가-힣]{2,8})\s*멤버\s*추가/i,
-    /멤버\s*추가\s*([가-힣]{2,8})/i,
-    /멤버\s*([가-힣]{2,8})\s*추가/i,
-    /([가-힣]{2,8})\s*(등록|추가)해줘/i,
+    new RegExp(`${nameToken}\\s*목원\\s*추가`, "i"),
+    new RegExp(`목원\\s*추가\\s*${nameToken}`, "i"),
+    new RegExp(`목원\\s*${nameToken}\\s*추가`, "i"),
+    new RegExp(`${nameToken}\\s*멤버\\s*추가`, "i"),
+    new RegExp(`멤버\\s*추가\\s*${nameToken}`, "i"),
+    new RegExp(`멤버\\s*${nameToken}\\s*추가`, "i"),
+    new RegExp(`${nameToken}\\s*(등록|추가)해줘`, "i"),
   ];
 
   for (const pattern of patterns) {
