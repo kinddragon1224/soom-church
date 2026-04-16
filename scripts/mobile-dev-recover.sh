@@ -5,6 +5,19 @@ ROOT="/home/kinddragon/.openclaw/workspace/soom-church"
 APP="$ROOT/apps/mobile-app"
 WEB_LOG="/tmp/soom-web-dev.log"
 
+upsert_env() {
+  local file="$1"
+  local key="$2"
+  local value="$3"
+
+  touch "$file"
+  if grep -q "^${key}=" "$file"; then
+    sed -i "s|^${key}=.*|${key}=${value}|" "$file"
+  else
+    echo "${key}=${value}" >> "$file"
+  fi
+}
+
 detect_host_ip() {
   local ips
   ips=$(hostname -I 2>/dev/null || true)
@@ -42,6 +55,10 @@ EXPO_PUBLIC_WEB_BASE_URL=${EXPO_PUBLIC_WEB_BASE_URL}
 EXPO_PUBLIC_WEB_BASE_URL_FALLBACK=${EXPO_PUBLIC_WEB_BASE_URL_FALLBACK}
 EOF
   echo "[mobile-recover] wrote $APP/.env"
+
+  upsert_env "$ROOT/.env.local" "OPENCLAW_BRIDGE_URL" "http://127.0.0.1:3000/api/mobile/openclaw-bridge"
+  upsert_env "$ROOT/.env.local" "OPENCLAW_AGENT_SESSION_ID" "soom-mobile-chat"
+  echo "[mobile-recover] ensured $ROOT/.env.local bridge settings"
 else
   echo "[mobile-recover] warning: host LAN IP detection failed"
 fi
