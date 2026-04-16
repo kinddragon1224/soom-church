@@ -1,9 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { getStatusUpdatePatch } from "@/lib/member-status";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-
-const execFileAsync = promisify(execFile);
 
 type ActionItem = {
   id: string;
@@ -27,7 +23,7 @@ type DbActionSummary = {
 };
 
 type ChatDiagnostics = {
-  mode: "openclaw" | "llm" | "rule";
+  mode: "openclaw" | "rule";
   provider: string;
   reason?: string;
 };
@@ -221,8 +217,7 @@ function parseProviderPlan(data: any): PlanResult | null {
   const content = data?.choices?.[0]?.message?.content;
 
   if (typeof content === "string" && content.trim()) {
-    const parsed = JSON.parse(sanitizeJsonText(content)) as PlanResult;
-    return parsed;
+    return JSON.parse(sanitizeJsonText(content)) as PlanResult;
   }
 
   if (typeof data?.reply === "string") {
@@ -237,7 +232,7 @@ function parseProviderPlan(data: any): PlanResult | null {
   return null;
 }
 
-async function runOpenClawPlan(params: {
+async function runOpenClawBridgePlan(params: {
   churchName: string;
   churchSlug: string;
   text: string;
@@ -245,97 +240,31 @@ async function runOpenClawPlan(params: {
   householdCount: number;
   memberOps: string[];
 }) {
-  if (process.env.OPENCLAW_AGENT_ENABLED !== "true") {
-    return { plan: null, reason: "OPENCLAW_AGENT_ENABLED!=true" } as const;
+  const bridgeUrl = process.env.OPENCLAW_BRIDGE_URL?.trim();
+  const bridgeToken = process.env.OPENCLAW_BRIDGE_TOKEN?.trim();
+  const bridgeModel = process.env.OPENCLAW_BRIDGE_MODEL || "default";
+
+  if (!bridgeUrl) {
+    return { plan: null, reason: "OPENCLAW_BRIDGE_URL 없음" } as const;
   }
-
-  const openclawBin = process.env.OPENCLAW_BIN || "openclaw";
-  const sessionId = process.env.OPENCLAW_AGENT_SESSION_ID || "soom-mobile-chat";
-
-  const promptPayload = {
-    churchName: params.churchName,
-    churchSlug: params.churchSlug,
-    text: params.text,
-    context: {
-      followupCount: params.followupCount,
-      householdCount: params.householdCount,
-      memberOps: params.memberOps,
-    },
-    outputSpec: {
-      type: "json",
-      keys: ["reply", "intents", "actions", "autoBuild"],
-      actionShape: { id: "string", title: "string", due: "string", owner: "string" },
-    },
-    instruction: "한국어로 짧고 실행형. JSON만 출력. markdown 금지.",
-  };
-
-  const message = `너는 모라다. 아래 입력으로 실행 계획을 JSON으로만 반환해.\n${JSON.stringify(promptPayload)}`;
-
-  try {
-    const { stdout } = await execFileAsync(openclawBin, [
-      "agent",
-      "--session-id",
-      sessionId,
-      "--message",
-      message,
-      "--json",
-      "--timeout",
-      "90",
-    ], { timeout: 95000, maxBuffer: 1024 * 1024 * 4 });
-
-    const wrapper = JSON.parse(stdout);
-    const payloadText = wrapper?.result?.payloads?.[0]?.text;
-    if (typeof payloadText !== "string" || !payloadText.trim()) {
-      return { plan: null, reason: "OpenClaw payload text 없음" } as const;
-    }
-
-    const parsed = parseProviderPlan({ choices: [{ message: { content: payloadText } }] });
-    if (!parsed) {
-      return { plan: null, reason: "OpenClaw 응답 파싱 실패" } as const;
-    }
-
-    return { plan: parsed, reason: "ok" } as const;
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : "unknown";
-    return { plan: null, reason: `OpenClaw CLI 호출 예외: ${detail}` } as const;
-  }
-}
-
-async function runOpenAiPlan(params: {
-  churchName: string;
-  churchSlug: string;
-  text: string;
-  followupCount: number;
-  householdCount: number;
-  memberOps: string[];
-}) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return { plan: null, reason: "OPENAI_API_KEY 없음" } as const;
-  }
-
-  const baseUrl = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
-  const model = process.env.OPENAI_MODEL || process.env.LLM_MODEL || "gpt-4.1-mini";
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 18000);
+  const timeout = setTimeout(() => controller.abort(), 30000);
 
   try {
-    const response = await fetch(`${baseUrl}/chat/completions`, {
+    const response = await fetch(bridgeUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        ...(bridgeToken ? { Authorization: `Bearer ${bridgeToken}` } : {}),
       },
       body: JSON.stringify({
-        model,
-        temperature: 0.35,
-        response_format: { type: "json_object" },
+        model: bridgeModel,
         messages: [
           {
             role: "system",
             content:
-              "You are Mora, an execution-focused assistant for a Korean church operations app. Return JSON only with keys: reply(string), intents(string[]), actions([{id,title,due,owner}]), autoBuild({workspace,shepherdingQueue,memberOps}). Keep reply concise and actionable Korean.",
+              "너는 모라다. 한국어로 짧고 실행형으로 답한다. JSON만 반환: reply, intents, actions[{id,title,due,owner}], autoBuild{workspace,shepherdingQueue,memberOps}. markdown 금지.",
           },
           {
             role: "user",
@@ -356,18 +285,19 @@ async function runOpenAiPlan(params: {
     });
 
     if (!response.ok) {
-      return { plan: null, reason: `OpenAI HTTP ${response.status}` } as const;
+      return { plan: null, reason: `bridge HTTP ${response.status}` } as const;
     }
 
     const data = await response.json();
     const parsed = parseProviderPlan(data);
     if (!parsed) {
-      return { plan: null, reason: "OpenAI 응답 파싱 실패" } as const;
+      return { plan: null, reason: "bridge 응답 파싱 실패" } as const;
     }
 
     return { plan: parsed, reason: "ok" } as const;
-  } catch {
-    return { plan: null, reason: "OpenAI 호출 예외" } as const;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "unknown";
+    return { plan: null, reason: `bridge 호출 예외: ${message}` } as const;
   } finally {
     clearTimeout(timeout);
   }
@@ -381,24 +311,13 @@ async function chooseCommandPlan(params: {
   householdCount: number;
   memberOps: string[];
 }) {
-  const openclaw = await runOpenClawPlan(params);
-  if (openclaw.plan) {
+  const bridge = await runOpenClawBridgePlan(params);
+  if (bridge.plan) {
     return {
-      plan: openclaw.plan,
+      plan: bridge.plan,
       diagnostics: {
         mode: "openclaw",
-        provider: "openclaw-oauth",
-      } as ChatDiagnostics,
-    } as const;
-  }
-
-  const openai = await runOpenAiPlan(params);
-  if (openai.plan) {
-    return {
-      plan: openai.plan,
-      diagnostics: {
-        mode: "llm",
-        provider: "openai",
+        provider: "openclaw-bridge",
       } as ChatDiagnostics,
     } as const;
   }
@@ -408,7 +327,7 @@ async function chooseCommandPlan(params: {
     diagnostics: {
       mode: "rule",
       provider: "rule-fallback",
-      reason: `openclaw=${openclaw.reason}; openai=${openai.reason}`,
+      reason: `openclaw-bridge=${bridge.reason}`,
     } as ChatDiagnostics,
   } as const;
 }
