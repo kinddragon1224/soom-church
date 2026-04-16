@@ -128,7 +128,8 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(result);
-  } catch {
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "unknown route error";
     return NextResponse.json({
       ok: true,
       reply: `좋아. "${text}" 기준으로 기본 실행 루프를 만들었어. 우선 후속 연락 대상부터 정리하자.`,
@@ -151,7 +152,7 @@ export async function POST(request: NextRequest) {
       diagnostics: {
         mode: "rule",
         provider: "route-catch-fallback",
-        reason: "chat-command route catch",
+        reason,
       },
     });
   }
