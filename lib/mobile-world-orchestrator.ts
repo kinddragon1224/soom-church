@@ -550,14 +550,6 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey,
   });
 
   if (!church) {
-    church = await prisma.church.findFirst({
-      where: { isActive: true },
-      orderBy: { createdAt: "asc" },
-      select: { id: true, slug: true, name: true },
-    });
-  }
-
-  if (!church) {
     const intents = detectIntents(trimmedText);
     const actions = buildActions(intents, 0);
 
