@@ -76,7 +76,7 @@ function clamp01(value: number) {
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft, attendanceReward } = useWorldStore();
+  const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft, attendanceReward, refresh } = useWorldStore();
   const { height: windowHeight } = useWindowDimensions();
 
   const [worldDraft, setWorldDraft] = useState("");
@@ -250,6 +250,8 @@ const executeCommand = async (text: string) => {
     result.actions.forEach((action, index) => {
       addRuntimeTask({ id: `${action.id}-world-${ts}-${index}`, title: action.title, due: action.due, owner: action.owner });
     });
+
+    await refresh();
   };
 
   const connectionLabel =
