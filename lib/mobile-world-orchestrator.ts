@@ -579,8 +579,9 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey,
     model,
   });
 
-  const intents = sanitizeIntents(planned.plan?.intents);
-  const finalIntents = intents.length ? intents : detectIntents(trimmedText);
+  const detectedIntents = detectIntents(trimmedText);
+  const plannedIntents = sanitizeIntents(planned.plan?.intents);
+  const finalIntents = Array.from(new Set([...(plannedIntents.length ? plannedIntents : []), ...detectedIntents]));
 
   const planActions = sanitizeActions(planned.plan?.actions);
   const actions = planActions.length ? planActions : buildActions(finalIntents, followupCount);
