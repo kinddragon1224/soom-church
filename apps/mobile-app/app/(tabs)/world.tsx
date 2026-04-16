@@ -44,6 +44,19 @@ type ChatConnectionState = {
   requestId?: string;
 };
 
+type CommandLogEntry = {
+  id: string;
+  command: string;
+  createdAt: number;
+};
+
+type PlannedActionEntry = {
+  id: string;
+  title: string;
+  due: string;
+  owner: string;
+};
+
 const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
   { id: "followup-today", label: "오늘 후속 배정", command: "모라, 오늘 후속 필요한 사람 3명 골라서 연락 순서까지 정리해줘", accent: "rgba(92,132,214,0.28)" },
   { id: "prayer-priority", label: "기도 우선 정리", command: "모라, 기도 요청 들어온 순서대로 오늘 우선순위 정리해줘", accent: "rgba(107,163,128,0.26)" },
@@ -69,6 +82,9 @@ export default function WorldScreen() {
   const [worldDraft, setWorldDraft] = useState("");
   const [worldSending, setWorldSending] = useState(false);
   const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
+  const [commandHistory, setCommandHistory] = useState<CommandLogEntry[]>([]);
+  const [latestBrief, setLatestBrief] = useState("");
+  const [latestPlannedActions, setLatestPlannedActions] = useState<PlannedActionEntry[]>([]);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
   const [chatConnection, setChatConnection] = useState<ChatConnectionState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
@@ -137,9 +153,8 @@ export default function WorldScreen() {
 
   const urgentCount = snapshot?.peopleRecords?.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length ?? 0;
   const prayerCount = snapshot?.peopleRecords?.filter((p) => p.state.includes("기도")).length ?? 0;
-  const recentMessages = worldMessages.slice(-2);
-  const latestAssistant = [...worldMessages].reverse().find((m) => m.role === "assistant");
-  const afkBrief = latestAssistant?.text ?? `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected?.name ?? "오늘 대상"}부터 확인해줘.`;
+  const recentCommands = commandHistory.slice(-3).reverse();
+  const afkBrief = latestBrief || `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected?.name ?? "오늘 대상"}부터 확인해줘.`;
   const visiblePresets = WORLD_COMMAND_PRESETS;
 
   const jesusW = Math.max(52, Math.floor(worldSize.width * 0.078));
@@ -214,9 +229,10 @@ export default function WorldScreen() {
     setTimeout(() => setNpcReaction(null), 1300);
   };
 
-  const executeCommand = async (text: string) => {
+const executeCommand = async (text: string) => {
     const ts = Date.now();
     setWorldMessages((prev) => [...prev, { id: `wu-${ts}`, role: "user", text }]);
+    setCommandHistory((prev) => [...prev.slice(-19), { id: `cmd-${ts}`, command: text, createdAt: ts }]);
 
     addRuntimeTask({ id: `command-log-${ts}`, title: `[명령 실행] ${text.replace(/^모라,?\s*/, "")}`, due: "방금", owner: "모라 명령창" });
 
@@ -227,6 +243,8 @@ export default function WorldScreen() {
       reason: result.diagnostics?.reason,
       requestId: result.diagnostics?.requestId,
     });
+    setLatestBrief(result.reply);
+    setLatestPlannedActions(result.actions);
     setWorldMessages((prev) => [...prev, { id: `wa-${Date.now()}`, role: "assistant", text: result.reply }]);
 
     result.actions.forEach((action, index) => {
@@ -257,6 +275,8 @@ export default function WorldScreen() {
     try {
       await executeCommand(text);
     } catch {
+      setLatestBrief("명령 실행 중 오류가 났어. 네트워크 상태를 확인하고 다시 시도해줘.");
+      setLatestPlannedActions([]);
       setWorldMessages((prev) => [...prev, { id: `wa-fail-${Date.now()}`, role: "assistant", text: "명령 실행 중 오류가 났어. 다시 시도해줘." }]);
     } finally {
       setWorldSending(false);
@@ -490,16 +510,28 @@ export default function WorldScreen() {
                 </View>
               ) : null}
 
-              <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 98 : 68, maxHeight: keyboardVisible ? 164 : 112 }}>
-                {recentMessages.length ? (
-                  recentMessages.map((message) => (
-                    <View key={message.id} style={{ alignSelf: message.role === "user" ? "flex-end" : "flex-start", maxWidth: "94%", borderRadius: 10, borderWidth: 1, borderColor: message.role === "user" ? "#4f678f" : "#333", backgroundColor: message.role === "user" ? "#1d2736" : "#1c1c1c", paddingHorizontal: 9, paddingVertical: 6, marginTop: 4 }}>
-                      <Text style={{ color: "#f4f7ff", fontSize: 11 }}>{message.text}</Text>
+              <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 98 : 68, maxHeight: keyboardVisible ? 176 : 126, gap: 6 }}>
+                <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>명령 로그</Text>
+                {recentCommands.length ? (
+                  recentCommands.map((entry) => (
+                    <View key={entry.id} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#374862", backgroundColor: "#1a2333", paddingHorizontal: 8, paddingVertical: 6 }}>
+                      <Text numberOfLines={2} style={{ color: "#eaf1ff", fontSize: 11 }}>{entry.command}</Text>
                     </View>
                   ))
                 ) : (
-                  <Text style={{ color: "rgba(245,245,245,0.56)", fontSize: 11 }}>여기에 모라 응답이 표시돼.</Text>
+                  <Text style={{ color: "rgba(245,245,245,0.56)", fontSize: 11 }}>명령을 보내면 여기에 실행 로그가 쌓여.</Text>
                 )}
+
+                {latestPlannedActions.length ? (
+                  <View style={{ gap: 4 }}>
+                    <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>이번 명령 액션</Text>
+                    {latestPlannedActions.slice(0, 2).map((action) => (
+                      <Text key={action.id} numberOfLines={1} style={{ color: "rgba(245,245,245,0.72)", fontSize: 10 }}>
+                        • {action.title} ({action.due})
+                      </Text>
+                    ))}
+                  </View>
+                ) : null}
               </View>
 
               {chatConnection ? (
