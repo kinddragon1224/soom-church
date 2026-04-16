@@ -130,6 +130,11 @@ function sanitizeTextValue(value: unknown) {
   return value.trim();
 }
 
+function isMokjangWorldCommand(text: string) {
+  const normalized = text.toLowerCase();
+  return /목장|목원|심방|후속|기도|돌봄|출석|브리프|명령|월드|gido|가정|등록|추가|상태태그|목자/.test(normalized);
+}
+
 function buildActions(intents: string[], followupCount: number) {
   const actions: ActionItem[] = [];
 
@@ -303,7 +308,7 @@ async function runOpenClawBridgePlan(params: {
           {
             role: "system",
             content:
-              "너는 모라다. 한국어로 짧고 실행형으로 답한다. JSON만 반환: reply, intents, actions[{id,title,due,owner}], autoBuild{workspace,shepherdingQueue,memberOps}. markdown 금지.",
+              "너는 목장월드 실행 비서 모라다. 목장월드 관련 작업만 수행한다. 한국어로 짧고 실행형으로 답한다. JSON만 반환: reply, intents, actions[{id,title,due,owner}], autoBuild{workspace,shepherdingQueue,memberOps}. markdown 금지.",
           },
           {
             role: "user",
@@ -508,6 +513,33 @@ async function applyDbActions(params: {
 export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey, model }: OrchestrateInput): Promise<OrchestrateOutput> {
   const trimmedText = text.trim();
   const safeAccountKey = normalizeAccountKey(accountKey);
+
+  if (!isMokjangWorldCommand(trimmedText)) {
+    return {
+      ok: true,
+      reply: "목장월드 관련 명령만 처리할 수 있어. 예: 강은미 목원 추가, 후속 3명 정리, 오늘 기도 브리프 생성",
+      actions: [
+        { id: "scope-guard", title: "목장월드 명령으로 다시 요청", due: "지금", owner: "목자" },
+      ],
+      intents: ["MOKJANG_WORLD_ONLY"],
+      autoBuild: {
+        workspace: "mokjang-world",
+        shepherdingQueue: ["목장월드 명령 재입력"],
+        memberOps: ["명령 스코프 점검"],
+      },
+      agentGrowth: {
+        loopId: `loop-scope-${Date.now()}`,
+        title: "Mokjang World Scope Guard",
+        summary: "목장월드 외 명령 차단",
+        suggestedGithubIssue: "[mobile-world] command scope guard",
+      },
+      diagnostics: {
+        mode: "rule",
+        provider: "scope-guard",
+        reason: "out-of-scope-command",
+      },
+    };
+  }
 
   let church = await prisma.church.findFirst({
     where: { slug: churchSlug, isActive: true },
