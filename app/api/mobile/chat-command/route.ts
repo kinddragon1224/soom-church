@@ -166,11 +166,9 @@ async function ensureChurchBySlug(churchSlug: string, accountKey?: string | null
 }
 
 async function resolveOrEnsureChurch(churchSlug: string, accountKey?: string | null) {
-  const resolved = await resolveChurch(churchSlug, accountKey);
+  const resolved = await resolveChurch("", accountKey);
   if (resolved) return resolved;
-  const ensuredByAccount = await ensureChurchForAccount(accountKey);
-  if (ensuredByAccount) return ensuredByAccount;
-  return ensureChurchBySlug(churchSlug, accountKey);
+  return ensureChurchForAccount(accountKey);
 }
 
 async function resolveChurchId(churchSlug: string, accountKey?: string | null) {
@@ -203,8 +201,11 @@ async function readChatModelConfig(churchId: string) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
+    const churchSlug = searchParams.get("churchSlug")?.trim() || "mobile";
     const accountKey = normalizeAccountKey(searchParams.get("accountKey"));
+    if (accountKey === "anon") {
+      return NextResponse.json({ ok: false, error: "account login required" }, { status: 401 });
+    }
     const limitRaw = Number(searchParams.get("limit") || 20);
     const limit = Number.isFinite(limitRaw) ? Math.min(Math.max(limitRaw, 1), 100) : 20;
 
@@ -252,8 +253,11 @@ export async function POST(request: NextRequest) {
   const requestId = `chat-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   const body = (await request.json().catch(() => null)) as Body | null;
   const text = body?.text?.trim();
-  const churchSlug = body?.churchSlug?.trim() || "gido";
+  const churchSlug = body?.churchSlug?.trim() || "mobile";
   const accountKey = normalizeAccountKey(body?.accountKey);
+  if (accountKey === "anon") {
+    return NextResponse.json({ ok: false, message: "로그인 계정이 필요해." }, { status: 401 });
+  }
 
   if (!text) {
     return NextResponse.json({ ok: false, message: "메시지가 비어 있어." }, { status: 400 });
@@ -265,7 +269,7 @@ export async function POST(request: NextRequest) {
     const model = churchId ? await readChatModelConfig(churchId) : null;
 
     const result = await orchestrateMobileWorldChat({
-      churchSlug: resolvedChurch?.slug ?? churchSlug,
+      churchSlug: resolvedChurch?.slug ?? "mobile",
       accountKey,
       model: model || undefined,
       text,

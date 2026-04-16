@@ -106,6 +106,8 @@ async function ensureChurchBySlug(churchSlug: string, accountKey: string) {
 }
 
 async function resolveChurch(churchSlug: string, accountKey: string) {
+  if (accountKey === "anon") return null;
+
   if (accountKey !== "anon") {
     const recent = await getRecentChurchByUserId(accountKey);
     if (recent?.id) {
@@ -113,15 +115,7 @@ async function resolveChurch(churchSlug: string, accountKey: string) {
     }
   }
 
-  if (churchSlug) {
-    const bySlug = await prisma.church.findFirst({
-      where: { slug: churchSlug, isActive: true },
-      select: { id: true },
-    });
-    if (bySlug) return bySlug;
-  }
-
-  return ensureChurchBySlug(churchSlug, accountKey);
+  return ensureChurchBySlug(`acct-${accountKey}`, accountKey);
 }
 
 export async function POST(request: NextRequest) {
@@ -129,6 +123,9 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as Record<string, unknown>;
     const churchSlug = normalizeText(body.churchSlug);
     const accountKey = normalizeAccountKey(body.accountKey);
+    if (accountKey === "anon") {
+      return NextResponse.json({ error: "account login required" }, { status: 401 });
+    }
     const name = normalizeText(body.name);
     const household = normalizeText(body.household);
     const state = normalizeText(body.state);
@@ -173,6 +170,9 @@ export async function PATCH(request: NextRequest) {
     const body = (await request.json()) as Record<string, unknown>;
     const churchSlug = normalizeText(body.churchSlug);
     const accountKey = normalizeAccountKey(body.accountKey);
+    if (accountKey === "anon") {
+      return NextResponse.json({ error: "account login required" }, { status: 401 });
+    }
     const idRaw = normalizeText(body.id);
     const name = normalizeText(body.name);
     const household = normalizeText(body.household);
@@ -256,6 +256,9 @@ export async function DELETE(request: NextRequest) {
     const body = (await request.json()) as Record<string, unknown>;
     const churchSlug = normalizeText(body.churchSlug);
     const accountKey = normalizeAccountKey(body.accountKey);
+    if (accountKey === "anon") {
+      return NextResponse.json({ error: "account login required" }, { status: 401 });
+    }
     const idRaw = normalizeText(body.id);
     const name = normalizeText(body.name);
 

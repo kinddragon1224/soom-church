@@ -182,34 +182,24 @@ async function ensureChurchBySlug(churchSlug: string, accountKey: string) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
+    const churchSlug = searchParams.get("churchSlug")?.trim() || "mobile";
     const accountKey = normalizeAccountKey(searchParams.get("accountKey"));
+    if (accountKey === "anon") {
+      return NextResponse.json({ ok: false, error: "account login required" }, { status: 401 });
+    }
 
     let church = null as { id: string; name: string } | null;
 
-    if (accountKey !== "anon") {
-      const recent = await getRecentChurchByUserId(accountKey);
-      if (recent) {
-        church = {
-          id: recent.id,
-          name: recent.name,
-        };
-      }
-    }
-
-    if (!church) {
-      church = await prisma.church.findFirst({
-        where: { slug: churchSlug, isActive: true },
-        select: { id: true, name: true },
-      });
+    const recent = await getRecentChurchByUserId(accountKey);
+    if (recent) {
+      church = {
+        id: recent.id,
+        name: recent.name,
+      };
     }
 
     if (!church) {
       church = await ensureChurchForAccount(accountKey);
-    }
-
-    if (!church) {
-      church = await ensureChurchBySlug(churchSlug, accountKey);
     }
 
     if (!church) {
