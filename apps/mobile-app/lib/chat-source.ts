@@ -1,6 +1,7 @@
 import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
+const WEB_BASE_URL_FALLBACK = process.env.EXPO_PUBLIC_WEB_BASE_URL_FALLBACK ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
 
 export type ChatCommandAction = {
@@ -65,49 +66,72 @@ function fallbackResult(reason: string): ChatCommandResult {
 }
 
 export async function sendChatCommand(text: string): Promise<ChatCommandResult> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(new Error(`timeout:${WEB_BASE_URL}`)), 45000);
-
   try {
     const savedSlug = await getCurrentChurchSlug();
     const accountKey = (await getCurrentAccountKey()) ?? "anon";
-    const response = await fetch(`${WEB_BASE_URL}/api/mobile/chat-command`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        churchSlug: resolveChurchSlug(savedSlug),
-        accountKey,
-        text,
-      }),
-      signal: controller.signal,
-    });
+    const bases = [WEB_BASE_URL, WEB_BASE_URL_FALLBACK]
+      .map((value) => value.trim())
+      .filter(Boolean)
+      .filter((value, index, arr) => arr.indexOf(value) === index);
 
-    if (!response.ok) {
-      throw new Error(`chat command failed: ${response.status}`);
+    const errors: string[] = [];
+
+    for (const base of bases) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 45000);
+
+      try {
+        const response = await fetch(`${base}/api/mobile/chat-command`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            churchSlug: resolveChurchSlug(savedSlug),
+            accountKey,
+            text,
+          }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          errors.push(`${base}:http-${response.status}`);
+          continue;
+        }
+
+        const data = (await response.json()) as Partial<ChatCommandResult>;
+
+        if (!data.reply) {
+          errors.push(`${base}:reply-missing`);
+          continue;
+        }
+
+        return {
+          reply: data.reply,
+          actions: Array.isArray(data.actions) ? data.actions : [],
+          intents: Array.isArray(data.intents) ? data.intents : [],
+          diagnostics: data.diagnostics,
+          autoBuild: data.autoBuild,
+          agentGrowth: data.agentGrowth,
+        };
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          errors.push(`${base}:timeout`);
+        } else if (error instanceof Error) {
+          errors.push(`${base}:${error.message}`);
+        } else {
+          errors.push(`${base}:unknown-error`);
+        }
+      } finally {
+        clearTimeout(timeout);
+      }
     }
 
-    const data = (await response.json()) as Partial<ChatCommandResult>;
-
-    if (!data.reply) {
-      throw new Error("chat reply missing");
-    }
-
-    return {
-      reply: data.reply,
-      actions: Array.isArray(data.actions) ? data.actions : [],
-      intents: Array.isArray(data.intents) ? data.intents : [],
-      diagnostics: data.diagnostics,
-      autoBuild: data.autoBuild,
-      agentGrowth: data.agentGrowth,
-    };
+    return fallbackResult(errors.join(" | ") || "all-endpoints-failed");
   } catch (error) {
     let reason = "unknown fetch error";
     if (error instanceof Error) {
       reason = error.message;
     }
     return fallbackResult(reason);
-  } finally {
-    clearTimeout(timeout);
   }
 }
 

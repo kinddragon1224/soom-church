@@ -35,9 +35,11 @@ detect_host_ip() {
 
 if host_ip=$(detect_host_ip); then
   export EXPO_PUBLIC_WEB_BASE_URL="http://${host_ip}:3000"
+  export EXPO_PUBLIC_WEB_BASE_URL_FALLBACK="https://soom.io.kr"
   echo "[mobile-recover] EXPO_PUBLIC_WEB_BASE_URL forced to ${EXPO_PUBLIC_WEB_BASE_URL}"
   cat > "$APP/.env" <<EOF
 EXPO_PUBLIC_WEB_BASE_URL=${EXPO_PUBLIC_WEB_BASE_URL}
+EXPO_PUBLIC_WEB_BASE_URL_FALLBACK=${EXPO_PUBLIC_WEB_BASE_URL_FALLBACK}
 EOF
   echo "[mobile-recover] wrote $APP/.env"
 else
