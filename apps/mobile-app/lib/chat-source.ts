@@ -2,7 +2,7 @@ import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const WEB_BASE_URL_FALLBACK = process.env.EXPO_PUBLIC_WEB_BASE_URL_FALLBACK ?? "https://soom.io.kr";
-const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "gido";
+const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "mobile";
 
 export type ChatCommandAction = {
   id: string;

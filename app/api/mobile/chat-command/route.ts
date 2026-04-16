@@ -29,6 +29,17 @@ function normalizeAccountKey(value: unknown) {
 }
 
 async function resolveChurch(churchSlug: string, accountKey?: string | null) {
+  const key = normalizeAccountKey(accountKey);
+  if (key && key !== "anon") {
+    const recent = await getRecentChurchByUserId(key);
+    if (recent) {
+      return {
+        id: recent.id,
+        slug: recent.slug,
+      };
+    }
+  }
+
   const church = await prisma.church.findFirst({
     where: { slug: churchSlug, isActive: true },
     select: { id: true, slug: true },
@@ -36,16 +47,7 @@ async function resolveChurch(churchSlug: string, accountKey?: string | null) {
 
   if (church) return church;
 
-  const key = normalizeAccountKey(accountKey);
-  if (!key || key === "anon") return null;
-
-  const recent = await getRecentChurchByUserId(key);
-  if (!recent) return null;
-
-  return {
-    id: recent.id,
-    slug: recent.slug,
-  };
+  return null;
 }
 
 function safeSlugPart(value: string) {

@@ -106,19 +106,19 @@ async function ensureChurchBySlug(churchSlug: string, accountKey: string) {
 }
 
 async function resolveChurch(churchSlug: string, accountKey: string) {
+  if (accountKey !== "anon") {
+    const recent = await getRecentChurchByUserId(accountKey);
+    if (recent?.id) {
+      return { id: recent.id };
+    }
+  }
+
   if (churchSlug) {
     const bySlug = await prisma.church.findFirst({
       where: { slug: churchSlug, isActive: true },
       select: { id: true },
     });
     if (bySlug) return bySlug;
-  }
-
-  if (accountKey !== "anon") {
-    const recent = await getRecentChurchByUserId(accountKey);
-    if (recent?.id) {
-      return { id: recent.id };
-    }
   }
 
   return ensureChurchBySlug(churchSlug, accountKey);

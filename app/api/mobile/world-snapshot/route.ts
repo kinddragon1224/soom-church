@@ -185,12 +185,9 @@ export async function GET(request: NextRequest) {
     const churchSlug = searchParams.get("churchSlug")?.trim() || "gido";
     const accountKey = normalizeAccountKey(searchParams.get("accountKey"));
 
-    let church = await prisma.church.findFirst({
-      where: { slug: churchSlug, isActive: true },
-      select: { id: true, name: true },
-    });
+    let church = null as { id: string; name: string } | null;
 
-    if (!church && accountKey !== "anon") {
+    if (accountKey !== "anon") {
       const recent = await getRecentChurchByUserId(accountKey);
       if (recent) {
         church = {
@@ -198,6 +195,13 @@ export async function GET(request: NextRequest) {
           name: recent.name,
         };
       }
+    }
+
+    if (!church) {
+      church = await prisma.church.findFirst({
+        where: { slug: churchSlug, isActive: true },
+        select: { id: true, name: true },
+      });
     }
 
     if (!church) {
