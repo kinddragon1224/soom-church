@@ -114,6 +114,11 @@ export async function POST(request: NextRequest) {
         summary: "오케스트레이션 실패로 기본 루프 실행",
         suggestedGithubIssue: "[mobile-world] fallback loop recovery",
       },
+      diagnostics: {
+        mode: "rule",
+        provider: "route-catch-fallback",
+        reason: "chat-command route catch",
+      },
     });
   }
 }

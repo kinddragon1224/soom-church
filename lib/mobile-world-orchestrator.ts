@@ -22,6 +22,12 @@ type DbActionSummary = {
   note?: string;
 };
 
+type ChatDiagnostics = {
+  mode: "openclaw" | "llm" | "rule";
+  provider: string;
+  reason?: string;
+};
+
 type OrchestrateOutput = {
   ok: boolean;
   reply: string;
@@ -39,6 +45,7 @@ type OrchestrateOutput = {
     suggestedGithubIssue: string;
   };
   dbActions?: DbActionSummary;
+  diagnostics?: ChatDiagnostics;
 };
 
 type StatusPatchPlan = {
@@ -48,7 +55,7 @@ type StatusPatchPlan = {
   reason: string;
 };
 
-type LlmResult = {
+type PlanResult = {
   reply?: string;
   intents?: string[];
   actions?: ActionItem[];
@@ -206,7 +213,100 @@ function planStatusPatch(text: string): StatusPatchPlan | null {
   return null;
 }
 
-async function runLlmCommandPlan(params: {
+function parseProviderPlan(data: any): PlanResult | null {
+  const content = data?.choices?.[0]?.message?.content;
+
+  if (typeof content === "string" && content.trim()) {
+    const parsed = JSON.parse(sanitizeJsonText(content)) as PlanResult;
+    return parsed;
+  }
+
+  if (typeof data?.reply === "string") {
+    return {
+      reply: data.reply,
+      intents: Array.isArray(data?.intents) ? data.intents : [],
+      actions: Array.isArray(data?.actions) ? data.actions : [],
+      autoBuild: data?.autoBuild,
+    };
+  }
+
+  return null;
+}
+
+async function runOpenClawPlan(params: {
+  churchName: string;
+  churchSlug: string;
+  text: string;
+  followupCount: number;
+  householdCount: number;
+  memberOps: string[];
+}) {
+  const url = process.env.OPENCLAW_CHAT_URL;
+  const oauthToken = process.env.OPENCLAW_OAUTH_TOKEN;
+
+  if (!url) {
+    return { plan: null, reason: "OPENCLAW_CHAT_URL 없음" } as const;
+  }
+
+  if (!oauthToken) {
+    return { plan: null, reason: "OPENCLAW_OAUTH_TOKEN 없음" } as const;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 18000);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${oauthToken}`,
+      },
+      body: JSON.stringify({
+        model: process.env.OPENCLAW_CHAT_MODEL || "default",
+        messages: [
+          {
+            role: "system",
+            content:
+              "너는 모라다. 한국어로 짧고 실행형으로 답한다. JSON만 반환: reply, intents, actions[{id,title,due,owner}], autoBuild{workspace,shepherdingQueue,memberOps}",
+          },
+          {
+            role: "user",
+            content: JSON.stringify({
+              churchName: params.churchName,
+              churchSlug: params.churchSlug,
+              text: params.text,
+              context: {
+                followupCount: params.followupCount,
+                householdCount: params.householdCount,
+                memberOps: params.memberOps,
+              },
+            }),
+          },
+        ],
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      return { plan: null, reason: `OpenClaw HTTP ${response.status}` } as const;
+    }
+
+    const data = await response.json();
+    const parsed = parseProviderPlan(data);
+    if (!parsed) {
+      return { plan: null, reason: "OpenClaw 응답 파싱 실패" } as const;
+    }
+
+    return { plan: parsed, reason: "ok" } as const;
+  } catch {
+    return { plan: null, reason: "OpenClaw 호출 예외" } as const;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function runOpenAiPlan(params: {
   churchName: string;
   churchSlug: string;
   text: string;
@@ -215,7 +315,9 @@ async function runLlmCommandPlan(params: {
   memberOps: string[];
 }) {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) {
+    return { plan: null, reason: "OPENAI_API_KEY 없음" } as const;
+  }
 
   const baseUrl = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
   const model = process.env.OPENAI_MODEL || process.env.LLM_MODEL || "gpt-4.1-mini";
@@ -238,7 +340,7 @@ async function runLlmCommandPlan(params: {
           {
             role: "system",
             content:
-              "You are Mora, an execution-focused assistant for a Korean church operations app. Return JSON only with keys: reply(string), intents(string[]), actions([{id,title,due,owner}]), autoBuild({workspace,shepherdingQueue,memberOps}). Keep reply concise and actionable Korean. Prefer practical tasks and concrete next steps. Do not include markdown.",
+              "You are Mora, an execution-focused assistant for a Korean church operations app. Return JSON only with keys: reply(string), intents(string[]), actions([{id,title,due,owner}]), autoBuild({workspace,shepherdingQueue,memberOps}). Keep reply concise and actionable Korean.",
           },
           {
             role: "user",
@@ -251,7 +353,6 @@ async function runLlmCommandPlan(params: {
                 householdCount: params.householdCount,
                 memberOps: params.memberOps,
               },
-              instruction: "목장 관련이든 일반 운영이든 일단 전체 기능 실행 가능성 확인이 우선이다. API 연결 확인 목적의 실행 액션을 포함해줘.",
             }),
           },
         ],
@@ -259,19 +360,62 @@ async function runLlmCommandPlan(params: {
       signal: controller.signal,
     });
 
-    if (!response.ok) return null;
+    if (!response.ok) {
+      return { plan: null, reason: `OpenAI HTTP ${response.status}` } as const;
+    }
 
     const data = await response.json();
-    const content = data?.choices?.[0]?.message?.content;
-    if (typeof content !== "string" || !content.trim()) return null;
+    const parsed = parseProviderPlan(data);
+    if (!parsed) {
+      return { plan: null, reason: "OpenAI 응답 파싱 실패" } as const;
+    }
 
-    const parsed = JSON.parse(sanitizeJsonText(content)) as LlmResult;
-    return parsed;
+    return { plan: parsed, reason: "ok" } as const;
   } catch {
-    return null;
+    return { plan: null, reason: "OpenAI 호출 예외" } as const;
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function chooseCommandPlan(params: {
+  churchName: string;
+  churchSlug: string;
+  text: string;
+  followupCount: number;
+  householdCount: number;
+  memberOps: string[];
+}) {
+  const openclaw = await runOpenClawPlan(params);
+  if (openclaw.plan) {
+    return {
+      plan: openclaw.plan,
+      diagnostics: {
+        mode: "openclaw",
+        provider: "openclaw-oauth",
+      } as ChatDiagnostics,
+    } as const;
+  }
+
+  const openai = await runOpenAiPlan(params);
+  if (openai.plan) {
+    return {
+      plan: openai.plan,
+      diagnostics: {
+        mode: "llm",
+        provider: "openai",
+      } as ChatDiagnostics,
+    } as const;
+  }
+
+  return {
+    plan: null,
+    diagnostics: {
+      mode: "rule",
+      provider: "rule-fallback",
+      reason: `openclaw=${openclaw.reason}; openai=${openai.reason}`,
+    } as ChatDiagnostics,
+  } as const;
 }
 
 async function applyDbActions(params: {
@@ -403,6 +547,11 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
         followUpRecords: 0,
         note: "교회 식별 실패",
       },
+      diagnostics: {
+        mode: "rule",
+        provider: "rule-fallback",
+        reason: "활성 교회 없음",
+      },
     };
   }
 
@@ -419,7 +568,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
 
   const memberOps = recentMembers.map((member) => `${member.name}: ${member.requiresFollowUp ? "후속 필요" : member.statusTag}`);
 
-  const llmPlan = await runLlmCommandPlan({
+  const planned = await chooseCommandPlan({
     churchName: church.name,
     churchSlug: church.slug,
     text: trimmedText,
@@ -428,19 +577,19 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
     memberOps,
   });
 
-  const intents = sanitizeIntents(llmPlan?.intents);
+  const intents = sanitizeIntents(planned.plan?.intents);
   const finalIntents = intents.length ? intents : detectIntents(trimmedText);
 
-  const llmActions = sanitizeActions(llmPlan?.actions);
-  const actions = llmActions.length ? llmActions : buildActions(finalIntents, followupCount);
+  const planActions = sanitizeActions(planned.plan?.actions);
+  const actions = planActions.length ? planActions : buildActions(finalIntents, followupCount);
 
   const autoBuild = {
-    workspace: llmPlan?.autoBuild?.workspace?.trim() || `${church.slug}-mobile-world-ops`,
-    shepherdingQueue: Array.isArray(llmPlan?.autoBuild?.shepherdingQueue) && llmPlan?.autoBuild?.shepherdingQueue.length
-      ? llmPlan.autoBuild.shepherdingQueue.map((item) => String(item).trim()).filter(Boolean)
+    workspace: planned.plan?.autoBuild?.workspace?.trim() || `${church.slug}-mobile-world-ops`,
+    shepherdingQueue: Array.isArray(planned.plan?.autoBuild?.shepherdingQueue) && planned.plan.autoBuild.shepherdingQueue.length
+      ? planned.plan.autoBuild.shepherdingQueue.map((item) => String(item).trim()).filter(Boolean)
       : actions.map((item) => item.title),
-    memberOps: Array.isArray(llmPlan?.autoBuild?.memberOps) && llmPlan?.autoBuild?.memberOps.length
-      ? llmPlan.autoBuild.memberOps.map((item) => String(item).trim()).filter(Boolean)
+    memberOps: Array.isArray(planned.plan?.autoBuild?.memberOps) && planned.plan.autoBuild.memberOps.length
+      ? planned.plan.autoBuild.memberOps.map((item) => String(item).trim()).filter(Boolean)
       : memberOps,
   };
 
@@ -470,7 +619,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
     `요청 반영: "${trimmedText}"${dbActionLine}`,
   ].join(" ");
 
-  const reply = typeof llmPlan?.reply === "string" && llmPlan.reply.trim() ? `${llmPlan.reply.trim()}${dbActionLine}` : fallbackReply;
+  const reply = typeof planned.plan?.reply === "string" && planned.plan.reply.trim() ? `${planned.plan.reply.trim()}${dbActionLine}` : fallbackReply;
 
   const output: OrchestrateOutput = {
     ok: true,
@@ -480,6 +629,7 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
     autoBuild,
     agentGrowth,
     dbActions,
+    diagnostics: planned.diagnostics,
   };
 
   await prisma.activityLog.create({
@@ -488,7 +638,8 @@ export async function orchestrateMobileWorldChat({ churchSlug, text, accountKey 
       action: "MOBILE_WORLD_CHAT_ORCHESTRATED",
       targetType: "MOBILE_WORLD_CHAT",
       metadata: JSON.stringify({
-        source: llmPlan ? "llm" : "rule",
+        source: planned.diagnostics.mode,
+        diagnostics: planned.diagnostics,
         text: trimmedText,
         intents: finalIntents,
         actions,

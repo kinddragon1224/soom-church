@@ -14,6 +14,11 @@ export type ChatCommandResult = {
   reply: string;
   actions: ChatCommandAction[];
   intents?: string[];
+  diagnostics?: {
+    mode?: "openclaw" | "llm" | "rule";
+    provider?: string;
+    reason?: string;
+  };
   autoBuild?: {
     workspace?: string;
     shepherdingQueue?: string[];
@@ -86,6 +91,7 @@ export async function sendChatCommand(text: string): Promise<ChatCommandResult> 
       reply: data.reply,
       actions: Array.isArray(data.actions) ? data.actions : [],
       intents: Array.isArray(data.intents) ? data.intents : [],
+      diagnostics: data.diagnostics,
       autoBuild: data.autoBuild,
       agentGrowth: data.agentGrowth,
     };
