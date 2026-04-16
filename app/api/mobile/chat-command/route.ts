@@ -107,6 +107,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const requestId = `chat-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   const body = (await request.json().catch(() => null)) as Body | null;
   const text = body?.text?.trim();
   const churchSlug = body?.churchSlug?.trim() || "gido";
@@ -127,9 +128,17 @@ export async function POST(request: NextRequest) {
       text,
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json({
+      ...result,
+      diagnostics: {
+        ...result.diagnostics,
+        reason: result.diagnostics?.reason,
+        requestId,
+      },
+    });
   } catch (error) {
     const reason = error instanceof Error ? error.message : "unknown route error";
+    console.error("[chat-command] request failed", { requestId, churchSlug, accountKey, reason });
     return NextResponse.json({
       ok: true,
       reply: `좋아. "${text}" 기준으로 기본 실행 루프를 만들었어. 우선 후속 연락 대상부터 정리하자.`,
@@ -152,7 +161,7 @@ export async function POST(request: NextRequest) {
       diagnostics: {
         mode: "rule",
         provider: "route-catch-fallback",
-        reason,
+        reason: `${reason} (requestId:${requestId})`,
       },
     });
   }

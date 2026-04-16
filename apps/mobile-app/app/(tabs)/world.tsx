@@ -41,6 +41,7 @@ type ChatConnectionState = {
   mode: "openclaw" | "llm" | "rule";
   provider?: string;
   reason?: string;
+  requestId?: string;
 };
 
 const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
@@ -224,6 +225,7 @@ export default function WorldScreen() {
       mode: result.diagnostics?.mode ?? "rule",
       provider: result.diagnostics?.provider,
       reason: result.diagnostics?.reason,
+      requestId: result.diagnostics?.requestId,
     });
     setWorldMessages((prev) => [...prev, { id: `wa-${Date.now()}`, role: "assistant", text: result.reply }]);
 
@@ -507,7 +509,7 @@ export default function WorldScreen() {
                   </View>
                   {chatConnection.reason ? (
                     <Text numberOfLines={1} style={{ flex: 1, textAlign: "right", color: "rgba(245,245,245,0.55)", fontSize: 10 }}>
-                      {chatConnection.reason}
+                      {chatConnection.requestId ? `[${chatConnection.requestId}] ` : ""}{chatConnection.reason}
                     </Text>
                   ) : null}
                 </View>

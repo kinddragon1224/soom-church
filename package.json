@@ -17,7 +17,8 @@
     "mobile:dev:tunnel": "npm --prefix apps/mobile-app run dev:tunnel",
     "mobile:dev:recover": "bash scripts/mobile-dev-recover.sh",
     "mobile:typecheck": "npm --prefix apps/mobile-app run typecheck",
-    "mobile:view": "bash scripts/mobile-view.sh"
+    "mobile:view": "bash scripts/mobile-view.sh",
+    "chat:doctor": "node scripts/chat-bridge-doctor.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",

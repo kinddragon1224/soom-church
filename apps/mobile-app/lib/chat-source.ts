@@ -19,6 +19,7 @@ export type ChatCommandResult = {
     mode?: "openclaw" | "llm" | "rule";
     provider?: string;
     reason?: string;
+    requestId?: string;
   };
   autoBuild?: {
     workspace?: string;
