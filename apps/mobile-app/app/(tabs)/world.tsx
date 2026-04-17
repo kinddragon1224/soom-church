@@ -16,6 +16,7 @@ import {
 } from "react-native";
 
 import { mabiTheme } from "../../lib/ui-theme";
+import { getWorldDecorItems, setWorldDecorItems, type WorldDecorItem } from "../../lib/world-decor-source";
 import { WORLD_MVP_TEMPLATE } from "../../lib/world-template";
 import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
 import { getWorldSetupState, type WorldSetupState } from "../../lib/world-setup";
@@ -27,6 +28,13 @@ const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
 const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cutout.png");
+
+const DECOR_PRESETS = [
+  { type: "tree", icon: "🌳", label: "나무" },
+  { type: "flower", icon: "🌼", label: "꽃" },
+  { type: "bench", icon: "🪑", label: "의자" },
+  { type: "sheep", icon: "🐑", label: "양" },
+] as const;
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
@@ -40,6 +48,8 @@ export default function WorldScreen() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [panelVisible, setPanelVisible] = useState({ header: true, brief: true });
+  const [decorItems, setDecorItemsState] = useState<WorldDecorItem[]>([]);
+  const [selectedDecorId, setSelectedDecorId] = useState<string | null>(null);
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.59 });
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
@@ -62,6 +72,12 @@ export default function WorldScreen() {
       .then((layout) => {
         setJesusAnchor(layout.jesus);
         setMariaAnchor(layout.maria);
+      })
+      .catch(() => undefined);
+    getWorldDecorItems()
+      .then((items) => {
+        setDecorItemsState(items);
+        if (items[0]) setSelectedDecorId(items[0].id);
       })
       .catch(() => undefined);
   }, []);
@@ -170,6 +186,43 @@ export default function WorldScreen() {
     setTimeout(() => setNpcReaction(null), 1300);
   };
 
+  const setDecorItems = (next: WorldDecorItem[]) => {
+    setDecorItemsState(next);
+    void setWorldDecorItems(next);
+  };
+
+  const addDecor = (preset: (typeof DECOR_PRESETS)[number]) => {
+    const baseX = 0.2 + (decorItems.length % 4) * 0.18;
+    const next: WorldDecorItem = {
+      id: `decor-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      type: preset.type,
+      icon: preset.icon,
+      label: preset.label,
+      nx: clamp01(baseX),
+      ny: 0.73,
+    };
+    const updated = [...decorItems, next];
+    setSelectedDecorId(next.id);
+    setDecorItems(updated);
+  };
+
+  const moveSelectedDecor = (dx: number, dy: number) => {
+    if (!selectedDecorId) return;
+    const updated = decorItems.map((item) =>
+      item.id === selectedDecorId
+        ? { ...item, nx: clamp01(item.nx + dx), ny: clamp01(item.ny + dy) }
+        : item
+    );
+    setDecorItems(updated);
+  };
+
+  const removeSelectedDecor = () => {
+    if (!selectedDecorId) return;
+    const updated = decorItems.filter((item) => item.id !== selectedDecorId);
+    setDecorItems(updated);
+    setSelectedDecorId(updated[0]?.id ?? null);
+  };
+
   const panResponder = useMemo(
     () =>
       PanResponder.create({
@@ -250,6 +303,34 @@ export default function WorldScreen() {
               <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
               <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
               <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+
+              {decorItems.map((item) => {
+                const left = clamp01(item.nx) * Math.max(0, worldSize.width - 34);
+                const top = clamp01(item.ny) * Math.max(0, worldSize.height - 34);
+                const active = selectedDecorId === item.id;
+                return (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => setSelectedDecorId(item.id)}
+                    style={{
+                      position: "absolute",
+                      left,
+                      top,
+                      width: 34,
+                      height: 34,
+                      borderRadius: 8,
+                      borderWidth: active ? 1 : 0,
+                      borderColor: "#ffeabf",
+                      backgroundColor: active ? "rgba(30,30,30,0.55)" : "transparent",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 12,
+                    }}
+                  >
+                    <Text style={{ fontSize: 22 }}>{item.icon}</Text>
+                  </Pressable>
+                );
+              })}
 
               <Animated.View style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, zIndex: 13 }} {...panResponder.panHandlers}>
                 <View
@@ -389,6 +470,24 @@ export default function WorldScreen() {
             <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 9, gap: 6 }}>
               <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>MVP 모드</Text>
               <Text style={{ color: "rgba(216,231,255,0.78)", fontSize: 11 }}>채팅 기능은 제거했고, 목원 탭 수동 관리 중심으로 운영해.</Text>
+            </View>
+
+            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 9, gap: 6 }}>
+              <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>목장 꾸미기</Text>
+              <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
+                {DECOR_PRESETS.map((preset) => (
+                  <Pressable key={preset.type} onPress={() => addDecor(preset)} style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4b5b79", backgroundColor: "#1e2a40", paddingHorizontal: 8, paddingVertical: 4 }}>
+                    <Text style={{ color: "#d8e7ff", fontSize: 10 }}>{preset.icon} {preset.label}</Text>
+                  </Pressable>
+                ))}
+              </View>
+              <View style={{ flexDirection: "row", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                <Pressable onPress={() => moveSelectedDecor(-0.02, 0)} disabled={!selectedDecorId} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#1a1a1a", paddingHorizontal: 8, paddingVertical: 4, opacity: selectedDecorId ? 1 : 0.45 }}><Text style={{ color: "#e8e8e8", fontSize: 10 }}>←</Text></Pressable>
+                <Pressable onPress={() => moveSelectedDecor(0.02, 0)} disabled={!selectedDecorId} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#1a1a1a", paddingHorizontal: 8, paddingVertical: 4, opacity: selectedDecorId ? 1 : 0.45 }}><Text style={{ color: "#e8e8e8", fontSize: 10 }}>→</Text></Pressable>
+                <Pressable onPress={() => moveSelectedDecor(0, -0.02)} disabled={!selectedDecorId} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#1a1a1a", paddingHorizontal: 8, paddingVertical: 4, opacity: selectedDecorId ? 1 : 0.45 }}><Text style={{ color: "#e8e8e8", fontSize: 10 }}>↑</Text></Pressable>
+                <Pressable onPress={() => moveSelectedDecor(0, 0.02)} disabled={!selectedDecorId} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#1a1a1a", paddingHorizontal: 8, paddingVertical: 4, opacity: selectedDecorId ? 1 : 0.45 }}><Text style={{ color: "#e8e8e8", fontSize: 10 }}>↓</Text></Pressable>
+                <Pressable onPress={removeSelectedDecor} disabled={!selectedDecorId} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#7d4545", backgroundColor: "#2a1717", paddingHorizontal: 8, paddingVertical: 4, opacity: selectedDecorId ? 1 : 0.45 }}><Text style={{ color: "#ffd5d5", fontSize: 10 }}>선택 삭제</Text></Pressable>
+              </View>
             </View>
           </View>
         </View>
