@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const AUTH_CONNECTED_KEY = "soom.mobile.auth.connected";
 const CHURCH_SLUG_KEY = "soom.mobile.auth.churchSlug";
 const ACCOUNT_KEY = "soom.mobile.auth.accountKey";
+const ACCOUNT_KEY_BACKUP = "soom.mobile.auth.accountKey.backup";
 
 function normalizeSlug(value: string | null | undefined) {
   if (!value) return null;
@@ -31,7 +32,7 @@ export async function setAuthConnected(connected: boolean) {
     return;
   }
 
-  await AsyncStorage.multiRemove([AUTH_CONNECTED_KEY, CHURCH_SLUG_KEY, ACCOUNT_KEY]);
+  await AsyncStorage.multiRemove([AUTH_CONNECTED_KEY, CHURCH_SLUG_KEY, ACCOUNT_KEY, ACCOUNT_KEY_BACKUP]);
 }
 
 export async function getCurrentChurchSlug() {
@@ -52,7 +53,15 @@ export async function setCurrentChurchSlug(churchSlug: string | null | undefined
 
 export async function getCurrentAccountKey() {
   const value = await AsyncStorage.getItem(ACCOUNT_KEY);
-  return normalizeAccountKey(value);
+  const normalized = normalizeAccountKey(value);
+  if (normalized) return normalized;
+
+  const backup = await AsyncStorage.getItem(ACCOUNT_KEY_BACKUP);
+  const normalizedBackup = normalizeAccountKey(backup);
+  if (!normalizedBackup) return null;
+
+  await AsyncStorage.setItem(ACCOUNT_KEY, normalizedBackup);
+  return normalizedBackup;
 }
 
 export async function getRequiredAccountKey() {
@@ -67,9 +76,12 @@ export async function setCurrentAccountKey(accountKey: string | null | undefined
   const normalized = normalizeAccountKey(accountKey);
 
   if (!normalized) {
-    await AsyncStorage.removeItem(ACCOUNT_KEY);
+    await AsyncStorage.multiRemove([ACCOUNT_KEY, ACCOUNT_KEY_BACKUP]);
     return;
   }
 
-  await AsyncStorage.setItem(ACCOUNT_KEY, normalized);
+  await AsyncStorage.multiSet([
+    [ACCOUNT_KEY, normalized],
+    [ACCOUNT_KEY_BACKUP, normalized],
+  ]);
 }
