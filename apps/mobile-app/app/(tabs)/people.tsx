@@ -93,8 +93,14 @@ export default function PeopleScreen() {
       setNewName("");
       setNewHousehold("");
       Alert.alert("완료", "목원을 추가했어.");
-    } catch {
-      Alert.alert("실패", "서버 저장에 실패했어. 다시 시도해줘.");
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "";
+      if (reason.includes("ACCOUNT_LOGIN_REQUIRED") || reason.includes("account login required") || reason.includes("401")) {
+        Alert.alert("로그인 필요", "로그인 연결이 풀렸어. 다시 로그인해줘.");
+        router.replace("/login");
+      } else {
+        Alert.alert("실패", reason ? `서버 저장 실패: ${reason}` : "서버 저장에 실패했어. 다시 시도해줘.");
+      }
     } finally {
       setAdding(false);
     }

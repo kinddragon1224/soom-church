@@ -3,7 +3,7 @@ import { Tabs, router } from "expo-router";
 import { Text } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { getAuthConnected } from "../../lib/auth-bridge";
+import { getAuthConnected, getCurrentAccountKey, setAuthConnected } from "../../lib/auth-bridge";
 import { mabiTheme } from "../../lib/ui-theme";
 import { WorldStoreProvider } from "../../lib/world-store";
 
@@ -18,6 +18,13 @@ export default function TabsLayout() {
     const guard = async () => {
       const connected = await getAuthConnected();
       if (!connected) {
+        router.replace("/login");
+        return;
+      }
+
+      const accountKey = await getCurrentAccountKey();
+      if (!accountKey) {
+        await setAuthConnected(false);
         router.replace("/login");
       }
     };
