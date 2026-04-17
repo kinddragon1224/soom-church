@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Animated,
   Easing,
   Image,
@@ -12,57 +11,15 @@ import {
   SafeAreaView,
   StatusBar,
   Text,
-  TextInput,
   View,
   useWindowDimensions,
 } from "react-native";
 
-import { sendChatCommand } from "../../lib/chat-source";
 import { mabiTheme } from "../../lib/ui-theme";
 import { WORLD_MVP_TEMPLATE } from "../../lib/world-template";
 import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
 import { getWorldSetupState, type WorldSetupState } from "../../lib/world-setup";
 import { useWorldStore } from "../../lib/world-store";
-
-type WorldChatMessage = {
-  id: string;
-  role: "user" | "assistant";
-  text: string;
-};
-
-type WorldCommandPreset = {
-  id: string;
-  label: string;
-  command: string;
-  accent: string;
-};
-
-type ChatConnectionState = {
-  mode: "openclaw" | "llm" | "rule";
-  provider?: string;
-  reason?: string;
-  requestId?: string;
-};
-
-type CommandLogEntry = {
-  id: string;
-  command: string;
-  createdAt: number;
-};
-
-type PlannedActionEntry = {
-  id: string;
-  title: string;
-  due: string;
-  owner: string;
-};
-
-const WORLD_COMMAND_PRESETS: WorldCommandPreset[] = [
-  { id: "followup-today", label: "오늘 후속 배정", command: "모라, 오늘 후속 필요한 사람 3명 골라서 연락 순서까지 정리해줘", accent: "rgba(92,132,214,0.28)" },
-  { id: "prayer-priority", label: "기도 우선 정리", command: "모라, 기도 요청 들어온 순서대로 오늘 우선순위 정리해줘", accent: "rgba(107,163,128,0.26)" },
-  { id: "visit-plan", label: "심방 일정 초안", command: "모라, 이번 주 심방 필요한 가정 추려서 일정 초안 만들어줘", accent: "rgba(187,133,90,0.28)" },
-  { id: "care-alert", label: "돌봄 경보 점검", command: "모라, 돌봄 경보 있는 목원 먼저 보여주고 오늘 조치안 붙여줘", accent: "rgba(183,96,112,0.28)" },
-];
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
 const WORLD_LAYER_FIG_TREE = require("../../assets/world-layers/fig-tree-layer.png");
@@ -71,26 +28,15 @@ const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-la
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
 const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cutout.png");
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, addRuntimeTask, chatDraft, setChatDraft, attendanceReward, refresh } = useWorldStore();
+  const { loading, snapshot, attendanceReward } = useWorldStore();
   const { height: windowHeight } = useWindowDimensions();
 
-  const [worldDraft, setWorldDraft] = useState("");
-  const [worldSending, setWorldSending] = useState(false);
-  const [worldMessages, setWorldMessages] = useState<WorldChatMessage[]>([]);
-  const [commandHistory, setCommandHistory] = useState<CommandLogEntry[]>([]);
-  const [latestBrief, setLatestBrief] = useState("");
-  const [latestPlannedActions, setLatestPlannedActions] = useState<PlannedActionEntry[]>([]);
   const [worldSetup, setWorldSetup] = useState<WorldSetupState | null>(null);
-  const [chatConnection, setChatConnection] = useState<ChatConnectionState | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [panelVisible, setPanelVisible] = useState({ header: true, brief: true });
@@ -109,13 +55,6 @@ export default function WorldScreen() {
   const jesusTopRef = useRef(0);
   const mariaLeftRef = useRef(0);
   const mariaTopRef = useRef(0);
-
-  useEffect(() => {
-    const incoming = chatDraft.trim();
-    if (!incoming) return;
-    setWorldDraft(incoming);
-    setChatDraft("");
-  }, [chatDraft, setChatDraft]);
 
   useEffect(() => {
     getWorldSetupState().then(setWorldSetup).catch(() => undefined);
@@ -157,9 +96,7 @@ export default function WorldScreen() {
 
   const urgentCount = snapshot?.peopleRecords?.filter((p) => p.state.includes("후속") || p.state.includes("돌봄")).length ?? 0;
   const prayerCount = snapshot?.peopleRecords?.filter((p) => p.state.includes("기도")).length ?? 0;
-  const recentCommands = commandHistory.slice(-3).reverse();
-  const afkBrief = latestBrief || `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected?.name ?? "오늘 대상"}부터 확인해줘.`;
-  const visiblePresets = WORLD_COMMAND_PRESETS;
+  const afkBrief = `긴급 ${urgentCount}명, 기도 ${prayerCount}건. ${selected?.name ?? "오늘 대상"}부터 확인해줘.`;
 
   const jesusW = Math.max(52, Math.floor(worldSize.width * 0.078));
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
@@ -231,68 +168,6 @@ export default function WorldScreen() {
     ]).start();
 
     setTimeout(() => setNpcReaction(null), 1300);
-  };
-
-const executeCommand = async (text: string) => {
-    const ts = Date.now();
-    setWorldMessages((prev) => [...prev, { id: `wu-${ts}`, role: "user", text }]);
-    setCommandHistory((prev) => [...prev.slice(-19), { id: `cmd-${ts}`, command: text, createdAt: ts }]);
-
-    addRuntimeTask({ id: `command-log-${ts}`, title: `[명령 실행] ${text.replace(/^모라,?\s*/, "")}`, due: "방금", owner: "모라 명령창" });
-
-    const result = await sendChatCommand(text);
-    setChatConnection({
-      mode: result.diagnostics?.mode ?? "rule",
-      provider: result.diagnostics?.provider,
-      reason: result.diagnostics?.reason,
-      requestId: result.diagnostics?.requestId,
-    });
-    setLatestBrief(result.reply);
-    setLatestPlannedActions(result.actions);
-    setWorldMessages((prev) => [...prev, { id: `wa-${Date.now()}`, role: "assistant", text: result.reply }]);
-
-    result.actions.forEach((action, index) => {
-      addRuntimeTask({ id: `${action.id}-world-${ts}-${index}`, title: action.title, due: action.due, owner: action.owner });
-    });
-
-    await refresh();
-    if (result.dbActions?.applied) {
-      await sleep(280);
-      await refresh();
-    }
-  };
-
-  const connectionLabel =
-    chatConnection?.mode === "openclaw"
-      ? "OpenClaw 연결"
-      : chatConnection?.mode === "llm"
-        ? "LLM 연결"
-        : "규칙 모드";
-
-  const connectionColor =
-    chatConnection?.mode === "openclaw"
-      ? "#57b67b"
-      : chatConnection?.mode === "llm"
-        ? "#5f86c9"
-        : "#a18658";
-
-  const submitWorldChat = async () => {
-    const text = worldDraft.trim();
-    if (!text || worldSending) return;
-
-    setWorldSending(true);
-    setWorldDraft("");
-    try {
-      await executeCommand(text);
-    } catch (error) {
-      const reason = error instanceof Error ? error.message : "";
-      const loginRequired = reason.includes("ACCOUNT_LOGIN_REQUIRED") || reason.includes("401");
-      setLatestBrief(loginRequired ? "로그인 연결이 필요해. 다시 로그인하고 시도해줘." : "명령 실행 중 오류가 났어. 네트워크 상태를 확인하고 다시 시도해줘.");
-      setLatestPlannedActions([]);
-      setWorldMessages((prev) => [...prev, { id: `wa-fail-${Date.now()}`, role: "assistant", text: loginRequired ? "로그인 연결이 필요해. 다시 로그인해줘." : "명령 실행 중 오류가 났어. 다시 시도해줘." }]);
-    } finally {
-      setWorldSending(false);
-    }
   };
 
   const panResponder = useMemo(
@@ -501,8 +376,8 @@ const executeCommand = async (text: string) => {
             </View>
           ) : null}
 
-          <View style={{ minHeight: keyboardVisible ? 220 : 170, marginBottom: Platform.OS === "android" ? -10 : 0, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 6 }}>
-            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>실행창</Text>
+          <View style={{ minHeight: keyboardVisible ? 160 : 136, marginBottom: Platform.OS === "android" ? -10 : 0, borderRadius: 16, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 10, gap: 8 }}>
+            <Text style={{ color: "#f4f7ff", fontSize: 14, fontWeight: "700" }}>운영 패널</Text>
             <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
               <Pressable onPress={() => setPanelVisible((prev) => ({ ...prev, header: !prev.header }))} style={{ borderRadius: 999, borderWidth: 1, borderColor: panelVisible.header ? "#5aa36f" : "#3a3a3a", backgroundColor: panelVisible.header ? "#152419" : "#171717", paddingHorizontal: 8, paddingVertical: 4 }}>
                 <Text style={{ color: panelVisible.header ? "#d7ffe3" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>상단정보 {panelVisible.header ? "ON" : "OFF"}</Text>
@@ -511,79 +386,9 @@ const executeCommand = async (text: string) => {
                 <Text style={{ color: panelVisible.brief ? "#ffeabf" : "#d0d0d0", fontSize: 10, fontWeight: "700" }}>브리프 {panelVisible.brief ? "ON" : "OFF"}</Text>
               </Pressable>
             </View>
-            <View style={{ gap: 6 }}>
-              {!keyboardVisible ? (
-                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
-                  {visiblePresets.map((preset) => (
-                    <Pressable key={preset.id} onPress={() => setWorldDraft(preset.command)} style={{ borderRadius: 999, backgroundColor: preset.accent, paddingHorizontal: 8, paddingVertical: 5 }}>
-                      <Text style={{ color: "#dbe8ff", fontSize: 9 }}>{preset.label}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              ) : null}
-
-              <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 8, minHeight: keyboardVisible ? 98 : 68, maxHeight: keyboardVisible ? 176 : 126, gap: 6 }}>
-                <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>명령 로그</Text>
-                {recentCommands.length ? (
-                  recentCommands.map((entry) => (
-                    <View key={entry.id} style={{ borderRadius: 8, borderWidth: 1, borderColor: "#374862", backgroundColor: "#1a2333", paddingHorizontal: 8, paddingVertical: 6 }}>
-                      <Text numberOfLines={2} style={{ color: "#eaf1ff", fontSize: 11 }}>{entry.command}</Text>
-                    </View>
-                  ))
-                ) : (
-                  <Text style={{ color: "rgba(245,245,245,0.56)", fontSize: 11 }}>명령을 보내면 여기에 실행 로그가 쌓여.</Text>
-                )}
-
-                {latestPlannedActions.length ? (
-                  <View style={{ gap: 4 }}>
-                    <Text style={{ color: "#ffeabf", fontSize: 10, fontWeight: "700" }}>이번 명령 액션</Text>
-                    {latestPlannedActions.slice(0, 2).map((action) => (
-                      <Text key={action.id} numberOfLines={1} style={{ color: "rgba(245,245,245,0.72)", fontSize: 10 }}>
-                        • {action.title} ({action.due})
-                      </Text>
-                    ))}
-                  </View>
-                ) : null}
-              </View>
-
-              {chatConnection ? (
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: connectionColor, backgroundColor: "rgba(23,23,23,0.86)", paddingHorizontal: 10, paddingVertical: 4 }}>
-                    <Text style={{ color: "#f4f7ff", fontSize: 10, fontWeight: "700" }}>{connectionLabel}</Text>
-                  </View>
-                  {chatConnection.reason ? (
-                    <Text numberOfLines={1} style={{ flex: 1, textAlign: "right", color: "rgba(245,245,245,0.55)", fontSize: 10 }}>
-                      {chatConnection.requestId ? `[${chatConnection.requestId}] ` : ""}{chatConnection.reason}
-                    </Text>
-                  ) : null}
-                </View>
-              ) : null}
-
-              <View style={{ flexDirection: "row", alignItems: "stretch", gap: 8 }}>
-                <TextInput
-                  value={worldDraft}
-                  onChangeText={setWorldDraft}
-                  placeholder="모라에게 실행 명령 입력"
-                  placeholderTextColor="rgba(220,232,255,0.46)"
-                  multiline
-                  style={{
-                    flex: 1,
-                    minHeight: keyboardVisible ? 70 : 56,
-                    maxHeight: keyboardVisible ? 132 : 96,
-                    borderRadius: 12,
-                    borderWidth: 1,
-                    borderColor: "#3a3a3a",
-                    backgroundColor: "#121212",
-                    color: "#f4f7ff",
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                    textAlignVertical: "top",
-                  }}
-                />
-                <Pressable onPress={submitWorldChat} disabled={worldSending || !worldDraft.trim()} style={{ minHeight: keyboardVisible ? 70 : 56, minWidth: 62, borderRadius: 12, borderWidth: 1, borderColor: "#4f678f", backgroundColor: "#24324a", alignItems: "center", justifyContent: "center", opacity: worldSending || !worldDraft.trim() ? 0.5 : 1, paddingHorizontal: 10 }}>
-                  {worldSending ? <ActivityIndicator color="#ffffff" size="small" /> : <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>전송</Text>}
-                </Pressable>
-              </View>
+            <View style={{ borderRadius: 12, backgroundColor: "#171717", borderWidth: 1, borderColor: "#333", padding: 9, gap: 6 }}>
+              <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>MVP 모드</Text>
+              <Text style={{ color: "rgba(216,231,255,0.78)", fontSize: 11 }}>채팅 기능은 제거했고, 목원 탭 수동 관리 중심으로 운영해.</Text>
             </View>
           </View>
         </View>
