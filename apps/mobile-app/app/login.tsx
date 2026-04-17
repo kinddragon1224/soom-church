@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Linking, Pressable, SafeAreaView, Text, View } from "react-native";
 import * as ExpoLinking from "expo-linking";
 
-const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
+const WEB_LOGIN_BASE_URL = process.env.EXPO_PUBLIC_WEB_LOGIN_URL ?? "https://soom.io.kr";
+
+function normalizeHttpsBaseUrl(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return "https://soom.io.kr";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed.replace(/\/$/, "");
+  return `https://${trimmed}`.replace(/\/$/, "");
+}
 
 export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
@@ -13,8 +20,11 @@ export default function LoginScreen() {
     try {
       const appReturnUrl = encodeURIComponent(ExpoLinking.createURL("auth-complete"));
       const next = encodeURIComponent(`/app/mobile/return?appReturnUrl=${appReturnUrl}`);
-      const url = `${WEB_BASE_URL}/login?next=${next}`;
+      const loginBase = normalizeHttpsBaseUrl(WEB_LOGIN_BASE_URL);
+      const url = `${loginBase}/login?next=${next}`;
       await Linking.openURL(url);
+    } catch {
+      await Linking.openURL("https://soom.io.kr/login");
     } finally {
       setLoading(false);
     }
