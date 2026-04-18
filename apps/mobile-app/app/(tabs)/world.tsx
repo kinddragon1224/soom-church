@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Image, PanResponder, Pressable, SafeAreaView, StatusBar, Text, View } from "react-native";
 
-import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
+import { getWorldNpcLayout, setWorldNpcLayout, type WorldNpcLayout } from "../../lib/world-npc-layout";
 import { useWorldStore } from "../../lib/world-store";
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
@@ -31,14 +31,26 @@ export default function WorldScreen() {
 
   const dragStartRef = useRef({ x: 0, y: 0 });
   const mariaDragStartRef = useRef({ x: 0, y: 0 });
+  const johnBaptistDragStartRef = useRef({ x: 0, y: 0 });
+  const peterDragStartRef = useRef({ x: 0, y: 0 });
+  const johnApostleDragStartRef = useRef({ x: 0, y: 0 });
   const jesusAnchorRef = useRef(jesusAnchor);
   const mariaAnchorRef = useRef(mariaAnchor);
+  const johnBaptistAnchorRef = useRef(johnBaptistAnchor);
+  const peterAnchorRef = useRef(peterAnchor);
+  const johnApostleAnchorRef = useRef(johnApostleAnchor);
   const jesusLeftRef = useRef(0);
   const jesusTopRef = useRef(0);
   const jesusRawTopRef = useRef(0);
   const mariaLeftRef = useRef(0);
   const mariaTopRef = useRef(0);
   const mariaRawTopRef = useRef(0);
+  const johnBaptistLeftRef = useRef(0);
+  const johnBaptistRawTopRef = useRef(0);
+  const peterLeftRef = useRef(0);
+  const peterRawTopRef = useRef(0);
+  const johnApostleLeftRef = useRef(0);
+  const johnApostleRawTopRef = useRef(0);
 
   const mariaUnlocked = true;
   const johnBaptistUnlocked = true;
@@ -66,6 +78,18 @@ export default function WorldScreen() {
     mariaAnchorRef.current = mariaAnchor;
   }, [mariaAnchor]);
 
+  useEffect(() => {
+    johnBaptistAnchorRef.current = johnBaptistAnchor;
+  }, [johnBaptistAnchor]);
+
+  useEffect(() => {
+    peterAnchorRef.current = peterAnchor;
+  }, [peterAnchor]);
+
+  useEffect(() => {
+    johnApostleAnchorRef.current = johnApostleAnchor;
+  }, [johnApostleAnchor]);
+
   const jesusW = Math.max(52, Math.floor(worldSize.width * 0.078));
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
   const groundNyOffset = 0.08;
@@ -79,10 +103,13 @@ export default function WorldScreen() {
   const mariaRawTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaTop = clamp01(mariaAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const johnBaptistLeft = clamp01(johnBaptistAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const johnBaptistRawTop = clamp01(johnBaptistAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const johnBaptistTop = clamp01(johnBaptistAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const peterLeft = clamp01(peterAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const peterRawTop = clamp01(peterAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const peterTop = clamp01(peterAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const johnApostleLeft = clamp01(johnApostleAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const johnApostleRawTop = clamp01(johnApostleAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const johnApostleTop = clamp01(johnApostleAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
 
   useEffect(() => {
@@ -97,36 +124,68 @@ export default function WorldScreen() {
     mariaRawTopRef.current = mariaRawTop;
   }, [mariaLeft, mariaRawTop, mariaTop]);
 
-  const persistJesusAnchor = async (nx: number, ny: number) => {
-    const next = { nx: clamp01(nx), ny: clamp01(ny) };
-    setJesusAnchor(next);
+  useEffect(() => {
+    johnBaptistLeftRef.current = johnBaptistLeft;
+    johnBaptistRawTopRef.current = johnBaptistRawTop;
+  }, [johnBaptistLeft, johnBaptistRawTop]);
+
+  useEffect(() => {
+    peterLeftRef.current = peterLeft;
+    peterRawTopRef.current = peterRawTop;
+  }, [peterLeft, peterRawTop]);
+
+  useEffect(() => {
+    johnApostleLeftRef.current = johnApostleLeft;
+    johnApostleRawTopRef.current = johnApostleRawTop;
+  }, [johnApostleLeft, johnApostleRawTop]);
+
+  const persistNpcLayout = async (overrides: Partial<WorldNpcLayout> = {}) => {
     try {
       await setWorldNpcLayout({
-        jesus: next,
-        maria: mariaAnchorRef.current,
-        johnBaptist: johnBaptistAnchor,
-        peter: peterAnchor,
-        johnApostle: johnApostleAnchor,
+        jesus: overrides.jesus ?? jesusAnchorRef.current,
+        maria: overrides.maria ?? mariaAnchorRef.current,
+        johnBaptist: overrides.johnBaptist ?? johnBaptistAnchorRef.current,
+        peter: overrides.peter ?? peterAnchorRef.current,
+        johnApostle: overrides.johnApostle ?? johnApostleAnchorRef.current,
       });
     } catch {
       // ignore
     }
   };
 
+  const persistJesusAnchor = async (nx: number, ny: number) => {
+    const next = { nx: clamp01(nx), ny: clamp01(ny) };
+    setJesusAnchor(next);
+    jesusAnchorRef.current = next;
+    await persistNpcLayout({ jesus: next });
+  };
+
   const persistMariaAnchor = async (nx: number, ny: number) => {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
     setMariaAnchor(next);
-    try {
-      await setWorldNpcLayout({
-        jesus: jesusAnchorRef.current,
-        maria: next,
-        johnBaptist: johnBaptistAnchor,
-        peter: peterAnchor,
-        johnApostle: johnApostleAnchor,
-      });
-    } catch {
-      // ignore
-    }
+    mariaAnchorRef.current = next;
+    await persistNpcLayout({ maria: next });
+  };
+
+  const persistJohnBaptistAnchor = async (nx: number, ny: number) => {
+    const next = { nx: clamp01(nx), ny: clamp01(ny) };
+    setJohnBaptistAnchor(next);
+    johnBaptistAnchorRef.current = next;
+    await persistNpcLayout({ johnBaptist: next });
+  };
+
+  const persistPeterAnchor = async (nx: number, ny: number) => {
+    const next = { nx: clamp01(nx), ny: clamp01(ny) };
+    setPeterAnchor(next);
+    peterAnchorRef.current = next;
+    await persistNpcLayout({ peter: next });
+  };
+
+  const persistJohnApostleAnchor = async (nx: number, ny: number) => {
+    const next = { nx: clamp01(nx), ny: clamp01(ny) };
+    setJohnApostleAnchor(next);
+    johnApostleAnchorRef.current = next;
+    await persistNpcLayout({ johnApostle: next });
   };
 
   const reactNpcTouch = () => {
@@ -185,6 +244,78 @@ export default function WorldScreen() {
     [mariaH, mariaUnlocked, mariaW, worldSize.height, worldSize.width]
   );
 
+  const johnBaptistPanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => johnBaptistUnlocked,
+        onMoveShouldSetPanResponder: () => johnBaptistUnlocked,
+        onPanResponderGrant: () => {
+          johnBaptistDragStartRef.current = { x: johnBaptistLeftRef.current, y: johnBaptistRawTopRef.current };
+        },
+        onPanResponderMove: (_, gesture) => {
+          if (!johnBaptistUnlocked) return;
+          const maxX = Math.max(1, worldSize.width - mariaW);
+          const maxY = Math.max(1, worldSize.height - mariaH);
+          const nextX = Math.max(0, Math.min(maxX, johnBaptistDragStartRef.current.x + gesture.dx));
+          const nextY = Math.max(0, Math.min(maxY, johnBaptistDragStartRef.current.y + gesture.dy));
+          setJohnBaptistAnchor({ nx: nextX / maxX, ny: nextY / maxY });
+        },
+        onPanResponderRelease: () => {
+          if (!johnBaptistUnlocked) return;
+          void persistJohnBaptistAnchor(johnBaptistAnchorRef.current.nx, johnBaptistAnchorRef.current.ny);
+        },
+      }),
+    [johnBaptistUnlocked, mariaH, mariaW, worldSize.height, worldSize.width]
+  );
+
+  const peterPanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => peterUnlocked,
+        onMoveShouldSetPanResponder: () => peterUnlocked,
+        onPanResponderGrant: () => {
+          peterDragStartRef.current = { x: peterLeftRef.current, y: peterRawTopRef.current };
+        },
+        onPanResponderMove: (_, gesture) => {
+          if (!peterUnlocked) return;
+          const maxX = Math.max(1, worldSize.width - mariaW);
+          const maxY = Math.max(1, worldSize.height - mariaH);
+          const nextX = Math.max(0, Math.min(maxX, peterDragStartRef.current.x + gesture.dx));
+          const nextY = Math.max(0, Math.min(maxY, peterDragStartRef.current.y + gesture.dy));
+          setPeterAnchor({ nx: nextX / maxX, ny: nextY / maxY });
+        },
+        onPanResponderRelease: () => {
+          if (!peterUnlocked) return;
+          void persistPeterAnchor(peterAnchorRef.current.nx, peterAnchorRef.current.ny);
+        },
+      }),
+    [mariaH, mariaW, peterUnlocked, worldSize.height, worldSize.width]
+  );
+
+  const johnApostlePanResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => johnApostleUnlocked,
+        onMoveShouldSetPanResponder: () => johnApostleUnlocked,
+        onPanResponderGrant: () => {
+          johnApostleDragStartRef.current = { x: johnApostleLeftRef.current, y: johnApostleRawTopRef.current };
+        },
+        onPanResponderMove: (_, gesture) => {
+          if (!johnApostleUnlocked) return;
+          const maxX = Math.max(1, worldSize.width - mariaW);
+          const maxY = Math.max(1, worldSize.height - mariaH);
+          const nextX = Math.max(0, Math.min(maxX, johnApostleDragStartRef.current.x + gesture.dx));
+          const nextY = Math.max(0, Math.min(maxY, johnApostleDragStartRef.current.y + gesture.dy));
+          setJohnApostleAnchor({ nx: nextX / maxX, ny: nextY / maxY });
+        },
+        onPanResponderRelease: () => {
+          if (!johnApostleUnlocked) return;
+          void persistJohnApostleAnchor(johnApostleAnchorRef.current.nx, johnApostleAnchorRef.current.ny);
+        },
+      }),
+    [johnApostleUnlocked, mariaH, mariaW, worldSize.height, worldSize.width]
+  );
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
       <StatusBar barStyle="light-content" />
@@ -226,19 +357,19 @@ export default function WorldScreen() {
           ) : null}
 
           {johnBaptistUnlocked ? (
-            <Animated.View style={{ position: "absolute", left: johnBaptistLeft, top: johnBaptistTop, width: mariaW, height: mariaH, zIndex: 18 }}>
+            <Animated.View {...johnBaptistPanResponder.panHandlers} style={{ position: "absolute", left: johnBaptistLeft, top: johnBaptistTop, width: mariaW, height: mariaH, zIndex: 18 }}>
               <Image source={WORLD_JOHN_BAPTIST_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
 
           {peterUnlocked ? (
-            <Animated.View style={{ position: "absolute", left: peterLeft, top: peterTop, width: mariaW, height: mariaH, zIndex: 17 }}>
+            <Animated.View {...peterPanResponder.panHandlers} style={{ position: "absolute", left: peterLeft, top: peterTop, width: mariaW, height: mariaH, zIndex: 17 }}>
               <Image source={WORLD_PETER_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
 
           {johnApostleUnlocked ? (
-            <Animated.View style={{ position: "absolute", left: johnApostleLeft, top: johnApostleTop, width: mariaW, height: mariaH, zIndex: 16 }}>
+            <Animated.View {...johnApostlePanResponder.panHandlers} style={{ position: "absolute", left: johnApostleLeft, top: johnApostleTop, width: mariaW, height: mariaH, zIndex: 16 }}>
               <Image source={WORLD_JOHN_APOSTLE_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
