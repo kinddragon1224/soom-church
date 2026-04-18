@@ -41,10 +41,10 @@ export default function WorldScreen() {
   const mariaLeftRef = useRef(0);
   const mariaTopRef = useRef(0);
 
-  const mariaUnlocked = unlockedNpcIds.includes("maria");
-  const johnBaptistUnlocked = unlockedNpcIds.includes("johnBaptist");
-  const peterUnlocked = unlockedNpcIds.includes("peter");
-  const johnApostleUnlocked = unlockedNpcIds.includes("johnApostle");
+  const mariaUnlocked = true;
+  const johnBaptistUnlocked = true;
+  const peterUnlocked = true;
+  const johnApostleUnlocked = true;
 
   useEffect(() => {
     getWorldNpcLayout()
