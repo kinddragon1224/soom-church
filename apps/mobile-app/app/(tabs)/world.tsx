@@ -13,7 +13,6 @@ const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cuto
 const WORLD_JOHN_BAPTIST_NPC = require("../../assets/world-npcs/john-baptist/john-baptist-idle-a-cutout.png");
 const WORLD_PETER_NPC = require("../../assets/world-npcs/peter/peter-idle-a-cutout.png");
 const WORLD_JOHN_APOSTLE_NPC = require("../../assets/world-npcs/john-apostle/john-apostle-idle-a-cutout.png");
-const WORLD_LAYER_ENTRANCE_HOMAGE = require("../../assets/world-layers/entrance-homage-layer.png");
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
@@ -340,7 +339,6 @@ export default function WorldScreen() {
           <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_ENTRANCE_HOMAGE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
 
           <Animated.View
             {...panResponder.panHandlers}
