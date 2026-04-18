@@ -73,6 +73,16 @@ export default function PeopleScreen() {
     setAdding(true);
     const name = newName.trim();
     const household = newHousehold.trim() || "가정 미지정";
+    const tempId = `local-pending-${Date.now()}`;
+    const tempMember: LocalMember = { id: tempId, name, household, state: "등록(동기화중)", nextAction: "동기화 대기" };
+    const optimisticCache = withAddedMember(cache, tempMember);
+
+    setCache(optimisticCache);
+    await setMemberLocalCache(optimisticCache);
+    setSelectedId(tempId);
+    setPage(1);
+    setNewName("");
+    setNewHousehold("");
 
     try {
       const result = await Promise.race([
@@ -85,24 +95,35 @@ export default function PeopleScreen() {
         new Promise<never>((_, reject) => setTimeout(() => reject(new Error("request-timeout")), 13000)),
       ]);
 
-      const id = typeof (result as { id?: unknown })?.id === "string" ? `p-${(result as { id: string }).id}` : `local-${Date.now()}`;
-      const member: LocalMember = { id, name, household, state: "등록", nextAction: "다음 액션 미정" };
-      const nextCache = withAddedMember(cache, member);
-      setCache(nextCache);
-      await setMemberLocalCache(nextCache);
-      await refresh();
-      setSelectedId(member.id);
-      setPage(1);
-      setNewName("");
-      setNewHousehold("");
-      Alert.alert("완료", "목원을 추가했어.");
+      const id = typeof (result as { id?: unknown })?.id === "string" ? `p-${(result as { id: string }).id}` : tempId;
+      const syncedMember: LocalMember = { id, name, household, state: "등록", nextAction: "다음 액션 미정" };
+      const syncedCache: MemberLocalCache = {
+        ...optimisticCache,
+        added: [syncedMember, ...optimisticCache.added.filter((item) => item.id !== tempId && item.id !== id)],
+      };
+      setCache(syncedCache);
+      await setMemberLocalCache(syncedCache);
+      void refresh();
+      setSelectedId(id);
     } catch (error) {
       const reason = error instanceof Error ? error.message : "";
       if (reason.includes("ACCOUNT_LOGIN_REQUIRED") || reason.includes("account login required") || reason.includes("401")) {
+        const rollbackCache: MemberLocalCache = {
+          ...optimisticCache,
+          added: optimisticCache.added.filter((item) => item.id !== tempId),
+        };
+        setCache(rollbackCache);
+        await setMemberLocalCache(rollbackCache);
         Alert.alert("로그인 필요", "로그인 연결이 풀렸어. 다시 로그인해줘.");
         router.replace("/login");
       } else {
-        Alert.alert("실패", reason ? `서버 저장 실패: ${reason}` : "서버 저장에 실패했어. 다시 시도해줘.");
+        const pendingCache: MemberLocalCache = {
+          ...optimisticCache,
+          added: optimisticCache.added.map((item) => (item.id === tempId ? { ...item, state: "등록(동기화실패)", nextAction: "다시 저장 시도" } : item)),
+        };
+        setCache(pendingCache);
+        await setMemberLocalCache(pendingCache);
+        Alert.alert("동기화 대기", reason ? `일단 카드에 추가했고 서버 저장은 실패: ${reason}` : "일단 카드에 추가했고 서버 저장은 실패했어.");
       }
     } finally {
       setAdding(false);
