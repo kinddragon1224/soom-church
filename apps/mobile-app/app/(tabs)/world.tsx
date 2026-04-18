@@ -21,6 +21,7 @@ export default function WorldScreen() {
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.64 });
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
+  const [npcReactionPos, setNpcReactionPos] = useState<{ left: number; top: number } | null>(null);
 
   const npcFloat = useRef(new Animated.Value(0)).current;
   const dragStartRef = useRef({ x: 0, y: 0 });
@@ -105,6 +106,9 @@ export default function WorldScreen() {
   const reactNpcTouch = () => {
     const messages = ["좋아, 함께 가자.", "오늘도 시작하자.", "필요한 일부터 하자."];
     setNpcReaction(messages[Math.floor(Math.random() * messages.length)]);
+    const bubbleLeft = Math.max(8, Math.min(worldSize.width - 170, jesusLeftRef.current - 50));
+    const bubbleTop = Math.max(8, jesusTopRef.current - 36);
+    setNpcReactionPos({ left: bubbleLeft, top: bubbleTop });
     setTimeout(() => setNpcReaction(null), 1200);
   };
 
@@ -195,8 +199,8 @@ export default function WorldScreen() {
             </Animated.View>
           ) : null}
 
-          {npcReaction ? (
-            <Pressable style={{ position: "absolute", left: 12, bottom: 12, borderRadius: 999, borderWidth: 1, borderColor: "#6b5a35", backgroundColor: "rgba(33,33,33,0.82)", paddingHorizontal: 10, paddingVertical: 6 }}>
+          {npcReaction && npcReactionPos ? (
+            <Pressable style={{ position: "absolute", left: npcReactionPos.left, top: npcReactionPos.top, borderRadius: 999, borderWidth: 1, borderColor: "#6b5a35", backgroundColor: "rgba(33,33,33,0.82)", paddingHorizontal: 10, paddingVertical: 6 }}>
               <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>{npcReaction}</Text>
             </Pressable>
           ) : null}

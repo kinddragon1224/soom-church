@@ -36,15 +36,18 @@ async function requestJson(path: string, method: "POST" | "PATCH" | "DELETE", bo
     const timeout = setTimeout(() => controller.abort(), 12000);
 
     try {
-      const response = await fetch(`${base}${path}`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(body),
-        signal: controller.signal,
-      });
+      const response = await Promise.race([
+        fetch(`${base}${path}`, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+          signal: controller.signal,
+        }),
+        new Promise<Response>((_, reject) => setTimeout(() => reject(new Error("request-timeout")), 12500)),
+      ]);
 
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as { error?: string } | null;

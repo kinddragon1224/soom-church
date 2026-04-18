@@ -75,12 +75,15 @@ export default function PeopleScreen() {
     const household = newHousehold.trim() || "가정 미지정";
 
     try {
-      const result = await createMember({
-        name,
-        household,
-        state: "등록",
-        nextAction: "다음 액션 미정",
-      });
+      const result = await Promise.race([
+        createMember({
+          name,
+          household,
+          state: "등록",
+          nextAction: "다음 액션 미정",
+        }),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("request-timeout")), 13000)),
+      ]);
 
       const id = typeof (result as { id?: unknown })?.id === "string" ? `p-${(result as { id: string }).id}` : `local-${Date.now()}`;
       const member: LocalMember = { id, name, household, state: "등록", nextAction: "다음 액션 미정" };
