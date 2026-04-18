@@ -1,6 +1,7 @@
 import { getCurrentChurchSlug, getRequiredAccountKey } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
+const WEB_BASE_URL_FALLBACK = process.env.EXPO_PUBLIC_WEB_BASE_URL_FALLBACK ?? "https://soom.io.kr";
 const DEFAULT_CHURCH_SLUG = process.env.EXPO_PUBLIC_CHURCH_SLUG ?? "mobile";
 
 type MemberInput = {
@@ -20,22 +21,52 @@ async function resolveAccountKey() {
   return getRequiredAccountKey();
 }
 
-async function requestJson(path: string, method: "POST" | "PATCH", body: Record<string, unknown>) {
-  const response = await fetch(`${WEB_BASE_URL}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+function resolveBaseUrls() {
+  return [WEB_BASE_URL, WEB_BASE_URL_FALLBACK]
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .filter((value, index, arr) => arr.indexOf(value) === index);
+}
 
-  if (!response.ok) {
-    const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(payload?.error ?? `member request failed: ${response.status}`);
+async function requestJson(path: string, method: "POST" | "PATCH" | "DELETE", body: Record<string, unknown>) {
+  const errors: string[] = [];
+
+  for (const base of resolveBaseUrls()) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+
+    try {
+      const response = await fetch(`${base}${path}`, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        errors.push(`${base}:http-${response.status}:${payload?.error ?? "request-failed"}`);
+        continue;
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        errors.push(`${base}:timeout`);
+      } else if (error instanceof Error) {
+        errors.push(`${base}:${error.message}`);
+      } else {
+        errors.push(`${base}:unknown-error`);
+      }
+    } finally {
+      clearTimeout(timeout);
+    }
   }
 
-  return response.json();
+  throw new Error(errors.join(" | ") || "member request failed");
 }
 
 export async function createMember(input: MemberInput) {
@@ -68,25 +99,10 @@ export async function updateMember(input: MemberInput & { id: string }) {
 export async function deleteMember(input: { id?: string; name?: string }) {
   const churchSlug = await resolveChurchSlug();
   const accountKey = await resolveAccountKey();
-
-  const response = await fetch(`${WEB_BASE_URL}/api/mobile/member-upsert`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      churchSlug,
-      accountKey,
-      id: input.id,
-      name: input.name,
-    }),
+  return requestJson("/api/mobile/member-upsert", "DELETE", {
+    churchSlug,
+    accountKey,
+    id: input.id,
+    name: input.name,
   });
-
-  if (!response.ok) {
-    const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(payload?.error ?? `member delete failed: ${response.status}`);
-  }
-
-  return response.json();
 }
