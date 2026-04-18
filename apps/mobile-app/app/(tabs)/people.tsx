@@ -13,7 +13,7 @@ function statusStars(state: string) {
 }
 
 export default function PeopleScreen() {
-  const { loading, snapshot, refresh } = useWorldStore();
+  const { snapshot, refresh } = useWorldStore();
   const { width } = useWindowDimensions();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -58,14 +58,6 @@ export default function PeopleScreen() {
   const currentPage = Math.min(page, totalPages);
   const startIndex = (currentPage - 1) * cardsPerPage;
   const paged = members.slice(startIndex, startIndex + cardsPerPage);
-
-  if (loading || !snapshot) {
-    return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f", alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ color: "#f5f5f5" }}>목원 불러오는 중...</Text>
-      </SafeAreaView>
-    );
-  }
 
   const addMember = async () => {
     if (!newName.trim() || adding) return;
