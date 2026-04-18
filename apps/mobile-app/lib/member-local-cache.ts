@@ -70,7 +70,7 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
       ? parsed.added.map((item) => normalizeMember(item)).filter((item): item is LocalMember => Boolean(item))
       : [];
 
-    const cleanedAdded = added.filter((member) => !SAMPLE_NAMES.has(member.name) && !member.id.startsWith("local-"));
+    const cleanedAdded = added.filter((member) => !SAMPLE_NAMES.has(member.name));
     const cleanedRemovedNames = Array.isArray(parsed.removedNames)
       ? parsed.removedNames.map((name) => String(name)).filter((name) => !SAMPLE_NAMES.has(name))
       : [];
