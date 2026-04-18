@@ -13,20 +13,7 @@ const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cuto
 const WORLD_JOHN_BAPTIST_NPC = require("../../assets/world-npcs/john-baptist/john-baptist-idle-a-cutout.png");
 const WORLD_PETER_NPC = require("../../assets/world-npcs/peter/peter-idle-a-cutout.png");
 const WORLD_JOHN_APOSTLE_NPC = require("../../assets/world-npcs/john-apostle/john-apostle-idle-a-cutout.png");
-
-const HOMAGE_SCENE_OBJECTS: Array<{ id: string; nx: number; ny: number; type: "path" | "flower" | "bench" | "sign" | "tree"; icon?: string }> = [
-  { id: "path-1", nx: 0.50, ny: 0.83, type: "path" },
-  { id: "path-2", nx: 0.50, ny: 0.78, type: "path" },
-  { id: "path-3", nx: 0.50, ny: 0.73, type: "path" },
-  { id: "path-4", nx: 0.50, ny: 0.68, type: "path" },
-  { id: "flower-l", nx: 0.38, ny: 0.75, type: "flower", icon: "🌼" },
-  { id: "flower-r", nx: 0.62, ny: 0.75, type: "flower", icon: "🌼" },
-  { id: "bench-l", nx: 0.34, ny: 0.70, type: "bench", icon: "🪑" },
-  { id: "bench-r", nx: 0.66, ny: 0.70, type: "bench", icon: "🪑" },
-  { id: "sign", nx: 0.50, ny: 0.63, type: "sign", icon: "🏷️" },
-  { id: "tree-l", nx: 0.26, ny: 0.64, type: "tree", icon: "🌳" },
-  { id: "tree-r", nx: 0.74, ny: 0.64, type: "tree", icon: "🌳" },
-];
+const WORLD_LAYER_ENTRANCE_HOMAGE = require("../../assets/world-layers/entrance-homage-layer.png");
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
@@ -353,38 +340,7 @@ export default function WorldScreen() {
           <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
           <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-
-          {HOMAGE_SCENE_OBJECTS.map((item) => {
-            const size = item.type === "path" ? 16 : item.type === "tree" ? 32 : 24;
-            const left = clamp01(item.nx) * Math.max(0, worldSize.width - size);
-            const top = clamp01(item.ny) * Math.max(0, worldSize.height - size);
-
-            if (item.type === "path") {
-              return (
-                <View
-                  key={item.id}
-                  style={{
-                    position: "absolute",
-                    left,
-                    top,
-                    width: size,
-                    height: size,
-                    borderRadius: 4,
-                    backgroundColor: "rgba(213,183,129,0.92)",
-                    borderWidth: 1,
-                    borderColor: "rgba(136,104,56,0.7)",
-                    zIndex: 8,
-                  }}
-                />
-              );
-            }
-
-            return (
-              <View key={item.id} style={{ position: "absolute", left, top, width: size, height: size, alignItems: "center", justifyContent: "center", zIndex: item.type === "tree" ? 10 : 9 }}>
-                <Text style={{ fontSize: item.type === "tree" ? 24 : 18 }}>{item.icon}</Text>
-              </View>
-            );
-          })}
+          <Image source={WORLD_LAYER_ENTRANCE_HOMAGE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
 
           <Animated.View
             {...panResponder.panHandlers}
