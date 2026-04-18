@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, Image, PanResponder, Pressable, SafeAreaView, StatusBar, Text, View } from "react-native";
+import { Animated, Image, PanResponder, Pressable, SafeAreaView, StatusBar, Text, View } from "react-native";
 
 import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
-import { getWorldNpcUnlockState } from "../../lib/world-npc-progression";
 import { useWorldStore } from "../../lib/world-store";
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
@@ -27,11 +26,9 @@ export default function WorldScreen() {
   const [johnBaptistAnchor, setJohnBaptistAnchor] = useState({ nx: 0.28, ny: 0.66 });
   const [peterAnchor, setPeterAnchor] = useState({ nx: 0.64, ny: 0.68 });
   const [johnApostleAnchor, setJohnApostleAnchor] = useState({ nx: 0.82, ny: 0.68 });
-  const [unlockedNpcIds, setUnlockedNpcIds] = useState<string[]>(["jesus", "maria"]);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [npcReactionPos, setNpcReactionPos] = useState<{ left: number; top: number } | null>(null);
 
-  const npcFloat = useRef(new Animated.Value(0)).current;
   const dragStartRef = useRef({ x: 0, y: 0 });
   const mariaDragStartRef = useRef({ x: 0, y: 0 });
   const jesusAnchorRef = useRef(jesusAnchor);
@@ -57,21 +54,7 @@ export default function WorldScreen() {
       })
       .catch(() => undefined);
 
-    getWorldNpcUnlockState()
-      .then((state) => setUnlockedNpcIds(state.unlocked))
-      .catch(() => undefined);
   }, []);
-
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(npcFloat, { toValue: -2.2, duration: 1100, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
-        Animated.timing(npcFloat, { toValue: 0, duration: 1100, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [npcFloat]);
 
   useEffect(() => {
     jesusAnchorRef.current = jesusAnchor;
@@ -83,19 +66,20 @@ export default function WorldScreen() {
 
   const jesusW = Math.max(52, Math.floor(worldSize.width * 0.078));
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
+  const groundNyOffset = 0.08;
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
-  const jesusTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
+  const jesusTop = clamp01(jesusAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - jesusH);
 
   const mariaW = Math.max(50, Math.floor(jesusW * 0.95));
   const mariaH = Math.max(75, Math.floor(jesusH * 0.95));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
-  const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const mariaTop = clamp01(mariaAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const johnBaptistLeft = clamp01(johnBaptistAnchor.nx) * Math.max(0, worldSize.width - mariaW);
-  const johnBaptistTop = clamp01(johnBaptistAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const johnBaptistTop = clamp01(johnBaptistAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const peterLeft = clamp01(peterAnchor.nx) * Math.max(0, worldSize.width - mariaW);
-  const peterTop = clamp01(peterAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const peterTop = clamp01(peterAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const johnApostleLeft = clamp01(johnApostleAnchor.nx) * Math.max(0, worldSize.width - mariaW);
-  const johnApostleTop = clamp01(johnApostleAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const johnApostleTop = clamp01(johnApostleAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
 
   useEffect(() => {
     jesusLeftRef.current = jesusLeft;
@@ -221,7 +205,7 @@ export default function WorldScreen() {
 
           <Animated.View
             {...panResponder.panHandlers}
-            style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, transform: [{ translateY: npcFloat }], zIndex: 20 }}
+            style={{ position: "absolute", left: jesusLeft, top: jesusTop, width: jesusW, height: jesusH, zIndex: 20 }}
           >
             <Image source={WORLD_JESUS_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
           </Animated.View>
@@ -229,26 +213,26 @@ export default function WorldScreen() {
           {mariaUnlocked ? (
             <Animated.View
               {...mariaPanResponder.panHandlers}
-              style={{ position: "absolute", left: mariaLeft, top: mariaTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 19 }}
+              style={{ position: "absolute", left: mariaLeft, top: mariaTop, width: mariaW, height: mariaH, zIndex: 19 }}
             >
               <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
 
           {johnBaptistUnlocked ? (
-            <Animated.View style={{ position: "absolute", left: johnBaptistLeft, top: johnBaptistTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 18 }}>
+            <Animated.View style={{ position: "absolute", left: johnBaptistLeft, top: johnBaptistTop, width: mariaW, height: mariaH, zIndex: 18 }}>
               <Image source={WORLD_JOHN_BAPTIST_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
 
           {peterUnlocked ? (
-            <Animated.View style={{ position: "absolute", left: peterLeft, top: peterTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 17 }}>
+            <Animated.View style={{ position: "absolute", left: peterLeft, top: peterTop, width: mariaW, height: mariaH, zIndex: 17 }}>
               <Image source={WORLD_PETER_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
 
           {johnApostleUnlocked ? (
-            <Animated.View style={{ position: "absolute", left: johnApostleLeft, top: johnApostleTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 16 }}>
+            <Animated.View style={{ position: "absolute", left: johnApostleLeft, top: johnApostleTop, width: mariaW, height: mariaH, zIndex: 16 }}>
               <Image source={WORLD_JOHN_APOSTLE_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
