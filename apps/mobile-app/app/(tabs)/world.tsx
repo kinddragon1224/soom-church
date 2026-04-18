@@ -35,8 +35,10 @@ export default function WorldScreen() {
   const mariaAnchorRef = useRef(mariaAnchor);
   const jesusLeftRef = useRef(0);
   const jesusTopRef = useRef(0);
+  const jesusRawTopRef = useRef(0);
   const mariaLeftRef = useRef(0);
   const mariaTopRef = useRef(0);
+  const mariaRawTopRef = useRef(0);
 
   const mariaUnlocked = true;
   const johnBaptistUnlocked = true;
@@ -68,11 +70,13 @@ export default function WorldScreen() {
   const jesusH = Math.max(78, Math.floor(worldSize.height * 0.098));
   const groundNyOffset = 0.08;
   const jesusLeft = clamp01(jesusAnchor.nx) * Math.max(0, worldSize.width - jesusW);
+  const jesusRawTop = clamp01(jesusAnchor.ny) * Math.max(0, worldSize.height - jesusH);
   const jesusTop = clamp01(jesusAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - jesusH);
 
   const mariaW = Math.max(50, Math.floor(jesusW * 0.95));
   const mariaH = Math.max(75, Math.floor(jesusH * 0.95));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const mariaRawTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
   const mariaTop = clamp01(mariaAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
   const johnBaptistLeft = clamp01(johnBaptistAnchor.nx) * Math.max(0, worldSize.width - mariaW);
   const johnBaptistTop = clamp01(johnBaptistAnchor.ny + groundNyOffset) * Math.max(0, worldSize.height - mariaH);
@@ -84,12 +88,14 @@ export default function WorldScreen() {
   useEffect(() => {
     jesusLeftRef.current = jesusLeft;
     jesusTopRef.current = jesusTop;
-  }, [jesusLeft, jesusTop]);
+    jesusRawTopRef.current = jesusRawTop;
+  }, [jesusLeft, jesusRawTop, jesusTop]);
 
   useEffect(() => {
     mariaLeftRef.current = mariaLeft;
     mariaTopRef.current = mariaTop;
-  }, [mariaLeft, mariaTop]);
+    mariaRawTopRef.current = mariaRawTop;
+  }, [mariaLeft, mariaRawTop, mariaTop]);
 
   const persistJesusAnchor = async (nx: number, ny: number) => {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
@@ -138,7 +144,7 @@ export default function WorldScreen() {
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
         onPanResponderGrant: () => {
-          dragStartRef.current = { x: jesusLeftRef.current, y: jesusTopRef.current };
+          dragStartRef.current = { x: jesusLeftRef.current, y: jesusRawTopRef.current };
         },
         onPanResponderMove: (_, gesture) => {
           const maxX = Math.max(1, worldSize.width - jesusW);
@@ -161,7 +167,7 @@ export default function WorldScreen() {
         onStartShouldSetPanResponder: () => mariaUnlocked,
         onMoveShouldSetPanResponder: () => mariaUnlocked,
         onPanResponderGrant: () => {
-          mariaDragStartRef.current = { x: mariaLeftRef.current, y: mariaTopRef.current };
+          mariaDragStartRef.current = { x: mariaLeftRef.current, y: mariaRawTopRef.current };
         },
         onPanResponderMove: (_, gesture) => {
           if (!mariaUnlocked) return;
