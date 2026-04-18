@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Alert, Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Image, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
@@ -150,10 +150,15 @@ export default function MemberDetailScreen() {
   };
 
   const stats = memberStats(name, state);
+  const topInset = Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) + 8 : 6;
+
+  const setPresetState = (value: string) => {
+    setState(value);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#121621" }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 32 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: topInset, paddingBottom: 32 }}>
         <Pressable onPress={() => router.back()} style={{ alignSelf: "flex-start", paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, borderWidth: 1, borderColor: "#3a435f", backgroundColor: "#182038" }}>
           <Text style={{ color: "#d8e7ff", fontSize: 11 }}>← 카드 목록</Text>
         </Pressable>
@@ -195,11 +200,49 @@ export default function MemberDetailScreen() {
           </View>
         </View>
 
-        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#121212", padding: 10, gap: 8 }}>
-          <TextInput value={name} onChangeText={setName} placeholder="이름" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
-          <TextInput value={household} onChangeText={setHousehold} placeholder="가정" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
-          <TextInput value={state} onChangeText={setState} placeholder="상태" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
-          <TextInput value={nextAction} onChangeText={setNextAction} placeholder="다음 액션" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
+        <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#121212", padding: 10, gap: 10 }}>
+          <View style={{ gap: 4 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>목원 이름</Text>
+            <TextInput value={name} onChangeText={setName} placeholder="예: 최재성" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
+          </View>
+
+          <View style={{ gap: 4 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>소속 가정/목장</Text>
+            <TextInput value={household} onChangeText={setHousehold} placeholder="예: 더루멘 1목장" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
+          </View>
+
+          <View style={{ gap: 6 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>목양 상태</Text>
+            <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
+              {[
+                { label: "안정", value: "안정" },
+                { label: "기도", value: "✨ 기도" },
+                { label: "후속", value: "✉️ 후속" },
+                { label: "돌봄", value: "💧 돌봄" },
+              ].map((preset) => (
+                <Pressable
+                  key={preset.label}
+                  onPress={() => setPresetState(preset.value)}
+                  style={{
+                    borderRadius: 999,
+                    borderWidth: 1,
+                    borderColor: state === preset.value ? "#7aa0d6" : "#3a3a3a",
+                    backgroundColor: state === preset.value ? "#1a2740" : "#171717",
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  <Text style={{ color: "#d8e7ff", fontSize: 10 }}>{preset.label}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <TextInput value={state} onChangeText={setState} placeholder="세부 상태 메모" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
+          </View>
+
+          <View style={{ gap: 4 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>다음 목양 액션</Text>
+            <TextInput value={nextAction} onChangeText={setNextAction} placeholder="예: 화요일 저녁 안부 연락, 금요일 심방" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 46, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
+          </View>
 
           <View style={{ flexDirection: "row", gap: 8 }}>
             <Pressable onPress={save} disabled={saving || !name.trim()} style={{ flex: 1, minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "#5aa36f", backgroundColor: "#152419", alignItems: "center", justifyContent: "center", opacity: saving || !name.trim() ? 0.55 : 1 }}>
