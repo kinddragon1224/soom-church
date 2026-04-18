@@ -1,4 +1,4 @@
-import { getCurrentChurchSlug, getRequiredAccountKey } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
 const WEB_BASE_URL_FALLBACK = process.env.EXPO_PUBLIC_WEB_BASE_URL_FALLBACK ?? "https://soom.io.kr";
@@ -18,7 +18,8 @@ async function resolveChurchSlug() {
 }
 
 async function resolveAccountKey() {
-  return getRequiredAccountKey();
+  const saved = await getCurrentAccountKey();
+  return saved ?? "mobile-local";
 }
 
 function resolveBaseUrls() {

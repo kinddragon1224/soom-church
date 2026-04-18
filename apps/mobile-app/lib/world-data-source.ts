@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { getCurrentChurchSlug, getRequiredAccountKey } from "./auth-bridge";
+import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 import { chatQuickActions, type PersonRecord, type TaskRecord, type WorldObject, worldObjects } from "./world-model";
 
 const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "https://soom.io.kr";
@@ -100,12 +100,7 @@ async function writeCachedSnapshot(churchSlug: string, accountKey: string | null
 export async function getWorldSnapshot(): Promise<WorldSnapshot> {
   const savedSlug = await getCurrentChurchSlug();
   const churchSlug = resolveChurchSlug(savedSlug);
-  const accountKey = await getRequiredAccountKey().catch(() => null);
-
-  if (!accountKey) {
-    const cached = await readCachedSnapshot(churchSlug, null);
-    return cached ?? fallbackSnapshot();
-  }
+  const accountKey = (await getCurrentAccountKey()) ?? "mobile-local";
 
   try {
     const remote = await fetchRemoteSnapshot(churchSlug, accountKey);
