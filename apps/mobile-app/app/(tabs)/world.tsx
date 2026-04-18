@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Image, PanResponder, Pressable, SafeAreaView, StatusBar, Text, View } from "react-native";
 
 import { getWorldNpcLayout, setWorldNpcLayout } from "../../lib/world-npc-layout";
+import { getWorldNpcUnlockState } from "../../lib/world-npc-progression";
 import { useWorldStore } from "../../lib/world-store";
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
@@ -10,16 +11,23 @@ const WORLD_LAYER_NPCS = require("../../assets/world-layers/npc-disciples-layer.
 const WORLD_LAYER_OBJECTS = require("../../assets/world-layers/ground-objects-layer.png");
 const WORLD_JESUS_NPC = require("../../assets/world-npcs/jesus-npc.png");
 const WORLD_MARIA_NPC = require("../../assets/world-npcs/maria/maria-idle-a-cutout.png");
+const WORLD_JOHN_BAPTIST_NPC = require("../../assets/world-npcs/john-baptist/john-baptist-idle-a-cutout.png");
+const WORLD_PETER_NPC = require("../../assets/world-npcs/peter/peter-idle-a-cutout.png");
+const WORLD_JOHN_APOSTLE_NPC = require("../../assets/world-npcs/john-apostle/john-apostle-idle-a-cutout.png");
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
 }
 
 export default function WorldScreen() {
-  const { loading, snapshot, attendanceReward } = useWorldStore();
+  const { loading, snapshot } = useWorldStore();
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.64 });
+  const [johnBaptistAnchor, setJohnBaptistAnchor] = useState({ nx: 0.28, ny: 0.66 });
+  const [peterAnchor, setPeterAnchor] = useState({ nx: 0.64, ny: 0.68 });
+  const [johnApostleAnchor, setJohnApostleAnchor] = useState({ nx: 0.82, ny: 0.68 });
+  const [unlockedNpcIds, setUnlockedNpcIds] = useState<string[]>(["jesus", "maria"]);
   const [npcReaction, setNpcReaction] = useState<string | null>(null);
   const [npcReactionPos, setNpcReactionPos] = useState<{ left: number; top: number } | null>(null);
 
@@ -33,14 +41,24 @@ export default function WorldScreen() {
   const mariaLeftRef = useRef(0);
   const mariaTopRef = useRef(0);
 
-  const mariaUnlocked = attendanceReward?.mariaUnlocked ?? false;
+  const mariaUnlocked = unlockedNpcIds.includes("maria");
+  const johnBaptistUnlocked = unlockedNpcIds.includes("johnBaptist");
+  const peterUnlocked = unlockedNpcIds.includes("peter");
+  const johnApostleUnlocked = unlockedNpcIds.includes("johnApostle");
 
   useEffect(() => {
     getWorldNpcLayout()
       .then((layout) => {
         setJesusAnchor(layout.jesus);
         setMariaAnchor(layout.maria);
+        setJohnBaptistAnchor(layout.johnBaptist);
+        setPeterAnchor(layout.peter);
+        setJohnApostleAnchor(layout.johnApostle);
       })
+      .catch(() => undefined);
+
+    getWorldNpcUnlockState()
+      .then((state) => setUnlockedNpcIds(state.unlocked))
       .catch(() => undefined);
   }, []);
 
@@ -72,6 +90,12 @@ export default function WorldScreen() {
   const mariaH = Math.max(75, Math.floor(jesusH * 0.95));
   const mariaLeft = clamp01(mariaAnchor.nx) * Math.max(0, worldSize.width - mariaW);
   const mariaTop = clamp01(mariaAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const johnBaptistLeft = clamp01(johnBaptistAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const johnBaptistTop = clamp01(johnBaptistAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const peterLeft = clamp01(peterAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const peterTop = clamp01(peterAnchor.ny) * Math.max(0, worldSize.height - mariaH);
+  const johnApostleLeft = clamp01(johnApostleAnchor.nx) * Math.max(0, worldSize.width - mariaW);
+  const johnApostleTop = clamp01(johnApostleAnchor.ny) * Math.max(0, worldSize.height - mariaH);
 
   useEffect(() => {
     jesusLeftRef.current = jesusLeft;
@@ -87,7 +111,13 @@ export default function WorldScreen() {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
     setJesusAnchor(next);
     try {
-      await setWorldNpcLayout({ jesus: next, maria: mariaAnchorRef.current });
+      await setWorldNpcLayout({
+        jesus: next,
+        maria: mariaAnchorRef.current,
+        johnBaptist: johnBaptistAnchor,
+        peter: peterAnchor,
+        johnApostle: johnApostleAnchor,
+      });
     } catch {
       // ignore
     }
@@ -97,7 +127,13 @@ export default function WorldScreen() {
     const next = { nx: clamp01(nx), ny: clamp01(ny) };
     setMariaAnchor(next);
     try {
-      await setWorldNpcLayout({ jesus: jesusAnchorRef.current, maria: next });
+      await setWorldNpcLayout({
+        jesus: jesusAnchorRef.current,
+        maria: next,
+        johnBaptist: johnBaptistAnchor,
+        peter: peterAnchor,
+        johnApostle: johnApostleAnchor,
+      });
     } catch {
       // ignore
     }
@@ -196,6 +232,24 @@ export default function WorldScreen() {
               style={{ position: "absolute", left: mariaLeft, top: mariaTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 19 }}
             >
               <Image source={WORLD_MARIA_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+            </Animated.View>
+          ) : null}
+
+          {johnBaptistUnlocked ? (
+            <Animated.View style={{ position: "absolute", left: johnBaptistLeft, top: johnBaptistTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 18 }}>
+              <Image source={WORLD_JOHN_BAPTIST_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+            </Animated.View>
+          ) : null}
+
+          {peterUnlocked ? (
+            <Animated.View style={{ position: "absolute", left: peterLeft, top: peterTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 17 }}>
+              <Image source={WORLD_PETER_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
+            </Animated.View>
+          ) : null}
+
+          {johnApostleUnlocked ? (
+            <Animated.View style={{ position: "absolute", left: johnApostleLeft, top: johnApostleTop, width: mariaW, height: mariaH, transform: [{ translateY: npcFloat }], zIndex: 16 }}>
+              <Image source={WORLD_JOHN_APOSTLE_NPC} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
             </Animated.View>
           ) : null}
 

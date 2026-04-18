@@ -12,11 +12,17 @@ type NpcAnchor = {
 export type WorldNpcLayout = {
   jesus: NpcAnchor;
   maria: NpcAnchor;
+  johnBaptist: NpcAnchor;
+  peter: NpcAnchor;
+  johnApostle: NpcAnchor;
 };
 
 const DEFAULT_LAYOUT: WorldNpcLayout = {
   jesus: { nx: 0.5, ny: 0.64 },
   maria: { nx: 0.73, ny: 0.64 },
+  johnBaptist: { nx: 0.28, ny: 0.66 },
+  peter: { nx: 0.64, ny: 0.68 },
+  johnApostle: { nx: 0.82, ny: 0.68 },
 };
 
 function clamp01(value: number) {
@@ -45,6 +51,18 @@ export async function getWorldNpcLayout(): Promise<WorldNpcLayout> {
         nx: clamp01(Number(parsed.maria?.nx ?? DEFAULT_LAYOUT.maria.nx)),
         ny: clamp01(Number(parsed.maria?.ny ?? DEFAULT_LAYOUT.maria.ny)),
       },
+      johnBaptist: {
+        nx: clamp01(Number(parsed.johnBaptist?.nx ?? DEFAULT_LAYOUT.johnBaptist.nx)),
+        ny: clamp01(Number(parsed.johnBaptist?.ny ?? DEFAULT_LAYOUT.johnBaptist.ny)),
+      },
+      peter: {
+        nx: clamp01(Number(parsed.peter?.nx ?? DEFAULT_LAYOUT.peter.nx)),
+        ny: clamp01(Number(parsed.peter?.ny ?? DEFAULT_LAYOUT.peter.ny)),
+      },
+      johnApostle: {
+        nx: clamp01(Number(parsed.johnApostle?.nx ?? DEFAULT_LAYOUT.johnApostle.nx)),
+        ny: clamp01(Number(parsed.johnApostle?.ny ?? DEFAULT_LAYOUT.johnApostle.ny)),
+      },
     };
   } catch {
     return DEFAULT_LAYOUT;
@@ -60,6 +78,18 @@ export async function setWorldNpcLayout(layout: WorldNpcLayout) {
     maria: {
       nx: clamp01(layout.maria.nx),
       ny: clamp01(layout.maria.ny),
+    },
+    johnBaptist: {
+      nx: clamp01(layout.johnBaptist.nx),
+      ny: clamp01(layout.johnBaptist.ny),
+    },
+    peter: {
+      nx: clamp01(layout.peter.nx),
+      ny: clamp01(layout.peter.ny),
+    },
+    johnApostle: {
+      nx: clamp01(layout.johnApostle.nx),
+      ny: clamp01(layout.johnApostle.ny),
     },
   };
 
