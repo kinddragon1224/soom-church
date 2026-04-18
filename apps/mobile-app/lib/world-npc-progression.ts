@@ -10,7 +10,7 @@ export type WorldNpcUnlockState = {
   unlocked: WorldNpcId[];
 };
 
-const DEFAULT_UNLOCKED: WorldNpcId[] = ["jesus", "maria"];
+const DEFAULT_UNLOCKED: WorldNpcId[] = ["jesus", "maria", "johnBaptist", "peter", "johnApostle"];
 
 export const WORLD_NPC_UNLOCK_ORDER: WorldNpcId[] = ["johnBaptist", "peter", "johnApostle"];
 
