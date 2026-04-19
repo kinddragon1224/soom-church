@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Image, PanResponder, Pressable, SafeAreaView, StatusBar, Text, View } from "react-native";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { getCurrentAccountKey } from "../../lib/auth-bridge";
 import { getWorldNpcLayout, setWorldNpcLayout, type WorldNpcLayout } from "../../lib/world-npc-layout";
@@ -29,6 +30,7 @@ function guessShepherdName(accountKey: string | null) {
 }
 
 export default function WorldScreen() {
+  const insets = useSafeAreaInsets();
   const { loading, snapshot, runtimeTasks, attendanceReward } = useWorldStore();
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
   const [headerInfo, setHeaderInfo] = useState({ churchName: "우리 교회", mokjangName: "우리 목장", shepherdName: "목자" });
@@ -356,7 +358,7 @@ export default function WorldScreen() {
     doneQuestCount >= totalQuestCount
       ? "오늘 퀘스트 완료. 목원 돌봄 메모만 마무리하면 좋아."
       : `다음 행동: 오늘 퀘스트 ${doneQuestCount + 1}/${totalQuestCount} 진행`;
-  const skyTrim = Math.max(0, Math.floor(worldSize.height * 0.14));
+  const skyTrim = Math.max(0, Math.floor(worldSize.height * 0.22));
   const worldLayerStyle = {
     position: "absolute" as const,
     left: 0,
@@ -367,9 +369,9 @@ export default function WorldScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" translucent={false} backgroundColor="#0f0f0f" />
 
-      <View style={{ paddingHorizontal: 14, paddingTop: 8, paddingBottom: 6, gap: 8 }}>
+      <View style={{ paddingHorizontal: 14, paddingTop: Math.max(8, insets.top + 4), paddingBottom: 6, gap: 8 }}>
         <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(140,162,203,0.45)", backgroundColor: "rgba(25,33,49,0.82)", paddingHorizontal: 10, paddingVertical: 8 }}>
           <Text style={{ color: "#f4f8ff", fontSize: 13, fontWeight: "800" }}>
             {headerInfo.churchName} · {headerInfo.mokjangName} · {headerInfo.shepherdName}
