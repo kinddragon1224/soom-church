@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Image, PanResponder, Pressable, SafeAreaView, StatusBar, Text, View } from "react-native";
+import { router } from "expo-router";
 
+import { getCurrentAccountKey } from "../../lib/auth-bridge";
 import { getWorldNpcLayout, setWorldNpcLayout, type WorldNpcLayout } from "../../lib/world-npc-layout";
+import { getWorldSetupState } from "../../lib/world-setup";
 import { useWorldStore } from "../../lib/world-store";
 
 const WORLD_LAYER_BG = require("../../assets/world-layers/bg-layer.png");
@@ -18,9 +21,17 @@ function clamp01(value: number) {
   return Math.max(0, Math.min(1, value));
 }
 
+function guessShepherdName(accountKey: string | null) {
+  if (!accountKey) return "목자";
+  const base = accountKey.split("@")[0] ?? accountKey;
+  const cleaned = base.replace(/[._-]+/g, " ").trim();
+  return cleaned.length ? cleaned : "목자";
+}
+
 export default function WorldScreen() {
-  const { loading, snapshot } = useWorldStore();
+  const { loading, snapshot, runtimeTasks, attendanceReward } = useWorldStore();
   const [worldSize, setWorldSize] = useState({ width: 1, height: 1 });
+  const [headerInfo, setHeaderInfo] = useState({ churchName: "우리 교회", mokjangName: "우리 목장", shepherdName: "목자" });
   const [jesusAnchor, setJesusAnchor] = useState({ nx: 0.5, ny: 0.64 });
   const [mariaAnchor, setMariaAnchor] = useState({ nx: 0.73, ny: 0.64 });
   const [johnBaptistAnchor, setJohnBaptistAnchor] = useState({ nx: 0.28, ny: 0.66 });
@@ -68,6 +79,28 @@ export default function WorldScreen() {
       })
       .catch(() => undefined);
 
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const hydrateHeader = async () => {
+      const setup = await getWorldSetupState();
+      const accountKey = await getCurrentAccountKey();
+      if (!mounted) return;
+
+      setHeaderInfo({
+        churchName: setup?.churchName || "우리 교회",
+        mokjangName: setup?.mokjangName || "우리 목장",
+        shepherdName: guessShepherdName(accountKey),
+      });
+    };
+
+    void hydrateHeader();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -316,18 +349,38 @@ export default function WorldScreen() {
     [johnApostleUnlocked, mariaH, mariaW, worldSize.height, worldSize.width]
   );
 
+  const totalQuestCount = 3;
+  const doneQuestCount = Math.min(totalQuestCount, runtimeTasks.filter((task) => task.completed).length);
+  const talentPoints = doneQuestCount * 10 + (snapshot?.peopleRecords.length ?? 0) * 2 + (attendanceReward?.streakCount ?? 0);
+  const nextGuideText =
+    doneQuestCount >= totalQuestCount
+      ? "오늘 퀘스트 완료. 목원 돌봄 메모만 마무리하면 좋아."
+      : `다음 행동: 오늘 퀘스트 ${doneQuestCount + 1}/${totalQuestCount} 진행`;
+  const skyTrim = Math.max(0, Math.floor(worldSize.height * 0.14));
+  const worldLayerStyle = {
+    position: "absolute" as const,
+    left: 0,
+    top: -skyTrim,
+    width: "100%" as const,
+    height: worldSize.height + skyTrim,
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#0f0f0f" }}>
       <StatusBar barStyle="light-content" />
 
-      <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 6 }}>
-        <Text style={{ color: "#f5f5f5", fontSize: 16, fontWeight: "700" }}>목장 월드</Text>
-        <Text style={{ color: "rgba(245,245,245,0.62)", fontSize: 11 }}>
-          {loading ? "불러오는 중..." : `목원 ${snapshot?.peopleRecords.length ?? 0}명`}
-        </Text>
+      <View style={{ paddingHorizontal: 14, paddingTop: 8, paddingBottom: 6, gap: 8 }}>
+        <View style={{ borderRadius: 12, borderWidth: 1, borderColor: "rgba(140,162,203,0.45)", backgroundColor: "rgba(25,33,49,0.82)", paddingHorizontal: 10, paddingVertical: 8 }}>
+          <Text style={{ color: "#f4f8ff", fontSize: 13, fontWeight: "800" }}>
+            {headerInfo.churchName} · {headerInfo.mokjangName} · {headerInfo.shepherdName}
+          </Text>
+          <Text style={{ color: "rgba(226,235,255,0.78)", fontSize: 11, marginTop: 3 }}>
+            오늘 퀘스트 {doneQuestCount}/{totalQuestCount} · 달란트 {talentPoints}
+          </Text>
+        </View>
       </View>
 
-      <View style={{ flex: 1, paddingHorizontal: 14, paddingBottom: 10 }}>
+      <View style={{ flex: 1, paddingHorizontal: 14, paddingBottom: 10, gap: 10 }}>
         <View
           onLayout={(event) => {
             const { width, height } = event.nativeEvent.layout;
@@ -335,10 +388,10 @@ export default function WorldScreen() {
           }}
           style={{ flex: 1, borderRadius: 18, overflow: "hidden", borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#111" }}
         >
-          <Image source={WORLD_LAYER_BG} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_FIG_TREE} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_NPCS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
-          <Image source={WORLD_LAYER_OBJECTS} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} resizeMode="cover" />
+          <Image source={WORLD_LAYER_BG} style={worldLayerStyle} resizeMode="cover" />
+          <Image source={WORLD_LAYER_FIG_TREE} style={worldLayerStyle} resizeMode="cover" />
+          <Image source={WORLD_LAYER_NPCS} style={worldLayerStyle} resizeMode="cover" />
+          <Image source={WORLD_LAYER_OBJECTS} style={worldLayerStyle} resizeMode="cover" />
 
           <Animated.View
             {...panResponder.panHandlers}
@@ -379,6 +432,37 @@ export default function WorldScreen() {
               <Text style={{ color: "#ffeabf", fontSize: 11, fontWeight: "700" }}>{npcReaction}</Text>
             </Pressable>
           ) : null}
+        </View>
+
+        <View style={{ borderRadius: 14, borderWidth: 1, borderColor: "rgba(140,162,203,0.4)", backgroundColor: "rgba(20,28,42,0.84)", paddingHorizontal: 10, paddingVertical: 10, gap: 8 }}>
+          <Text style={{ color: "#dce8ff", fontSize: 12 }}>{nextGuideText}</Text>
+
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <Pressable
+              onPress={() => router.push("/(tabs)/people")}
+              style={{ flex: 1, minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "rgba(143,224,170,0.5)", backgroundColor: "rgba(20,50,35,0.62)", alignItems: "center", justifyContent: "center" }}
+            >
+              <Text style={{ color: "#d7ffe3", fontSize: 12, fontWeight: "700" }}>목원 추가</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => router.push("/(tabs)/tasks")}
+              style={{ flex: 1, minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "rgba(243,208,128,0.6)", backgroundColor: "rgba(60,46,20,0.62)", alignItems: "center", justifyContent: "center" }}
+            >
+              <Text style={{ color: "#ffeabf", fontSize: 12, fontWeight: "700" }}>오늘 퀘스트</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => router.push("/(tabs)/tasks")}
+              style={{ flex: 1, minHeight: 42, borderRadius: 10, borderWidth: 1, borderColor: "rgba(241,146,146,0.6)", backgroundColor: "rgba(66,25,25,0.62)", alignItems: "center", justifyContent: "center" }}
+            >
+              <Text style={{ color: "#ffd1d1", fontSize: 12, fontWeight: "700" }}>긴급 돌봄</Text>
+            </Pressable>
+          </View>
+
+          <Text style={{ color: "rgba(220,232,255,0.62)", fontSize: 10 }}>
+            {loading ? "불러오는 중..." : `목원 ${snapshot?.peopleRecords.length ?? 0}명 연결됨`}
+          </Text>
         </View>
       </View>
     </SafeAreaView>
