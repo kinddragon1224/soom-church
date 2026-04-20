@@ -275,7 +275,7 @@ export default function IsakScriptPage() {
                   {current.content.map((line) => (
                     <p
                       key={line}
-                      className={`break-keep whitespace-pre-line text-[1.42rem] font-bold leading-[1.85] tracking-[-0.01em] sm:text-2xl ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"}`}
+                      className={`break-keep whitespace-pre-line text-[1.2rem] font-bold leading-[1.8] tracking-[-0.01em] sm:text-[1.55rem] ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"}`}
                     >
                       {line}
                     </p>
@@ -289,7 +289,7 @@ export default function IsakScriptPage() {
                     <div className="mb-3 flex items-center">
                       <span className={`rounded-lg px-3 py-1 text-xs font-black text-white ${item.theme.label}`}>{item.speaker}</span>
                     </div>
-                    <p className={`${item.theme.text} break-keep text-[1.38rem] font-bold leading-[1.85] tracking-[-0.01em] sm:text-2xl`}>
+                    <p className={`${item.theme.text} break-keep text-[1.17rem] font-bold leading-[1.78] tracking-[-0.01em] sm:text-[1.5rem]`}>
                       <HighlightLove text={item.text} />
                     </p>
                   </div>
@@ -297,7 +297,7 @@ export default function IsakScriptPage() {
               </div>
             ) : (
               <div className={`rounded-[2rem] border-2 p-6 sm:p-8 ${current.theme.bg} ${current.theme.border}`}>
-                <p className={`${current.theme.text} break-keep text-[1.42rem] font-bold leading-[1.9] tracking-[-0.01em] sm:text-2xl`}>
+                <p className={`${current.theme.text} break-keep text-[1.2rem] font-bold leading-[1.82] tracking-[-0.01em] sm:text-[1.55rem]`}>
                   <HighlightLove text={String(current.dialogue ?? "")} />
                 </p>
               </div>
