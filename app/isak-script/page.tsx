@@ -186,7 +186,7 @@ const scriptData: ScriptItem[] = [
     character: "기적",
     action: "놀라워하는 왕",
     dialogue:
-      "(놀라며, 일어나서) 모두 결박이 풀린 채 화덕 안에서 걷고 있고,\n그들에게 아무런 상처도 없다!\n더욱이 넷째 사람의 모습은 신의 아들과 같다!\n\n(화덕 어귀로 가까이 감)\n가장 높으신 하나님의 종\n사드락과 메삭과 아벳느고는 이리로 나오너라.",
+      "(세 친구와 다른 한 사람의 실루엣)\n\n(놀라며, 일어나서) 모두 결박이 풀린 채 화덕 안에서 걷고 있고,\n그들에게 아무런 상처도 없다!\n더욱이 넷째 사람의 모습은 신의 아들과 같다!\n\n(화덕 어귀로 가까이 감)\n가장 높으신 하나님의 종\n사드락과 메삭과 아벳느고는 이리로 나오너라.\n\n세 친구: (불에서 걸어 나옴)",
     icon: <Sparkles className="h-8 w-8 text-sky-400" />,
     theme: colors.king,
   },
@@ -198,7 +198,7 @@ const scriptData: ScriptItem[] = [
     dialogue:
       "내가 조서를 내린다.\n여호와 하나님, 진짜 진짜 하나님.\n\n이와 같이 자기를 믿는 사람을\n구원할 수 있는 신은 다시 없을 것이다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요!",
     icon: <BookOpen className="h-8 w-8 text-indigo-600" />,
-    theme: colors.all,
+    theme: colors.king,
   },
 ];
 
