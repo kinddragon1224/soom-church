@@ -25,23 +25,12 @@ export default function OpengraphImage() {
       >
         <div
           style={{
-            fontSize: 34,
-            fontWeight: 700,
-            letterSpacing: "0.02em",
-            marginBottom: 16,
-            color: "#475569",
-          }}
-        >
-          이삭영유아부 일일교사 가이드
-        </div>
-        <div
-          style={{
             fontSize: 72,
             fontWeight: 800,
             letterSpacing: "-0.02em",
           }}
         >
-          이삭영유아부 대본 뷰어
+          이삭영유아부
         </div>
       </div>
     ),

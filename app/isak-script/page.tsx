@@ -222,7 +222,6 @@ function HighlightLove({ text }: { text: string }) {
 
 export default function IsakScriptPage() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [readMode, setReadMode] = useState(false);
   const current = scriptData[currentStep];
 
   const progress = useMemo(() => ((currentStep + 1) / scriptData.length) * 100, [currentStep]);
@@ -244,15 +243,8 @@ export default function IsakScriptPage() {
       <div className="mx-auto w-full max-w-3xl">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
-            <p className="text-[11px] font-bold tracking-widest text-slate-500">이삭영유아부 일일교사 가이드</p>
-            <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">이삭영유아부 대본 뷰어</h1>
+            <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">이삭영유아부</h1>
           </div>
-          <button
-            onClick={() => setReadMode((prev) => !prev)}
-            className={`rounded-xl border px-3 py-2 text-sm font-bold transition ${readMode ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 bg-white text-slate-700"}`}
-          >
-            {readMode ? "기본 모드" : "낭독 모드"}
-          </button>
         </div>
 
         <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -283,7 +275,7 @@ export default function IsakScriptPage() {
                   {current.content.map((line) => (
                     <p
                       key={line}
-                      className={`whitespace-pre-line font-extrabold leading-[1.9] ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"} ${readMode ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}
+                      className={`whitespace-pre-line text-xl font-extrabold leading-[1.9] sm:text-2xl ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"}`}
                     >
                       {line}
                     </p>
@@ -297,7 +289,7 @@ export default function IsakScriptPage() {
                     <div className="mb-3 flex items-center">
                       <span className={`rounded-lg px-3 py-1 text-xs font-black text-white ${item.theme.label}`}>{item.speaker}</span>
                     </div>
-                    <p className={`${item.theme.text} font-extrabold leading-[1.9] ${readMode ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                    <p className={`${item.theme.text} text-xl font-extrabold leading-[1.9] sm:text-2xl`}>
                       <HighlightLove text={item.text} />
                     </p>
                   </div>
@@ -305,7 +297,7 @@ export default function IsakScriptPage() {
               </div>
             ) : (
               <div className={`rounded-[2rem] border-2 p-6 sm:p-8 ${current.theme.bg} ${current.theme.border}`}>
-                <p className={`${current.theme.text} text-center font-extrabold leading-[1.9] ${readMode ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                <p className={`${current.theme.text} text-center text-xl font-extrabold leading-[1.9] sm:text-2xl`}>
                   <HighlightLove text={String(current.dialogue ?? "")} />
                 </p>
               </div>
