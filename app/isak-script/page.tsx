@@ -239,8 +239,8 @@ export default function IsakScriptPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-stone-50 to-slate-100 px-4 py-5 text-slate-900 sm:px-6 sm:py-8">
-      <div className="mx-auto w-full max-w-3xl">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-stone-50 to-slate-100 px-3 py-4 text-slate-900 sm:px-6 sm:py-8">
+      <div className="mx-auto w-full max-w-2xl pb-4">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">이삭영유아부</h1>
@@ -258,8 +258,8 @@ export default function IsakScriptPage() {
         </div>
 
         <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
-          <div className="p-5 sm:p-8">
-            <div className="mb-6 flex items-center gap-3">
+          <div className="p-4 sm:p-7">
+            <div className="mb-6 flex items-start gap-3">
               <div className={`rounded-2xl border bg-white p-3 shadow-sm ${current.theme.border} ${current.theme.ring}`}>{current.icon}</div>
               <div>
                 <div className="text-xs font-bold tracking-wider text-slate-500">{current.category}</div>
@@ -269,13 +269,13 @@ export default function IsakScriptPage() {
             </div>
 
             {(current.type === "intro" || current.type === "greeting") && current.content ? (
-              <div className="space-y-5 text-center">
+              <div className="space-y-5">
                 <h2 className={`inline-block rounded-2xl bg-slate-50 px-5 py-2 text-lg font-black ${current.accent ?? "text-slate-700"}`}>{current.title}</h2>
                 <div className="space-y-4">
                   {current.content.map((line) => (
                     <p
                       key={line}
-                      className={`whitespace-pre-line text-xl font-extrabold leading-[1.9] sm:text-2xl ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"}`}
+                      className={`break-keep whitespace-pre-line text-[1.42rem] font-bold leading-[1.85] tracking-[-0.01em] sm:text-2xl ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"}`}
                     >
                       {line}
                     </p>
@@ -289,7 +289,7 @@ export default function IsakScriptPage() {
                     <div className="mb-3 flex items-center">
                       <span className={`rounded-lg px-3 py-1 text-xs font-black text-white ${item.theme.label}`}>{item.speaker}</span>
                     </div>
-                    <p className={`${item.theme.text} text-xl font-extrabold leading-[1.9] sm:text-2xl`}>
+                    <p className={`${item.theme.text} break-keep text-[1.38rem] font-bold leading-[1.85] tracking-[-0.01em] sm:text-2xl`}>
                       <HighlightLove text={item.text} />
                     </p>
                   </div>
@@ -297,7 +297,7 @@ export default function IsakScriptPage() {
               </div>
             ) : (
               <div className={`rounded-[2rem] border-2 p-6 sm:p-8 ${current.theme.bg} ${current.theme.border}`}>
-                <p className={`${current.theme.text} text-center text-xl font-extrabold leading-[1.9] sm:text-2xl`}>
+                <p className={`${current.theme.text} break-keep text-[1.42rem] font-bold leading-[1.9] tracking-[-0.01em] sm:text-2xl`}>
                   <HighlightLove text={String(current.dialogue ?? "")} />
                 </p>
               </div>
