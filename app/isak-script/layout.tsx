@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const pageUrl = "https://soom.io.kr/isak-script";
-const pageTitle = "이삭영유아부 다니엘 대본 뷰어 | 숨";
+const pageTitle = "이삭영유아부 대본 뷰어 | 숨";
 const pageDescription = "이삭영유아부 아빠 교사용 대본을 장면별로 읽기 쉽게 정리한 뷰어입니다.";
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         url: "/hero-church-main.png",
         width: 1200,
         height: 630,
-        alt: "이삭영유아부 다니엘 대본 뷰어",
+        alt: "이삭영유아부 대본 뷰어",
       },
     ],
   },

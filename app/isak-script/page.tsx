@@ -245,7 +245,7 @@ export default function IsakScriptPage() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div>
             <p className="text-[11px] font-bold tracking-widest text-slate-500">이삭영유아부 일일교사 가이드</p>
-            <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">다니엘 대본 뷰어</h1>
+            <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">이삭영유아부 대본 뷰어</h1>
           </div>
           <button
             onClick={() => setReadMode((prev) => !prev)}
