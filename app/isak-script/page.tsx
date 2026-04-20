@@ -245,7 +245,7 @@ export default function IsakScriptPage() {
           <div>
             <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">이삭영유아부</h1>
           </div>
-          <img src="/isak-script/logo-top-right.jpg" alt="이삭영유아부 로고" className="h-8 w-auto rounded-sm object-contain sm:h-10" />
+          <img src="/isak-script/logo-top-right.png" alt="이삭영유아부 로고" className="h-8 w-auto object-contain sm:h-10" />
         </div>
 
         <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
