@@ -20,6 +20,7 @@ type Theme = {
   bg: string;
   border: string;
   label: string;
+  ring: string;
 };
 
 type DialogueItem = {
@@ -43,15 +44,15 @@ type ScriptItem = {
 };
 
 const colors = {
-  king: { text: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200", label: "bg-amber-600" },
-  messenger: { text: "text-purple-700", bg: "bg-purple-50", border: "border-purple-200", label: "bg-purple-600" },
-  friend1: { text: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200", label: "bg-emerald-600" },
-  friend2: { text: "text-sky-700", bg: "bg-sky-50", border: "border-sky-200", label: "bg-sky-600" },
-  friend3: { text: "text-indigo-700", bg: "bg-indigo-50", border: "border-indigo-200", label: "bg-indigo-600" },
-  astrologer: { text: "text-slate-700", bg: "bg-slate-100", border: "border-slate-300", label: "bg-slate-600" },
-  soldier: { text: "text-rose-700", bg: "bg-rose-50", border: "border-rose-200", label: "bg-rose-600" },
-  all: { text: "text-pink-700", bg: "bg-pink-50", border: "border-pink-200", label: "bg-pink-600" },
-  base: { text: "text-slate-800", bg: "bg-white", border: "border-slate-100", label: "bg-slate-800" },
+  king: { text: "text-amber-900", bg: "bg-amber-50", border: "border-amber-200", label: "bg-amber-600", ring: "ring-amber-100" },
+  messenger: { text: "text-purple-900", bg: "bg-purple-50", border: "border-purple-200", label: "bg-purple-600", ring: "ring-purple-100" },
+  friend1: { text: "text-emerald-900", bg: "bg-emerald-50", border: "border-emerald-200", label: "bg-emerald-600", ring: "ring-emerald-100" },
+  friend2: { text: "text-sky-900", bg: "bg-sky-50", border: "border-sky-200", label: "bg-sky-600", ring: "ring-sky-100" },
+  friend3: { text: "text-indigo-900", bg: "bg-indigo-50", border: "border-indigo-200", label: "bg-indigo-600", ring: "ring-indigo-100" },
+  astrologer: { text: "text-slate-800", bg: "bg-slate-100", border: "border-slate-300", label: "bg-slate-600", ring: "ring-slate-200" },
+  soldier: { text: "text-rose-900", bg: "bg-rose-50", border: "border-rose-200", label: "bg-rose-600", ring: "ring-rose-100" },
+  all: { text: "text-pink-900", bg: "bg-pink-50", border: "border-pink-200", label: "bg-pink-600", ring: "ring-pink-100" },
+  base: { text: "text-slate-900", bg: "bg-white", border: "border-slate-200", label: "bg-slate-700", ring: "ring-slate-100" },
 };
 
 const scriptData: ScriptItem[] = [
@@ -66,24 +67,24 @@ const scriptData: ScriptItem[] = [
       "생기를 그 코에 불어 넣으시니\n사람(이름)이 생령이 되니라.",
       "창세기 2장 7절 말씀. 아멘.",
     ],
-    icon: <Hand className="h-8 w-8 text-blue-500" />,
+    icon: <Hand className="h-8 w-8 text-blue-600" />,
     theme: colors.base,
-    accent: "text-blue-600",
+    accent: "text-blue-700",
   },
   {
     type: "greeting",
     category: "인사 및 말씀 소개",
-    title: "샬롬 진짜 진짜 하나님 이야기",
+    title: "샬롬, 진짜 진짜 하나님 이야기",
     content: [
       "이삭영유아부 샬롬",
       "우리 손가락 인사하자.",
-      "오늘 말씀은, 여호와 하나님,\n진짜 진짜 하나님을 고백한\n다니엘 이야기에요.",
+      "오늘 말씀은, 여호와 하나님,\n진짜 진짜 하나님을 고백한\n다니엘 이야기예요.",
       "여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
-      "한번 더.\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
+      "한 번 더.\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
     ],
     icon: <Sparkles className="h-8 w-8 text-yellow-500" />,
     theme: colors.all,
-    accent: "text-pink-600",
+    accent: "text-pink-700",
   },
   {
     type: "scene",
@@ -212,7 +213,7 @@ function HighlightLove({ text }: { text: string }) {
               {j < lines.length - 1 ? <br /> : null}
             </span>
           ))}
-          {i < arr.length - 1 ? <span className="rounded-md bg-pink-100 px-1 font-black text-pink-600">하나님만 사랑해요</span> : null}
+          {i < arr.length - 1 ? <mark className="rounded-md bg-pink-100 px-1 font-extrabold text-pink-700">하나님만 사랑해요</mark> : null}
         </span>
       ))}
     </>
@@ -221,6 +222,7 @@ function HighlightLove({ text }: { text: string }) {
 
 export default function IsakScriptPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [readMode, setReadMode] = useState(false);
   const current = scriptData[currentStep];
 
   const progress = useMemo(() => ((currentStep + 1) / scriptData.length) * 100, [currentStep]);
@@ -238,95 +240,103 @@ export default function IsakScriptPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-3 py-4 sm:px-6 sm:py-8">
-      <div className="mx-auto mb-4 w-full max-w-md">
-        <div className="mb-2 flex items-center justify-between px-1">
-          <span className="text-[10px] font-black tracking-wider text-slate-500">이삭영유아부 일일교사 가이드</span>
-          <span className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-black text-white">
-            {currentStep + 1} / {scriptData.length}
-          </span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-slate-200">
-          <div className="h-full rounded-full bg-indigo-500 transition-all duration-500" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
-
-      <div className="mx-auto flex w-full max-w-md flex-col overflow-hidden rounded-[2rem] border border-white bg-white shadow-2xl shadow-slate-300/40">
-        <div className="flex-1 p-5 sm:p-7">
-          <div className="mb-7 flex flex-col items-center">
-            <div className="mb-3 text-[10px] font-black tracking-[0.2em] text-slate-400">{current.category}</div>
-            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 shadow-sm">{current.icon}</div>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-stone-50 to-slate-100 px-4 py-5 text-slate-900 sm:px-6 sm:py-8">
+      <div className="mx-auto w-full max-w-3xl">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <p className="text-[11px] font-bold tracking-widest text-slate-500">이삭영유아부 일일교사 가이드</p>
+            <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">다니엘 대본 뷰어</h1>
           </div>
+          <button
+            onClick={() => setReadMode((prev) => !prev)}
+            className={`rounded-xl border px-3 py-2 text-sm font-bold transition ${readMode ? "border-indigo-200 bg-indigo-50 text-indigo-700" : "border-slate-200 bg-white text-slate-700"}`}
+          >
+            {readMode ? "기본 모드" : "낭독 모드"}
+          </button>
+        </div>
 
-          {(current.type === "intro" || current.type === "greeting") && current.content ? (
-            <div className="space-y-6 text-center">
-              <h2 className={`inline-block rounded-2xl bg-slate-50 px-5 py-2 text-base font-black ${current.accent ?? "text-slate-700"}`}>
-                {current.title}
-              </h2>
-              <div className="space-y-5">
-                {current.content.map((line) => (
-                  <p key={line} className={`whitespace-pre-line text-lg font-bold leading-[1.7] ${line.includes("사랑해요") ? "text-pink-600" : "text-slate-700"}`}>
-                    {line}
-                  </p>
+        <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-black text-white">{currentStep + 1} / {scriptData.length}</span>
+            <span className="text-xs font-bold text-slate-500">{current.category}</span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+            <div className="h-full rounded-full bg-indigo-500 transition-all duration-500" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
+          <div className="p-5 sm:p-8">
+            <div className="mb-6 flex items-center gap-3">
+              <div className={`rounded-2xl border bg-white p-3 shadow-sm ${current.theme.border} ${current.theme.ring}`}>{current.icon}</div>
+              <div>
+                <div className="text-xs font-bold tracking-wider text-slate-500">{current.category}</div>
+                {current.character ? <div className="mt-1 text-lg font-extrabold tracking-tight">{current.character}</div> : null}
+                {current.action ? <div className="text-sm font-medium text-slate-500">{current.action}</div> : null}
+              </div>
+            </div>
+
+            {(current.type === "intro" || current.type === "greeting") && current.content ? (
+              <div className="space-y-5 text-center">
+                <h2 className={`inline-block rounded-2xl bg-slate-50 px-5 py-2 text-lg font-black ${current.accent ?? "text-slate-700"}`}>{current.title}</h2>
+                <div className="space-y-4">
+                  {current.content.map((line) => (
+                    <p
+                      key={line}
+                      className={`whitespace-pre-line font-extrabold leading-[1.9] ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"} ${readMode ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}
+                    >
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ) : current.multi && Array.isArray(current.dialogue) ? (
+              <div className="space-y-4">
+                {current.dialogue.map((item) => (
+                  <div key={`${item.speaker}-${item.text.slice(0, 10)}`} className={`rounded-3xl border-2 p-5 sm:p-6 ${item.theme.bg} ${item.theme.border}`}>
+                    <div className="mb-3 flex items-center">
+                      <span className={`rounded-lg px-3 py-1 text-xs font-black text-white ${item.theme.label}`}>{item.speaker}</span>
+                    </div>
+                    <p className={`${item.theme.text} font-extrabold leading-[1.9] ${readMode ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
+                      <HighlightLove text={item.text} />
+                    </p>
+                  </div>
                 ))}
               </div>
-            </div>
-          ) : current.multi && Array.isArray(current.dialogue) ? (
-            <div className="space-y-4">
-              {current.dialogue.map((item) => (
-                <div key={`${item.speaker}-${item.text.slice(0, 10)}`} className={`rounded-3xl border p-5 ${item.theme.bg} ${item.theme.border}`}>
-                  <div className="mb-3">
-                    <span className={`rounded-lg px-2.5 py-1 text-[10px] font-black text-white ${item.theme.label}`}>{item.speaker}</span>
-                  </div>
-                  <p className={`text-base font-bold leading-relaxed ${item.theme.text}`}>
-                    <HighlightLove text={item.text} />
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-5">
-              <div className="flex items-center justify-center gap-2">
-                <span className={`rounded-xl px-3 py-1 text-xs font-black text-white ${current.theme.label}`}>{current.character}</span>
-                <span className="text-[11px] font-bold italic text-slate-500">{current.action}</span>
-              </div>
-
-              <div className={`min-h-[260px] rounded-[2rem] border-2 p-6 ${current.theme.bg} ${current.theme.border}`}>
-                <div className={`text-center text-lg font-bold leading-[1.8] ${current.theme.text}`}>
+            ) : (
+              <div className={`rounded-[2rem] border-2 p-6 sm:p-8 ${current.theme.bg} ${current.theme.border}`}>
+                <p className={`${current.theme.text} text-center font-extrabold leading-[1.9] ${readMode ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"}`}>
                   <HighlightLove text={String(current.dialogue ?? "")} />
-                </div>
+                </p>
               </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/80 p-5">
-          <button
-            onClick={prevStep}
-            disabled={currentStep === 0}
-            className={`flex h-12 w-12 items-center justify-center rounded-xl ${currentStep === 0 ? "cursor-not-allowed text-slate-300" : "bg-white text-slate-600 shadow"}`}
-          >
-            <ChevronLeft size={24} strokeWidth={3} />
-          </button>
-
-          <div className="text-center">
-            <div className="text-[9px] font-black tracking-widest text-slate-300">SCENE</div>
-            <div className="text-base font-black text-slate-800">{String(currentStep + 1).padStart(2, "0")}</div>
+            )}
           </div>
 
-          <button
-            onClick={nextStep}
-            className={`flex h-12 items-center gap-2 rounded-xl px-5 text-sm font-black text-white shadow ${currentStep === scriptData.length - 1 ? "bg-indigo-600" : "bg-slate-900"}`}
-          >
-            {currentStep === scriptData.length - 1 ? "다시 시작" : "다음"}
-            {currentStep === scriptData.length - 1 ? null : <ChevronRight size={20} strokeWidth={3} />}
-          </button>
-        </div>
-      </div>
+          <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-4 py-4 sm:px-6">
+            <button
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              className={`flex h-12 w-12 items-center justify-center rounded-xl border transition ${
+                currentStep === 0 ? "cursor-not-allowed border-slate-200 text-slate-300" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              <ChevronLeft size={24} strokeWidth={3} />
+            </button>
 
-      <p className="mx-auto mt-4 w-full max-w-md text-center text-[11px] font-bold text-slate-500">
-        아이들과 대화하듯 천천히 읽고, 반복 문장은 함께 따라 말하면 좋아.
-      </p>
+            <div className="text-center">
+              <div className="text-[10px] font-black tracking-[0.2em] text-slate-400">SCENE</div>
+              <div className="text-lg font-black text-slate-900">{String(currentStep + 1).padStart(2, "0")}</div>
+            </div>
+
+            <button onClick={nextStep} className="flex h-12 items-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-black text-white shadow hover:bg-slate-800">
+              {currentStep === scriptData.length - 1 ? "다시 시작" : "다음"}
+              {currentStep === scriptData.length - 1 ? null : <ChevronRight size={20} strokeWidth={3} />}
+            </button>
+          </div>
+        </div>
+
+        <p className="mt-4 text-center text-xs font-semibold text-slate-500">한 문장을 또박또박 읽고, 반복 문장은 아이들과 함께 따라 말하면 좋아.</p>
+      </div>
     </div>
   );
 }
