@@ -242,10 +242,10 @@ export default function IsakScriptPage() {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-stone-50 to-slate-100 px-3 py-4 text-slate-900 sm:px-6 sm:py-8">
       <div className="mx-auto w-full max-w-2xl pb-4">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <img src="/isak-script/logo-top-right.png" alt="이삭영유아부 로고" className="h-8 w-auto object-contain sm:h-10" />
           <div>
             <h1 className="mt-1 text-xl font-extrabold tracking-tight sm:text-2xl">이삭영유아부</h1>
           </div>
-          <img src="/isak-script/logo-top-right.png" alt="이삭영유아부 로고" className="h-8 w-auto object-contain sm:h-10" />
         </div>
 
         <div className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
