@@ -59,10 +59,10 @@ const scriptData: ScriptItem[] = [
   {
     type: "intro",
     category: "표어 및 표어말씀",
-    title: "하나님의 Who 이삭 1 do",
+    title: "하나님의 Who~ 이삭 I do~",
     content: [
-      "하나님의 Who 이삭 1 do",
-      "하나님의 Who 이삭 1 do",
+      "하나님의 Who~ 이삭 I do~",
+      "하나님의 Who~ 이삭 I do~",
       "여호와 하나님이 땅의 흙으로\n사람(이름)을 지으시고",
       "생기를 그 코에 불어 넣으시니\n사람(이름)이 생령이 되니라.",
       "창세기 2장 7절 말씀. 아멘.",
@@ -74,13 +74,13 @@ const scriptData: ScriptItem[] = [
   {
     type: "greeting",
     category: "인사 및 말씀 소개",
-    title: "샬롬, 진짜 진짜 하나님 이야기",
+    title: "샬롬! 진짜 진짜 하나님 이야기",
     content: [
-      "이삭영유아부 샬롬",
+      "이삭영유아부 샬롬!",
       "우리 손가락 인사하자.",
-      "오늘 말씀은, 여호와 하나님,\n진짜 진짜 하나님을 고백한\n다니엘 이야기예요.",
+      "오늘 말씀은, 여호와 하나님,\n진짜 진짜 하나님을 고백한\n다니엘 이야기에요.",
       "여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
-      "한 번 더.\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
+      "한번 더,\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요!",
     ],
     icon: <Sparkles className="h-8 w-8 text-yellow-500" />,
     theme: colors.all,
@@ -91,7 +91,7 @@ const scriptData: ScriptItem[] = [
     category: "장면 1",
     character: "느부갓네살왕",
     action: "금 신상을 만들며",
-    dialogue: "나는 바벨론의 왕 느부갓네살.\n\n뚝딱뚝딱 금 신상을 만들지.\n하나님보다 더 사랑해 (x2)",
+    dialogue: "나는 바벨론의 왕 느부갓네살.\n\n뚝딱뚝딱 금 신상을 만들지,\n하나님보다 더 사랑해 (x2)",
     icon: <Crown className="h-8 w-8 text-amber-500" />,
     theme: colors.king,
   },
@@ -101,7 +101,7 @@ const scriptData: ScriptItem[] = [
     character: "전령",
     action: "엄중하게 선포하며",
     dialogue:
-      "악기 소리가 들리면,\n금 신상에 엎드려서 절하세요.\n\n그렇지 않으면, 그 즉시\n불타는 화덕 속에 던져 넣을 것이에요",
+      "악기 소리가 들리면,\n금 신상에 엎드려서 절하세요.\n\n그렇지 않으면, 그 즉시\n불타는 화덕 속에 던져 넣을 것이에요!",
     icon: <Music className="h-8 w-8 text-purple-500" />,
     theme: colors.messenger,
   },
@@ -121,7 +121,7 @@ const scriptData: ScriptItem[] = [
     character: "점성가",
     action: "왕에게 일러바치며",
     dialogue:
-      "근데요. 쟤네들은,\n왕이 하나님보다 더 좋아요 하지 않아요.\n\n하나님보다 신상이 더 좋아요 하지 않아요.\n혼내주세요.",
+      "근데요, 쟤네들은,\n왕이 하나님보다 더 좋아요-\n하나님보다 신상이 더 좋아요~ 하지 않아요!\n혼내주세요.",
     icon: <Users className="h-8 w-8 text-slate-500" />,
     theme: colors.astrologer,
   },
@@ -133,12 +133,12 @@ const scriptData: ScriptItem[] = [
     dialogue: [
       {
         speaker: "왕",
-        text: "에이잇, 너희 진짜로\n내가 만든 금 신상에게 절하지 않았어?\n\n어느 신이 너희를\n내 손에서 구해 낼 수 있겠느냐?",
+        text: "에이잇~ (분노) 너희, 진짜로,\n내가 뚝딱뚝딱한 금 신상에게 절을 하지 않았어?\n\n어느 신이 너희를\n내 손에서 구해 낼 수 있겠느냐?",
         theme: colors.king,
       },
       {
         speaker: "친구 1",
-        text: "왕이시여. 여호와 하나님, 진짜 진짜 하나님이\n우리를 활활 타는 화덕 속에서 구해 주실 거에요.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
+        text: "(앞으로 나서며) 왕이시여.\n여호와 하나님, 진짜 진짜 하나님이\n우리를 활활 타는 화덕 속에서 구해 주실 거에요.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요!",
         theme: colors.friend1,
       },
     ],
@@ -154,12 +154,12 @@ const scriptData: ScriptItem[] = [
     dialogue: [
       {
         speaker: "친구 2",
-        text: "왕이시여. 여호와 하나님, 진짜 진짜 하나님이\n임금님의 손에서도 구해 주실 것입니다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
+        text: "(앞으로 나서며) 왕이시여.\n여호와 하나님, 진짜 진짜 하나님이\n임금님의 손에서도 구해 주실 것입니다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요!",
         theme: colors.friend2,
       },
       {
         speaker: "친구 3",
-        text: "왕이시여. 비록 그렇게 되지 않더라도,\n우리는 왕의 신들을 섬기지도 않고\n왕이 만든 금 신상에게 절하지도 않을 것입니다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
+        text: "(앞으로 나서며) 왕이시여.\n비록 그렇게 되지 않더라도,\n우리는 왕의 신들은 섬기지도 않고,\n왕이 뚝딱뚝딱한 금 신상에게 절을 하지도 않을 것입니다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요!",
         theme: colors.friend3,
       },
     ],
@@ -173,8 +173,8 @@ const scriptData: ScriptItem[] = [
     character: "긴박한 상황",
     action: "왕의 명령과 군인의 행동",
     dialogue: [
-      { speaker: "왕", text: "이놈들.\n화덕을 일곱 배 더 뜨겁게 달구어라.\n이놈들을 던져 넣어라.", theme: colors.king },
-      { speaker: "군인", text: "(관을 쓴 채로 묶여 화덕 속에 던져짐)\n으아아악", theme: colors.soldier },
+      { speaker: "왕", text: "(화가 잔뜩 나며, 얼굴이 빨개짐) 이놈들!!!!!\n화덕을 일곱 배 더 뜨겁게 달구어라!\n이놈들을 던져 넣어라!", theme: colors.king },
+      { speaker: "군인", text: "(관을 쓰인 채로 묶음, 화덕 속에 던져 넣음)\n으아아악! (붙든 사람들도 그 불꽃에 타서 죽음)", theme: colors.soldier },
     ],
     icon: <Shield className="h-8 w-8 animate-pulse text-rose-600" />,
     theme: colors.base,
@@ -186,7 +186,7 @@ const scriptData: ScriptItem[] = [
     character: "기적",
     action: "놀라워하는 왕",
     dialogue:
-      "모두 결박이 풀린 채 화덕 안에서 걷고 있고\n아무런 상처도 없다.\n\n더욱이 넷째 사람의 모습은 신의 아들과 같다.\n\n가장 높으신 하나님의 종\n사드락과 메삭과 아벳느고는 이리로 나오너라.",
+      "(놀라며, 일어나서) 모두 결박이 풀린 채 화덕 안에서 걷고 있고,\n그들에게 아무런 상처도 없다!\n더욱이 넷째 사람의 모습은 신의 아들과 같다!\n\n(화덕 어귀로 가까이 감)\n가장 높으신 하나님의 종\n사드락과 메삭과 아벳느고는 이리로 나오너라.",
     icon: <Sparkles className="h-8 w-8 text-sky-400" />,
     theme: colors.king,
   },
@@ -196,7 +196,7 @@ const scriptData: ScriptItem[] = [
     character: "조서 선포",
     action: "하나님을 찬양하는 왕",
     dialogue:
-      "내가 조서를 내린다.\n여호와 하나님, 진짜 진짜 하나님.\n\n이와 같이 자기를 믿는 사람을\n구원할 수 있는 신은 다시 없을 것이다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요",
+      "내가 조서를 내린다.\n여호와 하나님, 진짜 진짜 하나님.\n\n이와 같이 자기를 믿는 사람을\n구원할 수 있는 신은 다시 없을 것이다.\n\n여호와 하나님, 진짜 진짜 하나님,\n하나님만 사랑해요!",
     icon: <BookOpen className="h-8 w-8 text-indigo-600" />,
     theme: colors.all,
   },
@@ -272,9 +272,9 @@ export default function IsakScriptPage() {
               <div className="space-y-5">
                 <h2 className={`inline-block rounded-2xl bg-slate-50 px-5 py-2 text-lg font-black ${current.accent ?? "text-slate-700"}`}>{current.title}</h2>
                 <div className="space-y-4">
-                  {current.content.map((line) => (
+                  {current.content.map((line, idx) => (
                     <p
-                      key={line}
+                      key={`${idx}-${line}`}
                       className={`break-keep whitespace-pre-line text-[1.2rem] font-bold leading-[1.8] tracking-[-0.01em] sm:text-[1.55rem] ${line.includes("사랑해요") ? "text-pink-700" : "text-slate-800"}`}
                     >
                       {line}
