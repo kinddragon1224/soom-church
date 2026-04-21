@@ -34,11 +34,18 @@ function dateStr(d) {
   return `${y}-${m}-${dd}`;
 }
 
-async function postText({ userId, token, text }) {
+async function postText({ userId, token, text, imageUrl }) {
+  const body = new URLSearchParams({ access_token: token, text });
+  if (imageUrl) {
+    body.set('media_type', 'IMAGE');
+    body.set('image_url', imageUrl);
+  } else {
+    body.set('media_type', 'TEXT');
+  }
   const createRes = await fetch(`https://graph.threads.net/v1.0/${userId}/threads`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ media_type: 'TEXT', text, access_token: token })
+    body
   });
   const createJson = await createRes.json();
   if (!createRes.ok || !createJson.id) throw new Error(`create failed: ${JSON.stringify(createJson)}`);
@@ -109,7 +116,7 @@ async function main() {
     return;
   }
 
-  const postId = await postText({ userId, token, text: target.text });
+  const postId = await postText({ userId, token, text: target.text, imageUrl: target.imageUrl || '' });
   let commentId = null;
   if (target.comment) {
     commentId = await postReply({ userId, token, text: target.comment, replyToId: postId });
@@ -122,7 +129,7 @@ async function main() {
 
   const logDir = path.resolve('ops/threads/logs');
   fs.mkdirSync(logDir, { recursive: true });
-  fs.appendFileSync(path.join(logDir, 'publish.jsonl'), JSON.stringify({ at: new Date().toISOString(), date, hour, postId, commentId, text: target.text, comment: target.comment || null }) + '\n');
+  fs.appendFileSync(path.join(logDir, 'publish.jsonl'), JSON.stringify({ at: new Date().toISOString(), date, hour, postId, commentId, imageUrl: target.imageUrl || null, text: target.text, comment: target.comment || null }) + '\n');
   console.log(`Posted ${date} ${hour}:00 -> ${postId}${commentId ? ` (comment ${commentId})` : ''}`);
 }
 

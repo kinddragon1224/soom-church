@@ -25,6 +25,15 @@ const slots = [
   '현장 사례', '실천 루틴', '사례형2', 'soom 전환2', '마감 CTA'
 ];
 
+const imageByHour = {
+  7: 'https://soom.io.kr/threads-iching/slot-1.jpg',
+  10: 'https://soom.io.kr/threads-iching/slot-2.jpg',
+  13: 'https://soom.io.kr/threads-iching/slot-3.jpg',
+  16: 'https://soom.io.kr/threads-iching/slot-4.jpg',
+  19: 'https://soom.io.kr/threads-iching/slot-5.jpg',
+  22: 'https://soom.io.kr/threads-iching/slot-6.jpg'
+};
+
 const texts = [
   '오늘 컨디션이 안 좋아도 첫 20분만 고정하면 하루가 살아난다. 물 한 잔, 일정 3줄, 첫 작업 1개로 시작해봐.',
   '관계가 꼬일 때 바로 쓰는 문장: "내가 급했네, 다시 말해볼게." 이 한 줄이 대화 판을 바꾼다.',
@@ -70,6 +79,7 @@ const posts = HOURS.map((hour, i) => ({
   slot: slots[i],
   text: texts[i],
   comment: comments[i],
+  imageUrl: imageByHour[hour] || null,
   status: 'pending'
 }));
 
