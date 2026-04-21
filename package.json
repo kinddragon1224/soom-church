@@ -21,7 +21,8 @@
     "chat:doctor": "node scripts/chat-bridge-doctor.mjs",
     "threads:plan": "node scripts/threads-generate-day-plan.mjs",
     "threads:post": "node scripts/threads-publish-slot.mjs",
-    "threads:report": "node scripts/threads-daily-insights.mjs"
+    "threads:report": "node scripts/threads-daily-insights.mjs",
+    "threads:backfill-comments": "node scripts/threads-backfill-comments.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
