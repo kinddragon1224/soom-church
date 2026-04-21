@@ -18,7 +18,10 @@
     "mobile:dev:recover": "bash scripts/mobile-dev-recover.sh",
     "mobile:typecheck": "npm --prefix apps/mobile-app run typecheck",
     "mobile:view": "bash scripts/mobile-view.sh",
-    "chat:doctor": "node scripts/chat-bridge-doctor.mjs"
+    "chat:doctor": "node scripts/chat-bridge-doctor.mjs",
+    "threads:plan": "node scripts/threads-generate-day-plan.mjs",
+    "threads:post": "node scripts/threads-publish-slot.mjs",
+    "threads:report": "node scripts/threads-daily-insights.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
