@@ -7,7 +7,7 @@
       "slot": "아침 기준",
       "text": "오늘 컨디션이 안 좋아도 첫 20분만 고정하면 하루가 살아난다. 물 한 잔, 일정 3줄, 첫 작업 1개로 시작해봐.",
       "comment": "아침 첫 20분만 잡아도 하루가 달라진다. 오늘은 복잡하게 말고 하나만 고정하자.",
-      "imageUrl": "https://soom.io.kr/threads-iching/slot-1.jpg",
+      "imageUrl": null,
       "status": "pending"
     },
     {
@@ -31,7 +31,7 @@
       "slot": "일의 순서",
       "text": "일이 밀릴 때는 우선순위보다 순서다. ① 끊을 일 1개 ② 끝낼 일 1개 ③ 넘길 일 1개.",
       "comment": "머리 좋은 사람도 순서가 틀리면 무너진다. 끊을 것부터 정리하면 숨통이 트인다.",
-      "imageUrl": "https://soom.io.kr/threads-iching/slot-2.jpg",
+      "imageUrl": null,
       "status": "pending"
     },
     {
@@ -55,7 +55,7 @@
       "slot": "갈등 해석",
       "text": "갈등이 커질 때는 속도를 맞춰야 한다. 답변 전에 10초 멈추고, 질문 1개 먼저 던져봐.",
       "comment": "갈등 났을 때 바로 반박하지 말고 질문 하나 먼저. 이게 분위기를 바꾼다.",
-      "imageUrl": "https://soom.io.kr/threads-iching/slot-3.jpg",
+      "imageUrl": null,
       "status": "pending"
     },
     {
@@ -79,7 +79,7 @@
       "slot": "soom 전환1",
       "text": "오늘 무료 샘플 해석 3명만 받는다. 상황 요약 5줄 보내주면 핵심 포인트 3개로 정리해줄게. https://soom.io.kr",
       "comment": "상황 5줄 보내주면 내가 흐름 3개랑 다음 행동 3개로 정리해줄게. https://soom.io.kr",
-      "imageUrl": "https://soom.io.kr/threads-iching/slot-4.jpg",
+      "imageUrl": null,
       "status": "pending"
     },
     {
@@ -103,7 +103,7 @@
       "slot": "현장 사례",
       "text": "현장 메모를 모으면 감정이 아니라 패턴이 보인다. 오늘 메모 3줄만 남겨봐. 내일 결정이 쉬워진다.",
       "comment": "메모 3줄만 남겨도 감정이 정리된다. 기록이 있으면 판단이 빨라진다.",
-      "imageUrl": "https://soom.io.kr/threads-iching/slot-5.jpg",
+      "imageUrl": null,
       "status": "pending"
     },
     {
@@ -127,7 +127,7 @@
       "slot": "soom 전환2",
       "text": "SOOM에서 역학×신학 기반 해석 + 실행 설계 진행 중. 듣고 끝이 아니라 다음 행동까지 잡아준다. https://soom.io.kr",
       "comment": "역학×신학 기반으로 실행까지 같이 잡아준다. 말로 끝내지 않고 일정까지 만든다. https://soom.io.kr",
-      "imageUrl": "https://soom.io.kr/threads-iching/slot-6.jpg",
+      "imageUrl": null,
       "status": "pending"
     },
     {
