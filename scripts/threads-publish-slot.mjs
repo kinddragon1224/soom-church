@@ -53,6 +53,28 @@ async function postText({ userId, token, text }) {
   return publishJson.id;
 }
 
+async function postReply({ userId, token, text, replyToId }) {
+  const createRes = await fetch(`https://graph.threads.net/v1.0/${userId}/threads`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ media_type: 'TEXT', text, reply_to_id: replyToId, access_token: token })
+  });
+  const createJson = await createRes.json();
+  if (!createRes.ok || !createJson.id) throw new Error(`reply create failed: ${JSON.stringify(createJson)}`);
+
+  for (let i = 0; i < 3; i += 1) {
+    if (i > 0) await new Promise((r) => setTimeout(r, 1500));
+    const publishRes = await fetch(`https://graph.threads.net/v1.0/${userId}/threads_publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ creation_id: createJson.id, access_token: token })
+    });
+    const publishJson = await publishRes.json();
+    if (publishRes.ok && publishJson.id) return publishJson.id;
+  }
+  return null;
+}
+
 async function main() {
   const env = {
     ...parseEnvFile(path.resolve('.env.local')),
@@ -88,13 +110,20 @@ async function main() {
   }
 
   const postId = await postText({ userId, token, text: target.text });
+  let commentId = null;
+  if (target.comment) {
+    commentId = await postReply({ userId, token, text: target.comment, replyToId: postId });
+    if (!commentId) {
+      console.warn(`reply skipped ${date} ${hour}:00`);
+    }
+  }
   state[date][hour] = postId;
   fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
 
   const logDir = path.resolve('ops/threads/logs');
   fs.mkdirSync(logDir, { recursive: true });
-  fs.appendFileSync(path.join(logDir, 'publish.jsonl'), JSON.stringify({ at: new Date().toISOString(), date, hour, postId, text: target.text }) + '\n');
-  console.log(`Posted ${date} ${hour}:00 -> ${postId}`);
+  fs.appendFileSync(path.join(logDir, 'publish.jsonl'), JSON.stringify({ at: new Date().toISOString(), date, hour, postId, commentId, text: target.text, comment: target.comment || null }) + '\n');
+  console.log(`Posted ${date} ${hour}:00 -> ${postId}${commentId ? ` (comment ${commentId})` : ''}`);
 }
 
 main().catch((e) => {
