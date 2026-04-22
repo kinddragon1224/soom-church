@@ -126,6 +126,42 @@ function daySeed(input) {
 
 const seed = daySeed(date);
 const seenByCategory = { method: 0, 'faith-daily': 0, insight: 0 };
+const seenForHook = { method: 0, 'faith-daily': 0, insight: 0 };
+
+const hooksByCategory = {
+  method: [
+    '요즘 왜 계속 꼬이는지 알 것 같아?',
+    '진짜 문제는 능력보다 순서일 때가 많다.',
+    '열심히 하는데 안 풀리면 이걸 먼저 봐야 한다.'
+  ],
+  'faith-daily': [
+    '신앙이 무너질 때, 보통 거창함부터 찾는다.',
+    '마음이 지칠수록 작은 책임 하나가 사람을 살린다.',
+    '오늘 하루를 바꾸는 건 큰 결심이 아니더라.'
+  ],
+  insight: [
+    '이 관점 하나 바꾸면 해석이 완전히 달라진다.',
+    '같은 상황인데도 결과가 갈리는 이유가 있다.',
+    '요즘 내가 계속 붙잡는 질문 하나.'
+  ]
+};
+
+const promptsByCategory = {
+  method: ['너라면 오늘 어디부터 손볼래?', '지금 네 상황엔 추진/정리 중 뭐가 먼저야?'],
+  'faith-daily': ['오늘 바로 할 수 있는 행동 1개만 적어줘.', '너는 오늘 어떤 작은 책임부터 잡을래?'],
+  insight: ['너는 이걸 예언형으로 읽어, 신호형으로 읽어?', '지금 너한텐 어떤 해석이 더 맞아 보여?']
+};
+
+const commentPromptsByCategory = {
+  method: ['댓글로 우선순위 1개만 남겨줘.', '지금 막힌 지점 한 줄만 적어줘.'],
+  'faith-daily': ['오늘 적용할 한 문장만 남겨줘.', '작게라도 실천할 것 1개만 적어줘.'],
+  insight: ['A/B로 답해줘.', '한 단어로만 답해줘도 좋아.']
+};
+
+function pickFromPool(pool, slotIndex, salt = 0) {
+  if (!Array.isArray(pool) || pool.length === 0) return '';
+  return pool[(seed + slotIndex + salt) % pool.length];
+}
 
 function pickVariant(category, slotIndex) {
   const pool = variantsByCategory[category] || variantsByCategory.insight;
@@ -138,12 +174,17 @@ function pickVariant(category, slotIndex) {
 const posts = HOURS.map((hour, i) => {
   const category = categories[i];
   const variant = pickVariant(category, i);
+  const hookNth = seenForHook[category] || 0;
+  seenForHook[category] = hookNth + 1;
+  const hook = pickFromPool(hooksByCategory[category], i + hookNth * 7, 11);
+  const prompt = /\?/.test(variant.text) ? '' : pickFromPool(promptsByCategory[category], i + hookNth * 5, 19);
+  const commentPrompt = pickFromPool(commentPromptsByCategory[category], i + hookNth * 3, 29);
   return {
     hour,
     slot: slots[i],
     category,
-    text: variant.text,
-    comment: variant.comment,
+    text: [hook, variant.text, prompt].filter(Boolean).join('\n\n'),
+    comment: [variant.comment, commentPrompt].filter(Boolean).join(' '),
     imageUrl: imageByHour[hour] || null,
     status: 'pending'
   };
