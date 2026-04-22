@@ -64,9 +64,64 @@ async function postReply({ userId, token, text, replyToId }) {
 function buildHonorificReply(originalText = '') {
   const trimmed = String(originalText || '').replace(/\s+/g, ' ').trim();
   if (!trimmed) {
-    return '댓글 남겨주셔서 감사합니다. 말씀해주신 내용 참고해서 다음 글에 더 구체적으로 반영해보겠습니다.';
+    return { text: '댓글 남겨주셔서 감사합니다. 말씀해주신 내용은 다음 글에 더 구체적으로 반영해보겠습니다.', skip: false, reason: 'empty-generic' };
   }
-  return '댓글 남겨주셔서 감사합니다. 말씀해주신 포인트를 반영해서 다음 글에서 더 구체적으로 풀어보겠습니다.';
+
+  const lower = trimmed.toLowerCase();
+  const negativeKeywords = [
+    '논쟁', '토론', '분쟁', '비난', '비방', '싸움', '공격', '혐오', '조롱', '무식', '멍청', '꺼져',
+    '병신', '개소리', '헛소리', '쓰레기', '최악', '신고함', '신고할게', '짜증', '역겹', '불쾌'
+  ];
+
+  if (negativeKeywords.some((k) => lower.includes(k))) {
+    return { text: '', skip: true, reason: 'negative-comment' };
+  }
+
+  const isQuestion = /\?$/.test(trimmed) || lower.includes('뭔가요') || lower.includes('왜') || lower.includes('어떻게');
+
+  if (lower.includes('창세기') || lower.includes('성경') || lower.includes('신학') || lower.includes('샤마임') || lower.includes('에레츠')) {
+    return {
+      text: isQuestion
+        ? '좋은 질문 주셔서 감사합니다. 창세기 본문 맥락이랑 용어 의미를 같이 보면서 다음 글에서 더 정확히 풀어보겠습니다.'
+        : '좋은 포인트 감사합니다. 성경 본문 맥락과 연결해서 다음 글에서 더 선명하게 정리해보겠습니다.',
+      skip: false,
+      reason: 'topic-bible'
+    };
+  }
+
+  if (lower.includes('주역') || lower.includes('건곤') || lower.includes('계사전') || lower.includes('역학') || lower.includes('길흉')) {
+    return {
+      text: isQuestion
+        ? '좋은 질문 주셔서 감사합니다. 주역 원문 기준으로 핵심 개념을 다음 글에서 더 쉽게 풀어보겠습니다.'
+        : '좋은 의견 감사합니다. 주역 원문 의미와 현실 적용을 같이 보이도록 다음 글에 반영해보겠습니다.',
+      skip: false,
+      reason: 'topic-iching'
+    };
+  }
+
+  if (lower.includes('돈') || lower.includes('재물') || lower.includes('지출') || lower.includes('수입')) {
+    return {
+      text: '좋은 의견 감사합니다. 재물/지출 흐름은 더 실전적으로 적용할 수 있게 다음 글에서 사례 중심으로 보강해보겠습니다.',
+      skip: false,
+      reason: 'topic-money'
+    };
+  }
+
+  if (lower.includes('관계') || lower.includes('갈등') || lower.includes('가정') || lower.includes('대화')) {
+    return {
+      text: '말씀 감사합니다. 관계 주제는 실제 대화 문장까지 쓸 수 있게 다음 글에서 더 구체적으로 정리해보겠습니다.',
+      skip: false,
+      reason: 'topic-relationship'
+    };
+  }
+
+  return {
+    text: isQuestion
+      ? '좋은 질문 주셔서 감사합니다. 말씀해주신 포인트 기준으로 다음 글에서 더 구체적으로 풀어보겠습니다.'
+      : '댓글 남겨주셔서 감사합니다. 말씀해주신 포인트를 반영해서 다음 글에서 더 구체적으로 다뤄보겠습니다.',
+    skip: false,
+    reason: 'generic'
+  };
 }
 
 async function main() {
@@ -111,16 +166,22 @@ async function main() {
   const logPath = path.join(logDir, 'auto-replies.jsonl');
 
   for (const c of queue) {
-    const text = buildHonorificReply(c.text);
+    const built = buildHonorificReply(c.text);
+    if (built.skip) {
+      state.handled[c.replyId] = { at: new Date().toISOString(), status: 'skipped', reason: built.reason };
+      console.log(`skip ${c.replyId} (${built.reason})`);
+      continue;
+    }
+    const text = built.text;
     if (args.dryRun) {
-      console.log(`[dry-run] ${c.replyId} @${c.username} -> ${text}`);
+      console.log(`[dry-run] ${c.replyId} @${c.username} (${built.reason}) -> ${text}`);
       continue;
     }
 
     try {
       const replyPostId = await postReply({ userId, token, text, replyToId: c.replyId });
-      state.handled[c.replyId] = new Date().toISOString();
-      fs.appendFileSync(logPath, JSON.stringify({ at: new Date().toISOString(), sourceReplyId: c.replyId, sourcePostId: c.postId, sourceAuthor: c.username, replyPostId, text }) + '\n');
+      state.handled[c.replyId] = { at: new Date().toISOString(), status: 'replied', reason: built.reason, replyPostId };
+      fs.appendFileSync(logPath, JSON.stringify({ at: new Date().toISOString(), sourceReplyId: c.replyId, sourcePostId: c.postId, sourceAuthor: c.username, replyPostId, reason: built.reason, text }) + '\n');
       console.log(`replied ${c.replyId} -> ${replyPostId}`);
     } catch (e) {
       console.warn(`failed ${c.replyId}: ${e.message || e}`);
