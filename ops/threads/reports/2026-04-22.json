@@ -1,0 +1,171 @@
+{
+  "date": "2026-04-22",
+  "totals": {
+    "views": 2573,
+    "likes": 18,
+    "replies": 11,
+    "reposts": 0,
+    "quotes": 0
+  },
+  "count": 7,
+  "rows": [
+    {
+      "id": "18084343646627399",
+      "text": "믿음은 거창한 문장보다 작은 책임에서 먼저 드러난다.\n\n오늘 미뤄둔 연락 1건만 정직하게 답해도 관계의 흐름이 바뀐다.",
+      "timestamp": "2026-04-22T00:00:11+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXab0rCE1jG",
+      "views": 895,
+      "likes": 2,
+      "replies": 1,
+      "reposts": 0,
+      "quotes": 0
+    },
+    {
+      "id": "18097468424120069",
+      "text": "돈이 안 모이는 이유, 의외로 수입보다 누수야.\n\n주역식으로 보면 순서는 간단해.\n損(손, 덜어냄) → 節(절, 경계) → 益(익, 불림).\n\n오늘 자동결제 1개만 끊어보자.\n\n주역",
+      "timestamp": "2026-04-22T22:00:11+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXcy4oikyTI",
+      "views": 453,
+      "likes": 4,
+      "replies": 1,
+      "reposts": 0,
+      "quotes": 0
+    },
+    {
+      "id": "18049798763744076",
+      "text": "역학과 신학이 만나는 지점이 하나 있어.\n사람을 숙명으로 고정하지 않는다는 점.\n\n해석의 목적은 낙인이 아니라 회복, 정답이 아니라 방향이야.\n\n역학신학",
+      "timestamp": "2026-04-22T08:00:11+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXbSwRGiUrp",
+      "views": 378,
+      "likes": 5,
+      "replies": 3,
+      "reposts": 0,
+      "quotes": 0
+    },
+    {
+      "id": "18078146702430228",
+      "text": "결정이 꼬일 때는 정보가 부족해서보다 타이밍을 놓쳐서 그래.\n\n주역의 時中(시중, 때에 맞음)은 지금 밀어붙일지 멈춰 정리할지 먼저 읽으라는 뜻이야.\n\n오늘 큰 결정 1개는 10분 멈춰서 다시 보자.",
+      "timestamp": "2026-04-22T04:00:11+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXa3SeuGF54",
+      "views": 336,
+      "likes": 3,
+      "replies": 1,
+      "reposts": 0,
+      "quotes": 0
+    },
+    {
+      "id": "18525795085073658",
+      "text": "창세기 1:1의 \"heavens and the earth\"(샤마임·에레츠)와\n주역의 乾坤(건곤)을 나란히 보면 재밌는 공통점이 보여.\n\n둘 다 세계를 여는 두 축이야.\n다만 창세기는 창조의 문법, 주역은 변화의 문법에 더 가깝다.",
+      "timestamp": "2026-04-22T02:00:12+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXapjqUkpop",
+      "views": 249,
+      "likes": 2,
+      "replies": 3,
+      "reposts": 0,
+      "quotes": 0
+    },
+    {
+      "id": "18114271585704669",
+      "text": "불안한 날에는 큰 계획이 오히려 마음을 더 무겁게 만든다.\n\n오늘의 자리 하나만 지키자.\n해야 할 일 3개 중 가장 작은 것부터 끝내면 흐름이 다시 살아난다.\n\n일상신학",
+      "timestamp": "2026-04-22T06:00:16+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXbFB56CbNg",
+      "views": 182,
+      "likes": 1,
+      "replies": 1,
+      "reposts": 0,
+      "quotes": 0
+    },
+    {
+      "id": "18581536756040818",
+      "text": "관계 갈등에서 말이 세지면 보통 둘 다 진다.\n\n주역의 中正(중정, 치우치지 않은 정확한 자리)은 이럴 때 빛난다.\n반박 전에 질문 1개, \"지금 네가 제일 답답한 지점이 뭐야?\"\n\n중정",
+      "timestamp": "2026-04-22T10:00:14+0000",
+      "permalink": "https://www.threads.com/@kinddragon1224/post/DXbgfjBiW9t",
+      "views": 80,
+      "likes": 1,
+      "replies": 1,
+      "reposts": 0,
+      "quotes": 0
+    }
+  ],
+  "categoryRows": [
+    {
+      "category": "insight",
+      "count": 2,
+      "avgViews": 314,
+      "avgER": 0.030614521578376998
+    },
+    {
+      "category": "method",
+      "count": 2,
+      "avgViews": 208,
+      "avgER": 0.026190476190476188
+    },
+    {
+      "category": "unknown",
+      "count": 1,
+      "avgViews": 453,
+      "avgER": 0.013245033112582781
+    },
+    {
+      "category": "faith-daily",
+      "count": 2,
+      "avgViews": 539,
+      "avgER": 0.010476395113266621
+    }
+  ],
+  "hourRows": [
+    {
+      "hour": 19,
+      "count": 1,
+      "avgViews": 80,
+      "avgER": 0.0375
+    },
+    {
+      "hour": 11,
+      "count": 1,
+      "avgViews": 249,
+      "avgER": 0.0321285140562249
+    },
+    {
+      "hour": 17,
+      "count": 1,
+      "avgViews": 378,
+      "avgER": 0.0291005291005291
+    },
+    {
+      "hour": 15,
+      "count": 1,
+      "avgViews": 182,
+      "avgER": 0.016483516483516484
+    },
+    {
+      "hour": 13,
+      "count": 1,
+      "avgViews": 336,
+      "avgER": 0.01488095238095238
+    },
+    {
+      "hour": 9,
+      "count": 1,
+      "avgViews": 895,
+      "avgER": 0.004469273743016759
+    }
+  ],
+  "topHooks": [
+    "- [ER 0.037 | 80뷰] 관계 갈등에서 말이 세지면 보통 둘 다 진다.",
+    "- [ER 0.032 | 249뷰] 창세기 1:1의 \"heavens and the earth\"(샤마임·에레츠)와",
+    "- [ER 0.029 | 378뷰] 역학과 신학이 만나는 지점이 하나 있어."
+  ],
+  "lowHooks": [
+    "- [ER 0.004 | 895뷰] 믿음은 거창한 문장보다 작은 책임에서 먼저 드러난다.",
+    "- [ER 0.013 | 453뷰] 돈이 안 모이는 이유, 의외로 수입보다 누수야.",
+    "- [ER 0.015 | 336뷰] 결정이 꼬일 때는 정보가 부족해서보다 타이밍을 놓쳐서 그래."
+  ],
+  "directives": [
+    "- 내일 1순위 카테고리: insight",
+    "- 오프닝 훅은 질문형/대조형으로 시작",
+    "- 본문 4~6줄 유지, 한 문장 한 기능",
+    "- 댓글 유도는 이지선다(예: A/B)로 고정",
+    "- 반응 빠른 시간대(19시) 문장 구조 재사용"
+  ]
+}
