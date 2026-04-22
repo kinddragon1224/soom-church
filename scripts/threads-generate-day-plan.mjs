@@ -15,181 +15,267 @@ function todayKST(offsetDays = 0) {
   return `${y}-${m}-${d}`;
 }
 
-const date = process.argv[2] || todayKST(0);
-const outDir = path.resolve('ops/threads/queue');
-const outPath = path.join(outDir, `${date}.json`);
-
-const slots = [
-  '주역 방법론 1',
-  '신학 일상글 1',
-  '역학·신학 인사이트 1',
-  '주역 방법론 2',
-  '신학 일상글 2',
-  '역학·신학 인사이트 2',
-  '주역 방법론 3',
-  '신학 일상글 3',
-  '역학·신학 인사이트 3'
-];
-
-const categories = [
-  'method', 'faith-daily', 'insight',
-  'method', 'faith-daily', 'insight',
-  'method', 'faith-daily', 'insight'
-];
-
-const imageByHour = {};
-
-const variantsByCategory = {
-  method: [
-    {
-      text: '돈이 안 모이는 이유, 의외로 수입보다 누수야.\n\n주역식으로 보면 순서는 간단해.\n損(손, 덜어냄) → 節(절, 경계) → 益(익, 불림).\n\n오늘 자동결제 1개만 끊어보자.\n\n#주역',
-      comment: '오늘은 늘리는 날이 아니라 새는 구멍 막는 날.'
-    },
-    {
-      text: '결정이 꼬일 때는 정보 부족보다\n타이밍 미스가 더 크다.\n\n時中(시중, 때에 맞음)은\n"지금 밀지, 멈출지"부터 보라는 말이다.\n\n큰 결정 하나는 10분만 멈춰서 다시 보자.\n\n#시중',
-      comment: '지금은 속도보다 타이밍이 먼저다.'
-    },
-    {
-      text: '관계 싸움에서 말 세게 하면\n대부분 둘 다 손해 본다.\n\n時中(시중, 때에 맞음)은\n이럴 때 말의 타이밍을 바로잡아준다.\n\n반박 전에 질문 하나만: "지금 뭐가 제일 답답해?"\n\n#시중',
-      comment: '센 말보다 타이밍이 관계를 살린다.'
-    },
-    {
-      text: '주역을 실전에 쓰는 기준은 어렵지 않다.\n\n지금의 때(時中)를 먼저 읽고,\n과한 집착을 덜고(損),\n틀린 지점은 바로 고친다(改過).\n\n오늘 실패 장면 1개를 이 순서로 다시 읽어보자.\n\n#주역',
-      comment: '방법은 복잡할수록 안 먹힌다. 3단계면 충분하다.'
-    },
-    {
-      text: '일이 막힐 때 대부분은\n"더 열심히"를 먼저 꺼낸다.\n\n근데 주역은 보통 반대로 묻는다.\n지금 필요한 건 추진이냐, 정리냐.\n\n오늘 할 일 하나는 속도보다 방향부터 점검해보자.\n\n#의사결정',
-      comment: '열심히보다 먼저, 지금 방향이 맞는지.'
-    },
-    {
-      text: '길한 괘가 나왔다고 무조건 밀면\n오히려 판이 깨질 때가 있다.\n\n좋은 신호일수록 더 중요한 건 순서다.\n무엇부터 할지 정하면 실수가 줄어든다.\n\n오늘은 우선순위 1개만 다시 정해보자.\n\n#길흉',
-      comment: '좋은 신호일수록 순서 관리가 핵심이다.'
-    }
-  ],
-  'faith-daily': [
-    {
-      text: '믿음은 큰 말보다 작은 책임에서 먼저 보여.\n\n미뤄둔 연락 1건만 오늘 답해봐.\n그 한 통이 관계 분위기를 바꾼다.\n\n#일상신학',
-      comment: '미뤄둔 연락 하나만 해도 하루 결이 달라진다.'
-    },
-    {
-      text: '불안한 날엔 큰 계획이 더 무겁게 느껴진다.\n\n오늘은 하나만 끝내자.\n할 일 3개 중 제일 작은 것부터.\n그게 흐름을 다시 살린다.\n\n#일상신학',
-      comment: '작은 완료 하나가 불안을 꺾는다.'
-    },
-    {
-      text: '신앙을 현실 언어로 바꾸면\n결국 돌봄의 순서가 된다.\n\n오늘 옆 사람 한 명 부담을 줄여주는\n작은 행동 1개만 고르자.\n\n#돌봄',
-      comment: '돌봄은 작아도 바로 체감되는 행동에서 시작한다.'
-    },
-    {
-      text: '기도가 막막할 때는 거창한 문장보다\n정직한 한 줄이 낫다.\n\n"지금 내가 피하는 걸 보게 해주세요."\n이 한 줄이면 충분하다.\n\n#일상신앙',
-      comment: '신앙은 멋진 말보다 정직한 한 줄에서 시작된다.'
-    },
-    {
-      text: '믿음이 흔들리는 날에는\n확신보다 루틴이 사람을 붙든다.\n\n내일 아침 첫 20분 행동 하나만\n지금 정해두자.\n\n#루틴',
-      comment: '확신이 약한 날일수록 루틴이 버팀목이다.'
-    },
-    {
-      text: '관계가 무거울수록\n정답 말하기 전에 숨 한 번이 먼저다.\n\n오늘 대화 하나는\n조언보다 질문부터 시작해보자.\n\n#관계',
-      comment: '좋은 답보다 먼저, 상대 마음의 위치부터.'
-    }
-  ],
-  insight: [
-    {
-      text: '창세기 1:1의 샤마임·에레츠와\n주역의 乾坤(건곤)을 같이 놓고 보면 꽤 재밌다.\n\n둘 다 세계를 여는 두 축인데,\n하나는 창조의 문법, 하나는 변화의 문법에 가깝다.\n\n#건곤',
-      comment: '건곤 비교는 세계를 읽는 관점을 넓혀준다.'
-    },
-    {
-      text: '역학과 신학이 닿는 지점이 있다.\n사람을 숙명으로 못 박지 않는다는 점.\n\n해석은 낙인 찍으려고 하는 게 아니라\n다시 움직이게 하려고 하는 거다.\n\n#역학신학',
-      comment: '해석은 사람을 묶는 게 아니라 풀어주는 쪽이어야 한다.'
-    },
-    {
-      text: '길흉을 결과 예언으로만 읽으면 불안해진다.\n\n근데 대응 신호로 읽으면\n다음 선택이 훨씬 또렷해진다.\n\n너는 지금 주역을 어떤 방식으로 읽고 있어?\n\n#길흉',
-      comment: '길흉을 신호로 읽으면 다음 수가 보인다.'
-    },
-    {
-      text: '같은 괘라도 사람마다 해석이 달라지는 건\n상황의 결이 다르기 때문이다.\n\n그래서 핵심은 정답 찾기가 아니라\n내 상황의 변수 찾기다.\n\n#해석',
-      comment: '정답보다 변수. 그걸 잡으면 방향이 나온다.'
-    },
-    {
-      text: '주역이 오래 살아남은 이유를 한 줄로 말하면\n결과를 맞히는 기술이 아니라\n판을 읽는 언어이기 때문.\n\n지금 우리한테 필요한 것도 종종 그쪽이다.\n\n#주역',
-      comment: '예측보다 판 읽기. 여기서 차이가 난다.'
-    },
-    {
-      text: '신학과 역학을 같이 보면 좋은 점 하나.\n사람을 고정해서 보지 않게 된다.\n\n지금의 상태를 읽고,\n다음 선택으로 이동하게 만든다.\n\n#인사이트',
-      comment: '해석의 목적은 고정이 아니라 이동이다.'
-    }
-  ]
-};
-
 function daySeed(input) {
   return String(input || '').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
 }
 
-const seed = daySeed(date);
-const seenByCategory = { method: 0, 'faith-daily': 0, insight: 0 };
-const seenForHook = { method: 0, 'faith-daily': 0, insight: 0 };
-
-const hooksByCategory = {
-  method: [
-    '요즘 왜 계속 꼬이는지 알 것 같아?',
-    '진짜 문제는 능력보다 순서일 때가 많다.',
-    '열심히 하는데 안 풀리면 이걸 먼저 봐야 한다.'
-  ],
-  'faith-daily': [
-    '신앙이 무너질 때, 보통 거창함부터 찾는다.',
-    '마음이 지칠수록 작은 책임 하나가 사람을 살린다.',
-    '오늘 하루를 바꾸는 건 큰 결심이 아니더라.'
-  ],
-  insight: [
-    '이 관점 하나 바꾸면 해석이 완전히 달라진다.',
-    '같은 상황인데도 결과가 갈리는 이유가 있다.',
-    '요즘 내가 계속 붙잡는 질문 하나.'
-  ]
-};
-
-const promptsByCategory = {
-  method: ['너라면 오늘 어디부터 손볼래?', '지금 네 상황엔 추진/정리 중 뭐가 먼저야?'],
-  'faith-daily': ['오늘 바로 할 수 있는 행동 1개만 적어줘.', '너는 오늘 어떤 작은 책임부터 잡을래?'],
-  insight: ['너는 이걸 예언형으로 읽어, 신호형으로 읽어?', '지금 너한텐 어떤 해석이 더 맞아 보여?']
-};
-
-const commentPromptsByCategory = {
-  method: ['댓글로 우선순위 1개만 남겨줘.', '지금 막힌 지점 한 줄만 적어줘.'],
-  'faith-daily': ['오늘 적용할 한 문장만 남겨줘.', '작게라도 실천할 것 1개만 적어줘.'],
-  insight: ['A/B로 답해줘.', '한 단어로만 답해줘도 좋아.']
-};
-
-function pickFromPool(pool, slotIndex, salt = 0) {
-  if (!Array.isArray(pool) || pool.length === 0) return '';
-  return pool[(seed + slotIndex + salt) % pool.length];
+function minusDay(dateStr, days = 1) {
+  const [y, m, d] = String(dateStr).split('-').map(Number);
+  const dt = new Date(y, (m || 1) - 1, d || 1);
+  dt.setDate(dt.getDate() - days);
+  const yy = dt.getFullYear();
+  const mm = String(dt.getMonth() + 1).padStart(2, '0');
+  const dd = String(dt.getDate()).padStart(2, '0');
+  return `${yy}-${mm}-${dd}`;
 }
 
-function pickVariant(category, slotIndex) {
-  const pool = variantsByCategory[category] || variantsByCategory.insight;
-  const nth = seenByCategory[category] || 0;
-  const idx = (seed + slotIndex * 2 + nth) % pool.length;
-  seenByCategory[category] = nth + 1;
-  return pool[idx];
+function readJson(filePath, fallback = null) {
+  try {
+    if (!fs.existsSync(filePath)) return fallback;
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch {
+    return fallback;
+  }
+}
+
+const date = process.argv[2] || todayKST(0);
+const outDir = path.resolve('ops/threads/queue');
+const outPath = path.join(outDir, `${date}.json`);
+
+const reportDate = minusDay(date, 1);
+const reportPath = path.resolve(`ops/threads/reports/${reportDate}.json`);
+const yesterdayReport = readJson(reportPath, {});
+const bestCategory = yesterdayReport?.categoryRows?.[0]?.category || 'faith-daily';
+
+const imageByHour = {};
+const seed = daySeed(date);
+
+const slots = [
+  '일상 공감 1',
+  '일상 공감 2',
+  '관점 글 1',
+  '일상 공감 3',
+  '일상 공감 4',
+  '관점 글 2',
+  '일상 공감 5',
+  '일상 공감 6',
+  '관점 글 3'
+];
+
+const categories = [
+  'faith-daily', 'faith-daily', 'insight',
+  'method', 'faith-daily', 'insight',
+  'method', 'faith-daily', 'insight'
+];
+
+const openers = [
+  '사는 일은 결국 마음과 순서의 싸움이더라.',
+  '하루를 버티게 하는 건 거창한 결심이 아니었다.',
+  '요즘 나는 결과보다 리듬을 먼저 본다.',
+  '무너지는 날에는 이유가 크지 않고, 반복이 느슨했다.',
+  '사람을 살리는 건 대개 정답이 아니라 말의 온도였다.',
+  '마음이 흔들릴수록 작은 규칙이 사람을 붙든다.',
+  '좋은 날보다 어려운 날이 나를 더 정확하게 가르쳤다.',
+  '내가 바꾼 건 삶 전체가 아니라 오늘의 한 칸이었다.',
+  '생각은 복잡했는데, 행동은 늘 단순한 데서 풀렸다.'
+];
+
+const experienceSeeds = [
+  {
+    category: 'faith-daily',
+    scene: '대전 집에서 아들 둘 등교 준비를 시키다 보면, 아침은 늘 전쟁처럼 지나간다.',
+    realization: '목소리를 높이면 일정은 맞아도 마음이 깨진다.',
+    action: '오늘은 지시보다 먼저 눈을 맞추고 한 문장만 천천히 말했다.',
+    prompt: '너도 아침을 바꾼 한 문장 있으면 알려줘.',
+    tag: '아침루틴'
+  },
+  {
+    category: 'faith-daily',
+    scene: '육아휴직 중이라 시간이 많을 줄 알았는데, 오히려 마음이 자주 흩어졌다.',
+    realization: '비는 시간은 쉬는 시간이 아니라 방향을 잃기 쉬운 시간이었다.',
+    action: '호흡 3분, 기도 3분, 오늘 해야 할 일 1개만 적고 시작했다.',
+    prompt: '너는 마음이 흔들릴 때 어떤 순서로 다시 서?',
+    tag: '육아휴직'
+  },
+  {
+    category: 'insight',
+    scene: '주역을 붙들고 있으면 미래를 맞히는 기술보다 지금을 읽는 눈이 먼저 생긴다.',
+    realization: '길흉은 공포를 키우는 단어가 아니라 선택을 맑게 하는 신호였다.',
+    action: '오늘도 결정을 미루는 대신, 멈출지 밀지 먼저 정했다.',
+    prompt: '너는 요즘 예측에 기대는 편이야, 판단을 훈련하는 편이야?',
+    tag: '주역'
+  },
+  {
+    category: 'method',
+    scene: '고교학점제 프로젝트 회의에서 말이 길어질수록 결론은 늦어졌다.',
+    realization: '똑똑한 말보다 기준 한 줄이 팀을 움직였다.',
+    action: '이번엔 "오늘 결정할 한 가지"부터 먼저 합의했다.',
+    prompt: '너희 팀도 회의 시작 문장 하나 정해볼래?',
+    tag: '고교학점제'
+  },
+  {
+    category: 'faith-daily',
+    scene: '교회 갔다 오는 길, 아이가 던진 짧은 질문이 하루 종일 남았다.',
+    realization: '신앙은 설명이 아니라 태도로 먼저 전해진다는 걸 또 배웠다.',
+    action: '오늘은 옳은 답보다 부드러운 대답을 먼저 고르기로 했다.',
+    prompt: '요즘 너를 멈춰 세운 질문 한 가지 있어?',
+    tag: '일상신앙'
+  },
+  {
+    category: 'insight',
+    scene: '직업상담 공부 때 익힌 건 결국 한 사람의 가능성을 현재형으로 보는 훈련이었다.',
+    realization: '사람을 과거 이력으로 고정하면 내일이 닫힌다.',
+    action: '대화할 때 "원래 너는" 대신 "지금 너는"으로 말을 바꿨다.',
+    prompt: '말 한마디를 바꿔서 관계가 풀린 경험 있어?',
+    tag: '상담감각'
+  },
+  {
+    category: 'method',
+    scene: '한국사 공부할 때도 느꼈지만, 큰 흐름은 작은 전환점에서 갈렸다.',
+    realization: '인생도 대사건보다 미세한 습관의 누적이 결과를 만든다.',
+    action: '오늘은 계획표보다 첫 20분 행동을 고정했다.',
+    prompt: '네 하루를 여는 첫 20분은 뭐야?',
+    tag: '작은전환'
+  },
+  {
+    category: 'faith-daily',
+    scene: '김주환 교수 강의를 듣다 보니, 알아차림은 감성이 아니라 기술이라는 생각이 들었다.',
+    realization: '감정에 끌려가지 않으려면 먼저 몸의 신호를 읽어야 했다.',
+    action: '답답할 때 어깨 힘부터 빼고 숨을 길게 뱉었다.',
+    prompt: '너는 긴장 올라올 때 제일 먼저 뭘 조절해?',
+    tag: '알아차림'
+  },
+  {
+    category: 'insight',
+    scene: '역학과 신학을 같이 보다 보면 공통점이 분명하다.',
+    realization: '사람을 운명으로 가두지 않고, 다음 선택으로 초대한다는 점이다.',
+    action: '그래서 오늘 글도 정답보다 다음 행동 하나를 남기려 했다.',
+    prompt: '네가 붙잡고 있는 다음 행동 하나만 적어줘.',
+    tag: '역학신학'
+  },
+  {
+    category: 'method',
+    scene: '하루가 꼬일 때 나는 보통 더 열심히 하려고 들었다.',
+    realization: '문제는 노력 부족이 아니라 순서 오류인 날이 더 많았다.',
+    action: '오늘은 "삭제할 일 1개"부터 고르고 나머지를 다시 배치했다.',
+    prompt: '지금 네 일정에서 지울 것 하나만 고르면 뭐야?',
+    tag: '의사결정'
+  },
+  {
+    category: 'faith-daily',
+    scene: '아이들 재우고 나면 하루 평가를 길게 하던 버릇이 있었다.',
+    realization: '반성이 길수록 자책도 길어졌다.',
+    action: '요즘은 "잘한 것 1개, 고칠 것 1개"만 적고 끝낸다.',
+    prompt: '오늘 너의 1+1 회고도 한 줄로 남겨줘.',
+    tag: '하루회고'
+  },
+  {
+    category: 'insight',
+    scene: '글을 쓸수록 확신이 아니라 질문이 사람을 움직인다는 걸 본다.',
+    realization: '철학은 어려운 말이 아니라 정확한 질문에서 시작됐다.',
+    action: '오늘 글은 결론보다 질문을 먼저 세웠다.',
+    prompt: '지금 네가 붙들고 있는 질문은 뭐야?',
+    tag: '질문의힘'
+  }
+];
+
+function rotate(list, salt = 0) {
+  if (!Array.isArray(list) || list.length === 0) return [];
+  const offset = (seed + salt) % list.length;
+  return [...list.slice(offset), ...list.slice(0, offset)];
+}
+
+function pickSeedsByCategory(category, count, used) {
+  const pool = rotate(experienceSeeds.filter((s) => s.category === category), count * 3 + 7);
+  const out = [];
+  for (const item of pool) {
+    if (used.has(item)) continue;
+    used.add(item);
+    out.push(item);
+    if (out.length >= count) break;
+  }
+  return out;
+}
+
+const used = new Set();
+const categoryNeed = categories.reduce((acc, c) => {
+  acc[c] = (acc[c] || 0) + 1;
+  return acc;
+}, {});
+
+const byCategory = {
+  'faith-daily': pickSeedsByCategory('faith-daily', categoryNeed['faith-daily'] || 0, used),
+  method: pickSeedsByCategory('method', categoryNeed.method || 0, used),
+  insight: pickSeedsByCategory('insight', categoryNeed.insight || 0, used)
+};
+
+if (bestCategory in byCategory && byCategory[bestCategory]?.length > 1) {
+  byCategory[bestCategory] = rotate(byCategory[bestCategory], 1);
+}
+
+const counters = { 'faith-daily': 0, method: 0, insight: 0 };
+
+function nextSeed(category) {
+  const idx = counters[category] || 0;
+  counters[category] = idx + 1;
+  return byCategory[category]?.[idx] || rotate(experienceSeeds, idx)[0];
+}
+
+function toPostText({ opener, seedItem, styleIndex }) {
+  const styleA = [
+    opener,
+    seedItem.scene,
+    seedItem.realization,
+    seedItem.action,
+    seedItem.prompt,
+    `#${seedItem.tag}`
+  ];
+
+  const styleB = [
+    opener,
+    seedItem.scene,
+    seedItem.realization,
+    seedItem.action,
+    seedItem.prompt,
+    `#${seedItem.tag}`
+  ];
+
+  const styleC = [
+    `${opener} ${seedItem.realization}`,
+    seedItem.scene,
+    seedItem.action,
+    seedItem.prompt,
+    `#${seedItem.tag}`
+  ];
+
+  const styles = [styleA, styleB, styleC];
+  return styles[styleIndex % styles.length].filter(Boolean).join('\n\n');
+}
+
+function toComment(seedItem, idx) {
+  const endings = [
+    '댓글로 한 줄만 남겨줘. 내가 다음 글에 반영할게.',
+    '너의 문장 하나가 다음 사람한테 길이 될 수 있어.',
+    '짧게 남겨주면 내일 글에서 더 잘 다듬어볼게.'
+  ];
+  return `${seedItem.prompt} ${endings[idx % endings.length]}`;
 }
 
 const posts = HOURS.map((hour, i) => {
   const category = categories[i];
-  const variant = pickVariant(category, i);
-  const hookNth = seenForHook[category] || 0;
-  seenForHook[category] = hookNth + 1;
-  const hook = pickFromPool(hooksByCategory[category], i + hookNth * 7, 11);
-  const prompt = /\?/.test(variant.text) ? '' : pickFromPool(promptsByCategory[category], i + hookNth * 5, 19);
-  const commentPrompt = pickFromPool(commentPromptsByCategory[category], i + hookNth * 3, 29);
+  const seedItem = nextSeed(category);
+  const opener = rotate(openers, 13)[i % openers.length];
   return {
     hour,
     slot: slots[i],
     category,
-    text: [hook, variant.text, prompt].filter(Boolean).join('\n\n'),
-    comment: [variant.comment, commentPrompt].filter(Boolean).join(' '),
+    text: toPostText({ opener, seedItem, styleIndex: i }),
+    comment: toComment(seedItem, i),
     imageUrl: imageByHour[hour] || null,
     status: 'pending'
   };
 });
 
 fs.mkdirSync(outDir, { recursive: true });
-fs.writeFileSync(outPath, JSON.stringify({ date, timezone: TZ, posts }, null, 2));
+fs.writeFileSync(outPath, JSON.stringify({ date, timezone: TZ, sourceReport: reportDate, bestCategory, posts }, null, 2));
 console.log(`Generated: ${outPath}`);
