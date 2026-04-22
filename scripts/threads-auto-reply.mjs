@@ -103,7 +103,7 @@ function detectTone(lower = '') {
 function buildHonorificReply(originalText = '') {
   const trimmed = String(originalText || '').replace(/\s+/g, ' ').trim();
   if (!trimmed) {
-    return { text: '댓글 남겨주셔서 감사합니다. 말씀해주신 내용은 다음 글에서 더 구체적으로 반영해보겠습니다.', skip: false, reason: 'empty-generic' };
+    return { text: '댓글 감사합니다. 이 주제는 다음 글에서 짧고 선명하게 다시 다뤄보겠습니다.', skip: false, reason: 'empty-generic' };
   }
 
   const lower = trimmed.toLowerCase();
@@ -125,40 +125,38 @@ function buildHonorificReply(originalText = '') {
   const tone = detectTone(lower);
   const echo = extractEchoPhrase(trimmed);
 
-  const openers = {
-    praise: ['좋게 봐주셔서 감사합니다.', '좋은 반응 남겨주셔서 감사합니다.'],
-    light: ['재밌게 봐주셔서 감사합니다.', '센스 있는 댓글 감사합니다.'],
-    doubt: ['솔직한 반응 남겨주셔서 감사합니다.', '헷갈릴 수 있는 지점 짚어주셔서 감사합니다.'],
-    suggestion: ['좋은 제안 감사합니다.', '방향 제안 주셔서 감사합니다.'],
-    neutral: ['댓글 남겨주셔서 감사합니다.', '의견 나눠주셔서 감사합니다.']
+  const openerByTone = {
+    praise: ['좋게 봐주셔서 감사합니다.', '힘나는 댓글 감사합니다.'],
+    light: ['재밌게 봐주셔서 감사합니다 ㅎㅎ', '센스 있는 댓글 감사합니다.'],
+    doubt: ['그 부분 헷갈리실 수 있습니다.', '그 포인트에서 많이 막히시더라고요.'],
+    suggestion: ['좋은 제안 감사합니다.', '방향 제안 정말 좋습니다.'],
+    neutral: ['댓글 감사합니다.', '의견 남겨주셔서 감사합니다.']
   };
 
-  const topicLines = {
-    bible: isQuestion
-      ? '성경 본문 맥락과 용어를 같이 묶어서 다음 글에서 짧게 정리해보겠습니다.'
-      : '성경 본문 맥락이 더 잘 보이도록 다음 글에서 연결을 보강해보겠습니다.',
-    iching: isQuestion
-      ? '해당 괘/효의 원문 뜻과 현실 적용을 함께 풀어서 다음 글에 반영해보겠습니다.'
-      : '괘/효의 의미가 실제 상황에 닿게 다음 글에서 더 선명하게 풀어보겠습니다.',
-    money: isQuestion
-      ? '지출·누수 기준으로 바로 적용할 수 있는 체크 포인트를 다음 글에 넣어보겠습니다.'
-      : '재정 흐름은 실전 체크리스트 형태로 다음 글에서 더 구체화해보겠습니다.',
-    relationship: isQuestion
-      ? '관계 상황에서 바로 쓸 수 있는 대화 문장까지 다음 글에서 함께 정리해보겠습니다.'
-      : '관계 주제는 실제 대화 순서까지 포함해서 다음 글에서 더 구체화해보겠습니다.',
-    generic: isQuestion
-      ? '말씀 주신 포인트를 기준으로 다음 글에서 더 분명하게 답해보겠습니다.'
-      : '말씀 주신 포인트를 다음 글에서 더 구체적으로 다뤄보겠습니다.'
+  const answerByTopicQuestion = {
+    bible: '핵심은 본문 문맥입니다. 용어만 떼어보면 오해가 생겨서, 문맥 기준으로 짧게 다시 정리해보겠습니다.',
+    iching: '질문 주신 효는 "지금 밀어붙이기보다 때와 순서를 보는" 쪽에 가깝습니다. 사례를 붙여서 다음 글에 풀어보겠습니다.',
+    money: '돈 주제는 결국 누수 관리가 먼저입니다. 이번에는 바로 점검 가능한 항목 위주로 올려보겠습니다.',
+    relationship: '관계는 말의 내용보다 순서가 더 크게 작동할 때가 많습니다. 실제 문장 예시로 다음 글에 보강해보겠습니다.',
+    generic: '좋은 질문입니다. 바로 적용되는 기준 한 줄로 다음 글에 정리해보겠습니다.'
   };
 
-  const closer = isQuestion
-    ? pickByText(['좋은 질문 감사합니다.', '질문 덕분에 핵심을 더 선명하게 다뤄볼 수 있겠습니다.'], trimmed)
-    : pickByText(['덕분에 다음 글 방향이 더 분명해졌습니다.', '말씀해주신 결을 다음 글에 바로 반영해보겠습니다.'], trimmed);
+  const answerByTopicComment = {
+    bible: '저도 같은 결로 보고 있습니다. 성경 쪽 연결을 더 자연스럽게 보이도록 보완하겠습니다.',
+    iching: '맞습니다. 괘/효 해석은 결과 예언보다 "지금의 대응"을 잡아주는 데 강점이 있습니다.',
+    money: '공감합니다. 작은 누수 하나만 막아도 체감이 바로 오더라고요.',
+    relationship: '정확합니다. 관계는 한 문장보다 한 템포 쉬는 게 더 큰 변화를 만들 때가 많습니다.',
+    generic: '좋은 포인트입니다. 같은 결로 더 선명하게 다듬어보겠습니다.'
+  };
 
-  const echoLine = echo ? `특히 말씀하신 '${echo}' 포인트, 저도 중요하게 보고 있습니다.` : '';
-  const text = [pickByText(openers[tone] || openers.neutral, trimmed), echoLine, topicLines[topic], closer]
+  const echoLine = echo ? `말씀하신 '${echo}' 포인트 좋습니다.` : '';
+  const opener = pickByText(openerByTone[tone] || openerByTone.neutral, trimmed);
+  const body = isQuestion ? answerByTopicQuestion[topic] : answerByTopicComment[topic];
+
+  const text = [opener, echoLine, body]
     .filter(Boolean)
-    .join(' ');
+    .join(' ')
+    .slice(0, 280);
 
   return { text, skip: false, reason: `${topic}-${tone}${isQuestion ? '-q' : ''}` };
 }
