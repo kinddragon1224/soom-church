@@ -23,7 +23,8 @@
     "threads:post": "node scripts/threads-publish-slot.mjs",
     "threads:report": "node scripts/threads-daily-insights.mjs",
     "threads:backfill-comments": "node scripts/threads-backfill-comments.mjs",
-    "threads:auto-reply": "node scripts/threads-auto-reply.mjs"
+    "threads:auto-reply": "node scripts/threads-auto-reply.mjs",
+    "threads:image-prompts": "node scripts/threads-next-image-prompts.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
