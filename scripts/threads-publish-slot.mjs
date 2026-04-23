@@ -251,12 +251,6 @@ async function main() {
 
   const postId = await postText({ userId, token, text: tuned.text, imageUrl: target.imageUrl || '' });
   let commentId = null;
-  if (tuned.comment) {
-    commentId = await postReply({ userId, token, text: tuned.comment, replyToId: postId });
-    if (!commentId) {
-      console.warn(`reply skipped ${date} ${hour}:00`);
-    }
-  }
   state[date][hour] = postId;
   fs.writeFileSync(statePath, JSON.stringify(state, null, 2));
 
