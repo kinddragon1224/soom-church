@@ -4,6 +4,8 @@ import path from 'node:path';
 
 const TZ = 'Asia/Seoul';
 const HOURS = [7, 9, 11, 13, 15, 17, 19, 21, 23];
+const CATEGORIES = ['faith-daily', 'method', 'insight', 'faith-daily', 'method', 'insight', 'faith-daily', 'method', 'insight'];
+const imageHours = new Set([9, 15, 21]);
 
 function todayKST(offsetDays = 0) {
   const now = new Date();
@@ -13,10 +15,6 @@ function todayKST(offsetDays = 0) {
   const m = String(kst.getMonth() + 1).padStart(2, '0');
   const d = String(kst.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
-}
-
-function daySeed(input) {
-  return String(input || '').split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
 }
 
 function minusDay(dateStr, days = 1) {
@@ -38,247 +36,65 @@ function readJson(filePath, fallback = null) {
   }
 }
 
-const date = process.argv[2] || todayKST(0);
-const outDir = path.resolve('ops/threads/queue');
-const outPath = path.join(outDir, `${date}.json`);
-
-const reportDate = minusDay(date, 1);
-const reportPath = path.resolve(`ops/threads/reports/${reportDate}.json`);
-const yesterdayReport = readJson(reportPath, {});
-const bestCategory = yesterdayReport?.categoryRows?.[0]?.category || 'faith-daily';
-
-const imageByHour = {};
-const imageHours = new Set([9, 15, 21]);
-const seed = daySeed(date);
-
-const slots = [
-  '일상 공감 1',
-  '일상 공감 2',
-  '관점 글 1',
-  '일상 공감 3',
-  '일상 공감 4',
-  '관점 글 2',
-  '일상 공감 5',
-  '일상 공감 6',
-  '관점 글 3'
-];
-
-const categories = [
-  'faith-daily', 'faith-daily', 'insight',
-  'method', 'faith-daily', 'insight',
-  'method', 'faith-daily', 'insight'
-];
-
-const openers = [
-  '사는 일은 결국 마음과 순서의 싸움이더라.',
-  '하루를 버티게 하는 건 거창한 결심이 아니었다.',
-  '요즘 나는 결과보다 리듬을 먼저 본다.',
-  '무너지는 날에는 이유가 크지 않고, 반복이 느슨했다.',
-  '사람을 살리는 건 대개 정답이 아니라 말의 온도였다.',
-  '마음이 흔들릴수록 작은 규칙이 사람을 붙든다.',
-  '좋은 날보다 어려운 날이 나를 더 정확하게 가르쳤다.',
-  '내가 바꾼 건 삶 전체가 아니라 오늘의 한 칸이었다.',
-  '생각은 복잡했는데, 행동은 늘 단순한 데서 풀렸다.'
-];
-
-const experienceSeeds = [
-  {
-    category: 'faith-daily',
-    scene: '대전 집에서 아들 둘 등교 준비를 시키다 보면, 아침은 늘 전쟁처럼 지나간다.',
-    realization: '목소리를 높이면 일정은 맞아도 마음이 깨진다.',
-    action: '오늘은 지시보다 먼저 눈을 맞추고 한 문장만 천천히 말했다.',
-    prompt: '너도 아침을 바꾼 한 문장 있으면 알려줘.',
-    tag: '아침루틴'
-  },
-  {
-    category: 'faith-daily',
-    scene: '육아휴직 중이라 시간이 많을 줄 알았는데, 오히려 마음이 자주 흩어졌다.',
-    realization: '비는 시간은 쉬는 시간이 아니라 방향을 잃기 쉬운 시간이었다.',
-    action: '호흡 3분, 기도 3분, 오늘 해야 할 일 1개만 적고 시작했다.',
-    prompt: '너는 마음이 흔들릴 때 어떤 순서로 다시 서?',
-    tag: '육아휴직'
-  },
-  {
-    category: 'insight',
-    scene: '주역을 붙들고 있으면 미래를 맞히는 기술보다 지금을 읽는 눈이 먼저 생긴다.',
-    realization: '길흉은 공포를 키우는 단어가 아니라 선택을 맑게 하는 신호였다.',
-    action: '오늘도 결정을 미루는 대신, 멈출지 밀지 먼저 정했다.',
-    prompt: '너는 요즘 예측에 기대는 편이야, 판단을 훈련하는 편이야?',
-    tag: '주역'
-  },
-  {
-    category: 'method',
-    scene: '고교학점제 프로젝트 회의에서 말이 길어질수록 결론은 늦어졌다.',
-    realization: '똑똑한 말보다 기준 한 줄이 팀을 움직였다.',
-    action: '이번엔 "오늘 결정할 한 가지"부터 먼저 합의했다.',
-    prompt: '너희 팀도 회의 시작 문장 하나 정해볼래?',
-    tag: '고교학점제'
-  },
-  {
-    category: 'faith-daily',
-    scene: '교회 갔다 오는 길, 아이가 던진 짧은 질문이 하루 종일 남았다.',
-    realization: '신앙은 설명이 아니라 태도로 먼저 전해진다는 걸 또 배웠다.',
-    action: '오늘은 옳은 답보다 부드러운 대답을 먼저 고르기로 했다.',
-    prompt: '요즘 너를 멈춰 세운 질문 한 가지 있어?',
-    tag: '일상신앙'
-  },
-  {
-    category: 'insight',
-    scene: '직업상담 공부 때 익힌 건 결국 한 사람의 가능성을 현재형으로 보는 훈련이었다.',
-    realization: '사람을 과거 이력으로 고정하면 내일이 닫힌다.',
-    action: '대화할 때 "원래 너는" 대신 "지금 너는"으로 말을 바꿨다.',
-    prompt: '말 한마디를 바꿔서 관계가 풀린 경험 있어?',
-    tag: '상담감각'
-  },
-  {
-    category: 'method',
-    scene: '한국사 공부할 때도 느꼈지만, 큰 흐름은 작은 전환점에서 갈렸다.',
-    realization: '인생도 대사건보다 미세한 습관의 누적이 결과를 만든다.',
-    action: '오늘은 계획표보다 첫 20분 행동을 고정했다.',
-    prompt: '네 하루를 여는 첫 20분은 뭐야?',
-    tag: '작은전환'
-  },
-  {
-    category: 'faith-daily',
-    scene: '김주환 교수 강의를 듣다 보니, 알아차림은 감성이 아니라 기술이라는 생각이 들었다.',
-    realization: '감정에 끌려가지 않으려면 먼저 몸의 신호를 읽어야 했다.',
-    action: '답답할 때 어깨 힘부터 빼고 숨을 길게 뱉었다.',
-    prompt: '너는 긴장 올라올 때 제일 먼저 뭘 조절해?',
-    tag: '알아차림'
-  },
-  {
-    category: 'insight',
-    scene: '역학과 신학을 같이 보다 보면 공통점이 분명하다.',
-    realization: '사람을 운명으로 가두지 않고, 다음 선택으로 초대한다는 점이다.',
-    action: '그래서 오늘 글도 정답보다 다음 행동 하나를 남기려 했다.',
-    prompt: '네가 붙잡고 있는 다음 행동 하나만 적어줘.',
-    tag: '역학신학'
-  },
-  {
-    category: 'method',
-    scene: '하루가 꼬일 때 나는 보통 더 열심히 하려고 들었다.',
-    realization: '문제는 노력 부족이 아니라 순서 오류인 날이 더 많았다.',
-    action: '오늘은 "삭제할 일 1개"부터 고르고 나머지를 다시 배치했다.',
-    prompt: '지금 네 일정에서 지울 것 하나만 고르면 뭐야?',
-    tag: '의사결정'
-  },
-  {
-    category: 'faith-daily',
-    scene: '아이들 재우고 나면 하루 평가를 길게 하던 버릇이 있었다.',
-    realization: '반성이 길수록 자책도 길어졌다.',
-    action: '요즘은 "잘한 것 1개, 고칠 것 1개"만 적고 끝낸다.',
-    prompt: '오늘 너의 1+1 회고도 한 줄로 남겨줘.',
-    tag: '하루회고'
-  },
-  {
-    category: 'insight',
-    scene: '글을 쓸수록 확신이 아니라 질문이 사람을 움직인다는 걸 본다.',
-    realization: '철학은 어려운 말이 아니라 정확한 질문에서 시작됐다.',
-    action: '오늘 글은 결론보다 질문을 먼저 세웠다.',
-    prompt: '지금 네가 붙들고 있는 질문은 뭐야?',
-    tag: '질문의힘'
-  }
-];
-
-function rotate(list, salt = 0) {
-  if (!Array.isArray(list) || list.length === 0) return [];
-  const offset = (seed + salt) % list.length;
-  return [...list.slice(offset), ...list.slice(0, offset)];
-}
-
-function pickSeedsByCategory(category, count, used) {
-  const pool = rotate(experienceSeeds.filter((s) => s.category === category), count * 3 + 7);
-  const out = [];
-  for (const item of pool) {
-    if (used.has(item)) continue;
-    used.add(item);
-    out.push(item);
-    if (out.length >= count) break;
+function parseEnvFile(filePath) {
+  const out = {};
+  if (!fs.existsSync(filePath)) return out;
+  for (const line of fs.readFileSync(filePath, 'utf8').split('\n')) {
+    const t = line.trim();
+    if (!t || t.startsWith('#')) continue;
+    const idx = t.indexOf('=');
+    if (idx < 1) continue;
+    const k = t.slice(0, idx).trim();
+    let v = t.slice(idx + 1).trim();
+    if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+    out[k] = v;
   }
   return out;
 }
 
-const used = new Set();
-const categoryNeed = categories.reduce((acc, c) => {
-  acc[c] = (acc[c] || 0) + 1;
-  return acc;
-}, {});
-
-const byCategory = {
-  'faith-daily': pickSeedsByCategory('faith-daily', categoryNeed['faith-daily'] || 0, used),
-  method: pickSeedsByCategory('method', categoryNeed.method || 0, used),
-  insight: pickSeedsByCategory('insight', categoryNeed.insight || 0, used)
-};
-
-if (bestCategory in byCategory && byCategory[bestCategory]?.length > 1) {
-  byCategory[bestCategory] = rotate(byCategory[bestCategory], 1);
+function stripCodeFence(text = '') {
+  const fenced = String(text).match(/```json\s*([\s\S]*?)```/i) || String(text).match(/```\s*([\s\S]*?)```/i);
+  return (fenced?.[1] ?? text).trim();
 }
 
-const counters = { 'faith-daily': 0, method: 0, insight: 0 };
-
-function nextSeed(category) {
-  const idx = counters[category] || 0;
-  counters[category] = idx + 1;
-  return byCategory[category]?.[idx] || rotate(experienceSeeds, idx)[0];
+function normalizeHashTag(text = '') {
+  const tags = String(text).match(/#[\w가-힣]+/g) || [];
+  if (!tags.length) return '#일상기록';
+  return tags[0];
 }
 
-function toPostText({ opener, seedItem, styleIndex }) {
-  const styleA = [
-    opener,
-    seedItem.scene,
-    seedItem.realization,
-    seedItem.action,
-    seedItem.prompt,
-    `#${seedItem.tag}`
-  ];
-
-  const styleB = [
-    opener,
-    seedItem.scene,
-    seedItem.realization,
-    seedItem.action,
-    seedItem.prompt,
-    `#${seedItem.tag}`
-  ];
-
-  const styleC = [
-    `${opener} ${seedItem.realization}`,
-    seedItem.scene,
-    seedItem.action,
-    seedItem.prompt,
-    `#${seedItem.tag}`
-  ];
-
-  const styles = [styleA, styleB, styleC];
-  return styles[styleIndex % styles.length].filter(Boolean).join('\n\n');
+function pickTagByCategory(category) {
+  if (category === 'method') return '#의사결정';
+  if (category === 'insight') return '#역학신학';
+  return '#일상신앙';
 }
 
-function toComment(seedItem, idx) {
-  const endings = [
-    '댓글로 한 줄만 남겨줘. 내가 다음 글에 반영할게.',
-    '너의 문장 하나가 다음 사람한테 길이 될 수 있어.',
-    '짧게 남겨주면 내일 글에서 더 잘 다듬어볼게.'
-  ];
-  return `${seedItem.prompt} ${endings[idx % endings.length]}`;
+function validateCandidatePosts(posts) {
+  if (!Array.isArray(posts) || posts.length !== 9) return false;
+  for (let i = 0; i < 9; i += 1) {
+    const p = posts[i] || {};
+    if (typeof p.text !== 'string' || p.text.trim().length < 25) return false;
+    if (typeof p.comment !== 'string' || p.comment.trim().length < 8) return false;
+  }
+  return true;
 }
 
-function buildImagePrompt({ seedItem, category, hour, index }) {
+function buildImagePrompt({ post, hour, index }) {
   const panel = ['初九', '九二', '六三', '六四', '九五', '上六'][index % 6];
   const moodByCategory = {
     'faith-daily': '따뜻하지만 절제된 감정, 과장 없는 일상의 긴장감',
     method: '판단과 선택의 긴장, 구조가 보이는 장면',
     insight: '사유가 느껴지는 정적, 상징보다 상황 중심'
   };
-  const sceneCore = `${seedItem.scene} ${seedItem.action}`;
 
   return [
     '[MODEL] openai/gpt-image-2',
     '[INTENT] Threads 세로 이미지, 실사풍이 아닌 삼국지 8 리메이크 PK 감성의 시네마틱 일러스트',
-    `[SCENE] ${sceneCore}`,
-    `[MOOD] ${moodByCategory[category] || moodByCategory.insight}`,
+    `[SCENE] ${post.sceneHint || post.text.split('\n').slice(0, 3).join(' ')}`,
+    `[MOOD] ${moodByCategory[post.category] || moodByCategory.insight}`,
     '[COMPOSITION] 인물 초상 클로즈업 금지, 상황 연출형 미디엄/와이드 샷, 행동 맥락이 보이게',
     '[UI OVERLAY] 우상단 미니 패널 고정: 괘/효 표시 + 6효 세로 도식 + 해당 효만 금색 하이라이트',
-    `[UI OVERLAY DETAIL] 패널 텍스트 예시: ${seedItem.tag} · ${panel}`,
+    `[UI OVERLAY DETAIL] 패널 텍스트 예시: ${normalizeHashTag(post.text).replace('#', '')} · ${panel}`,
     '[TEXT POLICY] 이미지 내부 큰 카피 금지, 패널 외 텍스트 최소화',
     '[COLOR] 저채도 기반 + 포인트 골드, 과포화 금지',
     '[NEGATIVE] 과한 AI 광택, 플라스틱 피부, 과장된 렌즈 플레어, 게임 UI 난삽함, 로고/워터마크, 손가락 오류, 얼굴 왜곡',
@@ -287,25 +103,190 @@ function buildImagePrompt({ seedItem, category, hour, index }) {
   ].join('\n');
 }
 
-const posts = HOURS.map((hour, i) => {
-  const category = categories[i];
-  const seedItem = nextSeed(category);
-  const opener = rotate(openers, 13)[i % openers.length];
-  const useImage = imageHours.has(hour);
-  return {
-    hour,
-    slot: slots[i],
-    category,
-    text: toPostText({ opener, seedItem, styleIndex: i }),
-    comment: toComment(seedItem, i),
-    imagePrompt: useImage ? buildImagePrompt({ seedItem, category, hour, index: i }) : null,
-    imageModel: useImage ? 'openai/gpt-image-2' : null,
-    imageAspectRatio: useImage ? '3:4' : null,
-    imageUrl: imageByHour[hour] || null,
-    status: 'pending'
-  };
-});
+function fallbackPosts() {
+  return [
+    {
+      category: 'faith-daily',
+      text: '요즘 집에서 아들 둘 챙기다 보면, 하루가 내 계획대로 간 날이 거의 없다.\n\n그래도 신기하게 무너지지 않는 날은 기준이 하나였다.\n큰 성과 말고, 오늘 지킬 태도 하나.\n\n오늘 나는 말의 속도부터 늦췄다.\n너는 오늘 뭘 늦추면 하루가 나아질까?\n\n#일상신앙',
+      comment: '오늘 지킬 태도 하나만 댓글로 남겨줘. 내일 글에 반영할게.',
+      sceneHint: '아침 준비 중 잠깐 멈춰 숨 고르는 장면'
+    },
+    {
+      category: 'method',
+      text: '회의가 길어질수록 팀이 똑똑해지는 게 아니라 지친다는 걸 자주 본다.\n\n그래서 요즘은 시작 문장 하나부터 맞춘다.\n"오늘 결정할 건 딱 하나."\n\n결정이 줄면 집중이 선명해진다.\n너희 팀은 회의 시작을 어떻게 여는 편이야?\n\n#의사결정',
+      comment: '회의 시작 문장 하나만 공유해줘. 좋은 건 바로 써볼게.',
+      sceneHint: '화이트보드 앞에서 우선순위 한 줄 적는 장면'
+    },
+    {
+      category: 'insight',
+      text: '주역을 오래 붙들수록 느끼는 건 예언보다 해석의 책임이다.\n\n같은 괘라도 내가 어떤 상태로 읽느냐에 따라 행동이 달라진다.\n정답 찾기보다 지금의 나를 먼저 읽는 쪽.\n\n오늘 너는 결과를 기다리는 중이야, 선택을 만드는 중이야?\n\n#역학신학',
+      comment: '결과 대기/선택 실행 중 하나만 적어줘. 흐름 맞춰서 다음 글 쓸게.',
+      sceneHint: '책상 위 주역 노트와 체크리스트를 함께 보는 장면'
+    },
+    {
+      category: 'faith-daily',
+      text: '육아휴직이면 시간이 넉넉할 줄 알았는데, 실제로는 마음이 더 쉽게 흩어졌다.\n\n그래서 루틴을 줄였다.\n호흡 3분, 기도 3분, 오늘 할 일 1개.\n\n작게 줄였더니 오히려 하루가 붙었다.\n너는 마음 흔들릴 때 어디서 다시 시작해?\n\n#알아차림',
+      comment: '너만의 재시작 루틴 한 줄만 알려줘. 다음 글에 녹여볼게.',
+      sceneHint: '창가 앞에서 타이머 켜고 호흡 정리하는 장면'
+    },
+    {
+      category: 'method',
+      text: '일이 밀릴 때 나는 자주 더 붙잡았다.\n\n근데 막힌 날의 해답은 보통 반대였다.\n추가보다 삭제.\n\n오늘도 일정에서 하나를 지우니까 중요한 게 보였다.\n너는 지금 뭘 지우면 숨통이 트일까?\n\n#의사결정',
+      comment: '지울 것 1개만 댓글로 적어줘. 우선순위 같이 맞춰보자.',
+      sceneHint: '플래너에서 일정 한 줄 지우고 다시 배열하는 장면'
+    },
+    {
+      category: 'insight',
+      text: '역학과 신학을 같이 보면 공통점이 선명하다.\n\n사람을 고정해서 보지 않고, 다음 선택으로 움직이게 한다는 점.\n\n그래서 오늘도 결론보다 행동을 남기려고 했다.\n지금 너의 다음 행동 하나는 뭐야?\n\n#역학신학',
+      comment: '다음 행동 1개만 남겨줘. 내일 글에서 연결할게.',
+      sceneHint: '노트에 다음 행동 한 줄 쓰고 체크하는 장면'
+    },
+    {
+      category: 'faith-daily',
+      text: '아내랑 대화가 어긋나는 날을 보면 늘 패턴이 같았다.\n\n내 말은 맞는데, 타이밍이 틀린 날.\n\n요즘은 결론 먼저 말하지 않고 질문부터 한다.\n그 한 번이 분위기를 바꾼다.\n너는 대화 꼬일 때 먼저 뭘 바꾸는 편이야?\n\n#관계',
+      comment: '관계 살린 질문 한 문장만 공유해줘. 바로 써볼게.',
+      sceneHint: '식탁에서 대화 전에 잠깐 멈추는 장면'
+    },
+    {
+      category: 'method',
+      text: '고교학점제 같이 변수 많은 일은 열정만으로 안 굴러간다.\n\n기준을 문장으로 못 박아야 팀이 같이 간다.\n\n요즘 내가 붙잡는 문장은 이거다.\n"오늘 결정, 이번 주 실행."\n너희 팀의 기준 문장은 뭐야?\n\n#고교학점제',
+      comment: '팀 기준 문장 하나만 남겨줘. 다음 회의에 써먹게.',
+      sceneHint: '프로젝트 보드 앞에서 핵심 문장 붙이는 장면'
+    },
+    {
+      category: 'insight',
+      text: '주역을 공부하며 가장 크게 바뀐 건 불안 다루는 방식이었다.\n\n길흉을 결과표처럼 보면 흔들리고, 신호처럼 보면 준비하게 된다.\n\n오늘도 미래 상상보다 지금 선택 하나를 먼저 정했다.\n너는 불안할 때 뭘 먼저 정리해?\n\n#주역',
+      comment: '불안 줄이는 너만의 순서 한 줄만 남겨줘.',
+      sceneHint: '조용한 책상에서 노트 정리하며 체크하는 장면'
+    }
+  ];
+}
 
-fs.mkdirSync(outDir, { recursive: true });
-fs.writeFileSync(outPath, JSON.stringify({ date, timezone: TZ, sourceReport: reportDate, bestCategory, posts }, null, 2));
-console.log(`Generated: ${outPath}`);
+async function generateWithOpenAi({ date, report }) {
+  const env = { ...parseEnvFile(path.resolve('.env.local')), ...process.env };
+  const apiKey = env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+
+  const baseUrl = (env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
+  const model = env.THREADS_PLAN_MODEL || 'gpt-5.4';
+
+  const reportSummary = {
+    date: report?.date || null,
+    totals: report?.totals || null,
+    bestCategory: report?.categoryRows?.[0]?.category || null,
+    topHooks: (report?.topHooks || []).slice(0, 3),
+    lowHooks: (report?.lowHooks || []).slice(0, 3),
+    directives: (report?.directives || []).slice(0, 6)
+  };
+
+  const system = [
+    '너는 Threads 글 생성기다.',
+    '출력은 반드시 JSON 객체 하나만 반환한다.',
+    '문체: 반말, 차분하고 관찰적인 톤. 과장/허세 금지.',
+    '화자: 클론 김선용(41세 남성, 대전, 아들 둘, 교회 다님, 육아휴직 중, 주역 관점).',
+    '개인 사생활 침해 없이 경험을 창작하되 현실감은 유지한다.',
+    '정치/교회는 분란 조장 금지, 중도적/성찰형으로만.',
+    '각 글은 공감+행동 유도 구조. 댓글 유도 문장 필수.',
+    '해시태그는 글당 1개만 사용한다.',
+    '9개 글 모두 톤/구조를 미세하게 다르게 만들어 반복감을 줄인다.'
+  ].join('\n');
+
+  const user = {
+    targetDate: date,
+    hours: HOURS,
+    categories: CATEGORIES,
+    outputSchema: {
+      posts: [
+        {
+          hour: 7,
+          category: 'faith-daily|method|insight',
+          text: '본문 문자열(줄바꿈 포함, 5~9문장, 마지막에 해시태그 1개)',
+          comment: '첫댓글용 한 문장(존댓말 아님)',
+          sceneHint: '이미지 생성용 장면 힌트(짧게)'
+        }
+      ]
+    },
+    yesterday: reportSummary
+  };
+
+  const res = await fetch(`${baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model,
+      temperature: 0.9,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: JSON.stringify(user) }
+      ]
+    })
+  });
+
+  if (!res.ok) return null;
+  const data = await res.json();
+  const content = data?.choices?.[0]?.message?.content;
+  if (!content || typeof content !== 'string') return null;
+
+  try {
+    const parsed = JSON.parse(stripCodeFence(content));
+    if (!validateCandidatePosts(parsed?.posts)) return null;
+    return parsed.posts;
+  } catch {
+    return null;
+  }
+}
+
+async function main() {
+  const date = process.argv[2] || todayKST(0);
+  const outDir = path.resolve('ops/threads/queue');
+  const outPath = path.join(outDir, `${date}.json`);
+
+  const reportDate = minusDay(date, 1);
+  const reportPath = path.resolve(`ops/threads/reports/${reportDate}.json`);
+  const yesterdayReport = readJson(reportPath, {});
+
+  const llmPosts = await generateWithOpenAi({ date, report: yesterdayReport });
+  const source = llmPosts ? 'openai-gpt-5.4' : 'fallback-template';
+  const basePosts = llmPosts || fallbackPosts();
+
+  const posts = HOURS.map((hour, i) => {
+    const raw = basePosts[i] || basePosts[0] || {};
+    const category = CATEGORIES[i];
+    const tag = normalizeHashTag(raw.text || '') || pickTagByCategory(category);
+    const safeText = String(raw.text || '').replace(/#[\w가-힣]+/g, '').trim();
+    const finalText = `${safeText}\n\n${tag}`;
+    const post = {
+      hour,
+      slot: `클론 일상 ${i + 1}`,
+      category,
+      text: finalText,
+      comment: String(raw.comment || '너 생각도 한 줄만 남겨줘. 다음 글에 반영할게.').trim(),
+      sceneHint: String(raw.sceneHint || '').trim(),
+      imagePrompt: null,
+      imageModel: null,
+      imageAspectRatio: null,
+      imageUrl: null,
+      status: 'pending'
+    };
+
+    if (imageHours.has(hour)) {
+      post.imagePrompt = buildImagePrompt({ post, hour, index: i });
+      post.imageModel = 'openai/gpt-image-2';
+      post.imageAspectRatio = '3:4';
+    }
+
+    return post;
+  });
+
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(outPath, JSON.stringify({ date, timezone: TZ, sourceReport: reportDate, generator: source, posts }, null, 2));
+  console.log(`Generated: ${outPath} (generator=${source})`);
+}
+
+main().catch((e) => {
+  console.error(e.message || e);
+  process.exit(1);
+});
