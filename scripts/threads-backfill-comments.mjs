@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+console.log('threads-backfill-comments disabled');
+process.exit(0);
 import fs from 'node:fs';
 import path from 'node:path';
 
