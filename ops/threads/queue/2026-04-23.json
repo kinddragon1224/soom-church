@@ -61,7 +61,7 @@
       "imagePrompt": "[MODEL] openai/gpt-image-2\n[INTENT] Threads 세로 이미지, 실사풍이 아닌 삼국지 8 리메이크 PK 감성의 시네마틱 일러스트\n[SCENE] 아이들 재우고 나면 하루 평가를 길게 하던 버릇이 있었다. 요즘은 \"잘한 것 1개, 고칠 것 1개\"만 적고 끝낸다.\n[MOOD] 따뜻하지만 절제된 감정, 과장 없는 일상의 긴장감\n[COMPOSITION] 인물 초상 클로즈업 금지, 상황 연출형 미디엄/와이드 샷, 행동 맥락이 보이게\n[UI OVERLAY] 우상단 미니 패널 고정: 괘/효 표시 + 6효 세로 도식 + 해당 효만 금색 하이라이트\n[UI OVERLAY DETAIL] 패널 텍스트 예시: 하루회고 · 九五\n[TEXT POLICY] 이미지 내부 큰 카피 금지, 패널 외 텍스트 최소화\n[COLOR] 저채도 기반 + 포인트 골드, 과포화 금지\n[NEGATIVE] 과한 AI 광택, 플라스틱 피부, 과장된 렌즈 플레어, 게임 UI 난삽함, 로고/워터마크, 손가락 오류, 얼굴 왜곡\n[OUTPUT] portrait 3:4, 1024x1536, high detail, clean edges\n[POST SLOT] 15:00",
       "imageModel": "openai/gpt-image-2",
       "imageAspectRatio": "3:4",
-      "imageUrl": null,
+      "imageUrl": "/home/kinddragon/.openclaw/media/tool-image-generation/threads-2026-04-23-15h-gpt-image2---0e886ab2-5c13-450e-811d-971c9d317369.jpg",
       "status": "pending"
     },
     {
@@ -97,7 +97,7 @@
       "imagePrompt": "[MODEL] openai/gpt-image-2\n[INTENT] Threads 세로 이미지, 실사풍이 아닌 삼국지 8 리메이크 PK 감성의 시네마틱 일러스트\n[SCENE] 대전 집에서 아들 둘 등교 준비를 시키다 보면, 아침은 늘 전쟁처럼 지나간다. 오늘은 지시보다 먼저 눈을 맞추고 한 문장만 천천히 말했다.\n[MOOD] 따뜻하지만 절제된 감정, 과장 없는 일상의 긴장감\n[COMPOSITION] 인물 초상 클로즈업 금지, 상황 연출형 미디엄/와이드 샷, 행동 맥락이 보이게\n[UI OVERLAY] 우상단 미니 패널 고정: 괘/효 표시 + 6효 세로 도식 + 해당 효만 금색 하이라이트\n[UI OVERLAY DETAIL] 패널 텍스트 예시: 아침루틴 · 九二\n[TEXT POLICY] 이미지 내부 큰 카피 금지, 패널 외 텍스트 최소화\n[COLOR] 저채도 기반 + 포인트 골드, 과포화 금지\n[NEGATIVE] 과한 AI 광택, 플라스틱 피부, 과장된 렌즈 플레어, 게임 UI 난삽함, 로고/워터마크, 손가락 오류, 얼굴 왜곡\n[OUTPUT] portrait 3:4, 1024x1536, high detail, clean edges\n[POST SLOT] 21:00",
       "imageModel": "openai/gpt-image-2",
       "imageAspectRatio": "3:4",
-      "imageUrl": null,
+      "imageUrl": "/home/kinddragon/.openclaw/media/tool-image-generation/threads-2026-04-23-21h-gpt-image2---27518f1b-252a-4167-ac12-ec7ae989bd92.jpg",
       "status": "pending"
     },
     {
