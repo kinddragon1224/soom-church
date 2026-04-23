@@ -240,6 +240,10 @@ async function main() {
     ? { text: target.text, comment: target.comment || '' }
     : applyToneVariant({ text: target.text, comment: target.comment || '', tone: adaptive.tone });
 
+  if (target.imagePrompt && !target.imageUrl) {
+    console.warn(`image prompt exists but imageUrl missing (${date} ${hour}:00)`);
+  }
+
   if (dryRun) {
     console.log(JSON.stringify({ date, hour, adaptive, text: tuned.text, comment: tuned.comment || null }, null, 2));
     return;
@@ -258,7 +262,7 @@ async function main() {
 
   const logDir = path.resolve('ops/threads/logs');
   fs.mkdirSync(logDir, { recursive: true });
-  fs.appendFileSync(path.join(logDir, 'publish.jsonl'), JSON.stringify({ at: new Date().toISOString(), date, hour, postId, commentId, imageUrl: target.imageUrl || null, category: target.category || null, text: tuned.text, comment: tuned.comment || null, adaptiveTone: adaptive.tone, adaptiveReason: adaptive.reason }) + '\n');
+  fs.appendFileSync(path.join(logDir, 'publish.jsonl'), JSON.stringify({ at: new Date().toISOString(), date, hour, postId, commentId, imageUrl: target.imageUrl || null, imagePrompt: target.imagePrompt || null, imageModel: target.imageModel || null, imageAspectRatio: target.imageAspectRatio || null, category: target.category || null, text: tuned.text, comment: tuned.comment || null, adaptiveTone: adaptive.tone, adaptiveReason: adaptive.reason }) + '\n');
   console.log(`Posted ${date} ${hour}:00 -> ${postId}${commentId ? ` (comment ${commentId})` : ''} [tone=${adaptive.tone}]`);
 }
 

@@ -48,6 +48,7 @@ const yesterdayReport = readJson(reportPath, {});
 const bestCategory = yesterdayReport?.categoryRows?.[0]?.category || 'faith-daily';
 
 const imageByHour = {};
+const imageHours = new Set([9, 15, 21]);
 const seed = daySeed(date);
 
 const slots = [
@@ -261,16 +262,45 @@ function toComment(seedItem, idx) {
   return `${seedItem.prompt} ${endings[idx % endings.length]}`;
 }
 
+function buildImagePrompt({ seedItem, category, hour, index }) {
+  const panel = ['初九', '九二', '六三', '六四', '九五', '上六'][index % 6];
+  const moodByCategory = {
+    'faith-daily': '따뜻하지만 절제된 감정, 과장 없는 일상의 긴장감',
+    method: '판단과 선택의 긴장, 구조가 보이는 장면',
+    insight: '사유가 느껴지는 정적, 상징보다 상황 중심'
+  };
+  const sceneCore = `${seedItem.scene} ${seedItem.action}`;
+
+  return [
+    '[MODEL] openai/gpt-image-2',
+    '[INTENT] Threads 세로 이미지, 실사풍이 아닌 삼국지 8 리메이크 PK 감성의 시네마틱 일러스트',
+    `[SCENE] ${sceneCore}`,
+    `[MOOD] ${moodByCategory[category] || moodByCategory.insight}`,
+    '[COMPOSITION] 인물 초상 클로즈업 금지, 상황 연출형 미디엄/와이드 샷, 행동 맥락이 보이게',
+    '[UI OVERLAY] 우상단 미니 패널 고정: 괘/효 표시 + 6효 세로 도식 + 해당 효만 금색 하이라이트',
+    `[UI OVERLAY DETAIL] 패널 텍스트 예시: ${seedItem.tag} · ${panel}`,
+    '[TEXT POLICY] 이미지 내부 큰 카피 금지, 패널 외 텍스트 최소화',
+    '[COLOR] 저채도 기반 + 포인트 골드, 과포화 금지',
+    '[NEGATIVE] 과한 AI 광택, 플라스틱 피부, 과장된 렌즈 플레어, 게임 UI 난삽함, 로고/워터마크, 손가락 오류, 얼굴 왜곡',
+    '[OUTPUT] portrait 3:4, 1024x1536, high detail, clean edges',
+    `[POST SLOT] ${hour}:00`
+  ].join('\n');
+}
+
 const posts = HOURS.map((hour, i) => {
   const category = categories[i];
   const seedItem = nextSeed(category);
   const opener = rotate(openers, 13)[i % openers.length];
+  const useImage = imageHours.has(hour);
   return {
     hour,
     slot: slots[i],
     category,
     text: toPostText({ opener, seedItem, styleIndex: i }),
     comment: toComment(seedItem, i),
+    imagePrompt: useImage ? buildImagePrompt({ seedItem, category, hour, index: i }) : null,
+    imageModel: useImage ? 'openai/gpt-image-2' : null,
+    imageAspectRatio: useImage ? '3:4' : null,
     imageUrl: imageByHour[hour] || null,
     status: 'pending'
   };
