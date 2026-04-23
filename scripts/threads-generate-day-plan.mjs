@@ -5,7 +5,8 @@ import path from 'node:path';
 const TZ = 'Asia/Seoul';
 const HOURS = [7, 9, 11, 13, 15, 17, 19, 21, 23];
 const CATEGORIES = ['faith-daily', 'method', 'insight', 'faith-daily', 'method', 'insight', 'faith-daily', 'method', 'insight'];
-const imageHours = new Set([9, 15, 21]);
+const RHETORIC = ['scene-first', 'contrarian', 'confession', 'observation', 'question-first', 'practical'];
+const imageHours = new Set();
 
 function todayKST(offsetDays = 0) {
   const now = new Date();
@@ -241,6 +242,38 @@ async function generateWithOpenAi({ date, report }) {
   }
 }
 
+function varyText(text, mode, idx) {
+  const body = String(text || '').trim();
+  switch (mode) {
+    case 'scene-first':
+      return body;
+    case 'contrarian':
+      return body.replace(/^(.+?)\n\n/, (_, first) => `${first}\n\n이상하게도 나는 반대로 배웠다.\n\n`);
+    case 'confession':
+      return `나는 한동안 이걸 자꾸 헷갈렸다.\n\n${body}`;
+    case 'observation':
+      return `가만히 보면 사람은 늘 같은 데서 흔들린다.\n\n${body}`;
+    case 'question-first': {
+      const lines = body.split('\n').filter(Boolean);
+      return `요즘 너도 이런 순간 있지?\n\n${lines.join('\n')}`;
+    }
+    case 'practical':
+      return `${body}\n\n결국 남는 건 오늘 바로 할 수 있는 선택 하나다.`;
+    default:
+      return body;
+  }
+}
+
+function varyComment(comment, idx) {
+  const variants = [
+    comment,
+    `${comment} 짧게만 적어줘도 돼.`,
+    `${comment} 한 단어여도 괜찮아.`,
+    `${comment} 나는 이런 답이 제일 궁금하다.`
+  ];
+  return variants[idx % variants.length];
+}
+
 async function main() {
   const date = process.argv[2] || todayKST(0);
   const outDir = path.resolve('ops/threads/queue');
@@ -259,13 +292,15 @@ async function main() {
     const category = CATEGORIES[i];
     const tag = normalizeHashTag(raw.text || '') || pickTagByCategory(category);
     const safeText = String(raw.text || '').replace(/#[\w가-힣]+/g, '').trim();
-    const finalText = `${safeText}\n\n${tag}`;
+    const mode = RHETORIC[i % RHETORIC.length];
+    const finalText = `${varyText(safeText, mode, i)}\n\n${tag}`;
     const post = {
       hour,
       slot: `클론 일상 ${i + 1}`,
       category,
+      rhetoric: mode,
       text: finalText,
-      comment: String(raw.comment || '너 생각도 한 줄만 남겨줘. 다음 글에 반영할게.').trim(),
+      comment: varyComment(String(raw.comment || '너 생각도 한 줄만 남겨줘. 다음 글에 반영할게.').trim(), i),
       sceneHint: String(raw.sceneHint || '').trim(),
       imagePrompt: null,
       imageModel: null,
