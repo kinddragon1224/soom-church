@@ -4,7 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 import { deleteMember, updateMember } from "../lib/member-manage-source";
-import { appendPastoralRecords, getMemberLocalCache, getMemberPastoralRecords, setMemberLocalCache, withMemberOverride, withRemovedMember, type MemberLocalCache, type PastoralRecord } from "../lib/member-local-cache";
+import { appendPastoralRecordsWithResult, getMemberLocalCache, getMemberPastoralRecords, setMemberLocalCache, withMemberOverride, withRemovedMember, type MemberLocalCache, type PastoralRecord } from "../lib/member-local-cache";
 import { uploadMemberImageFromUri } from "../lib/member-image-upload-source";
 
 function statSeed(name: string, shift: number) {
@@ -42,6 +42,7 @@ function categoryLabel(category: PastoralRecord["category"]) {
 }
 
 const STATUS_OPTIONS = ["안정", "관심", "결석", "기도", "긴급돌봄"] as const;
+const HIDDEN_STATUS_VALUES = new Set(["등록", "등록(동기화중)", "등록(동기화실패)", "안정"]);
 
 export default function MemberDetailScreen() {
   const params = useLocalSearchParams<{
@@ -69,6 +70,7 @@ export default function MemberDetailScreen() {
   const [savedFeedback, setSavedFeedback] = useState(false);
   const [pastoralRecords, setPastoralRecords] = useState<PastoralRecord[]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSavedStateRef = useRef(params.state ?? "");
 
   const id = typeof params.id === "string" ? params.id : "";
 
@@ -95,6 +97,7 @@ export default function MemberDetailScreen() {
         if (typeof source.careMemo === "string") setCareMemo(source.careMemo);
         if (typeof source.followUpMemo === "string") setFollowUpMemo(source.followUpMemo);
       }
+      lastSavedStateRef.current = typeof (source?.state) === "string" ? source.state : (params.state ?? "");
       setPastoralRecords(getMemberPastoralRecords(cache, id));
     };
     void hydrate();
@@ -125,6 +128,16 @@ export default function MemberDetailScreen() {
     feedbackTimerRef.current = setTimeout(() => {
       setSavedFeedback(false);
     }, 1800);
+  };
+
+  const showSavedMessage = (message: string) => {
+    setSavedFeedback(false);
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    setSavedFeedback(true);
+    feedbackTimerRef.current = setTimeout(() => {
+      setSavedFeedback(false);
+    }, 1800);
+    savedMessageRef.current = message;
   };
 
   const pickImage = async () => {
@@ -201,6 +214,8 @@ export default function MemberDetailScreen() {
     Alert.alert("완료", "사진을 제거했어.");
   };
 
+  const savedMessageRef = useRef("저장됐습니다. 최근 목양 기록에 추가됐어요.");
+
   const save = async () => {
     if (!id || !name.trim() || saving) return;
     setSaving(true);
@@ -210,11 +225,18 @@ export default function MemberDetailScreen() {
     const trimmedCare = careMemo.trim();
     const trimmedFollow = followUpMemo.trim();
 
+    const previousState = lastSavedStateRef.current?.trim() ?? "";
+    const shouldAddStatusRecord = Boolean(
+      trimmedState &&
+      trimmedState !== previousState &&
+      !HIDDEN_STATUS_VALUES.has(trimmedState)
+    );
+
     const recordsToAppend = [
-      { category: "STATUS" as const, title: "상태 변경", body: trimmedState, state: trimmedState },
-      { category: "PRAYER" as const, title: "기도제목", body: trimmedPrayer },
-      { category: "CARE" as const, title: "돌봄 메모", body: trimmedCare },
-      { category: "FOLLOW_UP" as const, title: "후속 연락", body: trimmedFollow },
+      ...(shouldAddStatusRecord ? [{ category: "STATUS" as const, title: "상태 변경", body: trimmedState, state: trimmedState }] : []),
+      ...(trimmedPrayer ? [{ category: "PRAYER" as const, title: "기도제목", body: trimmedPrayer }] : []),
+      ...(trimmedCare ? [{ category: "CARE" as const, title: "돌봄 메모", body: trimmedCare }] : []),
+      ...(trimmedFollow ? [{ category: "FOLLOW_UP" as const, title: "후속 연락", body: trimmedFollow }] : []),
     ];
 
     try {
@@ -235,8 +257,10 @@ export default function MemberDetailScreen() {
         careMemo: trimmedCare,
         followUpMemo: trimmedFollow,
       });
-      const nextCache = appendPastoralRecords(overrideCache, id, recordsToAppend);
-      await persistCache(nextCache);
+      const result = appendPastoralRecordsWithResult(overrideCache, id, recordsToAppend);
+      await persistCache(result.cache);
+      lastSavedStateRef.current = trimmedState;
+      savedMessageRef.current = result.addedCount > 0 ? "저장됐습니다. 최근 목양 기록에 추가됐어요." : "저장됐습니다. 새로 추가된 기록은 없습니다.";
       showSavedFeedback();
     } finally {
       setSaving(false);
@@ -270,7 +294,10 @@ export default function MemberDetailScreen() {
 
   const stats = memberStats(name, state);
   const topInset = Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) + 8 : 6;
-  const recentPastoralRecords = useMemo(() => pastoralRecords.slice(0, 7), [pastoralRecords]);
+  const recentPastoralRecords = useMemo(
+    () => pastoralRecords.filter((record) => !(record.category === "STATUS" && (record.body === "안정" || record.body.startsWith("등록")))).slice(0, 5),
+    [pastoralRecords]
+  );
 
   const setPresetState = (value: string) => {
     setState(value);
@@ -410,13 +437,13 @@ export default function MemberDetailScreen() {
             </Pressable>
           </View>
 
-          {savedFeedback ? <Text style={{ color: "#a5f3b6", fontSize: 11, marginTop: 6 }}>저장됐습니다. 최근 목양 기록에 추가됐어요.</Text> : null}
+          {savedFeedback ? <Text style={{ color: "#a5f3b6", fontSize: 11, marginTop: 6 }}>{savedMessageRef.current}</Text> : null}
         </View>
 
         <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "#31384a", backgroundColor: "#121823", padding: 12, gap: 8 }}>
           <Text style={{ color: "#d8e7ff", fontSize: 13, fontWeight: "700" }}>최근 목양 기록</Text>
           {recentPastoralRecords.length === 0 ? (
-            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 12 }}>아직 목양 기록이 없습니다. 오늘의 기도제목이나 돌봄 메모를 남겨보세요.</Text>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 12 }}>아직 중요한 목양 기록이 없습니다. 기도제목, 돌봄 메모, 후속 연락을 남겨보세요.</Text>
           ) : (
             recentPastoralRecords.map((record) => (
               <View key={record.id} style={{ borderRadius: 10, borderWidth: 1, borderColor: "#2f3a50", backgroundColor: "#161d2a", padding: 10, gap: 5 }}>
@@ -427,7 +454,7 @@ export default function MemberDetailScreen() {
                   <Text style={{ color: "rgba(216,230,255,0.6)", fontSize: 10 }}>{formatPastoralDate(record.createdAt)}</Text>
                 </View>
                 <Text style={{ color: "#f5f5f5", fontSize: 12, fontWeight: "700" }}>{record.title}</Text>
-                <Text numberOfLines={3} style={{ color: "rgba(245,245,245,0.82)", fontSize: 12, lineHeight: 18 }}>{record.body}</Text>
+                <Text numberOfLines={2} style={{ color: "rgba(245,245,245,0.82)", fontSize: 12, lineHeight: 18 }}>{record.body}</Text>
               </View>
             ))
           )}

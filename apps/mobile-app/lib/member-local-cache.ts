@@ -253,11 +253,11 @@ export function withMemberOverride(cache: MemberLocalCache, memberId: string, ov
   };
 }
 
-export function appendPastoralRecords(
+export function appendPastoralRecordsWithResult(
   cache: MemberLocalCache,
   memberId: string,
   records: Omit<PastoralRecord, "id" | "memberId" | "createdAt">[]
-): MemberLocalCache {
+): { cache: MemberLocalCache; addedCount: number } {
   const existing = cache.pastoralRecords[memberId] ?? [];
   const now = Date.now();
   const freshRecords = records
@@ -278,27 +278,40 @@ export function appendPastoralRecords(
     .filter((record): record is PastoralRecord => Boolean(record));
 
   const dedupedFresh = freshRecords.filter((record, index, arr) => {
-    if (index === 0) return true;
-    const prev = arr[index - 1];
-    return !(prev.category === record.category && prev.title === record.title && prev.body === record.body && prev.state === record.state);
+    const recentFresh = arr.slice(Math.max(0, index - 2), index);
+    return !recentFresh.some((item) => item.category === record.category && item.title === record.title && item.body === record.body && item.state === record.state);
   });
 
   let next = existing;
+  let addedCount = 0;
   for (const record of dedupedFresh.reverse()) {
-    const prev = next[0];
-    if (prev && prev.category === record.category && prev.title === record.title && prev.body === record.body && prev.state === record.state) {
+    const recent = next.slice(0, 3);
+    const duplicated = recent.some((item) => item.category === record.category && item.title === record.title && item.body === record.body && item.state === record.state);
+    if (duplicated) {
       continue;
     }
     next = [record, ...next].slice(0, 50);
+    addedCount += 1;
   }
 
   return {
-    ...cache,
-    pastoralRecords: {
-      ...cache.pastoralRecords,
-      [memberId]: next,
+    cache: {
+      ...cache,
+      pastoralRecords: {
+        ...cache.pastoralRecords,
+        [memberId]: next,
+      },
     },
+    addedCount,
   };
+}
+
+export function appendPastoralRecords(
+  cache: MemberLocalCache,
+  memberId: string,
+  records: Omit<PastoralRecord, "id" | "memberId" | "createdAt">[]
+): MemberLocalCache {
+  return appendPastoralRecordsWithResult(cache, memberId, records).cache;
 }
 
 export function getMemberPastoralRecords(cache: MemberLocalCache, memberId: string): PastoralRecord[] {
