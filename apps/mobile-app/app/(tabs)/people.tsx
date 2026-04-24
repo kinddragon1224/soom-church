@@ -18,7 +18,7 @@ export default function PeopleScreen() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [cache, setCache] = useState<MemberLocalCache>({ added: [], removedNames: [], overrides: {} });
+  const [cache, setCache] = useState<MemberLocalCache>({ added: [], removedNames: [], overrides: {}, meetingRecords: [] });
 
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState("");

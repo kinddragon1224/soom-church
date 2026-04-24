@@ -31,12 +31,33 @@ export type MemberLocalCache = {
   added: LocalMember[];
   removedNames: string[];
   overrides: Record<string, MemberOverride>;
+  meetingRecords: MokjangMeetingRecord[];
+};
+
+export type AttendanceStatus = "PRESENT" | "ABSENT" | "ONLINE" | "UNKNOWN";
+
+export type MokjangMeetingAttendance = {
+  memberId: string;
+  memberName: string;
+  status: AttendanceStatus;
+  absenceReason?: string;
+  needsFollowUp?: boolean;
+};
+
+export type MokjangMeetingRecord = {
+  id: string;
+  meetingDate: string;
+  title: string;
+  attendances: MokjangMeetingAttendance[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 const EMPTY_CACHE: MemberLocalCache = {
   added: [],
   removedNames: [],
   overrides: {},
+  meetingRecords: [],
 };
 
 async function scopedKeys() {
@@ -88,6 +109,38 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
       added: cleanedAdded,
       removedNames: cleanedRemovedNames,
       overrides: parsed.overrides && typeof parsed.overrides === "object" ? (parsed.overrides as Record<string, MemberOverride>) : {},
+      meetingRecords: Array.isArray(parsed.meetingRecords)
+        ? parsed.meetingRecords
+            .map((item) => {
+              if (!item || typeof item !== "object") return null;
+              const typed = item as Partial<MokjangMeetingRecord>;
+              return {
+                id: String(typed.id ?? ""),
+                meetingDate: String(typed.meetingDate ?? ""),
+                title: String(typed.title ?? "이번 주 목장 모임"),
+                attendances: Array.isArray(typed.attendances)
+                  ? typed.attendances
+                      .map((attendance) => {
+                        if (!attendance || typeof attendance !== "object") return null;
+                        const a = attendance as Partial<MokjangMeetingAttendance>;
+                        const rawStatus = String(a.status ?? "UNKNOWN");
+                        const status: AttendanceStatus = rawStatus === "PRESENT" || rawStatus === "ABSENT" || rawStatus === "ONLINE" ? rawStatus : "UNKNOWN";
+                        return {
+                          memberId: String(a.memberId ?? ""),
+                          memberName: String(a.memberName ?? ""),
+                          status,
+                          absenceReason: typeof a.absenceReason === "string" ? a.absenceReason : undefined,
+                          needsFollowUp: typeof a.needsFollowUp === "boolean" ? a.needsFollowUp : undefined,
+                        };
+                      })
+                      .filter((attendance) => Boolean(attendance && attendance.memberId && attendance.memberName)) as MokjangMeetingAttendance[]
+                  : [],
+                createdAt: String(typed.createdAt ?? new Date().toISOString()),
+                updatedAt: String(typed.updatedAt ?? new Date().toISOString()),
+              } as MokjangMeetingRecord;
+            })
+            .filter((record): record is MokjangMeetingRecord => Boolean(record && record.id))
+        : [],
     };
 
     if (!raw) {
@@ -152,5 +205,21 @@ export function withMemberOverride(cache: MemberLocalCache, memberId: string, ov
       [memberId]: override,
     },
     added: cache.added.map((item) => (item.id === memberId ? { ...item, ...override } : item)),
+  };
+}
+
+export function getTodayMeetingId(): string {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  return `meeting-${yyyy}-${mm}-${dd}`;
+}
+
+export function upsertMokjangMeetingRecord(cache: MemberLocalCache, record: MokjangMeetingRecord): MemberLocalCache {
+  const deduped = cache.meetingRecords.filter((item) => item.id !== record.id);
+  return {
+    ...cache,
+    meetingRecords: [record, ...deduped].slice(0, 30),
   };
 }
