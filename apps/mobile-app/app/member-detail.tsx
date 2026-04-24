@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Image, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
@@ -18,24 +18,85 @@ function memberStats(name: string, state: string) {
   return { care: Math.min(100, care), prayer: Math.min(100, prayer), follow: Math.min(100, follow) };
 }
 
+const STATUS_OPTIONS = ["안정", "관심", "결석", "기도", "긴급돌봄"] as const;
+
 export default function MemberDetailScreen() {
-  const params = useLocalSearchParams<{ id?: string; name?: string; household?: string; state?: string; nextAction?: string; avatarUrl?: string }>();
+  const params = useLocalSearchParams<{
+    id?: string;
+    name?: string;
+    household?: string;
+    state?: string;
+    nextAction?: string;
+    avatarUrl?: string;
+    prayerRequest?: string;
+    careMemo?: string;
+    followUpMemo?: string;
+  }>();
 
   const [name, setName] = useState(params.name ?? "");
   const [household, setHousehold] = useState(params.household ?? "");
   const [state, setState] = useState(params.state ?? "");
   const [nextAction, setNextAction] = useState(params.nextAction ?? "");
   const [avatarUrl, setAvatarUrl] = useState(params.avatarUrl ?? "");
+  const [prayerRequest, setPrayerRequest] = useState(params.prayerRequest ?? "");
+  const [careMemo, setCareMemo] = useState(params.careMemo ?? "");
+  const [followUpMemo, setFollowUpMemo] = useState(params.followUpMemo ?? "");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [savedFeedback, setSavedFeedback] = useState(false);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const id = typeof params.id === "string" ? params.id : "";
 
-  const saveLocalOverride = async (next: { name: string; household: string; state: string; nextAction: string; avatarUrl?: string }) => {
+  useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const hydrate = async () => {
+      if (!id) return;
+      const cache = await getMemberLocalCache();
+      const override = cache.overrides[id];
+      const added = cache.added.find((item) => item.id === id);
+      const source = override ?? added;
+      if (!source) return;
+
+      if (typeof source.name === "string") setName(source.name);
+      if (typeof source.household === "string") setHousehold(source.household);
+      if (typeof source.state === "string") setState(source.state);
+      if (typeof source.nextAction === "string") setNextAction(source.nextAction);
+      if (typeof source.avatarUrl === "string") setAvatarUrl(source.avatarUrl);
+      if (typeof source.prayerRequest === "string") setPrayerRequest(source.prayerRequest);
+      if (typeof source.careMemo === "string") setCareMemo(source.careMemo);
+      if (typeof source.followUpMemo === "string") setFollowUpMemo(source.followUpMemo);
+    };
+    void hydrate();
+  }, [id]);
+
+  const saveLocalOverride = async (next: {
+    name: string;
+    household: string;
+    state: string;
+    nextAction: string;
+    avatarUrl?: string;
+    prayerRequest?: string;
+    careMemo?: string;
+    followUpMemo?: string;
+  }) => {
     if (!id) return;
     const cache = await getMemberLocalCache();
     const nextCache = withMemberOverride(cache, id, next);
     await setMemberLocalCache(nextCache);
+  };
+
+  const showSavedFeedback = () => {
+    setSavedFeedback(true);
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    feedbackTimerRef.current = setTimeout(() => {
+      setSavedFeedback(false);
+    }, 1400);
   };
 
   const pickImage = async () => {
@@ -67,6 +128,9 @@ export default function MemberDetailScreen() {
         state: state.trim() || "등록",
         nextAction: nextAction.trim() || "다음 액션 미정",
         avatarUrl: uploadedUrl,
+        prayerRequest: prayerRequest.trim(),
+        careMemo: careMemo.trim(),
+        followUpMemo: followUpMemo.trim(),
       });
       Alert.alert("완료", "사진 업로드했어.");
     } catch {
@@ -77,6 +141,9 @@ export default function MemberDetailScreen() {
         state: state.trim() || "등록",
         nextAction: nextAction.trim() || "다음 액션 미정",
         avatarUrl: pickedUri,
+        prayerRequest: prayerRequest.trim(),
+        careMemo: careMemo.trim(),
+        followUpMemo: followUpMemo.trim(),
       });
       Alert.alert("임시 저장", "서버 업로드는 실패했지만 기기에서는 저장했어.");
     } finally {
@@ -93,6 +160,9 @@ export default function MemberDetailScreen() {
       state: state.trim() || "등록",
       nextAction: nextAction.trim() || "다음 액션 미정",
       avatarUrl: "",
+      prayerRequest: prayerRequest.trim(),
+      careMemo: careMemo.trim(),
+      followUpMemo: followUpMemo.trim(),
     });
     Alert.alert("완료", "사진을 제거했어.");
   };
@@ -108,8 +178,11 @@ export default function MemberDetailScreen() {
         state: state.trim() || "등록",
         nextAction: nextAction.trim() || "다음 액션 미정",
         avatarUrl,
+        prayerRequest: prayerRequest.trim(),
+        careMemo: careMemo.trim(),
+        followUpMemo: followUpMemo.trim(),
       });
-      Alert.alert("완료", "수정했어.", [{ text: "확인", onPress: () => router.back() }]);
+      showSavedFeedback();
     } catch {
       await saveLocalOverride({
         name: name.trim(),
@@ -117,8 +190,11 @@ export default function MemberDetailScreen() {
         state: state.trim() || "등록",
         nextAction: nextAction.trim() || "다음 액션 미정",
         avatarUrl,
+        prayerRequest: prayerRequest.trim(),
+        careMemo: careMemo.trim(),
+        followUpMemo: followUpMemo.trim(),
       });
-      Alert.alert("완료", "서버는 실패했지만 화면 기준으로 수정 반영했어.", [{ text: "확인", onPress: () => router.back() }]);
+      showSavedFeedback();
     } finally {
       setSaving(false);
     }
@@ -158,13 +234,17 @@ export default function MemberDetailScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#121621" }}>
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: topInset, paddingBottom: 32 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: topInset, paddingBottom: 36 }}>
         <Pressable onPress={() => router.back()} style={{ alignSelf: "flex-start", paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, borderWidth: 1, borderColor: "#3a435f", backgroundColor: "#182038" }}>
           <Text style={{ color: "#d8e7ff", fontSize: 11 }}>← 카드 목록</Text>
         </Pressable>
 
         <View style={{ marginTop: 10, borderRadius: 14, borderWidth: 1, borderColor: "#3a435f", backgroundColor: "#121621", padding: 12 }}>
           <Text style={{ color: "#d8e7ff", fontSize: 11 }}>목원 상세</Text>
+          <Text style={{ color: "rgba(216,230,255,0.9)", fontSize: 16, fontWeight: "700", marginTop: 6 }}>{name || "이름 미입력"}</Text>
+          <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 11, marginTop: 2 }}>
+            {household || "가정 미지정"} · 현재 상태 {state || "안정"}
+          </Text>
           <View style={{ marginTop: 8, flexDirection: "row", gap: 10 }}>
             <View style={{ width: 132, borderRadius: 12, borderWidth: 1, borderColor: "rgba(120,157,214,0.38)", backgroundColor: "rgba(120,157,214,0.14)", padding: 8, alignItems: "center" }}>
               <View style={{ width: 96, height: 118, borderRadius: 8, backgroundColor: "#0f1a31", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
@@ -214,29 +294,62 @@ export default function MemberDetailScreen() {
           <View style={{ gap: 6 }}>
             <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>목양 상태</Text>
             <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
-              {[
-                { label: "안정", value: "안정" },
-                { label: "기도", value: "✨ 기도" },
-                { label: "후속", value: "✉️ 후속" },
-                { label: "돌봄", value: "💧 돌봄" },
-              ].map((preset) => (
+              {STATUS_OPTIONS.map((preset) => (
                 <Pressable
-                  key={preset.label}
-                  onPress={() => setPresetState(preset.value)}
+                  key={preset}
+                  onPress={() => setPresetState(preset)}
                   style={{
                     borderRadius: 999,
                     borderWidth: 1,
-                    borderColor: state === preset.value ? "#7aa0d6" : "#3a3a3a",
-                    backgroundColor: state === preset.value ? "#1a2740" : "#171717",
+                    borderColor: state === preset ? "#7aa0d6" : "#3a3a3a",
+                    backgroundColor: state === preset ? "#1a2740" : "#171717",
                     paddingHorizontal: 10,
                     paddingVertical: 5,
                   }}
                 >
-                  <Text style={{ color: "#d8e7ff", fontSize: 10 }}>{preset.label}</Text>
+                  <Text style={{ color: "#d8e7ff", fontSize: 10 }}>{preset}</Text>
                 </Pressable>
               ))}
             </View>
-            <TextInput value={state} onChangeText={setState} placeholder="세부 상태 메모" placeholderTextColor="rgba(245,245,245,0.45)" style={{ minHeight: 40, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10 }} />
+          </View>
+
+          <View style={{ gap: 4 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>기도제목</Text>
+            <TextInput
+              value={prayerRequest}
+              onChangeText={setPrayerRequest}
+              multiline
+              textAlignVertical="top"
+              placeholder="기도가 필요한 내용을 기록"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 72, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10, paddingVertical: 10 }}
+            />
+          </View>
+
+          <View style={{ gap: 4 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>돌봄 메모</Text>
+            <TextInput
+              value={careMemo}
+              onChangeText={setCareMemo}
+              multiline
+              textAlignVertical="top"
+              placeholder="상담/심방/상태 변화를 기록"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 86, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10, paddingVertical: 10 }}
+            />
+          </View>
+
+          <View style={{ gap: 4 }}>
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 10 }}>후속 연락 메모</Text>
+            <TextInput
+              value={followUpMemo}
+              onChangeText={setFollowUpMemo}
+              multiline
+              textAlignVertical="top"
+              placeholder="언제, 어떤 방식으로 다시 연락할지 기록"
+              placeholderTextColor="rgba(245,245,245,0.45)"
+              style={{ minHeight: 86, borderRadius: 10, borderWidth: 1, borderColor: "#343434", backgroundColor: "#181818", color: "#f5f5f5", paddingHorizontal: 10, paddingVertical: 10 }}
+            />
           </View>
 
           <View style={{ gap: 4 }}>
@@ -252,6 +365,8 @@ export default function MemberDetailScreen() {
               <Text style={{ color: "#f1c2c2", fontWeight: "700" }}>삭제</Text>
             </Pressable>
           </View>
+
+          {savedFeedback ? <Text style={{ color: "#a5f3b6", fontSize: 11, marginTop: 6 }}>저장됨</Text> : null}
         </View>
       </ScrollView>
     </SafeAreaView>

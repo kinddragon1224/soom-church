@@ -11,6 +11,9 @@ export type LocalMember = {
   state: string;
   nextAction: string;
   avatarUrl?: string;
+  prayerRequest?: string;
+  careMemo?: string;
+  followUpMemo?: string;
 };
 
 export type MemberOverride = {
@@ -19,6 +22,9 @@ export type MemberOverride = {
   state: string;
   nextAction: string;
   avatarUrl?: string;
+  prayerRequest?: string;
+  careMemo?: string;
+  followUpMemo?: string;
 };
 
 export type MemberLocalCache = {
@@ -52,6 +58,9 @@ function normalizeMember(member: Partial<LocalMember>): LocalMember | null {
     state: String(member.state ?? "등록"),
     nextAction: String(member.nextAction ?? "다음 액션 미정"),
     avatarUrl: typeof member.avatarUrl === "string" ? member.avatarUrl : undefined,
+    prayerRequest: typeof member.prayerRequest === "string" ? member.prayerRequest : undefined,
+    careMemo: typeof member.careMemo === "string" ? member.careMemo : undefined,
+    followUpMemo: typeof member.followUpMemo === "string" ? member.followUpMemo : undefined,
   };
 }
 
