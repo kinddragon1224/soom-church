@@ -95,7 +95,7 @@ export default function PeopleScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<MemberFilter>("전체");
-  const [cache, setCache] = useState<MemberLocalCache>({ added: [], removedNames: [], overrides: {}, meetingRecords: [] });
+  const [cache, setCache] = useState<MemberLocalCache>({ added: [], removedNames: [], overrides: {}, meetingRecords: [], pastoralRecords: {} });
 
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState("");

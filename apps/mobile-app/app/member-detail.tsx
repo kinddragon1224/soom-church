@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Image, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 import { deleteMember, updateMember } from "../lib/member-manage-source";
-import { getMemberLocalCache, setMemberLocalCache, withMemberOverride, withRemovedMember } from "../lib/member-local-cache";
+import { appendPastoralRecords, getMemberLocalCache, getMemberPastoralRecords, setMemberLocalCache, withMemberOverride, withRemovedMember, type MemberLocalCache, type PastoralRecord } from "../lib/member-local-cache";
 import { uploadMemberImageFromUri } from "../lib/member-image-upload-source";
 
 function statSeed(name: string, shift: number) {
@@ -16,6 +16,29 @@ function memberStats(name: string, state: string) {
   const prayer = state.includes("기도") ? 86 : 50 + (statSeed(name, 23) % 32);
   const follow = state.includes("후속") ? 84 : 44 + (statSeed(name, 31) % 36);
   return { care: Math.min(100, care), prayer: Math.min(100, prayer), follow: Math.min(100, follow) };
+}
+
+function formatPastoralDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "날짜 미상";
+  return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+function categoryLabel(category: PastoralRecord["category"]) {
+  switch (category) {
+    case "STATUS":
+      return "상태";
+    case "PRAYER":
+      return "기도";
+    case "CARE":
+      return "돌봄";
+    case "FOLLOW_UP":
+      return "후속";
+    case "ATTENDANCE":
+      return "출석";
+    default:
+      return "기록";
+  }
 }
 
 const STATUS_OPTIONS = ["안정", "관심", "결석", "기도", "긴급돌봄"] as const;
@@ -44,6 +67,7 @@ export default function MemberDetailScreen() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState(false);
+  const [pastoralRecords, setPastoralRecords] = useState<PastoralRecord[]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const id = typeof params.id === "string" ? params.id : "";
@@ -61,21 +85,22 @@ export default function MemberDetailScreen() {
       const override = cache.overrides[id];
       const added = cache.added.find((item) => item.id === id);
       const source = override ?? added;
-      if (!source) return;
-
-      if (typeof source.name === "string") setName(source.name);
-      if (typeof source.household === "string") setHousehold(source.household);
-      if (typeof source.state === "string") setState(source.state);
-      if (typeof source.nextAction === "string") setNextAction(source.nextAction);
-      if (typeof source.avatarUrl === "string") setAvatarUrl(source.avatarUrl);
-      if (typeof source.prayerRequest === "string") setPrayerRequest(source.prayerRequest);
-      if (typeof source.careMemo === "string") setCareMemo(source.careMemo);
-      if (typeof source.followUpMemo === "string") setFollowUpMemo(source.followUpMemo);
+      if (source) {
+        if (typeof source.name === "string") setName(source.name);
+        if (typeof source.household === "string") setHousehold(source.household);
+        if (typeof source.state === "string") setState(source.state);
+        if (typeof source.nextAction === "string") setNextAction(source.nextAction);
+        if (typeof source.avatarUrl === "string") setAvatarUrl(source.avatarUrl);
+        if (typeof source.prayerRequest === "string") setPrayerRequest(source.prayerRequest);
+        if (typeof source.careMemo === "string") setCareMemo(source.careMemo);
+        if (typeof source.followUpMemo === "string") setFollowUpMemo(source.followUpMemo);
+      }
+      setPastoralRecords(getMemberPastoralRecords(cache, id));
     };
     void hydrate();
   }, [id]);
 
-  const saveLocalOverride = async (next: {
+  const saveLocalOverride = async (cache: MemberLocalCache, next: {
     name: string;
     household: string;
     state: string;
@@ -85,10 +110,13 @@ export default function MemberDetailScreen() {
     careMemo?: string;
     followUpMemo?: string;
   }) => {
-    if (!id) return;
-    const cache = await getMemberLocalCache();
-    const nextCache = withMemberOverride(cache, id, next);
-    await setMemberLocalCache(nextCache);
+    if (!id) return cache;
+    return withMemberOverride(cache, id, next);
+  };
+
+  const persistCache = async (cache: MemberLocalCache) => {
+    await setMemberLocalCache(cache);
+    if (id) setPastoralRecords(getMemberPastoralRecords(cache, id));
   };
 
   const showSavedFeedback = () => {
@@ -96,7 +124,7 @@ export default function MemberDetailScreen() {
     if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
     feedbackTimerRef.current = setTimeout(() => {
       setSavedFeedback(false);
-    }, 1400);
+    }, 1800);
   };
 
   const pickImage = async () => {
@@ -122,7 +150,8 @@ export default function MemberDetailScreen() {
     try {
       const uploadedUrl = await uploadMemberImageFromUri(pickedUri);
       setAvatarUrl(uploadedUrl);
-      await saveLocalOverride({
+      const cache = await getMemberLocalCache();
+      const nextCache = await saveLocalOverride(cache, {
         name: name.trim() || "이름 미입력",
         household: household.trim() || "가정 미지정",
         state: state.trim() || "등록",
@@ -132,10 +161,12 @@ export default function MemberDetailScreen() {
         careMemo: careMemo.trim(),
         followUpMemo: followUpMemo.trim(),
       });
+      await persistCache(nextCache);
       Alert.alert("완료", "사진 업로드했어.");
     } catch {
       setAvatarUrl(pickedUri);
-      await saveLocalOverride({
+      const cache = await getMemberLocalCache();
+      const nextCache = await saveLocalOverride(cache, {
         name: name.trim() || "이름 미입력",
         household: household.trim() || "가정 미지정",
         state: state.trim() || "등록",
@@ -145,6 +176,7 @@ export default function MemberDetailScreen() {
         careMemo: careMemo.trim(),
         followUpMemo: followUpMemo.trim(),
       });
+      await persistCache(nextCache);
       Alert.alert("임시 저장", "서버 업로드는 실패했지만 기기에서는 저장했어.");
     } finally {
       setUploading(false);
@@ -154,7 +186,8 @@ export default function MemberDetailScreen() {
   const clearImage = async () => {
     if (!id || uploading || saving) return;
     setAvatarUrl("");
-    await saveLocalOverride({
+    const cache = await getMemberLocalCache();
+    const nextCache = await saveLocalOverride(cache, {
       name: name.trim() || "이름 미입력",
       household: household.trim() || "가정 미지정",
       state: state.trim() || "등록",
@@ -164,36 +197,46 @@ export default function MemberDetailScreen() {
       careMemo: careMemo.trim(),
       followUpMemo: followUpMemo.trim(),
     });
+    await persistCache(nextCache);
     Alert.alert("완료", "사진을 제거했어.");
   };
 
   const save = async () => {
     if (!id || !name.trim() || saving) return;
     setSaving(true);
+
+    const trimmedState = state.trim() || "등록";
+    const trimmedPrayer = prayerRequest.trim();
+    const trimmedCare = careMemo.trim();
+    const trimmedFollow = followUpMemo.trim();
+
+    const recordsToAppend = [
+      { category: "STATUS" as const, title: "상태 변경", body: trimmedState, state: trimmedState },
+      { category: "PRAYER" as const, title: "기도제목", body: trimmedPrayer },
+      { category: "CARE" as const, title: "돌봄 메모", body: trimmedCare },
+      { category: "FOLLOW_UP" as const, title: "후속 연락", body: trimmedFollow },
+    ];
+
     try {
       await updateMember({ id, name: name.trim(), household: household.trim(), state: state.trim(), nextAction: nextAction.trim() });
-      await saveLocalOverride({
-        name: name.trim(),
-        household: household.trim() || "가정 미지정",
-        state: state.trim() || "등록",
-        nextAction: nextAction.trim() || "다음 액션 미정",
-        avatarUrl,
-        prayerRequest: prayerRequest.trim(),
-        careMemo: careMemo.trim(),
-        followUpMemo: followUpMemo.trim(),
-      });
-      showSavedFeedback();
     } catch {
-      await saveLocalOverride({
+      // ignore server failure for local MVP
+    }
+
+    try {
+      const cache = await getMemberLocalCache();
+      const overrideCache = await saveLocalOverride(cache, {
         name: name.trim(),
         household: household.trim() || "가정 미지정",
-        state: state.trim() || "등록",
+        state: trimmedState,
         nextAction: nextAction.trim() || "다음 액션 미정",
         avatarUrl,
-        prayerRequest: prayerRequest.trim(),
-        careMemo: careMemo.trim(),
-        followUpMemo: followUpMemo.trim(),
+        prayerRequest: trimmedPrayer,
+        careMemo: trimmedCare,
+        followUpMemo: trimmedFollow,
       });
+      const nextCache = appendPastoralRecords(overrideCache, id, recordsToAppend);
+      await persistCache(nextCache);
       showSavedFeedback();
     } finally {
       setSaving(false);
@@ -227,6 +270,7 @@ export default function MemberDetailScreen() {
 
   const stats = memberStats(name, state);
   const topInset = Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) + 8 : 6;
+  const recentPastoralRecords = useMemo(() => pastoralRecords.slice(0, 7), [pastoralRecords]);
 
   const setPresetState = (value: string) => {
     setState(value);
@@ -366,7 +410,27 @@ export default function MemberDetailScreen() {
             </Pressable>
           </View>
 
-          {savedFeedback ? <Text style={{ color: "#a5f3b6", fontSize: 11, marginTop: 6 }}>저장됨</Text> : null}
+          {savedFeedback ? <Text style={{ color: "#a5f3b6", fontSize: 11, marginTop: 6 }}>저장됐습니다. 최근 목양 기록에 추가됐어요.</Text> : null}
+        </View>
+
+        <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "#31384a", backgroundColor: "#121823", padding: 12, gap: 8 }}>
+          <Text style={{ color: "#d8e7ff", fontSize: 13, fontWeight: "700" }}>최근 목양 기록</Text>
+          {recentPastoralRecords.length === 0 ? (
+            <Text style={{ color: "rgba(216,230,255,0.72)", fontSize: 12 }}>아직 목양 기록이 없습니다. 오늘의 기도제목이나 돌봄 메모를 남겨보세요.</Text>
+          ) : (
+            recentPastoralRecords.map((record) => (
+              <View key={record.id} style={{ borderRadius: 10, borderWidth: 1, borderColor: "#2f3a50", backgroundColor: "#161d2a", padding: 10, gap: 5 }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                  <View style={{ borderRadius: 999, borderWidth: 1, borderColor: "#4d638e", backgroundColor: "rgba(84,118,179,0.16)", paddingHorizontal: 8, paddingVertical: 3 }}>
+                    <Text style={{ color: "#d8e7ff", fontSize: 10, fontWeight: "700" }}>{categoryLabel(record.category)}</Text>
+                  </View>
+                  <Text style={{ color: "rgba(216,230,255,0.6)", fontSize: 10 }}>{formatPastoralDate(record.createdAt)}</Text>
+                </View>
+                <Text style={{ color: "#f5f5f5", fontSize: 12, fontWeight: "700" }}>{record.title}</Text>
+                <Text numberOfLines={3} style={{ color: "rgba(245,245,245,0.82)", fontSize: 12, lineHeight: 18 }}>{record.body}</Text>
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

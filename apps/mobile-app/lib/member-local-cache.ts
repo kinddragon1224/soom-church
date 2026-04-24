@@ -4,6 +4,18 @@ import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 const MEMBER_LOCAL_CACHE_KEY = "soom.mobile.members.local-cache.v2";
 const SAMPLE_NAMES = new Set(["김요한", "박마리아", "김요", "박마"]);
 
+export type PastoralRecordCategory = "STATUS" | "PRAYER" | "CARE" | "FOLLOW_UP" | "ATTENDANCE";
+
+export type PastoralRecord = {
+  id: string;
+  memberId: string;
+  category: PastoralRecordCategory;
+  title: string;
+  body: string;
+  state?: string;
+  createdAt: string;
+};
+
 export type LocalMember = {
   id: string;
   name: string;
@@ -32,6 +44,7 @@ export type MemberLocalCache = {
   removedNames: string[];
   overrides: Record<string, MemberOverride>;
   meetingRecords: MokjangMeetingRecord[];
+  pastoralRecords: Record<string, PastoralRecord[]>;
 };
 
 export type AttendanceStatus = "PRESENT" | "ABSENT" | "ONLINE" | "UNKNOWN";
@@ -58,6 +71,7 @@ const EMPTY_CACHE: MemberLocalCache = {
   removedNames: [],
   overrides: {},
   meetingRecords: [],
+  pastoralRecords: {},
 };
 
 async function scopedKeys() {
@@ -85,6 +99,24 @@ function normalizeMember(member: Partial<LocalMember>): LocalMember | null {
   };
 }
 
+function normalizePastoralRecord(memberId: string, record: Partial<PastoralRecord>): PastoralRecord | null {
+  const title = typeof record.title === "string" ? record.title.trim() : "";
+  const body = typeof record.body === "string" ? record.body.trim() : "";
+  const category = typeof record.category === "string" ? record.category : "CARE";
+  if (!title || !body) return null;
+  if (!["STATUS", "PRAYER", "CARE", "FOLLOW_UP", "ATTENDANCE"].includes(category)) return null;
+
+  return {
+    id: typeof record.id === "string" && record.id ? record.id : `local-record-${Date.now()}`,
+    memberId,
+    category: category as PastoralRecordCategory,
+    title,
+    body,
+    state: typeof record.state === "string" && record.state.trim() ? record.state.trim() : undefined,
+    createdAt: typeof record.createdAt === "string" && record.createdAt ? record.createdAt : new Date().toISOString(),
+  };
+}
+
 export async function getMemberLocalCache(): Promise<MemberLocalCache> {
   try {
     const keys = await scopedKeys();
@@ -104,6 +136,18 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
     const cleanedRemovedNames = Array.isArray(parsed.removedNames)
       ? parsed.removedNames.map((name) => String(name)).filter((name) => !SAMPLE_NAMES.has(name))
       : [];
+
+    const pastoralRecords = parsed.pastoralRecords && typeof parsed.pastoralRecords === "object"
+      ? Object.entries(parsed.pastoralRecords).reduce<Record<string, PastoralRecord[]>>((acc, [memberId, records]) => {
+          if (!Array.isArray(records)) return acc;
+          const normalized = records
+            .map((record) => normalizePastoralRecord(memberId, record as Partial<PastoralRecord>))
+            .filter((record): record is PastoralRecord => Boolean(record))
+            .slice(0, 50);
+          acc[memberId] = normalized;
+          return acc;
+        }, {})
+      : {};
 
     const normalized: MemberLocalCache = {
       added: cleanedAdded,
@@ -141,6 +185,7 @@ export async function getMemberLocalCache(): Promise<MemberLocalCache> {
             })
             .filter((record): record is MokjangMeetingRecord => Boolean(record && record.id))
         : [],
+      pastoralRecords,
     };
 
     if (!raw) {
@@ -206,6 +251,58 @@ export function withMemberOverride(cache: MemberLocalCache, memberId: string, ov
     },
     added: cache.added.map((item) => (item.id === memberId ? { ...item, ...override } : item)),
   };
+}
+
+export function appendPastoralRecords(
+  cache: MemberLocalCache,
+  memberId: string,
+  records: Omit<PastoralRecord, "id" | "memberId" | "createdAt">[]
+): MemberLocalCache {
+  const existing = cache.pastoralRecords[memberId] ?? [];
+  const now = Date.now();
+  const freshRecords = records
+    .map((record, index) => {
+      const body = record.body?.trim() ?? "";
+      const title = record.title?.trim() ?? "";
+      if (!body || !title) return null;
+      return {
+        id: `local-record-${now}-${index}`,
+        memberId,
+        category: record.category,
+        title,
+        body,
+        state: record.state?.trim() || undefined,
+        createdAt: new Date().toISOString(),
+      } as PastoralRecord;
+    })
+    .filter((record): record is PastoralRecord => Boolean(record));
+
+  const dedupedFresh = freshRecords.filter((record, index, arr) => {
+    if (index === 0) return true;
+    const prev = arr[index - 1];
+    return !(prev.category === record.category && prev.title === record.title && prev.body === record.body && prev.state === record.state);
+  });
+
+  let next = existing;
+  for (const record of dedupedFresh.reverse()) {
+    const prev = next[0];
+    if (prev && prev.category === record.category && prev.title === record.title && prev.body === record.body && prev.state === record.state) {
+      continue;
+    }
+    next = [record, ...next].slice(0, 50);
+  }
+
+  return {
+    ...cache,
+    pastoralRecords: {
+      ...cache.pastoralRecords,
+      [memberId]: next,
+    },
+  };
+}
+
+export function getMemberPastoralRecords(cache: MemberLocalCache, memberId: string): PastoralRecord[] {
+  return cache.pastoralRecords[memberId] ?? [];
 }
 
 export function getTodayMeetingId(): string {

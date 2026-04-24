@@ -1,8 +1,9 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import { useFocusEffect } from "expo-router";
 
 import {
+  appendPastoralRecords,
   applyMemberLocalCache,
   getMemberLocalCache,
   getTodayMeetingId,
@@ -23,7 +24,7 @@ type AttendanceDraft = {
 
 export default function AttendanceScreen() {
   const { snapshot, refreshAttendance } = useWorldStore();
-  const [cache, setCache] = useState<MemberLocalCache>({ added: [], removedNames: [], overrides: {}, meetingRecords: [] });
+  const [cache, setCache] = useState<MemberLocalCache>({ added: [], removedNames: [], overrides: {}, meetingRecords: [], pastoralRecords: {} });
   const [drafts, setDrafts] = useState<Record<string, AttendanceDraft>>({});
   const [feedback, setFeedback] = useState<string | null>(null);
 
@@ -53,7 +54,7 @@ export default function AttendanceScreen() {
 
   const members = useMemo(() => applyMemberLocalCache(remoteMembers, cache), [remoteMembers, cache]);
 
-  useMemo(() => {
+  useEffect(() => {
     const id = getTodayMeetingId();
     const todayRecord = cache.meetingRecords.find((record) => record.id === id);
     if (!todayRecord) return;
@@ -142,6 +143,14 @@ export default function AttendanceScreen() {
           careMemo: member.careMemo,
           followUpMemo: member.followUpMemo,
         });
+        nextCache = appendPastoralRecords(nextCache, member.id, [
+          {
+            category: "ATTENDANCE",
+            title: "목장 결석",
+            body: draft.absenceReason.trim() ? `결석 사유: ${draft.absenceReason.trim()}` : "이번 주 목장 모임 결석. 후속 연락 필요.",
+            state: "결석",
+          },
+        ]);
       }
 
       if (draft.status === "PRESENT") {
