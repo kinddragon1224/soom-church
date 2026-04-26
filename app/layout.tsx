@@ -2,9 +2,10 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 const siteUrl = "https://soom.io.kr";
-const siteTitle = "숨 | 교회와 사역자를 위한 콘텐츠·디자인·웹팀";
-const siteDescription = "숨(soom)은 교회와 사역의 메시지가 더 선명하게 전달되도록 홈페이지, 디자인, 영상, 운영용 웹을 만듭니다.";
-const ogImage = "/hero-church-main.png";
+const siteTitle = "숨 | AI 시대 진로 컨설팅";
+const siteDescription =
+  "숨(soom)은 직업상담사 관점과 기획자의 구조화 능력으로 AI 시대의 진로, 커리어 전환, 포트폴리오 설계를 돕는 컨설팅 브랜드입니다.";
+const ogImage = "/blog-hero-portrait-dark.jpg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -17,12 +18,13 @@ export const metadata: Metadata = {
   keywords: [
     "숨",
     "soom",
-    "교회 홈페이지",
-    "교회 디자인",
-    "교회 영상",
-    "교회 웹사이트",
-    "사역 디자인",
-    "교회 브랜딩",
+    "AI 진로 상담",
+    "진로 컨설팅",
+    "커리어 전환",
+    "직업상담사",
+    "AI 포트폴리오",
+    "커리어 리디자인",
+    "자기 상품화",
   ],
   alternates: {
     canonical: "/",
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: "숨 - 교회와 사역자를 위한 콘텐츠·디자인·웹팀",
+        alt: "숨 - AI 시대 진로 컨설팅",
       },
     ],
   },

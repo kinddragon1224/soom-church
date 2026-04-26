@@ -14,10 +14,10 @@ type SiteHeaderProps = {
 };
 
 const navItems = [
-  { href: "/blog", label: "블로그", key: "guides" },
-  { href: "/pricing", label: "콘텐츠 스튜디오", key: "pricing" },
-  { href: "/about", label: "About", key: "about" },
-  { href: "/contact", label: "Q&A", key: "contact" },
+  { href: "/", label: "진로 컨설팅", key: "home" },
+  { href: "/app/mobile", label: "목장월드 Lab", key: "workspace" },
+  { href: "/about", label: "소개", key: "about" },
+  { href: "/contact", label: "문의", key: "contact" },
 ] as const;
 
 export default function SiteHeader({
@@ -101,7 +101,7 @@ export default function SiteHeader({
               href="/login"
               className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 text-sm font-semibold ${isDark ? "border-white/20 bg-white/5 text-white" : "border-[#d9d2c7] bg-white text-[#0c1220]"}`}
             >
-              로그인
+              Lab 로그인
             </Link>
           )}
           <Link
@@ -174,7 +174,7 @@ export default function SiteHeader({
                     onClick={() => setOpen(false)}
                     className={`inline-flex min-h-12 items-center justify-center rounded-full border px-5 text-sm font-medium ${isDark ? "border-white/15 bg-white/[0.03] text-white" : "border-[#ddd2c3] bg-white text-[#0c1220]"}`}
                   >
-                    로그인
+                    Lab 로그인
                   </Link>
                   <Link
                     href="/signup"

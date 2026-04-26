@@ -20,7 +20,7 @@ export default async function GuidesPage() {
   const featured = posts[0] ?? null;
   const sidePosts = posts.slice(1, 3);
   const gridPosts = posts.slice(3);
-  const topics = ["목회", "운영", "AI 활용", "콘텐츠", "전달 구조"];
+  const topics = ["AI 시대 진로", "커리어 전환", "포트폴리오", "기획", "자기 상품화"];
 
   return (
     <main className="min-h-screen bg-[#05070b] text-white">
@@ -42,11 +42,11 @@ export default async function GuidesPage() {
               <div />
 
               <div className="mx-auto flex w-full max-w-[360px] translate-x-0 flex-col items-center justify-end pb-3 text-center select-none cursor-default sm:max-w-[1240px] sm:translate-x-6 sm:items-center sm:pb-0 sm:text-center lg:max-w-[1320px] lg:translate-x-8 xl:max-w-[1380px] xl:translate-x-10">
-                <div className="mb-4 inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm sm:mb-5">SOOM BLOG</div>
+                <div className="mb-4 inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] tracking-[0.28em] text-white/42 backdrop-blur-sm sm:mb-5">SOOM INSIGHT</div>
                 <h1 className="text-[2rem] font-light leading-[1.06] tracking-[-0.058em] text-white sm:text-[4.6rem] lg:text-[6.1rem] xl:text-[6.85rem] drop-shadow-[0_8px_24px_rgba(0,0,0,0.28)]">
-                  교회와 사역을 위한
+                  AI 시대의 진로와
                   <br />
-                  인사이트 아카이브
+                  일을 다시 설계하는 글
                 </h1>
                 <div className="mt-6 flex flex-wrap justify-center gap-2 sm:mt-8 sm:gap-3">
                   {topics.map((topic) => (
@@ -66,7 +66,8 @@ export default async function GuidesPage() {
           {posts.length === 0 ? (
             <div className="rounded-[32px] border border-[#e6dfd5] bg-white p-8 shadow-[0_24px_80px_rgba(2,6,23,0.08)] sm:p-10">
               <p className="text-xs tracking-[0.24em] text-[#9a8b7a]">EMPTY</p>
-              <h2 className="mt-4 text-[2rem] font-semibold leading-[1.04] tracking-[-0.05em] text-[#111111] sm:text-[3rem]">아직 노출할 글이 없습니다</h2>
+              <h2 className="mt-4 text-[2rem] font-semibold leading-[1.04] tracking-[-0.05em] text-[#111111] sm:text-[3rem]">아직 노출할 인사이트가 없습니다</h2>
+              <p className="mt-4 text-sm leading-7 text-[#5d667d]">AI 시대 진로 설계, 커리어 전환, 포트폴리오 기획에 대한 글을 준비 중입니다.</p>
             </div>
           ) : (
             <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
