@@ -1,195 +1,113 @@
 import Link from "next/link";
 import SiteHeader from "@/components/site-header";
-
-const helpTypes = ["쇼츠 · 홍보영상", "유튜브 운영 세팅", "행사 랜딩 · 안내 제작", "아직 잘 모르겠음"];
-const schedules = ["최대한 빨리", "2주 이내", "이번 달 안", "일정 협의"];
-const budgets = ["30만 원 이하", "30~100만 원", "100만 원 이상", "아직 미정"];
+import { ConsultationInquiryForm } from "@/components/contact/consultation-inquiry-form";
 
 const processSteps = [
   {
     step: "01",
-    title: "상황을 남겨주세요",
-    desc: "지금 급한 일, 일정, 참고 자료를 편하게 적어주시면 됩니다.",
+    title: "지금 생각나는 만큼만 남깁니다",
+    desc: "정리된 문장이 아니어도 괜찮습니다. 막힌 지점, 불안한 이유, 바라는 변화를 있는 그대로 봅니다.",
   },
   {
     step: "02",
-    title: "1영업일 안에 1차 답변",
-    desc: "내용을 보고 가장 현실적인 시작점과 필요한 범위를 먼저 정리해드립니다.",
+    title: "무리해서 권하지 않고 방향을 봅니다",
+    desc: "상담이 적합한지, 어떤 방식으로 시작하는 것이 좋은지 먼저 짧게 안내드립니다.",
   },
   {
     step: "03",
-    title: "일정과 범위를 맞춥니다",
-    desc: "진행이 맞으면 일정, 산출물, 예산 범위를 함께 확정합니다.",
+    title: "필요한 만큼만 정합니다",
+    desc: "범위가 맞으면 일정, 방식, 준비 자료를 함께 정하고 맞지 않으면 다른 시작점을 제안합니다.",
   },
 ];
 
 const responseCards = [
   {
-    title: "보내면 바로 계약이 되나요?",
-    desc: "아닙니다. 먼저 가능한지, 무엇부터 시작하는 게 맞는지부터 짧게 안내드립니다.",
+    title: "완벽하게 정리해서 보내야 하나요?",
+    desc: "아니요. 오히려 정리가 안 된 상태를 같이 보는 게 상담의 시작일 수 있습니다.",
+  },
+  {
+    title: "AI 사용법만 배우는 건가요?",
+    desc: "아니요. 도구 사용법보다 내 일과 경험에 AI를 어떻게 붙일지 함께 봅니다.",
   },
   {
     title: "어떤 답변을 받게 되나요?",
-    desc: "가능 여부, 추천 시작점, 대략적인 범위를 먼저 정리해서 드립니다.",
-  },
-  {
-    title: "급한 일정도 가능한가요?",
-    desc: "가능한 경우 빠른 대응 여부를 먼저 확인드리고, 어렵다면 현실적인 대안을 함께 제안드립니다.",
+    desc: "상담이 맞는지, 어디서 시작하면 좋은지, 준비하면 좋은 자료가 있는지 먼저 안내드립니다.",
   },
 ];
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#050b16] text-white">
-      <section className="border-b border-white/10">
+    <main className="min-h-screen bg-[#15120d] text-white">
+      <section className="border-b border-white/10 bg-[#15120d]">
         <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
-          <SiteHeader theme="dark" current="contact" ctaHref="/pricing" ctaLabel="상품 보기" />
+          <SiteHeader theme="dark" current="contact" ctaHref="/contact" ctaLabel="상담 문의" />
         </div>
       </section>
 
-      <section>
-        <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <div className="max-w-3xl">
-            <p className="text-xs tracking-[0.24em] text-white/40">CONTACT</p>
-            <h1 className="mt-5 font-display text-[2.6rem] leading-[1.05] tracking-[-0.06em] sm:text-[4.4rem]">
-              지금 가장 급한 일부터
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0)_28%),radial-gradient(circle_at_88%_18%,rgba(218,151,74,0.22)_0%,rgba(218,151,74,0)_30%)]" />
+        <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
+          <div className="max-w-4xl">
+            <p className="text-xs tracking-[0.24em] text-[#d7a760]">CAREER CONSULTATION</p>
+            <h1 className="mt-5 font-display text-[2.8rem] leading-[1.02] tracking-[-0.065em] sm:text-[4.8rem]">
+              정리 안 된 고민도
               <br />
-              함께 정리해보세요
+              여기서부터
+              <br />
+              시작해도 됩니다
             </h1>
-            <p className="mt-6 text-sm leading-7 text-white/68 sm:text-base">
-              쇼츠가 먼저인지, 유튜브 운영이 먼저인지, 행사 안내가 급한지 아직 정확히 정리되지 않아도 괜찮습니다.
-              지금 상황을 알려주시면 가장 현실적인 시작점을 함께 정리해드립니다.
+            <p className="mt-7 max-w-3xl text-sm leading-8 text-white/66 sm:text-base">
+              진로가 막힌 이유가 능력 부족인지, 방향의 문제인지, 시대 변화에 대한 불안인지 혼자 구분하기 어려울 때가 있습니다.
+              상담은 그 복잡한 마음을 천천히 풀어보고, 지금 할 수 있는 다음 행동을 찾는 데 집중합니다.
             </p>
-            <div className="mt-6 grid gap-2 text-sm text-white/60 sm:flex sm:flex-row sm:flex-wrap sm:gap-4">
-              <p>보내주신 내용은 확인 후 순서대로 답변드립니다.</p>
-              <p>보통 1영업일 안에 1차 답변을 드립니다.</p>
-              <p>진행이 어렵거나 맞지 않는 경우에도 먼저 가능 여부를 솔직하게 안내드립니다.</p>
-            </div>
-            <div className="mt-6 flex flex-wrap gap-2.5 text-xs text-white/70">
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">1차 답변: 가능 여부 + 추천 시작점</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">보통 1영업일 내 회신</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">필요할 때만 일정·범위 상세 조율</span>
+            <div className="mt-7 flex flex-wrap gap-2.5 text-xs text-white/70">
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">직업상담사 관점</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">AI 활용 커리어 설계</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2">포트폴리오/상품화 기획</span>
             </div>
           </div>
         </div>
       </section>
 
       <section>
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 pb-20 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:pb-28">
-          <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
-            <div className="mb-5 rounded-[24px] border border-emerald-400/15 bg-emerald-400/[0.06] px-4 py-4 text-sm text-white/72">
-              <p className="font-semibold text-white">문의는 이렇게 진행됩니다</p>
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 pb-20 sm:px-8 lg:grid-cols-[1.08fr_0.92fr] lg:px-10 lg:pb-28">
+          <div className="rounded-[36px] border border-white/10 bg-[#201b14]/88 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:p-8">
+            <div className="mb-6 rounded-[26px] border border-[#d7a760]/18 bg-[#d7a760]/[0.07] px-4 py-4 text-sm text-white/72">
+              <p className="font-semibold text-white">상담 신청은 이렇게 진행됩니다</p>
               <div className="mt-3 grid gap-3">
                 {processSteps.map((item) => (
-                  <div key={item.step} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                    <p className="text-[11px] tracking-[0.18em] text-emerald-200/70">STEP {item.step}</p>
+                  <div key={item.step} className="rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-4">
+                    <p className="text-[11px] tracking-[0.18em] text-[#f3c987]/72">STEP {item.step}</p>
                     <p className="mt-2 font-semibold text-white">{item.title}</p>
                     <p className="mt-2 text-sm leading-6 text-white/62">{item.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <form className="grid gap-8">
-              <div>
-                <label className="text-sm font-semibold text-white">지금 어떤 도움이 가장 필요하신가요?</label>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  {helpTypes.map((item) => (
-                    <button key={item} type="button" className="rounded-full border border-white/12 bg-white/[0.03] px-4 py-2.5 text-sm text-white/78 transition hover:border-white/28 hover:bg-white/[0.08]">
-                      {item}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              <div className="grid gap-5 sm:grid-cols-2">
-                <label className="grid gap-2 text-sm text-white/78">
-                  <span className="font-semibold text-white">교회 / 단체명</span>
-                  <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="예: 숨교회 청년부" />
-                </label>
-                <label className="grid gap-2 text-sm text-white/78">
-                  <span className="font-semibold text-white">연락처</span>
-                  <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="이메일 / 전화번호 / 카카오톡 ID" />
-                </label>
-              </div>
-
-              <label className="grid gap-2 text-sm text-white/78">
-                <span className="font-semibold text-white">지금 상황을 자유롭게 알려주세요</span>
-                <textarea
-                  className="min-h-[180px] rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-4 text-white outline-none placeholder:text-white/32"
-                  placeholder={"예: 수련회 랜딩페이지가 급합니다\n설교 쇼츠를 매주 올리고 싶은데 담당 인력이 부족합니다\n유튜브 채널은 있는데 운영이 거의 멈춰 있습니다"}
-                />
-              </label>
-
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <p className="text-sm font-semibold text-white">예상 일정</p>
-                  <div className="mt-4 grid gap-3">
-                    {schedules.map((item) => (
-                      <button key={item} type="button" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/78 transition hover:border-white/24 hover:bg-white/[0.08]">
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white">예산 범위</p>
-                  <div className="mt-4 grid gap-3">
-                    {budgets.map((item) => (
-                      <button key={item} type="button" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left text-sm text-white/78 transition hover:border-white/24 hover:bg-white/[0.08]">
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <label className="grid gap-2 text-sm text-white/78">
-                <span className="font-semibold text-white">참고 링크 / 자료</span>
-                <input className="min-h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-white outline-none placeholder:text-white/32" placeholder="기존 유튜브, 행사 안내 링크, 참고 자료를 남겨주세요" />
-              </label>
-
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/70">
-                <p className="font-semibold text-white">보내기 전에 이것만 알면 됩니다</p>
-                <ul className="mt-3 grid gap-2 leading-6">
-                  <li>• 문의를 보내면 먼저 가능한지부터 짧게 안내드립니다.</li>
-                  <li>• 예산과 일정이 아직 불명확해도 괜찮습니다.</li>
-                  <li>• 맞지 않는 요청이면 무리하게 진행을 권하지 않습니다.</li>
-                </ul>
-              </div>
-
-              <div className="grid gap-3">
-                <button type="submit" className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-semibold text-[#09111f]">
-                  상담 요청 보내기
-                </button>
-                <p className="text-xs leading-6 text-white/52">
-                  문의 내용이 접수되면 먼저 가능 여부와 추천 시작점을 짧게 안내드리고,
-                  이후 필요할 때만 상세 일정과 범위를 함께 맞춥니다.
-                </p>
-              </div>
-            </form>
+            <ConsultationInquiryForm />
           </div>
 
           <div className="grid gap-5 self-start">
-            <div className="rounded-[34px] border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-              <p className="text-xs tracking-[0.24em] text-white/38">HOW WE HELP</p>
+            <div className="rounded-[34px] border border-white/10 bg-white/[0.04] p-6 sm:p-8">
+              <p className="text-xs tracking-[0.24em] text-white/38">MORA NOTE</p>
               <h2 className="mt-5 font-display text-[2rem] leading-[1.08] tracking-[-0.05em] text-white sm:text-[2.6rem]">
-                아직 무엇부터 해야 할지
+                상담은
                 <br />
-                선명하지 않아도 괜찮습니다
+                정답 맞히기가 아니라
+                <br />
+                다음 행동을 찾는 시간입니다
               </h2>
               <p className="mt-5 text-sm leading-7 text-white/62 sm:text-base">
-                지금 필요한 것이 쇼츠인지, 유튜브 세팅인지, 행사 안내 제작인지 먼저 함께 구분해볼 수 있습니다.
-              </p>
-              <p className="mt-4 text-sm leading-7 text-white/48 sm:text-base">
-                복잡한 제안보다 먼저, 지금 바로 시작할 수 있는 일부터 정리해드립니다.
+                모라는 생각을 흩어지지 않게 붙잡는 AI 파트너입니다. 말이 길어져도 괜찮습니다. 그 안에서 반복되는 걱정과 가능성을 같이 찾아냅니다.
               </p>
             </div>
 
-            <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
-              <p className="text-xs tracking-[0.24em] text-white/38">RESPONSE GUIDE</p>
+            <div className="rounded-[34px] border border-white/10 bg-[#201b14]/88 p-6 sm:p-8">
+              <p className="text-xs tracking-[0.24em] text-white/38">FAQ</p>
               <div className="mt-5 grid gap-3 text-sm leading-7 text-white/70">
                 {responseCards.map((item) => (
-                  <div key={item.title} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                  <div key={item.title} className="rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-4">
                     <p className="font-semibold text-white">{item.title}</p>
                     <p className="mt-2">{item.desc}</p>
                   </div>
@@ -197,14 +115,14 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="rounded-[34px] border border-white/10 bg-[#0b1327]/88 p-6 sm:p-8">
+            <div className="rounded-[34px] border border-white/10 bg-[#201b14]/88 p-6 sm:p-8">
               <p className="text-xs tracking-[0.24em] text-white/38">QUICK LINKS</p>
               <div className="mt-5 grid gap-3">
-                <Link href="/pricing" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
-                  핵심 상품 보기
+                <Link href="/" className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/78">
+                  컨설팅 소개로 돌아가기
                 </Link>
-                <Link href="/blog" className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/78">
-                  블로그 보기
+                <Link href="/app/mobile" className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/78">
+                  목장월드 Lab 보기
                 </Link>
               </div>
             </div>

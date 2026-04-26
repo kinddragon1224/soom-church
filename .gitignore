@@ -157,3 +157,6 @@ public/uploads/
 ops/mokjang-world-hourly/current.json
 ops/mokjang-world-hourly/state.json
 ops/mokjang-world-hourly/PROMPT.txt
+
+# Private contact intake records
+ops/contact-inquiries/
