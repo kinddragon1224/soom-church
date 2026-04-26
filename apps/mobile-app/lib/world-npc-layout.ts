@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { getCurrentAccountKey, getCurrentChurchSlug } from "./auth-bridge";
 
-const WORLD_NPC_LAYOUT_KEY = "soom.mobile.world.npc-layout.v2";
+const WORLD_NPC_LAYOUT_KEY = "soom.mobile.world.npc-layout.v3";
 
 type NpcAnchor = {
   nx: number;
@@ -18,10 +18,10 @@ export type WorldNpcLayout = {
 };
 
 const DEFAULT_LAYOUT: WorldNpcLayout = {
-  jesus: { nx: 0.5, ny: 0.64 },
-  maria: { nx: 0.73, ny: 0.64 },
+  jesus: { nx: 0.24, ny: 0.58 },
+  maria: { nx: 0.57, ny: 0.58 },
   johnBaptist: { nx: 0.28, ny: 0.66 },
-  peter: { nx: 0.64, ny: 0.68 },
+  peter: { nx: 0.78, ny: 0.62 },
   johnApostle: { nx: 0.82, ny: 0.68 },
 };
 

@@ -1,0 +1,179 @@
+{
+  "asset_pack": "mokjangworld_beginner_shepherd_lv1_v0",
+  "character": {
+    "id": "beginner_shepherd_lv1",
+    "ko_name": "초보 목자 LV.1",
+    "role": "growth_player_character",
+    "description": "목장월드의 성장형 기본 목자 캐릭터. 중성적이고 따뜻한 초보 목자 컨셉.",
+    "style": "SD pixel-art inspired collectible mobile RPG character",
+    "base_canvas": "128x128 recommended, exported as 96/128/256/512 PNG"
+  },
+  "usage_map": {
+    "idle": "shepherd_lv1_idle_greeting",
+    "pray": "shepherd_lv1_pray",
+    "bless": "shepherd_lv1_bless",
+    "teach": "shepherd_lv1_teach",
+    "walk": "shepherd_lv1_walk",
+    "think": "shepherd_lv1_think",
+    "joy": "shepherd_lv1_joy",
+    "concern": "shepherd_lv1_comfort_concern",
+    "comfort": "shepherd_lv1_comfort_concern"
+  },
+  "recommended_sizes": {
+    "home_character": "256",
+    "dialog_character": "256",
+    "collection_card": "128",
+    "small_icon": "96",
+    "master": "512"
+  },
+  "assets": [
+    {
+      "id": "shepherd_lv1_idle_greeting",
+      "name": "idle_greeting",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_idle_greeting_512.png",
+        "256": "shepherd_lv1_idle_greeting_256.png",
+        "128": "shepherd_lv1_idle_greeting_128.png",
+        "96": "shepherd_lv1_idle_greeting_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_pray",
+      "name": "pray",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_pray_512.png",
+        "256": "shepherd_lv1_pray_256.png",
+        "128": "shepherd_lv1_pray_128.png",
+        "96": "shepherd_lv1_pray_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_bless",
+      "name": "bless",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_bless_512.png",
+        "256": "shepherd_lv1_bless_256.png",
+        "128": "shepherd_lv1_bless_128.png",
+        "96": "shepherd_lv1_bless_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_teach",
+      "name": "teach",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_teach_512.png",
+        "256": "shepherd_lv1_teach_256.png",
+        "128": "shepherd_lv1_teach_128.png",
+        "96": "shepherd_lv1_teach_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_walk",
+      "name": "walk",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_walk_512.png",
+        "256": "shepherd_lv1_walk_256.png",
+        "128": "shepherd_lv1_walk_128.png",
+        "96": "shepherd_lv1_walk_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_think",
+      "name": "think",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_think_512.png",
+        "256": "shepherd_lv1_think_256.png",
+        "128": "shepherd_lv1_think_128.png",
+        "96": "shepherd_lv1_think_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_joy",
+      "name": "joy",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_joy_512.png",
+        "256": "shepherd_lv1_joy_256.png",
+        "128": "shepherd_lv1_joy_128.png",
+        "96": "shepherd_lv1_joy_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_comfort_concern",
+      "name": "comfort_concern",
+      "category": "pose",
+      "files": {
+        "512": "shepherd_lv1_comfort_concern_512.png",
+        "256": "shepherd_lv1_comfort_concern_256.png",
+        "128": "shepherd_lv1_comfort_concern_128.png",
+        "96": "shepherd_lv1_comfort_concern_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_front",
+      "name": "front",
+      "category": "turnaround",
+      "files": {
+        "512": "shepherd_lv1_front_512.png",
+        "256": "shepherd_lv1_front_256.png",
+        "128": "shepherd_lv1_front_128.png",
+        "96": "shepherd_lv1_front_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_three_quarter",
+      "name": "three_quarter",
+      "category": "turnaround",
+      "files": {
+        "512": "shepherd_lv1_three_quarter_512.png",
+        "256": "shepherd_lv1_three_quarter_256.png",
+        "128": "shepherd_lv1_three_quarter_128.png",
+        "96": "shepherd_lv1_three_quarter_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_side",
+      "name": "side",
+      "category": "turnaround",
+      "files": {
+        "512": "shepherd_lv1_side_512.png",
+        "256": "shepherd_lv1_side_256.png",
+        "128": "shepherd_lv1_side_128.png",
+        "96": "shepherd_lv1_side_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_back",
+      "name": "back",
+      "category": "turnaround",
+      "files": {
+        "512": "shepherd_lv1_back_512.png",
+        "256": "shepherd_lv1_back_256.png",
+        "128": "shepherd_lv1_back_128.png",
+        "96": "shepherd_lv1_back_96.png"
+      }
+    },
+    {
+      "id": "shepherd_lv1_hero_reference",
+      "name": "hero_reference",
+      "category": "reference",
+      "files": {
+        "512": "shepherd_lv1_hero_reference_512.png",
+        "256": "shepherd_lv1_hero_reference_256.png",
+        "128": "shepherd_lv1_hero_reference_128.png",
+        "96": "shepherd_lv1_hero_reference_96.png"
+      }
+    }
+  ],
+  "notes": [
+    "생성형 시트에서 분리한 v0 에셋입니다.",
+    "최종 배포 전에는 포즈별 투명 배경 재생성, 발 위치 통일, 픽셀 그리드 정리 작업을 권장합니다.",
+    "MVP에서는 이 에셋팩으로 컴포넌트 구조와 상태 매핑을 먼저 잡는 용도로 사용하기 좋습니다."
+  ]
+}

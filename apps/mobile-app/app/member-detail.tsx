@@ -43,6 +43,11 @@ function categoryLabel(category: PastoralRecord["category"]) {
 
 const STATUS_OPTIONS = ["안정", "관심", "결석", "기도", "긴급돌봄"] as const;
 const HIDDEN_STATUS_VALUES = new Set(["등록", "등록(동기화중)", "등록(동기화실패)", "안정"]);
+type MemberQuestIntent = "pray-one-member" | "record-check-in";
+
+function normalizeQuestIntent(value: unknown): MemberQuestIntent | null {
+  return typeof value === "string" && (value === "pray-one-member" || value === "record-check-in") ? value : null;
+}
 
 export default function MemberDetailScreen() {
   const params = useLocalSearchParams<{
@@ -55,6 +60,7 @@ export default function MemberDetailScreen() {
     prayerRequest?: string;
     careMemo?: string;
     followUpMemo?: string;
+    quest?: string;
   }>();
 
   const [name, setName] = useState(params.name ?? "");
@@ -71,6 +77,7 @@ export default function MemberDetailScreen() {
   const [pastoralRecords, setPastoralRecords] = useState<PastoralRecord[]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSavedStateRef = useRef(params.state ?? "");
+  const questIntent = normalizeQuestIntent(params.quest);
 
   const id = typeof params.id === "string" ? params.id : "";
 
@@ -102,6 +109,22 @@ export default function MemberDetailScreen() {
     };
     void hydrate();
   }, [id]);
+
+  useEffect(() => {
+    if (!questIntent) return;
+
+    if (questIntent === "pray-one-member") {
+      setState((current) => (current && current !== "등록" ? current : "기도"));
+      setPrayerRequest((current) => current || "오늘 이 목원을 위해 기도했습니다.");
+      setNextAction((current) => current && current !== "다음 액션 미정" ? current : "다음 모임 전 기도제목 확인");
+      return;
+    }
+
+    setState((current) => (current && current !== "등록" ? current : "관심"));
+    setCareMemo((current) => current || "오늘 안부를 확인했습니다.");
+    setFollowUpMemo((current) => current || "필요하면 이번 주 안에 한 번 더 연락하기");
+    setNextAction((current) => current && current !== "다음 액션 미정" ? current : "이번 주 안부 후속 확인");
+  }, [questIntent]);
 
   const saveLocalOverride = async (cache: MemberLocalCache, next: {
     name: string;
@@ -350,6 +373,17 @@ export default function MemberDetailScreen() {
             </View>
           </View>
         </View>
+
+        {questIntent ? (
+          <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "rgba(255,210,125,0.42)", backgroundColor: "rgba(61,43,20,0.48)", padding: 10, gap: 4 }}>
+            <Text style={{ color: "#fff0c7", fontSize: 12, fontWeight: "900" }}>
+              {questIntent === "pray-one-member" ? "오늘의 목양 퀘스트: 기도 기록" : "오늘의 목양 퀘스트: 안부 연락 기록"}
+            </Text>
+            <Text style={{ color: "rgba(255,240,199,0.76)", fontSize: 11, lineHeight: 16 }}>
+              내용을 확인하고 저장하면 최근 목양 기록에 남습니다.
+            </Text>
+          </View>
+        ) : null}
 
         <View style={{ marginTop: 10, borderRadius: 12, borderWidth: 1, borderColor: "#3a3a3a", backgroundColor: "#121212", padding: 10, gap: 10 }}>
           <View style={{ gap: 4 }}>

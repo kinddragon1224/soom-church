@@ -1,0 +1,184 @@
+{
+  "asset_pack": "mokjangworld_jesus_npc_pose_pack_v1",
+  "source": "mokjangworld_jesus_npc_assets_v0.zip",
+  "style": "pixel-art inspired collectible mobile RPG NPC",
+  "note": "v1 export normalizes transparent background, canvas size, outer margin, and foot baseline for app use.",
+  "sizes": {
+    "master": "512x512",
+    "app": "256x256",
+    "thumbnail": "128x128"
+  },
+  "defaultPose": "idle_welcome",
+  "stateMap": {
+    "idle": "idle_welcome",
+    "bless": "bless_pray",
+    "teach": "teach_walk",
+    "guide": "guide_walk",
+    "concern": "concern_sit",
+    "joy": "joy_celebrate"
+  },
+  "assets": [
+    {
+      "id": "jesus_npc_01_idle_welcome",
+      "pose": "idle_welcome",
+      "mood": "welcome",
+      "trigger": "home_idle",
+      "message": "오늘도 목장을 함께 돌보자.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_01_idle_welcome_512.png",
+        "app": "jesus_npc_01_idle_welcome_256.png",
+        "thumbnail": "jesus_npc_01_idle_welcome_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_02_bless_pray",
+      "pose": "bless_pray",
+      "mood": "blessing",
+      "trigger": "quest_prayer_done",
+      "message": "기도의 마음이 잘 심겼어.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_02_bless_pray_512.png",
+        "app": "jesus_npc_02_bless_pray_256.png",
+        "thumbnail": "jesus_npc_02_bless_pray_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_03_teach_walk",
+      "pose": "teach_walk",
+      "mood": "teaching",
+      "trigger": "guide_teach",
+      "message": "작은 순종이 목장을 자라게 해.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_03_teach_walk_512.png",
+        "app": "jesus_npc_03_teach_walk_256.png",
+        "thumbnail": "jesus_npc_03_teach_walk_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_04_guide_walk",
+      "pose": "guide_walk",
+      "mood": "guide",
+      "trigger": "daily_quest_start",
+      "message": "오늘의 목양 퀘스트를 살펴보자.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_04_guide_walk_512.png",
+        "app": "jesus_npc_04_guide_walk_256.png",
+        "thumbnail": "jesus_npc_04_guide_walk_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_05_walk_01",
+      "pose": "walk_01",
+      "mood": "walk",
+      "trigger": "ambient_walk_01",
+      "message": "천천히 한 사람씩 살피자.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_05_walk_01_512.png",
+        "app": "jesus_npc_05_walk_01_256.png",
+        "thumbnail": "jesus_npc_05_walk_01_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_06_concern_sit",
+      "pose": "concern_sit",
+      "mood": "concern",
+      "trigger": "care_needed",
+      "message": "마음에 걸리는 사람을 먼저 떠올려보자.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_06_concern_sit_512.png",
+        "app": "jesus_npc_06_concern_sit_256.png",
+        "thumbnail": "jesus_npc_06_concern_sit_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_07_walk_02",
+      "pose": "walk_02",
+      "mood": "walk",
+      "trigger": "ambient_walk_02",
+      "message": "기록은 돌봄을 이어주는 길이야.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_07_walk_02_512.png",
+        "app": "jesus_npc_07_walk_02_256.png",
+        "thumbnail": "jesus_npc_07_walk_02_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_08_walk_03",
+      "pose": "walk_03",
+      "mood": "walk",
+      "trigger": "ambient_walk_03",
+      "message": "다음 모임을 위해 기도제목을 확인하자.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_08_walk_03_512.png",
+        "app": "jesus_npc_08_walk_03_256.png",
+        "thumbnail": "jesus_npc_08_walk_03_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    },
+    {
+      "id": "jesus_npc_09_joy_celebrate",
+      "pose": "joy_celebrate",
+      "mood": "joy",
+      "trigger": "quest_complete",
+      "message": "잘했어. 오늘의 돌봄이 목장을 밝히고 있어.",
+      "role": "fixed_home_npc",
+      "files": {
+        "master": "jesus_npc_09_joy_celebrate_512.png",
+        "app": "jesus_npc_09_joy_celebrate_256.png",
+        "thumbnail": "jesus_npc_09_joy_celebrate_128.png"
+      },
+      "layout": {
+        "canvas": "square",
+        "footBaselineY512": 468,
+        "horizontalMargin512": 54
+      }
+    }
+  ]
+}

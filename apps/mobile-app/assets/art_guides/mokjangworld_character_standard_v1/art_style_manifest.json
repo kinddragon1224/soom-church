@@ -1,0 +1,70 @@
+{
+  "asset_pack": "mokjangworld_unified_character_standard_v1",
+  "purpose": "예수님 NPC와 초보 목자 LV.1의 크기, 비율, 해상도, 스타일 통일 기준",
+  "canonical_rules": {
+    "canvas": "128x128 per character sprite",
+    "character_height": "about 104px from feet to top of head/hair",
+    "proportion": "2.5-head SD chibi",
+    "view": "3/4 front as default",
+    "baseline": "same foot baseline for all characters",
+    "outline": "warm dark brown 1-2px pixel outline",
+    "shadow": "same oval ground shadow under both characters",
+    "rendering": "clean mobile RPG pixel-art inspired, not painterly",
+    "palette": "warm pastoral cream/brown base, Jesus uses blue sash, shepherd uses beige/brown",
+    "background": "transparent PNG for actual app assets",
+    "exports": [
+      "96x96",
+      "128x128",
+      "256x256",
+      "512x512"
+    ]
+  },
+  "character_roles": {
+    "jesus_npc": {
+      "role": "fixed NPC / guide / comfort / blessing",
+      "not_allowed": [
+        "level",
+        "exp",
+        "upgrade",
+        "gacha",
+        "evolution"
+      ],
+      "design_keep": [
+        "white robe",
+        "blue sash",
+        "brown hair",
+        "brown beard",
+        "gentle expression"
+      ]
+    },
+    "shepherd_lv1": {
+      "role": "growth player character",
+      "design_keep": [
+        "sheep wool hat",
+        "beige tunic",
+        "simple staff",
+        "small notebook pouch",
+        "gentle beginner expression"
+      ]
+    }
+  },
+  "required_pose_set": [
+    "idle",
+    "pray",
+    "bless",
+    "teach",
+    "walk",
+    "think",
+    "joy",
+    "concern"
+  ],
+  "files": {
+    "reference_jesus_main": "reference_jesus_main.png",
+    "reference_shepherd_main": "reference_shepherd_main.png",
+    "pose_grid_both_characters": "pose_grid_both_characters.png",
+    "turnaround_both_characters": "turnaround_both_characters.png",
+    "style_guide": "style_guide.png",
+    "codex_instruction_visual": "codex_instruction_visual.png"
+  },
+  "note": "이 ZIP은 기준 시트/가이드용입니다. 최종 앱용 포즈 PNG는 이 기준에 맞춰 다시 생성하거나 기존 에셋을 리디자인해야 합니다."
+}

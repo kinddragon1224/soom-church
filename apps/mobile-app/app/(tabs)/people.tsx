@@ -1,12 +1,30 @@
 import { useCallback, useMemo, useState } from "react";
 import { Alert, Image, Pressable, SafeAreaView, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 
 import { createMember } from "../../lib/member-manage-source";
 import { applyMemberLocalCache, getMemberLocalCache, setMemberLocalCache, withAddedMember, type LocalMember, type MemberLocalCache } from "../../lib/member-local-cache";
 import { useWorldStore } from "../../lib/world-store";
 
 type MemberFilter = "전체" | "긴급" | "결석" | "기도" | "관심";
+type PeopleQuestIntent = "pray-one-member" | "record-check-in";
+
+const PEOPLE_QUEST_GUIDE: Record<PeopleQuestIntent, { title: string; body: string; filter: MemberFilter }> = {
+  "pray-one-member": {
+    title: "기도할 목원을 선택하세요",
+    body: "카드를 누르면 상세 화면의 기도제목 기록으로 이어집니다.",
+    filter: "기도",
+  },
+  "record-check-in": {
+    title: "안부 연락할 목원을 선택하세요",
+    body: "카드를 누르면 돌봄 메모와 후속 연락 기록으로 이어집니다.",
+    filter: "관심",
+  },
+};
+
+function normalizeQuestIntent(value: unknown): PeopleQuestIntent | null {
+  return typeof value === "string" && value in PEOPLE_QUEST_GUIDE ? (value as PeopleQuestIntent) : null;
+}
 
 function statusStars(state: string) {
   if (state.includes("긴급") || state.includes("돌봄") || state.includes("후속")) return 4;
@@ -89,8 +107,11 @@ function getShortNextAction(member: LocalMember) {
 }
 
 export default function PeopleScreen() {
+  const params = useLocalSearchParams<{ quest?: string }>();
   const { snapshot, refresh } = useWorldStore();
   const { width } = useWindowDimensions();
+  const questIntent = normalizeQuestIntent(params.quest);
+  const questGuide = questIntent ? PEOPLE_QUEST_GUIDE[questIntent] : null;
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -112,6 +133,15 @@ export default function PeopleScreen() {
         mounted = false;
       };
     }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (questGuide) {
+        setFilter(questGuide.filter);
+        setPage(1);
+      }
+    }, [questGuide])
   );
 
   const remoteMembers: LocalMember[] = useMemo(
@@ -243,6 +273,13 @@ export default function PeopleScreen() {
         <Text style={{ color: "#f5f5f5", fontSize: 26, fontWeight: "700", marginTop: 4 }}>목원 카드</Text>
         <Text style={{ color: "rgba(245,245,245,0.72)", fontSize: 12, marginTop: 6 }}>이번 주 돌봄이 필요한 목원을 먼저 보여줍니다.</Text>
 
+        {questGuide ? (
+          <View style={{ marginTop: 12, borderRadius: 14, borderWidth: 1, borderColor: "rgba(255,210,125,0.46)", backgroundColor: "rgba(61,43,20,0.72)", padding: 12, gap: 5 }}>
+            <Text style={{ color: "#fff0c7", fontSize: 13, fontWeight: "900" }}>{questGuide.title}</Text>
+            <Text style={{ color: "rgba(255,240,199,0.78)", fontSize: 11, lineHeight: 16 }}>{questGuide.body}</Text>
+          </View>
+        ) : null}
+
         <View style={{ marginTop: 12, borderRadius: 12, borderWidth: 1, borderColor: "#2f2f2f", backgroundColor: "#141414", padding: 12, gap: 8 }}>
           <Text style={{ color: "#f1ddb0", fontSize: 12, fontWeight: "700" }}>{summary.text}</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
@@ -308,6 +345,7 @@ export default function PeopleScreen() {
                         prayerRequest: member.prayerRequest,
                         careMemo: member.careMemo,
                         followUpMemo: member.followUpMemo,
+                        quest: questIntent ?? undefined,
                       },
                     });
                   }}

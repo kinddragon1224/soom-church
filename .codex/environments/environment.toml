@@ -1,0 +1,21 @@
+[actions]
+
+[[actions.buttons]]
+name = "Run Mobile"
+command = "apps/mobile-app/script/build_and_run.sh"
+
+[[actions.buttons]]
+name = "Run Mobile Tunnel"
+command = "apps/mobile-app/script/build_and_run.sh --tunnel"
+
+[[actions.buttons]]
+name = "Run Mobile LAN"
+command = "apps/mobile-app/script/build_and_run.sh --lan"
+
+[[actions.buttons]]
+name = "Run Mobile Tailscale"
+command = "apps/mobile-app/script/build_and_run.sh --tailscale"
+
+[[actions.buttons]]
+name = "Run Mobile Web"
+command = "apps/mobile-app/script/build_and_run.sh --web"
