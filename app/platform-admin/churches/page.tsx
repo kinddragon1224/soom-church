@@ -142,7 +142,7 @@ export default async function PlatformAdminChurchesPage() {
         }
       : {
           label: "방금 온보딩",
-          title: "연결된 워크스페이스 없음",
+          title: "연결된 Lab 공간 없음",
           note: "최근 온보딩 데이터가 아직 없습니다.",
           href: undefined,
           cta: "대기",
@@ -157,8 +157,8 @@ export default async function PlatformAdminChurchesPage() {
         }
       : {
           label: "체험중 확인",
-          title: "체험중 워크스페이스 없음",
-          note: "지금은 trial 상태 워크스페이스가 없습니다.",
+          title: "체험중 Lab 공간 없음",
+          note: "지금은 trial 상태 Lab 공간이 없습니다.",
           href: undefined,
           cta: "대기",
         },
@@ -166,14 +166,14 @@ export default async function PlatformAdminChurchesPage() {
       ? {
           label: "데이터 비어 있음",
           title: emptyWorkspace.name,
-          note: `${emptyWorkspace.team} · 교인 데이터 0명 · ${emptyWorkspace.setupNote}`,
+          note: `${emptyWorkspace.team} · 목원 데이터 0명 · ${emptyWorkspace.setupNote}`,
           href: emptyWorkspace.membersHref,
           cta: "사람 보기",
         }
       : {
           label: "데이터 비어 있음",
-          title: "교인 데이터 0명 없음",
-          note: "최근 50개 워크스페이스는 모두 교인 데이터가 있습니다.",
+          title: "목원 데이터 0명 없음",
+          note: "최근 50개 Lab 공간은 모두 목원 데이터가 있습니다.",
           href: undefined,
           cta: "완료",
         },
@@ -181,14 +181,14 @@ export default async function PlatformAdminChurchesPage() {
       ? {
           label: "지금 열어볼 곳",
           title: attentionWorkspace.name,
-          note: `${attentionWorkspace.planStatusLabel} · ${attentionWorkspace.members === 0 ? "교인 데이터 없음" : `교인 ${attentionWorkspace.members}명`} · ${attentionWorkspace.isActive ? "운영중" : "비활성"}`,
+          note: `${attentionWorkspace.planStatusLabel} · ${attentionWorkspace.members === 0 ? "목원 데이터 없음" : `목원 ${attentionWorkspace.members}명`} · ${attentionWorkspace.isActive ? "운영중" : "비활성"}`,
           href: `/platform-admin/churches/${attentionWorkspace.id}`,
           cta: "상세 보기",
         }
       : {
           label: "지금 열어볼 곳",
           title: "긴급 확인 대상 없음",
-          note: "체험, 비활성, 빈 데이터 워크스페이스가 없습니다.",
+          note: "체험, 비활성, 빈 데이터 Lab 공간이 없습니다.",
           href: undefined,
           cta: "안정",
         },
@@ -203,7 +203,7 @@ export default async function PlatformAdminChurchesPage() {
     {
       label: "빈 데이터",
       value: emptyCount,
-      note: "교인 0명 워크스페이스",
+      note: "목원 0명 Lab 공간",
     },
     {
       label: "legacy",
@@ -222,9 +222,9 @@ export default async function PlatformAdminChurchesPage() {
       <div className="rounded-[28px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PLATFORM / CHURCHES</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#111111]">교회 워크스페이스 조회</h2>
-            <p className="mt-2 text-sm text-[#5f564b]">온보딩 입력값, 현재 플랜, 운영 상태를 한 줄 흐름으로 빠르게 보는 관리자 화면.</p>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">LAB / SPACES</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#111111]">목장월드 Lab 공간 조회</h2>
+            <p className="mt-2 text-sm text-[#5f564b]">온보딩 입력값, 현재 플랜, 운영 상태를 한 줄 흐름으로 빠르게 보는 관리자 화면입니다.</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs text-[#8C7A5B]">
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">최근 50개</span>
@@ -238,8 +238,8 @@ export default async function PlatformAdminChurchesPage() {
       <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
         <div className="flex flex-col gap-3 border-b border-[#efe7da] pb-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">WORKSPACE LIST</p>
-            <h3 className="mt-2 text-lg font-semibold text-[#111111]">온보딩 기준으로 보는 교회 목록</h3>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">LAB SPACE LIST</p>
+            <h3 className="mt-2 text-lg font-semibold text-[#111111]">온보딩 기준으로 보는 Lab 공간 목록</h3>
           </div>
           <p className="text-xs text-[#8C7A5B]">설명보다 상태·버튼·메모 우선</p>
         </div>
@@ -248,12 +248,12 @@ export default async function PlatformAdminChurchesPage() {
           <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
             <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">ACTIVE</p>
             <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{activeCount}</p>
-            <p className="mt-1 text-xs text-[#8c7a5b]">현재 운영중인 워크스페이스</p>
+            <p className="mt-1 text-xs text-[#8c7a5b]">현재 운영중인 Lab 공간</p>
           </div>
           <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
             <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">INACTIVE</p>
             <p className="mt-2 text-2xl font-semibold tracking-[-0.05em] text-[#111111]">{inactiveCount}</p>
-            <p className="mt-1 text-xs text-[#8c7a5b]">비활성 전환된 워크스페이스</p>
+            <p className="mt-1 text-xs text-[#8c7a5b]">비활성 전환된 Lab 공간</p>
           </div>
           <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] px-4 py-3">
             <p className="text-[11px] tracking-[0.16em] text-[#9a8b7a]">TRIAL</p>
@@ -347,7 +347,7 @@ export default async function PlatformAdminChurchesPage() {
                     <span className="rounded-full border border-[#e8e0d4] bg-white px-2.5 py-1">{row.createdFrom}</span>
                   </div>
                   <p className="mt-2 line-clamp-1 text-sm text-[#3f382f]">{row.goal}</p>
-                  <p className="mt-1 text-xs text-[#8c7a5b]">멤버십 {row.memberships} · 교인 데이터 {row.members}</p>
+                  <p className="mt-1 text-xs text-[#8c7a5b]">멤버십 {row.memberships} · 목원 데이터 {row.members}</p>
                 </div>
 
                 <div>

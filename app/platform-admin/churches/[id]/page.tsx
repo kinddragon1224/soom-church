@@ -74,7 +74,7 @@ export default async function PlatformAdminChurchDetailPage({
       <section className="rounded-[28px] border border-[#e1d7c7] bg-[linear-gradient(135deg,#10192d_0%,#17233d_55%,#243252_100%)] p-6 text-white shadow-[0_18px_50px_rgba(15,23,42,0.16)] sm:p-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.2em] text-white/46">CHURCH DETAIL</p>
+            <p className="text-[11px] tracking-[0.2em] text-white/46">LAB SPACE DETAIL</p>
             <h1 className="mt-3 text-[2.2rem] font-semibold leading-[0.98] tracking-[-0.06em] text-white">{church.name}</h1>
             <p className="mt-3 text-sm text-white/66">{church.slug} · {church.timezone}</p>
           </div>
@@ -96,7 +96,7 @@ export default async function PlatformAdminChurchDetailPage({
             {searchParams?.saved === "1" ? <span className="rounded-full bg-[#eefbf3] px-3 py-1 text-xs font-semibold text-[#2d7a46]">저장 완료</span> : null}
           </div>
           <form action={updatePlatformChurch.bind(null, church.id)} className="mt-4 grid gap-3">
-            <label className="text-sm font-medium text-[#3f3528]">교회 이름<input name="name" defaultValue={church.name} className="mt-1 w-full rounded-[14px] border border-[#ddd5c8] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
+            <label className="text-sm font-medium text-[#3f3528]">목장월드 이름<input name="name" defaultValue={church.name} className="mt-1 w-full rounded-[14px] border border-[#ddd5c8] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
             <label className="text-sm font-medium text-[#3f3528]">시간대<input name="timezone" defaultValue={church.timezone} className="mt-1 w-full rounded-[14px] border border-[#ddd5c8] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
             <label className="text-sm font-medium text-[#3f3528]">우선순위 태그<input name="priorityTag" defaultValue={church.priorityTag ?? ""} placeholder="예: trial-우선, legacy-정리" className="mt-1 w-full rounded-[14px] border border-[#ddd5c8] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
             <label className="text-sm font-medium text-[#3f3528]">운영 메모<textarea name="adminNote" defaultValue={church.adminNote ?? onboarding?.setupNote ?? ""} className="mt-1 min-h-[120px] w-full rounded-[14px] border border-[#ddd5c8] bg-[#fcfbf8] px-3 py-2.5 text-sm text-[#111111]" /></label>
@@ -109,7 +109,7 @@ export default async function PlatformAdminChurchDetailPage({
           <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">SUMMARY</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4"><p className="text-xs text-[#8C7A5B]">교인 수</p><p className="mt-2 text-2xl font-semibold">{church._count.members}</p></div>
+              <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4"><p className="text-xs text-[#8C7A5B]">목원 수</p><p className="mt-2 text-2xl font-semibold">{church._count.members}</p></div>
               <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4"><p className="text-xs text-[#8C7A5B]">멤버십</p><p className="mt-2 text-2xl font-semibold">{church._count.memberships}</p></div>
               <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4"><p className="text-xs text-[#8C7A5B]">신청</p><p className="mt-2 text-2xl font-semibold">{church._count.applications}</p></div>
               <div className="rounded-[18px] border border-[#ede6d8] bg-[#fcfbf8] p-4"><p className="text-xs text-[#8C7A5B]">공지</p><p className="mt-2 text-2xl font-semibold">{church._count.notices}</p></div>
@@ -131,7 +131,7 @@ export default async function PlatformAdminChurchDetailPage({
       <section className="grid gap-4 xl:grid-cols-2">
         <section className="rounded-[24px] border border-[#e6dfd5] bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[#111111]">최근 등록 성도</h2>
+            <h2 className="text-lg font-semibold text-[#111111]">최근 등록 목원</h2>
             <Link href={`/app/${church.slug}/members`} className="text-sm text-[#8C6A2E]">사람 보기</Link>
           </div>
           <div className="mt-4 grid gap-3">

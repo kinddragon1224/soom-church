@@ -41,7 +41,7 @@ export type MokjangPilotData = {
 
 const fallbackData: MokjangPilotData = {
   groupName: "G.I.D.O 목장",
-  prayerTitle: "이번 주 워크스페이스",
+  prayerTitle: "이번 주 목장월드",
   meetingDate: "2026-04-07",
   households: [],
   updates: [],

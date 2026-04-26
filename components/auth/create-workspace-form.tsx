@@ -27,13 +27,13 @@ export function CreateWorkspaceForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data?.error || "워크스페이스 생성 중 오류가 났어.");
+        throw new Error(data?.error || "목장월드 공간을 만드는 중 오류가 발생했습니다.");
       }
 
       router.push(data.redirectTo || "/app");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "워크스페이스 생성 중 오류가 났어.");
+      setError(err instanceof Error ? err.message : "목장월드 공간을 만드는 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -43,7 +43,7 @@ export function CreateWorkspaceForm() {
     <form onSubmit={handleSubmit} className="grid gap-4">
       <div className="grid gap-2">
         <label htmlFor="workspace-name" className="text-sm font-medium text-[#3f372d]">
-          목장 또는 교회 이름
+          목장월드 이름
         </label>
         <input
           id="workspace-name"
@@ -60,7 +60,7 @@ export function CreateWorkspaceForm() {
         disabled={isSubmitting}
         className="inline-flex h-12 items-center justify-center rounded-[16px] bg-[#2e2419] px-5 text-sm font-medium text-white transition hover:bg-[#473425] disabled:opacity-60"
       >
-        {isSubmitting ? "만드는 중..." : "내 워크스페이스 만들기"}
+        {isSubmitting ? "만드는 중..." : "내 목장월드 만들기"}
       </button>
 
       {error ? <p className="text-sm text-[#b24b3f]">{error}</p> : null}

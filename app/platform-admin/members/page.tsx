@@ -13,15 +13,15 @@ export default async function PlatformAdminMembersPage() {
   return (
     <section className="space-y-4 text-[#111111]">
       <div>
-        <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PLATFORM / MEMBERS</p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em]">교인 삭제 관리</h2>
+        <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">LAB / MEMBERS</p>
+        <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em]">목원 삭제 관리</h2>
       </div>
       <div className="overflow-x-auto rounded-[24px] border border-[#e6dfd5] bg-white shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
         <table className="min-w-full text-sm">
           <thead className="bg-[#FBF9F4] text-[#8C7A5B]">
             <tr>
               <th className="px-4 py-3 text-left font-medium">이름</th>
-              <th className="px-4 py-3 text-left font-medium">교회</th>
+              <th className="px-4 py-3 text-left font-medium">Lab 공간</th>
               <th className="px-4 py-3 text-left font-medium">상태</th>
               <th className="px-4 py-3 text-left font-medium">완전 삭제</th>
             </tr>

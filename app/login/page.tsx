@@ -32,26 +32,26 @@ export default async function LoginPage({
     <main className="min-h-screen bg-[linear-gradient(180deg,#fbfaf7_0%,#f2eadf_100%)] px-4 py-8 text-[#171717] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.05fr)_440px] lg:items-center">
         <section className="rounded-[36px] border border-[#e8ddcf] bg-[linear-gradient(135deg,#fffaf2_0%,#f7efe2_52%,#efe4d4_100%)] p-7 shadow-[0_24px_60px_rgba(66,38,12,0.08)] sm:p-9">
-          <p className="text-[10px] tracking-[0.18em] text-[#9a8366]">SOOM / LOGIN</p>
+          <p className="text-[10px] tracking-[0.18em] text-[#9a8366]">MOKJANG WORLD / LOGIN</p>
           <h1 className="mt-4 text-[2.2rem] font-semibold tracking-[-0.05em] text-[#1f1a16] sm:text-[2.8rem]">
-            목장 운영을 위한 따뜻한 워크스페이스.
+            목장월드 Lab에 들어갑니다.
           </h1>
           <p className="mt-4 max-w-[640px] text-sm leading-7 text-[#5f564b] sm:text-[15px]">
-            숨은 채팅으로 기록하고, 월드로 상태를 보고, 목양 공간으로 사람을 돌보는 운영 공간이야. 로그인하면 바로 네 공동체만의 공간으로 들어가게 된다.
+            SOOM의 공개 웹은 AI 시대 진로 컨설팅 브랜드로 운영하고, 이 로그인은 별도로 실험 중인 목장월드 모바일 프로토타입 접근에 사용합니다.
           </p>
 
           <div className="mt-8 grid gap-3 text-sm text-[#5b5147] sm:grid-cols-3">
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">월드</p>
-              <p className="mt-2 leading-6">우리 목장 상태를 공간처럼 보고 바로 들어간다.</p>
+              <p className="font-medium text-[#2f2416]">Lab</p>
+              <p className="mt-2 leading-6">정식 상품과 분리해 작은 실험으로 검증합니다.</p>
             </div>
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
               <p className="font-medium text-[#2f2416]">목양</p>
-              <p className="mt-2 leading-6">사람, 가정, 기도, 심방 흐름을 이어서 본다.</p>
+              <p className="mt-2 leading-6">목원 안부, 기도, 출석 기록을 돌봄 흐름으로 봅니다.</p>
             </div>
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">기록</p>
-              <p className="mt-2 leading-6">입력한 내용이 운영 흐름으로 계속 쌓인다.</p>
+              <p className="font-medium text-[#2f2416]">월드</p>
+              <p className="mt-2 leading-6">기록이 퀘스트와 성장 피드백으로 이어집니다.</p>
             </div>
           </div>
         </section>
@@ -60,7 +60,7 @@ export default async function LoginPage({
           <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">CONTINUE WITH GOOGLE</p>
           <h2 className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em] text-[#1c1713]">로그인</h2>
           <p className="mt-3 text-sm leading-6 text-[#5f564b]">
-            지금은 구글 로그인만 지원해. 로그인 후엔 기존 워크스페이스로 들어가거나, 처음이면 새 공간을 만들게 돼.
+            지금은 구글 로그인만 지원합니다. 로그인 후에는 목장월드 Lab 또는 공동체 온보딩 화면으로 이동합니다.
           </p>
 
           {googleConfigured ? (

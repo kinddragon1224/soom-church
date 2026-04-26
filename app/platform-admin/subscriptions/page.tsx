@@ -12,10 +12,10 @@ export default async function PlatformAdminSubscriptionsPage() {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold">구독 / 플랜 현황</h2>
+      <h2 className="text-lg font-semibold">목장월드 Lab 플랜 현황</h2>
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <table className="min-w-[760px]">
-          <thead><tr><th>교회</th><th>플랜</th><th>상태</th><th>트라이얼 종료</th><th>청구 종료</th></tr></thead>
+          <thead><tr><th>Lab 공간</th><th>플랜</th><th>상태</th><th>트라이얼 종료</th><th>청구 종료</th></tr></thead>
           <tbody>
             {subscriptions.map((s) => (
               <tr key={s.id}>

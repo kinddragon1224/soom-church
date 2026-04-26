@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { slugifyKorean } from "@/lib/slug";
 
 async function getUniqueSlug(baseName: string) {
-  const baseSlug = slugifyKorean(baseName) || "soom-workspace";
+  const baseSlug = slugifyKorean(baseName) || "mokjang-world";
 
   const existing = await prisma.church.findMany({
     where: { slug: { startsWith: baseSlug } },
@@ -28,14 +28,14 @@ export async function POST(request: Request) {
   const userId = session?.user?.id;
 
   if (!userId) {
-    return NextResponse.json({ error: "로그인이 필요해." }, { status: 401 });
+    return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
 
   const body = await request.json().catch(() => null);
   const name = String(body?.name ?? "").trim();
 
   if (!name) {
-    return NextResponse.json({ error: "이름을 입력해줘." }, { status: 400 });
+    return NextResponse.json({ error: "목장월드 이름을 입력해 주세요." }, { status: 400 });
   }
 
   const existingMembership = await prisma.churchMembership.findFirst({

@@ -126,14 +126,14 @@ export default async function PlatformAdminUsersPage() {
       <div className="rounded-[28px] border border-[#e5dccd] bg-[#fbfaf6] p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">PLATFORM / USERS</p>
+            <p className="text-[11px] tracking-[0.18em] text-[#9a8b7a]">LAB / USERS</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-[#111111]">가입 사용자 조회</h2>
-            <p className="mt-2 text-sm text-[#5f564b]">최근 가입 사용자와 소속 워크스페이스, 온보딩 메타까지 한 줄 흐름으로 바로 확인하는 운영 화면.</p>
+            <p className="mt-2 text-sm text-[#5f564b]">최근 가입 사용자와 연결된 목장월드 Lab 공간, 온보딩 메타를 한 줄 흐름으로 확인하는 운영 화면입니다.</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs text-[#8C7A5B]">
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">최근 50명</span>
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">활성 계정 {activeUserCount}</span>
-            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">워크스페이스 연결 {linkedUserCount}</span>
+            <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">Lab 공간 연결 {linkedUserCount}</span>
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">온보딩 메타 연결 {onboardingLinkedCount}</span>
             <span className="rounded-full border border-[#eadfcd] bg-white px-3 py-1.5">다중 소속 {multiWorkspaceCount}</span>
           </div>
@@ -152,7 +152,7 @@ export default async function PlatformAdminUsersPage() {
         <div className="mt-4 grid gap-2">
           <div className="hidden grid-cols-[minmax(0,1.05fr)_minmax(0,1.5fr)_120px_130px] gap-3 px-3 text-[11px] tracking-[0.16em] text-[#9a8b7a] lg:grid">
             <span>사용자</span>
-            <span>소속 워크스페이스 / 온보딩 메타</span>
+            <span>소속 Lab 공간 / 온보딩 메타</span>
             <span>주 역할</span>
             <span className="text-right">계정 상태</span>
           </div>
@@ -167,7 +167,7 @@ export default async function PlatformAdminUsersPage() {
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-semibold text-[#111111]">{row.name}</p>
                     <span className="rounded-full border border-[#e6dfd5] bg-white px-2.5 py-1 text-[11px] text-[#8C7A5B]">
-                      {row.workspaceCount === 0 ? "미연결" : `${row.workspaceCount}개 워크스페이스`}
+                      {row.workspaceCount === 0 ? "미연결" : `${row.workspaceCount}개 Lab 공간`}
                     </span>
                   </div>
                   <p className="mt-1 truncate text-xs text-[#7a6d5c]">{row.email}</p>
@@ -204,7 +204,7 @@ export default async function PlatformAdminUsersPage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-[#8c7a5b]">아직 소속된 워크스페이스 없음</p>
+                    <p className="text-sm text-[#8c7a5b]">아직 소속된 Lab 공간 없음</p>
                   )}
                   <p className="mt-2 text-xs text-[#8c7a5b]">활성 멤버십 {row.activeMembershipCount}개 · 온보딩 메타 연결 {row.onboardingMembershipCount}개</p>
                 </div>
