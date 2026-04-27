@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 type SiteHeaderProps = {
   theme?: "light" | "dark";
-  current?: "home" | "about" | "diagnosis" | "contact" | "workspace" | "pricing" | "guides";
+  current?: "home" | "about" | "contact" | "workspace" | "pricing" | "guides";
   ctaHref?: string;
   ctaLabel?: string;
   loggedIn?: boolean;
@@ -16,7 +16,6 @@ type SiteHeaderProps = {
 const navItems = [
   { href: "/", label: "홈", key: "home" },
   { href: "/about", label: "진단 관점", key: "about" },
-  { href: "/diagnosis", label: "진단하기", key: "diagnosis" },
   { href: "/contact", label: "30분 방향 진단", key: "contact" },
 ] as const;
 
@@ -39,9 +38,9 @@ export default function SiteHeader({ theme = "light", current, ctaHref = "/conta
 
   return (
     <>
-      <header className="relative z-20 flex min-w-0 items-center justify-between gap-3">
-        <Link href="/" className={`shrink-0 text-[1.9rem] font-black tracking-[-0.1em] sm:text-[2.35rem] ${isDark ? "text-white" : "text-[#080b12]"}`}>soom</Link>
-        <nav className={`hidden min-w-0 items-center gap-7 text-sm font-bold md:flex ${navClass}`}>
+      <header className="relative z-20 flex items-center justify-between gap-4">
+        <Link href="/" className={`text-[1.9rem] font-black tracking-[-0.1em] sm:text-[2.35rem] ${isDark ? "text-white" : "text-[#080b12]"}`}>soom</Link>
+        <nav className={`hidden items-center gap-7 text-sm font-bold md:flex ${navClass}`}>
           {navItems.map((item) => (
             <Link key={item.href} href={item.href} className={current === item.key ? activeClass : undefined}>
               {item.label}
