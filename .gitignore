@@ -160,3 +160,15 @@ ops/mokjang-world-hourly/PROMPT.txt
 
 # Private contact intake records
 ops/contact-inquiries/
+
+# Threads runtime/generated artifacts
+ops/threads/queue/*.json
+ops/threads/reports/*.json
+ops/threads/reports/*.md
+ops/threads/state/*
+ops/threads/audit/*
+ops/threads/quality/*
+ops/threads/research/*
+ops/threads/strategy/*
+ops/threads/logs/*
+ops/threads/manual-*.txt
