@@ -1,0 +1,332 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import {
+  aiToolCategories,
+  diagnosisAudiences,
+  diagnosisQuestions,
+  diagnosisResults,
+  resultPriority,
+  workFields,
+  type DiagnosisAudienceType,
+  type DiagnosisResultType,
+} from "@/components/diagnosis/diagnosis-data";
+
+type Answers = Partial<Record<number, DiagnosisResultType>>;
+
+function getResultType(answers: Answers): DiagnosisResultType {
+  const scores = resultPriority.reduce<Record<DiagnosisResultType, number>>((acc, type) => {
+    acc[type] = 0;
+    return acc;
+  }, {} as Record<DiagnosisResultType, number>);
+
+  Object.values(answers).forEach((type) => {
+    if (type) scores[type] += 1;
+  });
+
+  return resultPriority.reduce((winner, type) => {
+    return scores[type] > scores[winner] ? type : winner;
+  }, resultPriority[0]);
+}
+
+export function CareerDiagnosisFlow() {
+  const [audienceType, setAudienceType] = useState<DiagnosisAudienceType | null>(null);
+  const [answers, setAnswers] = useState<Answers>({});
+  const [showResult, setShowResult] = useState(false);
+
+  const answeredCount = Object.keys(answers).length;
+  const totalCount = diagnosisQuestions.length;
+  const progress = Math.round(((audienceType ? 1 : 0) + answeredCount) / (totalCount + 1) * 100);
+  const canShowResult = answeredCount === totalCount;
+  const resultType = useMemo(() => getResultType(answers), [answers]);
+  const result = diagnosisResults[resultType];
+  const audience = diagnosisAudiences.find((item) => item.type === audienceType);
+  const segmentReport = audienceType ? result.segmentReports[audienceType] : null;
+  const toolStarterPack = result.toolCategories.map((type) => aiToolCategories[type]);
+  const matchedWorkFields = result.workFields.map((type) => workFields[type]);
+  const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}`;
+
+  function selectAnswer(questionId: number, type: DiagnosisResultType) {
+    setAnswers((current) => ({ ...current, [questionId]: type }));
+  }
+
+  function resetDiagnosis() {
+    setAudienceType(null);
+    setAnswers({});
+    setShowResult(false);
+  }
+
+  if (showResult) {
+    return (
+      <section className="w-full max-w-[calc(100vw-40px)] min-w-0 overflow-hidden rounded-[34px] sm:max-w-full border border-white/10 bg-[#0d1117] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
+        <div className="flex flex-col gap-4 border-b border-white/10 pb-7 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">Diagnosis Result</p>
+            <h2 className="mt-3 break-words [overflow-wrap:anywhere] text-[2rem] font-black leading-[1] tracking-[-0.06em] text-white sm:text-[4rem]">
+              {result.title}
+            </h2>
+            {audience ? (
+              <p className="mt-3 text-sm font-bold text-white/54">
+                {audience.title} · {audience.resultLens}
+              </p>
+            ) : null}
+          </div>
+          <span className="w-fit rounded-full border border-[#73d6b6]/25 bg-[#73d6b6]/10 px-4 py-2 text-xs font-black text-[#bff4e4]">
+            8단계 완료
+          </span>
+        </div>
+
+        <p className="mt-7 max-w-3xl break-words text-base font-bold leading-8 text-white/78">
+          {segmentReport?.summary ?? result.summary}
+        </p>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          {[
+            ["현재 강점", result.strength],
+            ["막힌 지점", result.blocker],
+            ["AI 시대 도구 방향", result.aiDirection],
+            ["다음 행동 1개", segmentReport?.nextAction ?? result.nextAction],
+          ].map(([label, value]) => (
+            <article key={label} className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.045] p-5">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff6b35]">{label}</p>
+              <p className="mt-3 break-words text-sm font-bold leading-7 text-white/76">{value}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+          <article className="min-w-0 rounded-[26px] border border-[#ff6b35]/18 bg-[#ff6b35]/[0.07] p-5">
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff6b35]">AI Starter Routine</p>
+            <p className="mt-3 break-words text-sm font-bold leading-7 text-white/78">{result.aiRoutine}</p>
+            {audience ? (
+              <p className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs font-bold leading-6 text-white/56">
+                {audience.aiQuestion}
+              </p>
+            ) : null}
+          </article>
+          <article className="min-w-0 rounded-[26px] border border-white/10 bg-white/[0.045] p-5">
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#73d6b6]">30-Min Session Focus</p>
+            <p className="mt-3 break-words text-sm font-bold leading-7 text-white/78">{segmentReport?.consultationFocus ?? result.consultationFocus}</p>
+            <div className="mt-4 grid gap-2">
+              {result.preparation.map((item) => (
+                <div key={item} className="rounded-2xl border border-white/10 bg-[#050507]/45 px-4 py-3 text-xs font-bold leading-5 text-white/60">
+                  준비하면 좋은 것 · {item}
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+
+        <div className="mt-5 rounded-[30px] border border-white/10 bg-white/[0.035] p-5 sm:p-6">
+          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#ff6b35]">Soom Work Map</p>
+              <h3 className="mt-2 break-words text-2xl font-black tracking-[-0.05em] text-white">
+                가까운 일의 지도
+              </h3>
+            </div>
+            <p className="max-w-md text-xs font-bold leading-6 text-white/48">
+              NCS식 직무 분류를 초보자 언어로 바꾼 지도입니다. 직업명보다 먼저 “내가 어떤 일을 잘 다루는지”를 봅니다.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {matchedWorkFields.map((field, index) => (
+              <article key={field.type} className="min-w-0 rounded-[24px] border border-white/10 bg-[#050507]/55 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-black text-white">{index + 1}. {field.title}</p>
+                  <span className="rounded-full border border-[#ff6b35]/20 bg-[#ff6b35]/10 px-2.5 py-1 text-[10px] font-black text-[#ffb199]">
+                    match
+                  </span>
+                </div>
+                <p className="mt-3 text-xs font-bold leading-6 text-white/62">{field.plainDescription}</p>
+                <p className="mt-3 rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3 text-[11px] font-bold leading-5 text-white/46">
+                  {field.ncsHint}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {field.examplePaths.map((path) => (
+                    <span key={path} className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1.5 text-[10px] font-black text-white/58">
+                      {path}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-4 rounded-2xl border border-[#73d6b6]/15 bg-[#73d6b6]/[0.06] px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#bff4e4]">AI 첫 실험</p>
+                  <p className="mt-2 text-xs font-bold leading-6 text-white/72">{field.aiFirstMove}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-[30px] border border-white/10 bg-[#050507]/70 p-5 sm:p-6">
+          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#73d6b6]">AI Tool Starter Pack</p>
+              <h3 className="mt-2 break-words text-2xl font-black tracking-[-0.05em] text-white">
+                지금 써볼 AI 도구 3가지
+              </h3>
+            </div>
+            <p className="max-w-sm text-xs font-bold leading-6 text-white/48">
+              도구를 많이 아는 것보다, 내 상황에 맞는 첫 실험을 작게 해보는 것이 먼저입니다.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {toolStarterPack.map((tool) => (
+              <article key={tool.type} className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
+                <p className="text-xs font-black text-[#ff6b35]">{tool.title}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {tool.tools.map((name) => (
+                    <span key={name} className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] font-black text-white/66">
+                      {name}
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-4 text-xs font-bold leading-6 text-white/58">{tool.beginnerUse}</p>
+                <div className="mt-4 rounded-2xl border border-[#73d6b6]/15 bg-[#73d6b6]/[0.06] px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#bff4e4]">이번 주 실험</p>
+                  <p className="mt-2 text-xs font-bold leading-6 text-white/72">{tool.weeklyExperiment}</p>
+                </div>
+                <p className="mt-3 text-[11px] font-bold leading-5 text-white/42">
+                  상담에서: {tool.sessionSetup}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-8 rounded-[26px] border border-white/10 bg-[#050507] p-5">
+          <p className="text-sm leading-7 text-white/58">
+            이 진단은 상담 전 방향을 좁히기 위한 간단한 self-check입니다. 결과는 저장되거나 서버로 전송되지 않습니다.
+            KRIVET·커리어넷 등 공공 진로/직업 자료 관점을 참고해 해석합니다.
+          </p>
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href={contactHref}
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white"
+            >
+              {audience?.consultationCta ?? "내 상황에 맞게 점검받기"}
+            </Link>
+            <button
+              type="button"
+              onClick={resetDiagnosis}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/30 hover:bg-white/10"
+            >
+              다시 진단하기
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="w-full max-w-[calc(100vw-40px)] min-w-0 overflow-hidden rounded-[34px] sm:max-w-full border border-white/10 bg-[#0d1117] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
+      <div className="flex flex-col gap-5 border-b border-white/10 pb-7 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">3-minute self-check</p>
+          <h2 className="mt-3 break-all break-words [overflow-wrap:anywhere] text-[1.72rem] font-black leading-[1.04] tracking-[-0.055em] text-white sm:text-[3.7rem] sm:leading-[1]">
+            AI 시대 커리어 방향 진단
+          </h2>
+          <p style={{ overflowWrap: "anywhere", wordBreak: "break-all" }} className="mt-4 max-w-2xl break-words break-all [overflow-wrap:anywhere] text-sm leading-7 text-white/58">
+            먼저 현재 상황을 고르고, 7개 질문에 답하면 AI 활용 방향과 다음 행동 1개를 확인할 수 있습니다.
+          </p>
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center justify-between gap-4 text-xs font-black text-white/58">
+            <span>{(audienceType ? 1 : 0) + answeredCount} / {totalCount + 1}</span>
+            <span>{progress}%</span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10 lg:w-64">
+            <div className="h-full rounded-full bg-[#ff5b2e] transition-all" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-7 rounded-[28px] border border-white/10 bg-[#050507]/45 p-4 sm:p-5">
+        <div className="flex items-start gap-3">
+          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#73d6b6] text-xs font-black text-[#07110f]">
+            0
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="break-words text-base font-black leading-7 text-white">지금 어디에 가장 가까우신가요?</h3>
+            <p className="mt-1 text-sm leading-6 text-white/48">문항은 같아도 결과 리포트의 해석 기준이 달라집니다.</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {diagnosisAudiences.map((item) => {
+                const active = audienceType === item.type;
+                return (
+                  <button
+                    key={item.type}
+                    type="button"
+                    onClick={() => setAudienceType(item.type)}
+                    className={`min-w-0 rounded-[22px] border px-4 py-4 text-left transition ${
+                      active
+                        ? "border-[#73d6b6]/70 bg-[#73d6b6]/14 text-white shadow-[0_14px_32px_rgba(115,214,182,0.08)]"
+                        : "border-white/10 bg-white/[0.035] text-white/72 hover:border-[#73d6b6]/35 hover:bg-[#73d6b6]/10"
+                    }`}
+                  >
+                    <span className="block text-sm font-black">{item.title}</span>
+                    <span className="mt-2 block text-xs font-bold leading-5 text-white/52">{item.description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-7 grid gap-5">
+        {diagnosisQuestions.map((question) => (
+          <article key={question.id} className="min-w-0 overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.035] p-4 sm:p-5">
+            <div className="flex gap-3">
+              <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ff5b2e] text-xs font-black text-white">
+                {question.id}
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="break-words break-all [overflow-wrap:anywhere] text-base font-black leading-7 text-white">{question.title}</h3>
+                <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
+                  {question.options.map((option) => {
+                    const active = answers[question.id] === option.type;
+                    return (
+                      <button
+                        key={option.label}
+                        type="button"
+                        onClick={() => selectAnswer(question.id, option.type)}
+                        style={{ overflowWrap: "anywhere", whiteSpace: "normal", wordBreak: "break-all" }}
+                        className={`min-h-12 min-w-0 whitespace-normal break-all break-words [overflow-wrap:anywhere] rounded-2xl border px-4 py-3 text-left text-sm font-bold leading-6 transition ${
+                          active
+                            ? "border-[#ff6b35]/75 bg-[#ff6b35]/16 text-white shadow-[0_12px_32px_rgba(255,107,53,0.1)]"
+                            : "border-white/10 bg-[#050507]/45 text-white/70 hover:border-[#ff6b35]/40 hover:bg-[#ff6b35]/10"
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs leading-6 text-white/48">개인정보 입력 없이 브라우저 안에서만 결과를 계산합니다.</p>
+        <button
+          type="button"
+          disabled={!audienceType || !canShowResult}
+          onClick={() => setShowResult(true)}
+          className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          결과 보기
+        </button>
+      </div>
+    </section>
+  );
+}
+
+
+
+
+
+

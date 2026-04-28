@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import SiteHeader from "@/components/site-header";
 import { ConsultationInquiryForm } from "@/components/contact/consultation-inquiry-form";
 
@@ -43,7 +44,9 @@ export default function ContactPage() {
       <section>
         <div className="mx-auto grid w-full max-w-7xl min-w-0 gap-8 px-5 pb-20 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-28">
           <div className="w-full min-w-0 max-w-full rounded-[28px] border border-white/10 bg-[#0d1117] p-5 shadow-[0_28px_80px_rgba(0,0,0,0.24)] sm:p-8">
-            <ConsultationInquiryForm />
+            <Suspense fallback={<div className="min-h-[420px] rounded-[24px] border border-white/10 bg-white/[0.035] p-5 text-sm font-bold leading-7 text-white/62">방향 진단 신청 폼을 준비하고 있습니다.</div>}>
+              <ConsultationInquiryForm />
+            </Suspense>
           </div>
           <div className="grid min-w-0 gap-5 self-start">
             <div className="w-full min-w-0 max-w-full rounded-[28px] border border-white/10 bg-white/[0.045] p-5 sm:rounded-[34px] sm:p-8">

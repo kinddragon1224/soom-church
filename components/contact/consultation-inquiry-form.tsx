@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 const concernTypes = [
   "학생 진로/과목 선택이 막혔습니다",
@@ -14,7 +15,38 @@ const concernTypes = [
 const stages = ["학생/부모", "20대 커리어", "재직 중", "전환 준비", "40~50대 후반전 커리어"];
 const consultationTypes = ["30분 방향 진단", "학생 진로", "이력서/면접", "재취업/전직", "AI 커리어 적용"];
 
+const diagnosisResultLabels = {
+  direction: "방향 탐색형",
+  rebuild: "역량 재정렬형",
+  ai_tool: "AI 도구 활용형",
+  transition: "전환 준비형",
+} as const;
+
+const diagnosisDefaults: Record<keyof typeof diagnosisResultLabels, { concernType: string; stage: string; consultationType: string }> = {
+  direction: {
+    concernType: "아직 모르겠지만 지금 선택이 막혔습니다",
+    stage: "학생/부모",
+    consultationType: "30분 방향 진단",
+  },
+  rebuild: {
+    concernType: "이력서·면접에서 내 경험이 약해 보입니다",
+    stage: "20대 커리어",
+    consultationType: "이력서/면접",
+  },
+  ai_tool: {
+    concernType: "AI를 내 커리어에 어떻게 붙일지 모르겠습니다",
+    stage: "재직 중",
+    consultationType: "AI 커리어 적용",
+  },
+  transition: {
+    concernType: "재취업·전직 방향을 다시 잡고 싶습니다",
+    stage: "전환 준비",
+    consultationType: "재취업/전직",
+  },
+};
+
 type InquiryStatus = { type: "idle" } | { type: "success"; message: string; inquiryId?: string } | { type: "error"; message: string };
+type DiagnosisResultType = keyof typeof diagnosisResultLabels;
 
 const fieldClass = "min-h-12 w-full min-w-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-white outline-none placeholder:text-white/32 focus:border-[#ff6b35]/55";
 
@@ -24,11 +56,25 @@ function optionClass(active: boolean, shape: "pill" | "card" = "card") {
 }
 
 export function ConsultationInquiryForm() {
+  const searchParams = useSearchParams();
+  const source = searchParams.get("source") ?? "";
+  const rawDiagnosisType = searchParams.get("type") ?? "";
+  const diagnosisType = rawDiagnosisType in diagnosisResultLabels ? (rawDiagnosisType as DiagnosisResultType) : null;
+  const isDiagnosisLead = source === "diagnosis" && diagnosisType !== null;
+
   const [concernType, setConcernType] = useState(concernTypes[0]);
   const [stage, setStage] = useState(stages[0]);
   const [consultationType, setConsultationType] = useState(consultationTypes[0]);
   const [status, setStatus] = useState<InquiryStatus>({ type: "idle" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!diagnosisType) return;
+    const defaults = diagnosisDefaults[diagnosisType];
+    setConcernType(defaults.concernType);
+    setStage(defaults.stage);
+    setConsultationType(defaults.consultationType);
+  }, [diagnosisType]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,6 +91,8 @@ export function ConsultationInquiryForm() {
       message: String(formData.get("message") ?? "").trim(),
       referenceUrl: String(formData.get("referenceUrl") ?? "").trim(),
       preferredSchedule: String(formData.get("preferredSchedule") ?? "").trim(),
+      diagnosisSource: isDiagnosisLead ? "diagnosis" : "",
+      diagnosisResultType: diagnosisType ?? "",
       companyWebsite: String(formData.get("companyWebsite") ?? "").trim(),
     };
     try {
@@ -64,6 +112,12 @@ export function ConsultationInquiryForm() {
   }
 
   return <form onSubmit={handleSubmit} className="grid min-w-0 gap-8">
+    {isDiagnosisLead ? (
+      <div className="min-w-0 rounded-[24px] border border-[#ff6b35]/25 bg-[#ff6b35]/10 px-4 py-4 text-sm leading-7 text-white/76">
+        <p className="font-black text-white">진단 결과: {diagnosisResultLabels[diagnosisType]}</p>
+        <p className="mt-1">아래 신청서는 방금 본 결과를 기준으로 미리 정리해 두었습니다. 상황만 조금 더 적어주시면 방향 진단을 더 구체적으로 시작할 수 있습니다.</p>
+      </div>
+    ) : null}
     <div className="min-w-0"><label className="text-sm font-bold text-white">지금 막힌 선택은 무엇인가요?</label><div className="mt-4 flex min-w-0 flex-wrap gap-3">{concernTypes.map((item) => <button key={item} type="button" onClick={() => setConcernType(item)} className={optionClass(concernType === item, "pill")}>{item}</button>)}</div></div>
     <div className="grid min-w-0 gap-5 sm:grid-cols-2"><label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">이름</span><input name="name" autoComplete="name" className={fieldClass} placeholder="성함 또는 닉네임" required /></label><label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">연락처</span><input name="contact" autoComplete="email" className={fieldClass} placeholder="이메일 / 전화번호 / 카카오톡 ID" required /></label></div>
     <div className="grid min-w-0 gap-5 sm:grid-cols-2"><div><p className="text-sm font-bold text-white">현재 상황</p><div className="mt-4 grid gap-3">{stages.map((item) => <button key={item} type="button" onClick={() => setStage(item)} className={optionClass(stage === item)}>{item}</button>)}</div></div><div><p className="text-sm font-bold text-white">진단 주제</p><div className="mt-4 grid gap-3">{consultationTypes.map((item) => <button key={item} type="button" onClick={() => setConsultationType(item)} className={optionClass(consultationType === item)}>{item}</button>)}</div></div></div>

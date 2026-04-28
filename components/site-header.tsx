@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 type SiteHeaderProps = {
   theme?: "light" | "dark";
-  current?: "home" | "about" | "contact" | "workspace" | "pricing" | "guides";
+  current?: "home" | "about" | "diagnosis" | "contact" | "workspace" | "pricing" | "guides";
   ctaHref?: string;
   ctaLabel?: string;
   loggedIn?: boolean;
@@ -16,6 +16,7 @@ type SiteHeaderProps = {
 const navItems = [
   { href: "/", label: "홈", key: "home" },
   { href: "/about", label: "진단 관점", key: "about" },
+  { href: "/diagnosis", label: "진단하기", key: "diagnosis" },
   { href: "/contact", label: "30분 방향 진단", key: "contact" },
 ] as const;
 
