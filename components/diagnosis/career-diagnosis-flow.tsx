@@ -8,6 +8,7 @@ import {
   diagnosisQuestions,
   diagnosisResults,
   resultPriority,
+  workFields,
   type DiagnosisAudienceType,
   type DiagnosisResultType,
 } from "@/components/diagnosis/diagnosis-data";
@@ -42,6 +43,7 @@ export function CareerDiagnosisFlow() {
   const result = diagnosisResults[resultType];
   const audience = diagnosisAudiences.find((item) => item.type === audienceType);
   const toolStarterPack = result.toolCategories.map((type) => aiToolCategories[type]);
+  const matchedWorkFields = result.workFields.map((type) => workFields[type]);
   const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}`;
 
   function selectAnswer(questionId: number, type: DiagnosisResultType) {
@@ -113,6 +115,47 @@ export function CareerDiagnosisFlow() {
               ))}
             </div>
           </article>
+        </div>
+
+        <div className="mt-5 rounded-[30px] border border-white/10 bg-white/[0.035] p-5 sm:p-6">
+          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#ff6b35]">Soom Work Map</p>
+              <h3 className="mt-2 break-words text-2xl font-black tracking-[-0.05em] text-white">
+                가까운 일의 지도
+              </h3>
+            </div>
+            <p className="max-w-md text-xs font-bold leading-6 text-white/48">
+              NCS식 직무 분류를 초보자 언어로 바꾼 지도입니다. 직업명보다 먼저 “내가 어떤 일을 잘 다루는지”를 봅니다.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {matchedWorkFields.map((field, index) => (
+              <article key={field.type} className="min-w-0 rounded-[24px] border border-white/10 bg-[#050507]/55 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-black text-white">{index + 1}. {field.title}</p>
+                  <span className="rounded-full border border-[#ff6b35]/20 bg-[#ff6b35]/10 px-2.5 py-1 text-[10px] font-black text-[#ffb199]">
+                    match
+                  </span>
+                </div>
+                <p className="mt-3 text-xs font-bold leading-6 text-white/62">{field.plainDescription}</p>
+                <p className="mt-3 rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3 text-[11px] font-bold leading-5 text-white/46">
+                  {field.ncsHint}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {field.examplePaths.map((path) => (
+                    <span key={path} className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1.5 text-[10px] font-black text-white/58">
+                      {path}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-4 rounded-2xl border border-[#73d6b6]/15 bg-[#73d6b6]/[0.06] px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#bff4e4]">AI 첫 실험</p>
+                  <p className="mt-2 text-xs font-bold leading-6 text-white/72">{field.aiFirstMove}</p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-5 rounded-[30px] border border-white/10 bg-[#050507]/70 p-5 sm:p-6">

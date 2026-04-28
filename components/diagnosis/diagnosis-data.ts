@@ -9,6 +9,15 @@ export type AiToolCategoryType =
   | "data"
   | "building"
   | "practice";
+export type WorkFieldType =
+  | "care_help"
+  | "information"
+  | "problem_solving"
+  | "making"
+  | "technology"
+  | "persuasion"
+  | "field_operation"
+  | "learning_growth";
 
 export type DiagnosisOption = {
   label: string;
@@ -40,6 +49,7 @@ export type DiagnosisResult = {
   consultationFocus: string;
   preparation: string[];
   toolCategories: AiToolCategoryType[];
+  workFields: WorkFieldType[];
 };
 
 export type AiToolCategory = {
@@ -49,6 +59,15 @@ export type AiToolCategory = {
   beginnerUse: string;
   weeklyExperiment: string;
   sessionSetup: string;
+};
+
+export type WorkField = {
+  type: WorkFieldType;
+  title: string;
+  plainDescription: string;
+  ncsHint: string;
+  aiFirstMove: string;
+  examplePaths: string[];
 };
 
 export const diagnosisAudiences: DiagnosisAudience[] = [
@@ -224,6 +243,73 @@ export const aiToolCategories: Record<AiToolCategoryType, AiToolCategory> = {
   },
 };
 
+export const workFields: Record<WorkFieldType, WorkField> = {
+  care_help: {
+    type: "care_help",
+    title: "사람을 돕는 일",
+    plainDescription: "사람의 문제를 듣고, 정리하고, 회복이나 선택을 돕는 일입니다.",
+    ncsHint: "상담, 교육, 사회복지, 보건, 인사/조직 지원 영역과 연결됩니다.",
+    aiFirstMove: "상담 사례나 고민 내용을 익명화해 AI에게 ‘핵심 욕구와 다음 질문’을 뽑아보게 하세요.",
+    examplePaths: ["진로상담", "교육기획", "HRD", "코칭", "사회서비스"],
+  },
+  information: {
+    type: "information",
+    title: "정보를 정리하는 일",
+    plainDescription: "흩어진 자료를 모으고, 비교하고, 사람들이 이해할 수 있게 구조화하는 일입니다.",
+    ncsHint: "경영지원, 사무, 리서치, 데이터 관리, 문서 기획 영역과 연결됩니다.",
+    aiFirstMove: "관심 자료 5개를 넣고 AI에게 ‘공통점, 차이점, 결정 기준’을 표로 정리하게 하세요.",
+    examplePaths: ["사무기획", "리서치", "자료관리", "운영지원", "정책/시장 조사"],
+  },
+  problem_solving: {
+    type: "problem_solving",
+    title: "문제를 해결하는 일",
+    plainDescription: "불편한 흐름을 찾아 원인을 나누고, 더 나은 방식으로 바꾸는 일입니다.",
+    ncsHint: "경영기획, 프로젝트 관리, 품질관리, 서비스 운영, 컨설팅 영역과 연결됩니다.",
+    aiFirstMove: "반복되는 문제 하나를 ‘원인-영향-해결 후보-실험’ 네 칸으로 나눠보세요.",
+    examplePaths: ["서비스기획", "PM", "운영개선", "품질관리", "컨설팅"],
+  },
+  making: {
+    type: "making",
+    title: "무언가를 만드는 일",
+    plainDescription: "아이디어를 콘텐츠, 디자인, 제품, 수업, 서비스 같은 결과물로 만드는 일입니다.",
+    ncsHint: "디자인, 문화콘텐츠, 제품기획, 출판, 영상, 교육콘텐츠 영역과 연결됩니다.",
+    aiFirstMove: "만들고 싶은 결과물을 한 문장으로 쓰고, AI에게 첫 목차나 화면 구성을 만들어달라고 하세요.",
+    examplePaths: ["콘텐츠기획", "디자인", "영상/숏폼", "제품기획", "교육자료 제작"],
+  },
+  technology: {
+    type: "technology",
+    title: "기술을 다루는 일",
+    plainDescription: "도구, 시스템, 데이터, 자동화를 사용해 일을 더 빠르고 정확하게 만드는 일입니다.",
+    ncsHint: "정보기술, 데이터, AI 활용, 자동화, 디지털 전환 영역과 연결됩니다.",
+    aiFirstMove: "내가 반복하는 디지털 작업을 적고, AI에게 자동화 가능성과 필요한 도구를 물어보세요.",
+    examplePaths: ["AI 활용 코디네이터", "데이터 분석", "업무자동화", "웹/앱 제작", "IT 운영"],
+  },
+  persuasion: {
+    type: "persuasion",
+    title: "말과 콘텐츠로 설득하는 일",
+    plainDescription: "사람들이 이해하고 움직이도록 메시지, 브랜드, 제안, 판매 흐름을 만드는 일입니다.",
+    ncsHint: "마케팅, 홍보, 영업, 고객관리, 브랜드 커뮤니케이션 영역과 연결됩니다.",
+    aiFirstMove: "내가 전하고 싶은 메시지를 넣고 AI에게 ‘고객 언어, 한 줄 카피, CTA’를 나눠보게 하세요.",
+    examplePaths: ["마케팅", "브랜딩", "세일즈", "홍보", "콘텐츠 운영"],
+  },
+  field_operation: {
+    type: "field_operation",
+    title: "현장을 움직이는 일",
+    plainDescription: "사람, 물건, 공간, 일정이 실제로 잘 돌아가게 조율하는 일입니다.",
+    ncsHint: "서비스, 물류, 생산, 안전, 시설, 현장 운영 영역과 연결됩니다.",
+    aiFirstMove: "하루 업무 흐름을 적고 AI에게 병목, 체크리스트, 실수 방지 항목을 뽑아보게 하세요.",
+    examplePaths: ["서비스운영", "물류관리", "생산관리", "안전관리", "공간운영"],
+  },
+  learning_growth: {
+    type: "learning_growth",
+    title: "배우고 성장시키는 일",
+    plainDescription: "사람이 더 잘 배우고 적응하도록 커리큘럼, 피드백, 성장 환경을 설계하는 일입니다.",
+    ncsHint: "교육, 직업훈련, 교수설계, 멘토링, 조직문화 영역과 연결됩니다.",
+    aiFirstMove: "배우고 싶은 주제를 넣고 AI에게 7일 학습 계획과 점검 질문을 만들어달라고 하세요.",
+    examplePaths: ["교육기획", "강사", "학습코칭", "직업훈련", "조직문화"],
+  },
+};
+
 export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
   direction: {
     title: "방향 탐색형",
@@ -236,6 +322,7 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     consultationFocus: "상담에서는 흩어진 관심사를 선택 기준 3개로 압축하고, 현실적으로 실험 가능한 후보를 정리합니다.",
     preparation: ["최근 끌렸던 활동 5개", "싫어하거나 피하고 싶은 일 3개", "궁금한 직업/전공/업무 후보 3개"],
     toolCategories: ["thinking", "research", "portfolio"],
+    workFields: ["care_help", "information", "learning_growth"],
   },
   rebuild: {
     title: "역량 재정렬형",
@@ -248,6 +335,7 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     consultationFocus: "상담에서는 흩어진 경험을 강점 문장, 직무 연결 문장, 면접 답변 구조로 재정렬합니다.",
     preparation: ["최근 1년 경험 3개", "성과가 작아 보여도 맡았던 역할", "지원하거나 고민 중인 직무/분야"],
     toolCategories: ["writing", "portfolio", "practice"],
+    workFields: ["information", "persuasion", "problem_solving"],
   },
   ai_tool: {
     title: "AI 도구 활용형",
@@ -260,6 +348,7 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     consultationFocus: "상담에서는 현재 업무/공부 흐름을 쪼개고, 바로 적용할 AI 루틴 1개를 설계합니다.",
     preparation: ["매주 반복되는 일 3개", "시간이 오래 걸리는 문서/정리 작업", "써봤지만 어려웠던 AI 도구"],
     toolCategories: ["thinking", "automation", "data"],
+    workFields: ["technology", "problem_solving", "information"],
   },
   transition: {
     title: "전환 준비형",
@@ -272,5 +361,6 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     consultationFocus: "상담에서는 지금까지의 경력을 버리는 대신 재사용 가능한 자산과 30일 실험 계획으로 나눕니다.",
     preparation: ["지금까지 오래 해온 일 3개", "더 이상 반복하고 싶지 않은 일", "현실적으로 가능한 시간/예산/학습 조건"],
     toolCategories: ["thinking", "research", "portfolio"],
+    workFields: ["care_help", "field_operation", "persuasion"],
   },
 };
