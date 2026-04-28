@@ -86,7 +86,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#050507] text-[#f6f1e8] selection:bg-[#ff5b2e] selection:text-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#050507] text-[#f6f1e8] selection:bg-[#ff5b2e] selection:text-white">
       <section className="relative isolate min-h-screen overflow-hidden border-b border-white/10 bg-[#050507]">
         <div className="absolute inset-0 -z-30 bg-[#050507]" />
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_67%_28%,rgba(79,123,255,0.28)_0%,rgba(79,123,255,0)_28%),radial-gradient(circle_at_24%_20%,rgba(255,91,46,0.24)_0%,rgba(255,91,46,0)_30%),linear-gradient(115deg,#050507_0%,#080b12_42%,#111826_100%)]" />
@@ -105,56 +105,56 @@ export default function HomePage() {
               <span className="h-2 w-2 rounded-full bg-[#73d6b6] shadow-[0_0_22px_rgba(115,214,182,0.95)]" />
               live career signal / Seoul
             </div>
-            <Link href="/contact" className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/15 bg-white px-5 text-sm font-black text-[#050507] transition hover:bg-[#ff5b2e] hover:text-white">
+            <Link href="/contact" className="hidden min-h-11 items-center justify-center rounded-full border border-white/15 bg-white px-5 text-sm font-black text-[#050507] transition hover:bg-[#ff5b2e] hover:text-white sm:inline-flex">
               30분 방향 진단 신청
             </Link>
           </header>
 
-          <div className="relative grid flex-1 items-center gap-8 py-10 lg:grid-cols-[0.82fr_1.18fr] lg:py-12">
-            <div className="relative z-20 max-w-3xl">
+          <div className="relative grid min-w-0 flex-1 items-center gap-8 py-10 lg:grid-cols-[0.82fr_1.18fr] lg:py-12">
+            <div className="relative z-20 w-full max-w-[22rem] min-w-0 sm:max-w-3xl">
               <p className="text-[11px] font-black uppercase tracking-[0.35em] text-[#ff6b35]">AI Career Intelligence</p>
-              <h1 className="mt-5 text-[4.35rem] font-black leading-[0.78] tracking-[-0.13em] text-white sm:text-[7rem] lg:text-[8.8rem]">
+              <h1 className="mt-5 max-w-full break-all text-[clamp(2.65rem,13vw,3.35rem)] sm:break-normal font-black leading-[0.9] tracking-[-0.075em] text-white sm:leading-[0.78] sm:tracking-[-0.13em] sm:text-[7rem] lg:text-[8.8rem]">
                 커리어는
                 <br />
                 이제 해석의
                 <br />
                 문제입니다.
               </h1>
-              <div className="mt-7 max-w-2xl border-l border-[#ff5b2e] pl-5">
-                <p className="text-lg font-bold leading-8 text-[#f3efe7] sm:text-xl">
+              <div className="mt-7 w-full max-w-[22rem] min-w-0 sm:max-w-2xl border-l border-[#ff5b2e] pl-5">
+                <p className="break-words text-base font-bold leading-8 text-[#f3efe7] break-all sm:text-xl sm:break-normal">
                   AI 시대 진로·직업·커리어의 막힌 선택을 읽고, 다음 7일의 행동으로 번역합니다.
                 </p>
-                <p className="mt-3 text-sm leading-7 text-[#9ca3af]">
+                <p className="mt-3 break-words text-sm leading-7 text-[#9ca3af] break-all sm:break-normal">
                   학생 진로, 20대 커리어, 40~50대 후반전 커리어까지. 더 많은 정보가 아니라 지금 선택할 기준을 만듭니다.
                 </p>
               </div>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/contact" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#ff5b2e] px-6 text-sm font-black text-white shadow-[0_20px_70px_rgba(255,91,46,0.34)] transition hover:bg-white hover:text-[#050507]">
+              <div className="mt-8 flex w-full max-w-full flex-col gap-3 sm:flex-row">
+                <Link href="/contact" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#ff5b2e] px-6 text-sm font-black text-white shadow-[0_20px_70px_rgba(255,91,46,0.34)] transition hover:bg-white hover:text-[#050507]">
                   30분 방향 진단 신청
                 </Link>
-                <a href="#method" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10">
+                <a href="#method" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10 sm:w-auto">
                   READ → TRANSLATE → ACT
                 </a>
               </div>
-              <div className="mt-7 grid max-w-xl grid-cols-2 gap-2.5 sm:grid-cols-4">
+              <div className="mt-7 grid w-full max-w-[22rem] min-w-0 sm:max-w-xl grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {heroChips.map((chip) => (
-                  <span key={chip} className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[11px] font-black text-white/66 backdrop-blur">
+                  <span key={chip} className="min-w-0 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[11px] font-black text-white/66 backdrop-blur">
                     {chip}
                   </span>
                 ))}
               </div>
             </div>
 
-            <div className="relative z-10 min-h-[640px] lg:min-h-[760px]">
-              <div className="absolute left-1/2 top-1/2 h-[54rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_210deg,rgba(255,91,46,0.02),rgba(79,123,255,0.22),rgba(115,214,182,0.12),rgba(255,91,46,0.24),rgba(255,91,46,0.02))] opacity-90 blur-[1px]" />
-              <div className="absolute left-1/2 top-1/2 h-[39rem] w-[39rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/18" />
-              <div className="absolute left-1/2 top-1/2 h-[25rem] w-[25rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#4b7bff]/28" />
+            <div className="relative z-10 min-h-[560px] w-full min-w-0 overflow-hidden lg:min-h-[760px] lg:overflow-visible">
+              <div className="absolute left-1/2 top-1/2 h-[32rem] w-[32rem] sm:h-[54rem] sm:w-[54rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_210deg,rgba(255,91,46,0.02),rgba(79,123,255,0.22),rgba(115,214,182,0.12),rgba(255,91,46,0.24),rgba(255,91,46,0.02))] opacity-90 blur-[1px]" />
+              <div className="absolute left-1/2 top-1/2 h-[25rem] w-[25rem] sm:h-[39rem] sm:w-[39rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/18" />
+              <div className="absolute left-1/2 top-1/2 h-[18rem] w-[18rem] sm:h-[25rem] sm:w-[25rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#4b7bff]/28" />
 
               <div className="absolute left-[4%] right-[4%] top-[8%] z-0 hidden text-center text-[7.5rem] font-black uppercase leading-none tracking-[-0.12em] text-white/[0.045] lg:block">
                 CAREER<br />INTEL
               </div>
 
-              <div className="absolute inset-x-[7%] bottom-0 top-[3%] overflow-hidden rounded-[3rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] shadow-[0_40px_140px_rgba(0,0,0,0.58)] backdrop-blur-sm">
+              <div className="absolute inset-x-0 bottom-0 top-[7%] overflow-hidden rounded-[2rem] sm:inset-x-[7%] sm:top-[3%] sm:rounded-[3rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] shadow-[0_40px_140px_rgba(0,0,0,0.58)] backdrop-blur-sm">
                 <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:38px_38px]" />
                 <div className="absolute left-1/2 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/24 to-transparent" />
                 <img
@@ -166,13 +166,13 @@ export default function HomePage() {
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#050507] via-[#050507]/42 to-transparent" />
               </div>
 
-              <div className="absolute left-0 top-[12%] z-20 w-[13.5rem] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#ff5b2e]/55">
+              <div className="absolute left-0 top-[12%] z-20 w-[min(13.5rem,56vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#ff5b2e]/55">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#ff6b35]">AI SIGNAL</p>
                 <p className="mt-2 text-xl font-black tracking-[-0.05em] text-white">직업 변화 감지</p>
                 <div className="mt-4 flex items-end gap-1.5">{[18, 28, 14, 34, 24, 42].map((h) => <span key={h} className="w-1.5 rounded-full bg-[#ff5b2e]" style={{ height: `${h}px` }} />)}</div>
               </div>
 
-              <div className="absolute right-0 top-[18%] z-20 w-[14rem] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#4b7bff]/55">
+              <div className="absolute right-0 top-[18%] z-20 w-[min(14rem,50vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#4b7bff]/55">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#4b7bff]">CAREER MAP</p>
                 <div className="mt-4 grid gap-2 text-xs font-bold text-white/70">
                   <span>Student / Parent</span>
@@ -181,13 +181,13 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="absolute bottom-[16%] left-[3%] z-20 w-[14.5rem] rounded-3xl border border-white/12 bg-[#f3efe7] p-4 text-[#080b12] shadow-[0_22px_70px_rgba(0,0,0,0.34)] transition hover:-translate-y-1">
+              <div className="absolute bottom-[16%] left-0 z-20 w-[min(14.5rem,58vw)] sm:left-[3%] rounded-3xl border border-white/12 bg-[#f3efe7] p-4 text-[#080b12] shadow-[0_22px_70px_rgba(0,0,0,0.34)] transition hover:-translate-y-1">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#9b3a1c]">NEXT ACTION</p>
                 <p className="mt-2 text-2xl font-black leading-none tracking-[-0.07em]">7일 행동 3개</p>
                 <p className="mt-3 text-xs font-bold leading-5 text-[#4b5563]">정답보다 먼저 움직일 기준을 만듭니다.</p>
               </div>
 
-              <div className="absolute bottom-[9%] right-[3%] z-20 w-[15rem] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#73d6b6]/55">
+              <div className="absolute bottom-[9%] right-0 z-20 w-[min(15rem,58vw)] sm:right-[3%] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#73d6b6]/55">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#73d6b6]">WORK SHIFT</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-white/76">정보 → 기준 → 문장 → 행동</p>
                 <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full w-[72%] rounded-full bg-[#73d6b6]" /></div>
@@ -201,11 +201,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="intelligence" className="border-b border-white/10 bg-[#080b12]">
+      <section id="intelligence" className="overflow-hidden border-b border-white/10 bg-[#080b12]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
           <div className="max-w-4xl">
             <SectionLabel>Why People Are Stuck</SectionLabel>
-            <h2 className="mt-5 text-[2.6rem] font-black leading-[0.98] tracking-[-0.08em] text-white sm:text-[4.5rem]">
+            <h2 className="mt-5 break-words text-[2.2rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.5rem] sm:leading-[0.98] sm:tracking-[-0.08em]">
               선택이 막히는 이유는
               <br />
               정보 부족이 아닐 때가 많습니다.
@@ -230,7 +230,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[0.78fr_1.22fr] lg:px-10 lg:py-24">
           <div className="lg:sticky lg:top-10 lg:self-start">
             <SectionLabel>Read / Translate / Act</SectionLabel>
-            <h2 className="mt-5 text-[2.55rem] font-black leading-[1] tracking-[-0.078em] text-white sm:text-[4.2rem]">
+            <h2 className="mt-5 break-words text-[2.15rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.2rem] sm:leading-[1] sm:tracking-[-0.078em]">
               숨은 커리어를
               <br />
               세 단계로 봅니다.
@@ -257,7 +257,7 @@ export default function HomePage() {
       <section className="border-b border-white/10 bg-[#080b12]">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
           <SectionLabel>Audience Tracks</SectionLabel>
-          <h2 className="mt-5 text-[2.6rem] font-black leading-[0.98] tracking-[-0.08em] text-white sm:text-[4.5rem]">누구에게 필요한가</h2>
+          <h2 className="mt-5 break-words text-[2.2rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.5rem] sm:leading-[0.98] sm:tracking-[-0.08em]">누구에게 필요한가</h2>
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
             {audienceTracks.map((track) => (
               <article key={track.title} className="rounded-[34px] border border-white/10 bg-white/[0.035] p-6 transition hover:-translate-y-1 hover:border-[#73d6b6]/45 hover:bg-white/[0.06]">
@@ -280,7 +280,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-10 lg:py-24">
           <div>
             <SectionLabel>Primary Session</SectionLabel>
-            <h2 className="mt-5 text-[2.55rem] font-black leading-[1] tracking-[-0.078em] text-white sm:text-[4.2rem]">
+            <h2 className="mt-5 break-words text-[2.15rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.2rem] sm:leading-[1] sm:tracking-[-0.078em]">
               30분이면 정답은 몰라도,
               <br />
               다음 행동은 정할 수 있습니다.
@@ -308,7 +308,7 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
             <div>
               <SectionLabel>Operating System</SectionLabel>
-              <h2 className="mt-5 text-[2.55rem] font-black leading-[1] tracking-[-0.078em] text-white sm:text-[4.2rem]">
+              <h2 className="mt-5 break-words text-[2.15rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.2rem] sm:leading-[1] sm:tracking-[-0.078em]">
                 매일 자료를 보고,
                 <br />
                 글과 상담의 기준을 업데이트합니다.
@@ -317,11 +317,11 @@ export default function HomePage() {
                 숨은 감으로만 말하지 않습니다. 매일 진로, 직업, AI 커리어 자료를 수집하고 학생·20대·중장년의 선택 문제로 번역합니다.
               </p>
             </div>
-            <div className="grid gap-3 self-end">
+            <div className="grid min-w-0 gap-3 self-end">
               {pipeline.map((item, index) => (
-                <div key={item} className="grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-[24px] border border-white/10 bg-white/[0.035] px-5 py-5 transition hover:border-[#4f8cff]/45 hover:bg-white/[0.06]">
+                <div key={item} className="grid min-w-0 grid-cols-[auto_1fr_auto] items-center gap-4 rounded-[24px] border border-white/10 bg-white/[0.035] px-5 py-5 transition hover:border-[#4f8cff]/45 hover:bg-white/[0.06]">
                   <span className="text-xs font-black text-[#ff5b2e]">0{index + 1}</span>
-                  <span className="text-xl font-black tracking-[-0.04em] text-white">{item}</span>
+                  <span className="min-w-0 text-xl font-black tracking-[-0.04em] text-white">{item}</span>
                   <SignalBar index={index} />
                 </div>
               ))}
