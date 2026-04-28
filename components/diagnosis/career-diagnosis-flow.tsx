@@ -42,6 +42,7 @@ export function CareerDiagnosisFlow() {
   const resultType = useMemo(() => getResultType(answers), [answers]);
   const result = diagnosisResults[resultType];
   const audience = diagnosisAudiences.find((item) => item.type === audienceType);
+  const segmentReport = audienceType ? result.segmentReports[audienceType] : null;
   const toolStarterPack = result.toolCategories.map((type) => aiToolCategories[type]);
   const matchedWorkFields = result.workFields.map((type) => workFields[type]);
   const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}`;
@@ -67,7 +68,7 @@ export function CareerDiagnosisFlow() {
             </h2>
             {audience ? (
               <p className="mt-3 text-sm font-bold text-white/54">
-                {audience.title} · {audience.reportFocus}
+                {audience.title} · {audience.resultLens}
               </p>
             ) : null}
           </div>
@@ -77,7 +78,7 @@ export function CareerDiagnosisFlow() {
         </div>
 
         <p className="mt-7 max-w-3xl break-words text-base font-bold leading-8 text-white/78">
-          {result.summary}
+          {segmentReport?.summary ?? result.summary}
         </p>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">
@@ -85,7 +86,7 @@ export function CareerDiagnosisFlow() {
             ["현재 강점", result.strength],
             ["막힌 지점", result.blocker],
             ["AI 시대 도구 방향", result.aiDirection],
-            ["다음 행동 1개", result.nextAction],
+            ["다음 행동 1개", segmentReport?.nextAction ?? result.nextAction],
           ].map(([label, value]) => (
             <article key={label} className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.045] p-5">
               <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff6b35]">{label}</p>
@@ -106,7 +107,7 @@ export function CareerDiagnosisFlow() {
           </article>
           <article className="min-w-0 rounded-[26px] border border-white/10 bg-white/[0.045] p-5">
             <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#73d6b6]">30-Min Session Focus</p>
-            <p className="mt-3 break-words text-sm font-bold leading-7 text-white/78">{result.consultationFocus}</p>
+            <p className="mt-3 break-words text-sm font-bold leading-7 text-white/78">{segmentReport?.consultationFocus ?? result.consultationFocus}</p>
             <div className="mt-4 grid gap-2">
               {result.preparation.map((item) => (
                 <div key={item} className="rounded-2xl border border-white/10 bg-[#050507]/45 px-4 py-3 text-xs font-bold leading-5 text-white/60">
@@ -197,13 +198,14 @@ export function CareerDiagnosisFlow() {
         <div className="mt-8 rounded-[26px] border border-white/10 bg-[#050507] p-5">
           <p className="text-sm leading-7 text-white/58">
             이 진단은 상담 전 방향을 좁히기 위한 간단한 self-check입니다. 결과는 저장되거나 서버로 전송되지 않습니다.
+            KRIVET·커리어넷 등 공공 진로/직업 자료 관점을 참고해 해석합니다.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Link
               href={contactHref}
               className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white"
             >
-              내 결과 기반으로 방향 상담 받기
+              {audience?.consultationCta ?? "내 상황에 맞게 점검받기"}
             </Link>
             <button
               type="button"
