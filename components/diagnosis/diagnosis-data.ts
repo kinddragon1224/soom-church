@@ -1,4 +1,4 @@
-﻿export type DiagnosisResultType = "direction" | "rebuild" | "ai_tool" | "transition";
+export type DiagnosisResultType = "direction" | "rebuild" | "ai_tool" | "transition";
 
 export type DiagnosisOption = {
   label: string;

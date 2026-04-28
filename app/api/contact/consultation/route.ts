@@ -53,7 +53,9 @@ export async function POST(request: Request) {
     preferredSchedule: parsed.data.preferredSchedule,
   };
 
-  const directory = path.join(process.cwd(), "ops", "contact-inquiries");
+  const directory = process.env.VERCEL
+    ? path.join("/tmp", "soom-contact-inquiries")
+    : path.join(process.cwd(), "ops", "contact-inquiries");
   await mkdir(directory, { recursive: true });
   await appendFile(path.join(directory, "consultation.jsonl"), `${JSON.stringify(record)}\n`, "utf8");
 

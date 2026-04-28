@@ -1,4 +1,4 @@
-﻿import SiteHeader from "@/components/site-header";
+import SiteHeader from "@/components/site-header";
 import { CareerDiagnosisFlow } from "@/components/diagnosis/career-diagnosis-flow";
 
 export default function DiagnosisPage() {
