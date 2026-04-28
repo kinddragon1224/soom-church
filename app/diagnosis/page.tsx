@@ -21,10 +21,10 @@ export default function DiagnosisPage() {
               커리어 방향 진단
             </h1>
             <p style={{ overflowWrap: "anywhere", wordBreak: "break-all" }} className="mt-6 max-w-xl break-words break-all [overflow-wrap:anywhere] text-base font-bold leading-8 text-white/70">
-              내 일에 AI를 붙일 수 있는 지점과 지금 막힌 선택을 3분 안에 좁혀봅니다.
+              학생, 취준생, 직장인, 전환 준비자까지 내 상황에 맞게 AI를 어디에 붙일지 3분 안에 좁혀봅니다.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              {["3분 진단", "7개 질문", "강점·약점·다음 행동 리포트"].map((item) => (
+              {["상황별 분기", "7개 질문", "AI 루틴·다음 행동 리포트"].map((item) => (
                 <div key={item} className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black text-white/72">
                   {item}
                 </div>
