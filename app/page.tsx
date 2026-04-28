@@ -129,12 +129,12 @@ export default function HomePage() {
                 </p>
               </div>
               <div className="mt-8 flex w-full max-w-full flex-col gap-3 sm:flex-row">
-                <Link href="/contact" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#ff5b2e] px-6 text-sm font-black text-white shadow-[0_20px_70px_rgba(255,91,46,0.34)] transition hover:bg-white hover:text-[#050507]">
+                <Link href="/diagnosis" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#ff5b2e] px-6 text-sm font-black text-white shadow-[0_20px_70px_rgba(255,91,46,0.34)] transition hover:bg-white hover:text-[#050507]">
+                  3분 커리어 진단 시작
+                </Link>
+                <Link href="/contact" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10 sm:w-auto">
                   30분 방향 진단 신청
                 </Link>
-                <a href="#method" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10 sm:w-auto">
-                  READ → TRANSLATE → ACT
-                </a>
               </div>
               <div className="mt-7 grid w-full max-w-[22rem] min-w-0 sm:max-w-xl grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {heroChips.map((chip) => (
