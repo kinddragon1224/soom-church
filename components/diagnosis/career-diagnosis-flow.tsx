@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  aiToolCategories,
   diagnosisAudiences,
   diagnosisQuestions,
   diagnosisResults,
@@ -40,6 +41,7 @@ export function CareerDiagnosisFlow() {
   const resultType = useMemo(() => getResultType(answers), [answers]);
   const result = diagnosisResults[resultType];
   const audience = diagnosisAudiences.find((item) => item.type === audienceType);
+  const toolStarterPack = result.toolCategories.map((type) => aiToolCategories[type]);
   const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}`;
 
   function selectAnswer(questionId: number, type: DiagnosisResultType) {
@@ -111,6 +113,42 @@ export function CareerDiagnosisFlow() {
               ))}
             </div>
           </article>
+        </div>
+
+        <div className="mt-5 rounded-[30px] border border-white/10 bg-[#050507]/70 p-5 sm:p-6">
+          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#73d6b6]">AI Tool Starter Pack</p>
+              <h3 className="mt-2 break-words text-2xl font-black tracking-[-0.05em] text-white">
+                지금 써볼 AI 도구 3가지
+              </h3>
+            </div>
+            <p className="max-w-sm text-xs font-bold leading-6 text-white/48">
+              도구를 많이 아는 것보다, 내 상황에 맞는 첫 실험을 작게 해보는 것이 먼저입니다.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {toolStarterPack.map((tool) => (
+              <article key={tool.type} className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
+                <p className="text-xs font-black text-[#ff6b35]">{tool.title}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {tool.tools.map((name) => (
+                    <span key={name} className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] font-black text-white/66">
+                      {name}
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-4 text-xs font-bold leading-6 text-white/58">{tool.beginnerUse}</p>
+                <div className="mt-4 rounded-2xl border border-[#73d6b6]/15 bg-[#73d6b6]/[0.06] px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#bff4e4]">이번 주 실험</p>
+                  <p className="mt-2 text-xs font-bold leading-6 text-white/72">{tool.weeklyExperiment}</p>
+                </div>
+                <p className="mt-3 text-[11px] font-bold leading-5 text-white/42">
+                  상담에서: {tool.sessionSetup}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 rounded-[26px] border border-white/10 bg-[#050507] p-5">

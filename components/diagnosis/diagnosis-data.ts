@@ -1,5 +1,14 @@
 export type DiagnosisResultType = "direction" | "rebuild" | "ai_tool" | "transition";
 export type DiagnosisAudienceType = "student" | "young_career" | "worker" | "second_career";
+export type AiToolCategoryType =
+  | "thinking"
+  | "research"
+  | "writing"
+  | "portfolio"
+  | "automation"
+  | "data"
+  | "building"
+  | "practice";
 
 export type DiagnosisOption = {
   label: string;
@@ -30,6 +39,16 @@ export type DiagnosisResult = {
   aiRoutine: string;
   consultationFocus: string;
   preparation: string[];
+  toolCategories: AiToolCategoryType[];
+};
+
+export type AiToolCategory = {
+  type: AiToolCategoryType;
+  title: string;
+  tools: string[];
+  beginnerUse: string;
+  weeklyExperiment: string;
+  sessionSetup: string;
 };
 
 export const diagnosisAudiences: DiagnosisAudience[] = [
@@ -138,6 +157,73 @@ export const diagnosisQuestions: DiagnosisQuestion[] = [
 
 export const resultPriority: DiagnosisResultType[] = ["direction", "rebuild", "ai_tool", "transition"];
 
+export const aiToolCategories: Record<AiToolCategoryType, AiToolCategory> = {
+  thinking: {
+    type: "thinking",
+    title: "생각 정리형",
+    tools: ["ChatGPT", "Claude", "Gemini"],
+    beginnerUse: "막연한 고민을 질문 목록, 선택 기준, 비교표로 바꾸는 데 씁니다.",
+    weeklyExperiment: "내가 고민하는 선택지를 3개 적고, AI에게 장단점과 빠진 기준을 물어보세요.",
+    sessionSetup: "상담에서는 질문을 더 구체화하고, 본인에게 맞는 프롬프트 틀을 만듭니다.",
+  },
+  research: {
+    type: "research",
+    title: "자료 조사형",
+    tools: ["Perplexity", "Gemini", "ChatGPT Search"],
+    beginnerUse: "직업, 전공, 산업, 기업 정보를 빠르게 모으고 출처를 확인하는 데 씁니다.",
+    weeklyExperiment: "관심 직무 2개를 검색하고 필요한 역량, 실제 하는 일, 진입 경로를 비교하세요.",
+    sessionSetup: "상담에서는 신뢰할 자료와 버려도 되는 정보를 구분하는 조사 기준을 잡습니다.",
+  },
+  writing: {
+    type: "writing",
+    title: "문장 정리형",
+    tools: ["Claude", "ChatGPT", "Notion AI"],
+    beginnerUse: "경험을 자기소개, 이력서, 면접 답변, 상담 메모 문장으로 바꾸는 데 씁니다.",
+    weeklyExperiment: "경험 하나를 넣고 ‘상황-문제-행동-결과-강점’ 구조로 다시 써보세요.",
+    sessionSetup: "상담에서는 AI 초안을 사람 냄새 나는 자기 언어로 다듬는 기준을 만듭니다.",
+  },
+  portfolio: {
+    type: "portfolio",
+    title: "결과물 제작형",
+    tools: ["Canva", "Gamma", "Notion"],
+    beginnerUse: "진로 방향, 포트폴리오, 발표 자료, 경력 소개서를 보기 좋게 정리하는 데 씁니다.",
+    weeklyExperiment: "내 방향을 한 장짜리 소개 카드나 5장 발표자료로 만들어보세요.",
+    sessionSetup: "상담에서는 보여줄 내용과 빼야 할 내용을 나누고 첫 결과물 구조를 잡습니다.",
+  },
+  automation: {
+    type: "automation",
+    title: "반복 업무 자동화형",
+    tools: ["Zapier", "Make", "Notion", "Google Apps Script"],
+    beginnerUse: "반복 입력, 알림, 정리, 전달 같은 작은 업무를 줄이는 데 씁니다.",
+    weeklyExperiment: "매주 반복하는 일 하나를 고르고, 입력-처리-출력 3단계로 쪼개보세요.",
+    sessionSetup: "상담에서는 자동화보다 먼저 업무 흐름을 정리하고, 실패 위험이 낮은 1개만 설계합니다.",
+  },
+  data: {
+    type: "data",
+    title: "데이터 정리형",
+    tools: ["ChatGPT Advanced Data Analysis", "Gemini", "Excel Copilot"],
+    beginnerUse: "표, 설문, 매출, 일정, 비교 자료를 요약하고 패턴을 찾는 데 씁니다.",
+    weeklyExperiment: "엑셀이나 표 하나를 넣고 ‘무엇을 먼저 봐야 하는지’ 요약을 받아보세요.",
+    sessionSetup: "상담에서는 데이터에서 의사결정에 필요한 질문을 뽑는 법을 잡습니다.",
+  },
+  building: {
+    type: "building",
+    title: "아이디어 구현형",
+    tools: ["Cursor", "v0", "Replit", "Lovable", "Bolt"],
+    beginnerUse: "아이디어를 간단한 웹페이지, 앱 화면, 자동화 도구의 초안으로 만드는 데 씁니다.",
+    weeklyExperiment: "만들고 싶은 서비스나 페이지를 5문장으로 설명하고 첫 화면 초안을 생성해보세요.",
+    sessionSetup: "상담에서는 만들기 전에 고객, 기능, 화면 흐름을 작게 줄이는 작업을 합니다.",
+  },
+  practice: {
+    type: "practice",
+    title: "연습 코치형",
+    tools: ["ChatGPT Voice", "Claude", "Gemini Live"],
+    beginnerUse: "면접, 발표, 상담 대화, 진로 설명을 말로 연습하는 데 씁니다.",
+    weeklyExperiment: "AI에게 면접관 역할을 맡기고 5분 동안 내 경험을 말로 설명해보세요.",
+    sessionSetup: "상담에서는 어색한 답변을 줄이고, 본인 말투에 맞는 대화 스크립트를 만듭니다.",
+  },
+};
+
 export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
   direction: {
     title: "방향 탐색형",
@@ -149,6 +235,7 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     aiRoutine: "AI에게 “내가 관심 있는 활동 10개를 문제 유형으로 묶고, 비슷한 직무군을 3개만 추천해줘”라고 요청해보세요.",
     consultationFocus: "상담에서는 흩어진 관심사를 선택 기준 3개로 압축하고, 현실적으로 실험 가능한 후보를 정리합니다.",
     preparation: ["최근 끌렸던 활동 5개", "싫어하거나 피하고 싶은 일 3개", "궁금한 직업/전공/업무 후보 3개"],
+    toolCategories: ["thinking", "research", "portfolio"],
   },
   rebuild: {
     title: "역량 재정렬형",
@@ -160,6 +247,7 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     aiRoutine: "AI에게 “이 경험을 상황-문제-행동-결과-강점 문장으로 바꿔줘”라고 시키고, 어색한 표현은 직접 고쳐보세요.",
     consultationFocus: "상담에서는 흩어진 경험을 강점 문장, 직무 연결 문장, 면접 답변 구조로 재정렬합니다.",
     preparation: ["최근 1년 경험 3개", "성과가 작아 보여도 맡았던 역할", "지원하거나 고민 중인 직무/분야"],
+    toolCategories: ["writing", "portfolio", "practice"],
   },
   ai_tool: {
     title: "AI 도구 활용형",
@@ -171,6 +259,7 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     aiRoutine: "반복되는 작업 하나를 고른 뒤 AI에게 “이 일을 30분 줄이기 위한 입력 양식, 초안, 체크리스트를 만들어줘”라고 요청하세요.",
     consultationFocus: "상담에서는 현재 업무/공부 흐름을 쪼개고, 바로 적용할 AI 루틴 1개를 설계합니다.",
     preparation: ["매주 반복되는 일 3개", "시간이 오래 걸리는 문서/정리 작업", "써봤지만 어려웠던 AI 도구"],
+    toolCategories: ["thinking", "automation", "data"],
   },
   transition: {
     title: "전환 준비형",
@@ -182,5 +271,6 @@ export const diagnosisResults: Record<DiagnosisResultType, DiagnosisResult> = {
     aiRoutine: "AI에게 “내 기존 경험을 유지/전환/새로 배울 것 세 칸으로 나누고, 가능한 전환 후보를 비교해줘”라고 요청하세요.",
     consultationFocus: "상담에서는 지금까지의 경력을 버리는 대신 재사용 가능한 자산과 30일 실험 계획으로 나눕니다.",
     preparation: ["지금까지 오래 해온 일 3개", "더 이상 반복하고 싶지 않은 일", "현실적으로 가능한 시간/예산/학습 조건"],
+    toolCategories: ["thinking", "research", "portfolio"],
   },
 };
