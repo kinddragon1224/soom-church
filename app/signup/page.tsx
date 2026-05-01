@@ -26,61 +26,61 @@ export default async function SignupPage() {
     <main className="min-h-screen bg-[linear-gradient(180deg,#fbfaf7_0%,#f2eadf_100%)] px-4 py-8 text-[#171717] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.05fr)_440px] lg:items-center">
         <section className="rounded-[36px] border border-[#e8ddcf] bg-[linear-gradient(135deg,#fffaf2_0%,#f7efe2_52%,#efe4d4_100%)] p-7 shadow-[0_24px_60px_rgba(66,38,12,0.08)] sm:p-9">
-          <p className="text-[10px] tracking-[0.18em] text-[#9a8366]">SOOM / SIGN UP</p>
+          <p className="text-[10px] tracking-[0.18em] text-[#9a8366]">SOOM / INVITE ONLY</p>
           <h1 className="mt-4 text-[2.2rem] font-semibold tracking-[-0.05em] text-[#1f1a16] sm:text-[2.8rem]">
-            우리 공동체만의 app를 바로 시작하자.
+            공개 가입보다 먼저 방향 진단을 열어두었습니다.
           </h1>
           <p className="mt-4 max-w-[640px] text-sm leading-7 text-[#5f564b] sm:text-[15px]">
-            회원가입 후에는 공용 베타 화면으로 가지 않고, 너만의 교회와 목장을 담는 고유 워크스페이스를 먼저 만들게 돼. 그 뒤 월드와 목양 공간을 바로 열 수 있어.
+            현재 Soom은 AI 시대 진로·직업·커리어 방향 진단을 중심으로 운영합니다. 계정 생성은 내부 운영과 초대 사용자에게만 열어둘 예정입니다.
           </p>
 
           <div className="mt-8 grid gap-3 text-sm text-[#5b5147] sm:grid-cols-3">
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">고유 app</p>
-              <p className="mt-2 leading-6">가입한 공동체마다 자기 이름과 slug를 가진 공간이 만들어진다.</p>
+              <p className="font-medium text-[#2f2416]">3분 진단</p>
+              <p className="mt-2 leading-6">먼저 현재 막힌 선택을 짧게 확인합니다.</p>
             </div>
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">월드 중심</p>
-              <p className="mt-2 leading-6">설명 페이지보다 바로 월드와 운영 흐름을 먼저 본다.</p>
+              <p className="font-medium text-[#2f2416]">결과 리포트</p>
+              <p className="mt-2 leading-6">가까운 일의 지도와 AI 활용 루틴을 확인합니다.</p>
             </div>
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">구글 연동</p>
-              <p className="mt-2 leading-6">지금은 구글 로그인 하나만으로 시작하게 단순화한다.</p>
+              <p className="font-medium text-[#2f2416]">방향 상담</p>
+              <p className="mt-2 leading-6">필요하면 내 상황에 맞게 점검받습니다.</p>
             </div>
           </div>
         </section>
 
         <aside className="rounded-[32px] border border-[#e8ddcf] bg-white p-6 shadow-[0_22px_44px_rgba(66,38,12,0.06)] sm:p-7">
-          <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">CREATE WITH GOOGLE</p>
-          <h2 className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em] text-[#1c1713]">회원가입</h2>
+          <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">START WITHOUT ACCOUNT</p>
+          <h2 className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em] text-[#1c1713]">계정 없이 시작하기</h2>
           <p className="mt-3 text-sm leading-6 text-[#5f564b]">
-            구글로 시작하면 바로 계정을 만들고, 다음 단계에서 네 공동체용 워크스페이스를 생성하게 돼.
+            지금은 회원가입보다 진단을 먼저 열어두었습니다. 결과를 보고 필요할 때 상담으로 이어가면 됩니다.
           </p>
 
-          {googleConfigured ? (
-            <form
-              action={async () => {
-                "use server";
-                await signIn("google", { redirectTo: "/app/onboarding" });
-              }}
-              className="mt-6"
-            >
-              <button
-                type="submit"
-                className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-[16px] border border-[#e5dacd] bg-[#fffaf4] px-5 text-sm font-medium text-[#2f2416] transition hover:bg-[#f7efe3]"
+          <div className="mt-6 grid gap-3">
+            <Link href="/diagnosis" className="inline-flex h-12 w-full items-center justify-center rounded-[16px] bg-[#1c1713] px-5 text-sm font-medium text-white transition hover:bg-[#ff5b2e]">
+              3분 진단 시작하기
+            </Link>
+            {googleConfigured ? (
+              <form
+                action={async () => {
+                  "use server";
+                  await signIn("google", { redirectTo: "/app/onboarding" });
+                }}
               >
-                <GoogleMark />
-                Google로 시작하기
-              </button>
-            </form>
-          ) : (
-            <div className="mt-6 rounded-[16px] border border-[#f1d4ca] bg-[#fff6f2] p-4 text-sm leading-6 text-[#8f4c3f]">
-              구글 로그인 설정이 아직 비어 있어. AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET, AUTH_URL을 넣어야 실제 연동돼.
-            </div>
-          )}
+                <button
+                  type="submit"
+                  className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-[16px] border border-[#e5dacd] bg-[#fffaf4] px-5 text-sm font-medium text-[#2f2416] transition hover:bg-[#f7efe3]"
+                >
+                  <GoogleMark />
+                  초대 계정으로 계속하기
+                </button>
+              </form>
+            ) : null}
+          </div>
 
           <p className="mt-6 text-sm text-[#7a7064]">
-            이미 계정이 있다면 <Link href="/login" className="font-medium text-[#3f372d] underline-offset-4 hover:underline">로그인</Link>
+            이미 초대 계정이 있다면 <Link href="/login" className="font-medium text-[#3f372d] underline-offset-4 hover:underline">로그인</Link>
           </p>
         </aside>
       </div>

@@ -7,7 +7,7 @@ export default async function AppEntryPage() {
   const userId = await getCurrentUserId();
 
   if (!userId) {
-    redirect("/login?next=/app/mobile");
+    redirect("/diagnosis");
   }
 
   const churches = await getAccessibleChurchesByUserId(userId);

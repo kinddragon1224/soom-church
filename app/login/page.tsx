@@ -20,7 +20,7 @@ export default async function LoginPage({
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
   const error = typeof searchParams?.error === "string" ? searchParams.error : null;
-  const next = typeof searchParams?.next === "string" && searchParams.next.startsWith("/") ? searchParams.next : "/app";
+  const next = typeof searchParams?.next === "string" && searchParams.next.startsWith("/") ? searchParams.next : "/diagnosis";
 
   const session = await auth();
   if (session?.user?.id) {
@@ -32,26 +32,26 @@ export default async function LoginPage({
     <main className="min-h-screen bg-[linear-gradient(180deg,#fbfaf7_0%,#f2eadf_100%)] px-4 py-8 text-[#171717] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.05fr)_440px] lg:items-center">
         <section className="rounded-[36px] border border-[#e8ddcf] bg-[linear-gradient(135deg,#fffaf2_0%,#f7efe2_52%,#efe4d4_100%)] p-7 shadow-[0_24px_60px_rgba(66,38,12,0.08)] sm:p-9">
-          <p className="text-[10px] tracking-[0.18em] text-[#9a8366]">SOOM / LOGIN</p>
+          <p className="text-[10px] tracking-[0.18em] text-[#9a8366]">SOOM / PRIVATE ACCESS</p>
           <h1 className="mt-4 text-[2.2rem] font-semibold tracking-[-0.05em] text-[#1f1a16] sm:text-[2.8rem]">
-            목장 운영을 위한 따뜻한 워크스페이스.
+            지금은 진단과 상담 중심으로 운영합니다.
           </h1>
           <p className="mt-4 max-w-[640px] text-sm leading-7 text-[#5f564b] sm:text-[15px]">
-            숨은 채팅으로 기록하고, 월드로 상태를 보고, 목양 공간으로 사람을 돌보는 운영 공간이야. 로그인하면 바로 네 공동체만의 공간으로 들어가게 된다.
+            기존 내부 작업공간은 운영자와 이전 프로젝트 확인용으로만 남겨두었습니다. 공개 방문자는 3분 진단과 30분 방향 상담 흐름을 먼저 이용하면 됩니다.
           </p>
 
           <div className="mt-8 grid gap-3 text-sm text-[#5b5147] sm:grid-cols-3">
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">월드</p>
-              <p className="mt-2 leading-6">우리 목장 상태를 공간처럼 보고 바로 들어간다.</p>
+              <p className="font-medium text-[#2f2416]">진단</p>
+              <p className="mt-2 leading-6">현재 막힌 선택과 필요한 기준을 먼저 확인합니다.</p>
             </div>
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">목양</p>
-              <p className="mt-2 leading-6">사람, 가정, 기도, 심방 흐름을 이어서 본다.</p>
+              <p className="font-medium text-[#2f2416]">리포트</p>
+              <p className="mt-2 leading-6">AI 활용 방향과 다음 행동을 작게 정리합니다.</p>
             </div>
             <div className="rounded-[22px] border border-white/60 bg-white/70 p-4">
-              <p className="font-medium text-[#2f2416]">기록</p>
-              <p className="mt-2 leading-6">입력한 내용이 운영 흐름으로 계속 쌓인다.</p>
+              <p className="font-medium text-[#2f2416]">상담</p>
+              <p className="mt-2 leading-6">필요하면 내 상황에 맞게 방향을 점검합니다.</p>
             </div>
           </div>
         </section>
@@ -60,7 +60,7 @@ export default async function LoginPage({
           <p className="text-[10px] tracking-[0.18em] text-[#9a8b7a]">CONTINUE WITH GOOGLE</p>
           <h2 className="mt-3 text-[1.7rem] font-semibold tracking-[-0.04em] text-[#1c1713]">로그인</h2>
           <p className="mt-3 text-sm leading-6 text-[#5f564b]">
-            지금은 구글 로그인만 지원해. 로그인 후엔 기존 워크스페이스로 들어가거나, 처음이면 새 공간을 만들게 돼.
+            이 화면은 내부 운영자와 초대된 사용자만 사용합니다. 일반 방문자는 진단 페이지에서 시작해 주세요.
           </p>
 
           {googleConfigured ? (
@@ -88,7 +88,7 @@ export default async function LoginPage({
           {error ? <p className="mt-4 text-sm text-[#b24b3f]">{error}</p> : null}
 
           <p className="mt-6 text-sm text-[#7a7064]">
-            아직 계정이 없다면 <Link href="/signup" className="font-medium text-[#3f372d] underline-offset-4 hover:underline">회원가입</Link>
+            처음 오셨다면 <Link href="/diagnosis" className="font-medium text-[#3f372d] underline-offset-4 hover:underline">3분 진단으로 시작하기</Link>
           </p>
         </aside>
       </div>
