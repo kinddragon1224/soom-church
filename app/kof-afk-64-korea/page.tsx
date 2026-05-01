@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 const kakaoOpenChatUrl = "https://open.kakao.com/o/gsCQYWoi";
+const entryCode = "7223";
 
 export const metadata: Metadata = {
   title: "KOF AFK 64섭 KOREA 클럽",
@@ -21,7 +22,13 @@ const rules = [
 const highlights = [
   { label: "SERVER", value: "64" },
   { label: "CLUB", value: "KOREA" },
-  { label: "MASTER", value: "백마탄" },
+  { label: "CODE", value: entryCode },
+];
+
+const joinSteps = [
+  { title: "오픈채팅 검색", desc: "카카오톡 오픈채팅 검색창을 엽니다." },
+  { title: "킹오파 KOREA 입력", desc: "검색어는 그대로 ‘킹오파 KOREA’입니다." },
+  { title: "참여코드 입력", desc: `참여코드 ${entryCode}을 입력하고 입장합니다.` },
 ];
 
 export default function KofAfkKoreaClubPage() {
@@ -35,14 +42,9 @@ export default function KofAfkKoreaClubPage() {
         <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6 sm:px-8 lg:px-10">
           <header className="flex items-center justify-between gap-4">
             <p className="text-sm font-black tracking-[0.32em] text-white/70">KOF AFK</p>
-            <a
-              href={kakaoOpenChatUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/15 bg-white/10 px-5 text-sm font-black text-white backdrop-blur transition hover:border-[#ff3b20]/70 hover:bg-[#ff3b20]"
-            >
-              오픈채팅 입장
-            </a>
+            <p className="rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-black text-white/86 backdrop-blur">
+              참여코드 {entryCode}
+            </p>
           </header>
 
           <div className="grid flex-1 items-center gap-10 py-16 lg:grid-cols-[1.02fr_0.98fr] lg:py-20">
@@ -57,6 +59,15 @@ export default function KofAfkKoreaClubPage() {
                 KOF AFK 64섭에서 같이 성장할 클럽원을 찾습니다.
                 클마 백마탄과 함께 보상, 정보, 콘텐츠 타이밍을 챙기고 편하게 오래 갈 분이면 환영합니다.
               </p>
+              <div className="mt-7 rounded-[28px] border border-[#ffe45c]/25 bg-[#ffe45c]/10 p-5">
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-[#ffe45c]">Invite Code</p>
+                <p className="mt-3 text-2xl font-black leading-tight text-white">
+                  오픈톡은 검색창에 <span className="text-[#ffe45c]">킹오파 KOREA</span> 검색
+                </p>
+                <p className="mt-3 text-base font-black text-white/70">
+                  참여코드 <span className="rounded-xl bg-white px-3 py-1 text-[#09070b]">{entryCode}</span>
+                </p>
+              </div>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -65,13 +76,13 @@ export default function KofAfkKoreaClubPage() {
                   rel="noreferrer"
                   className="inline-flex min-h-14 items-center justify-center rounded-full bg-white px-7 text-sm font-black text-[#07070b] transition hover:bg-[#ff3b20] hover:text-white"
                 >
-                  KOREA 오픈채팅 들어가기
+                  오픈채팅 바로가기
                 </a>
                 <a
                   href="#info"
                   className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-7 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10"
                 >
-                  클럽 안내 보기
+                  검색 입장 방법 보기
                 </a>
               </div>
             </section>
@@ -104,8 +115,8 @@ export default function KofAfkKoreaClubPage() {
                   <p className="mt-5 text-3xl font-black tracking-[0.2em] text-white">KOREA</p>
                   <p className="mt-3 text-sm font-bold text-white/58">64 SERVER CLUB</p>
                 </div>
-                <div className="rounded-[28px] border border-white/10 bg-black/30 p-4 text-center text-sm font-bold leading-6 text-white/62 backdrop-blur">
-                  클마 백마탄이 운영하는 64섭 KOREA 클럽 안내 페이지입니다.
+                <div className="rounded-[28px] border border-[#ffe45c]/20 bg-black/30 p-4 text-center text-sm font-bold leading-6 text-white/72 backdrop-blur">
+                  오픈톡 검색어: 킹오파 KOREA · 참여코드 {entryCode}
                 </div>
               </div>
             </section>
@@ -118,22 +129,32 @@ export default function KofAfkKoreaClubPage() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ffbd40]">Join Guide</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.06em] text-white sm:text-5xl">
-              백마탄이랑 같이 치고 올라갈 사람들.
+              초대장 받으신 분은 이렇게 들어오시면 됩니다.
             </h2>
             <p className="mt-5 text-sm font-bold leading-7 text-white/58">
-              강제보다 꾸준함, 눈치보다 소통. 64섭 KOREA는 게임을 오래 즐기는 사람들을 위한 클럽입니다.
+              링크가 안 열리면 카카오톡 오픈채팅 검색으로 들어오시면 됩니다. 검색어와 참여코드만 기억하시면 됩니다.
             </p>
           </div>
 
           <div className="grid gap-3">
-            {rules.map((rule, index) => (
-              <article key={rule} className="flex items-center gap-4 rounded-[26px] border border-white/10 bg-white/[0.045] p-5">
+            {joinSteps.map((step, index) => (
+              <article key={step.title} className="flex items-center gap-4 rounded-[26px] border border-white/10 bg-white/[0.045] p-5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff3b20] text-sm font-black text-white">
                   {index + 1}
                 </span>
-                <p className="text-sm font-bold leading-7 text-white/76">{rule}</p>
+                <div>
+                  <p className="font-black text-white">{step.title}</p>
+                  <p className="mt-1 text-sm font-bold leading-6 text-white/62">{step.desc}</p>
+                </div>
               </article>
             ))}
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {rules.map((rule) => (
+                <div key={rule} className="rounded-[22px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-bold leading-6 text-white/62">
+                  {rule}
+                </div>
+              ))}
+            </div>
             <a
               href={kakaoOpenChatUrl}
               target="_blank"
