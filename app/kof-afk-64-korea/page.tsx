@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     siteName: "KOREA Club",
     images: [
       {
-        url: "/kof-afk-64-korea/opengraph-image",
+        url: "/kof-afk-baekmatan-og-v2.png",
         width: 1200,
         height: 630,
         alt: "KOF AFK 64섭 KOREA 클럽장 백마탄 초대장",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KOF AFK 64섭 KOREA 클럽",
     description: "오픈톡 검색: 킹오파 KOREA · 참여코드 7223",
-    images: ["/kof-afk-64-korea/opengraph-image"],
+    images: ["/kof-afk-baekmatan-og-v2.png"],
   },
   robots: {
     index: false,
@@ -121,17 +121,11 @@ export default function KofAfkKoreaClubPage() {
                   ))}
                 </div>
                 <div className="mx-auto w-full max-w-sm text-center">
-                  <div className="relative mx-auto flex aspect-square max-w-[310px] items-center justify-center overflow-hidden rounded-full border border-[#c987ff]/45 bg-[radial-gradient(circle_at_50%_24%,rgba(202,135,255,0.88)_0%,rgba(111,55,255,0.42)_34%,rgba(4,4,12,0.92)_72%)] shadow-[0_0_80px_rgba(145,71,255,0.38)]">
-                    <div className="absolute inset-3 rounded-full border border-white/15" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_26%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0)_18%),linear-gradient(135deg,rgba(255,255,255,0.1)_0_1px,transparent_1px_15px)] opacity-70" />
-                    <div className="relative">
-                      <p className="text-[11px] font-black tracking-[0.28em] text-[#f5d6ff]">CLUB MASTER</p>
-                      <p className="mt-3 text-5xl font-black tracking-[-0.12em] text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.5)]">
-                        백마탄
-                      </p>
-                      <p className="mt-3 text-sm font-black tracking-[0.22em] text-[#d9b7ff]">KOF AFK</p>
-                    </div>
-                  </div>
+                  <img
+                    src="/kof-afk-baekmatan-v2.png"
+                    alt="KOF AFK 64섭 KOREA 클럽장 백마탄"
+                    className="mx-auto aspect-square max-w-[330px] rounded-full object-cover shadow-[0_0_90px_rgba(145,71,255,0.48)]"
+                  />
                   <p className="mt-5 text-3xl font-black tracking-[0.2em] text-white">KOREA</p>
                   <p className="mt-3 text-sm font-bold text-white/58">64 SERVER CLUB</p>
                 </div>
