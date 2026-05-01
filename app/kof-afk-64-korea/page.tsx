@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 
-const kakaoOpenChatUrl = "https://open.kakao.com/o/gsCQYWoi";
-const entryCode = "7223";
+const kakaoOpenChatUrl = "https://open.kakao.com/o/saOuK6pi";
 
 export const metadata: Metadata = {
   title: "KOF AFK 64섭 KOREA 클럽",
-  description: "KOF AFK 64서버 KOREA 클럽 오픈채팅 초대 페이지입니다.",
+  description: "KOF AFK 64서버 KOREA 클럽 1:1 가입문의 페이지입니다.",
   openGraph: {
     title: "KOF AFK 64섭 KOREA 클럽",
-    description: "오픈톡 검색: 킹오파 KOREA · 참여코드 7223",
+    description: "매너겜지향 · 친절한 클럽원들 · 참여도 우선 KOREA 클럽",
     url: "/kof-afk-64-korea",
     siteName: "KOREA Club",
     images: [
@@ -23,7 +22,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KOF AFK 64섭 KOREA 클럽",
-    description: "오픈톡 검색: 킹오파 KOREA · 참여코드 7223",
+    description: "매너겜지향 · 친절한 클럽원들 · 참여도 우선 KOREA 클럽",
     images: ["/kof-afk-baekmatan-og-v2.png"],
   },
   robots: {
@@ -32,23 +31,17 @@ export const metadata: Metadata = {
   },
 };
 
-const rules = [
-  "64섭에서 오래 같이 갈 분",
-  "접속과 성장 루틴을 꾸준히 이어갈 분",
-  "클럽 콘텐츠와 보상 타이밍을 함께 챙길 분",
-  "서로 정보 공유하고 편하게 소통할 분",
+const clubTraits = [
+  "매너겜지향",
+  "친절한 클럽원들",
+  "앞서버 고인물 부캐 스승 존재",
+  "투력 줄세우기보단 참여도 우선순위",
 ];
 
 const highlights = [
   { label: "SERVER", value: "64" },
   { label: "CLUB", value: "KOREA" },
-  { label: "CODE", value: entryCode },
-];
-
-const joinSteps = [
-  { title: "오픈채팅 검색", desc: "카카오톡 오픈채팅 검색창을 엽니다." },
-  { title: "킹오파 KOREA 입력", desc: "검색어는 그대로 ‘킹오파 KOREA’입니다." },
-  { title: "참여코드 입력", desc: `참여코드 ${entryCode}을 입력하고 입장합니다.` },
+  { label: "INQUIRY", value: "1:1" },
 ];
 
 export default function KofAfkKoreaClubPage() {
@@ -63,7 +56,7 @@ export default function KofAfkKoreaClubPage() {
           <header className="flex items-center justify-between gap-4">
             <p className="text-sm font-black tracking-[0.32em] text-white/70">KOF AFK</p>
             <p className="rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-black text-white/86 backdrop-blur">
-              참여코드 {entryCode}
+              1:1 가입문의
             </p>
           </header>
 
@@ -76,17 +69,18 @@ export default function KofAfkKoreaClubPage() {
                 KOREA
               </h1>
               <p className="mt-6 max-w-2xl text-lg font-bold leading-8 text-white/72 sm:text-xl sm:leading-9">
-                KOF AFK 64섭에서 같이 성장할 클럽원을 찾습니다.
-                클마 백마탄과 함께 보상, 정보, 콘텐츠 타이밍을 챙기고 편하게 오래 갈 분이면 환영합니다.
+                KOF AFK 64섭 KOREA는 빠른 줄세우기보다 매너와 참여도를 먼저 보는 클럽입니다.
+                편하게 오래 같이 갈 분이라면 1:1로 문의 주세요.
               </p>
-              <div className="mt-7 rounded-[28px] border border-[#ffe45c]/25 bg-[#ffe45c]/10 p-5">
-                <p className="text-xs font-black uppercase tracking-[0.24em] text-[#ffe45c]">Invite Code</p>
-                <p className="mt-3 text-2xl font-black leading-tight text-white">
-                  오픈톡은 검색창에 <span className="text-[#ffe45c]">킹오파 KOREA</span> 검색
-                </p>
-                <p className="mt-3 text-base font-black text-white/70">
-                  참여코드 <span className="rounded-xl bg-white px-3 py-1 text-[#09070b]">{entryCode}</span>
-                </p>
+              <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                {clubTraits.map((trait) => (
+                  <div
+                    key={trait}
+                    className="rounded-[24px] border border-[#ffe45c]/20 bg-[#ffe45c]/10 px-5 py-4 text-base font-black leading-6 text-white shadow-[0_0_34px_rgba(255,228,92,0.08)]"
+                  >
+                    {trait}
+                  </div>
+                ))}
               </div>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -96,13 +90,13 @@ export default function KofAfkKoreaClubPage() {
                   rel="noreferrer"
                   className="inline-flex min-h-14 items-center justify-center rounded-full bg-white px-7 text-sm font-black text-[#07070b] transition hover:bg-[#ff3b20] hover:text-white"
                 >
-                  오픈채팅 바로가기
+                  1:1 가입문의 하기
                 </a>
                 <a
                   href="#info"
                   className="inline-flex min-h-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-7 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10"
                 >
-                  검색 입장 방법 보기
+                  클럽 성향 보기
                 </a>
               </div>
             </section>
@@ -130,7 +124,7 @@ export default function KofAfkKoreaClubPage() {
                   <p className="mt-3 text-sm font-bold text-white/58">64 SERVER CLUB</p>
                 </div>
                 <div className="rounded-[28px] border border-[#ffe45c]/20 bg-black/30 p-4 text-center text-sm font-bold leading-6 text-white/72 backdrop-blur">
-                  오픈톡 검색어: 킹오파 KOREA · 참여코드 {entryCode}
+                  매너겜지향 · 참여도 우선 · 1:1 가입문의
                 </div>
               </div>
             </section>
@@ -139,33 +133,26 @@ export default function KofAfkKoreaClubPage() {
       </section>
 
       <section id="info" className="border-t border-white/10 bg-[#050507]">
-        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-16 sm:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:px-10 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-16 sm:px-8 lg:grid-cols-[0.86fr_1.14fr] lg:px-10 lg:py-20">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ffbd40]">Join Guide</p>
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ffbd40]">Join Inquiry</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.06em] text-white sm:text-5xl">
-              초대장 받으신 분은 이렇게 들어오시면 됩니다.
+              가입은 1:1로 편하게 문의 주세요.
             </h2>
             <p className="mt-5 text-sm font-bold leading-7 text-white/58">
-              링크가 안 열리면 카카오톡 오픈채팅 검색으로 들어오시면 됩니다. 검색어와 참여코드만 기억하시면 됩니다.
+              클럽 분위기와 접속 패턴이 맞는지 먼저 가볍게 이야기하고 합류하면 됩니다.
+              투력보다 같이 오래 갈 매너와 참여도를 더 봅니다.
             </p>
           </div>
 
-          <div className="grid gap-3">
-            {joinSteps.map((step, index) => (
-              <article key={step.title} className="flex items-center gap-4 rounded-[26px] border border-white/10 bg-white/[0.045] p-5">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#ff3b20] text-sm font-black text-white">
-                  {index + 1}
-                </span>
-                <div>
-                  <p className="font-black text-white">{step.title}</p>
-                  <p className="mt-1 text-sm font-bold leading-6 text-white/62">{step.desc}</p>
-                </div>
-              </article>
-            ))}
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              {rules.map((rule) => (
-                <div key={rule} className="rounded-[22px] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-bold leading-6 text-white/62">
-                  {rule}
+          <div className="rounded-[34px] border border-white/10 bg-white/[0.045] p-6 shadow-[0_28px_100px_rgba(0,0,0,0.35)]">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {clubTraits.map((trait) => (
+                <div
+                  key={trait}
+                  className="rounded-[22px] border border-white/10 bg-black/25 px-4 py-3 text-sm font-bold leading-6 text-white/70"
+                >
+                  {trait}
                 </div>
               ))}
             </div>
@@ -173,9 +160,9 @@ export default function KofAfkKoreaClubPage() {
               href={kakaoOpenChatUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-3 inline-flex min-h-14 items-center justify-center rounded-full bg-[#ffe45c] px-7 text-sm font-black text-[#161006] transition hover:bg-white"
+              className="mt-6 inline-flex min-h-14 w-full items-center justify-center rounded-full bg-[#ffe45c] px-7 text-sm font-black text-[#161006] transition hover:bg-white"
             >
-              오픈카톡에서 합류 문의하기
+              1:1 가입문의 열기
             </a>
           </div>
         </div>
