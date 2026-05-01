@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/kof-afk-64-korea"],
+      disallow: ["/kof-afk-64-korea", "/kof-afk-bisa-guide"],
     },
     sitemap: "https://soom.io.kr/sitemap.xml",
     host: "https://soom.io.kr",
