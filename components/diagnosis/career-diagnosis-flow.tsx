@@ -34,6 +34,7 @@ export function CareerDiagnosisFlow() {
   const [audienceType, setAudienceType] = useState<DiagnosisAudienceType | null>(null);
   const [answers, setAnswers] = useState<Answers>({});
   const [showResult, setShowResult] = useState(false);
+  const [copiedReport, setCopiedReport] = useState(false);
 
   const answeredCount = Object.keys(answers).length;
   const totalCount = diagnosisQuestions.length;
@@ -45,7 +46,18 @@ export function CareerDiagnosisFlow() {
   const segmentReport = audienceType ? result.segmentReports[audienceType] : null;
   const toolStarterPack = result.toolCategories.map((type) => aiToolCategories[type]);
   const matchedWorkFields = result.workFields.map((type) => workFields[type]);
-  const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}`;
+  const reportSnapshot = [
+    "Soom AI 시대 커리어 방향 진단 결과",
+    `결과 유형: ${result.title}`,
+    audience ? `대상: ${audience.title}` : "",
+    `요약: ${segmentReport?.summary ?? result.summary}`,
+    `현재 강점: ${result.strength}`,
+    `막힌 지점: ${result.blocker}`,
+    `AI 도구 방향: ${result.aiDirection}`,
+    `다음 행동: ${segmentReport?.nextAction ?? result.nextAction}`,
+    `상담에서 볼 지점: ${segmentReport?.consultationFocus ?? result.consultationFocus}`,
+  ].filter(Boolean).join("\n");
+  const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}&report=${encodeURIComponent(reportSnapshot)}`;
 
   function selectAnswer(questionId: number, type: DiagnosisResultType) {
     setAnswers((current) => ({ ...current, [questionId]: type }));
@@ -55,6 +67,13 @@ export function CareerDiagnosisFlow() {
     setAudienceType(null);
     setAnswers({});
     setShowResult(false);
+    setCopiedReport(false);
+  }
+
+  async function copyDiagnosisReport() {
+    await navigator.clipboard.writeText(reportSnapshot);
+    setCopiedReport(true);
+    window.setTimeout(() => setCopiedReport(false), 2200);
   }
 
   if (showResult) {
@@ -200,6 +219,12 @@ export function CareerDiagnosisFlow() {
             이 진단은 상담 전 방향을 좁히기 위한 간단한 self-check입니다. 결과는 저장되거나 서버로 전송되지 않습니다.
             KRIVET·커리어넷 등 공공 진로/직업 자료 관점을 참고해 해석합니다.
           </p>
+          <div className="mt-5 rounded-[22px] border border-white/10 bg-white/[0.04] p-4">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#73d6b6]">상담 전 요약</p>
+            <pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-black/25 p-4 text-xs font-bold leading-6 text-white/62">
+              {reportSnapshot}
+            </pre>
+          </div>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Link
               href={contactHref}
@@ -207,6 +232,13 @@ export function CareerDiagnosisFlow() {
             >
               {audience?.consultationCta ?? "내 상황에 맞게 점검받기"}
             </Link>
+            <button
+              type="button"
+              onClick={copyDiagnosisReport}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#73d6b6]/25 bg-[#73d6b6]/10 px-6 text-sm font-black text-[#bff4e4] transition hover:border-[#73d6b6]/45 hover:bg-[#73d6b6]/16"
+            >
+              {copiedReport ? "요약을 복사했어요" : "결과 요약 복사"}
+            </button>
             <button
               type="button"
               onClick={resetDiagnosis}

@@ -65,6 +65,7 @@ export function ConsultationInquiryForm() {
   const source = searchParams.get("source") ?? "";
   const rawDiagnosisType = searchParams.get("type") ?? "";
   const rawAudienceType = searchParams.get("segment") ?? "";
+  const diagnosisReportSnapshot = searchParams.get("report") ?? "";
   const diagnosisType = rawDiagnosisType in diagnosisResults ? (rawDiagnosisType as DiagnosisResultType) : null;
   const audienceType = diagnosisAudiences.some((item) => item.type === rawAudienceType) ? (rawAudienceType as DiagnosisAudienceType) : null;
   const isDiagnosisLead = source === "diagnosis" && diagnosisType !== null;
@@ -110,6 +111,7 @@ export function ConsultationInquiryForm() {
       diagnosisSource: isDiagnosisLead ? "diagnosis" : "",
       diagnosisResultType: diagnosisType ?? "",
       diagnosisAudienceType: audienceType ?? "",
+      diagnosisReportSnapshot: isDiagnosisLead ? diagnosisReportSnapshot : "",
       companyWebsite: String(formData.get("companyWebsite") ?? "").trim(),
     };
     try {
@@ -144,6 +146,14 @@ export function ConsultationInquiryForm() {
         ) : null}
         {diagnosisNextAction ? (
           <p className="mt-3 text-xs font-bold leading-6 text-white/56">결과 리포트의 다음 행동: {diagnosisNextAction}</p>
+        ) : null}
+        {diagnosisReportSnapshot ? (
+          <details className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+            <summary className="cursor-pointer text-xs font-black text-white/72">전달된 진단 요약 보기</summary>
+            <pre className="mt-3 max-h-44 overflow-auto whitespace-pre-wrap break-words text-xs font-bold leading-6 text-white/52">
+              {diagnosisReportSnapshot}
+            </pre>
+          </details>
         ) : null}
       </div>
     ) : null}
