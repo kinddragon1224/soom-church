@@ -5,11 +5,11 @@ const blogUrl =
 const kakaoInquiryUrl = "https://open.kakao.com/o/saOuK6pi";
 
 export const metadata: Metadata = {
-  title: "KOF AFK 초보자 공략 가이드 | 비사의 3번째 부캐",
+  title: "KOF AFK 초보자 공략 가이드 | 선비사의 3번째 부캐",
   description: "쿠사나기 덕후 감성으로 쉽게 정리한 KOF AFK 64섭 초보자 공략 허브입니다.",
   openGraph: {
     title: "KOF AFK 초보자 공략 가이드",
-    description: "비사의 3번째 부캐가 알려주는 초반 성장 루트와 실수 방지 노트",
+    description: "선비사의 3번째 부캐가 알려주는 초반 성장 루트와 실수 방지 노트",
     url: "/kof-afk-bisa-guide",
     siteName: "KOREA Club",
     images: [
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "KOF AFK 초보자 공략 가이드",
-    description: "비사의 3번째 부캐가 알려주는 초반 성장 루트와 실수 방지 노트",
+    description: "선비사의 3번째 부캐가 알려주는 초반 성장 루트와 실수 방지 노트",
     images: ["/kof-afk-bisa-guide/opengraph-image"],
   },
   robots: {
@@ -97,7 +97,7 @@ export default function KofAfkBisaGuidePage() {
                 쉽게 갑니다.
               </h1>
               <p className="mt-6 max-w-2xl text-lg font-bold leading-8 text-white/72 sm:text-xl sm:leading-9">
-                KOF AFK 처음 시작한 분들을 위해 비사의 3번째 부캐가 초반 루트, 매일 루틴, 덱 방향을 덕후 감성으로 쉽게 정리합니다.
+                KOF AFK 처음 시작한 분들을 위해 선비사의 3번째 부캐가 초반 루트, 매일 루틴, 덱 방향을 덕후 감성으로 쉽게 정리합니다.
               </p>
 
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
@@ -155,7 +155,7 @@ export default function KofAfkBisaGuidePage() {
                       <span className="text-6xl font-black tracking-[-0.12em] text-white">K</span>
                     </div>
                   </div>
-                  <p className="mt-6 text-3xl font-black tracking-[-0.04em] text-white">비사의 3번째 부캐</p>
+                  <p className="mt-6 text-3xl font-black tracking-[-0.04em] text-white">선비사의 3번째 부캐</p>
                   <p className="mt-3 text-sm font-bold text-white/58">초보자 공략 · 불꽃 덕후 · 쉬운 설명</p>
                 </div>
 

@@ -110,7 +110,7 @@ export default function OpengraphImage() {
                 color: "rgba(255,255,255,0.72)",
               }}
             >
-              비사의 3번째 부캐가 알려주는
+              선비사의 3번째 부캐가 알려주는
               <br />
               초반 성장 루트와 실수 방지 노트
             </div>
