@@ -6,6 +6,26 @@ const entryCode = "7223";
 export const metadata: Metadata = {
   title: "KOF AFK 64섭 KOREA 클럽",
   description: "KOF AFK 64서버 KOREA 클럽 오픈채팅 초대 페이지입니다.",
+  openGraph: {
+    title: "KOF AFK 64섭 KOREA 클럽",
+    description: "오픈톡 검색: 킹오파 KOREA · 참여코드 7223",
+    url: "/kof-afk-64-korea",
+    siteName: "KOREA Club",
+    images: [
+      {
+        url: "/kof-afk-64-korea/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "KOF AFK 64섭 KOREA 클럽장 백마탄 초대장",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KOF AFK 64섭 KOREA 클럽",
+    description: "오픈톡 검색: 킹오파 KOREA · 참여코드 7223",
+    images: ["/kof-afk-64-korea/opengraph-image"],
+  },
   robots: {
     index: false,
     follow: false,
