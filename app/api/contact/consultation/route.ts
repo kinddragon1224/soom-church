@@ -16,6 +16,7 @@ const inquirySchema = z.object({
   preferredSchedule: z.string().trim().max(200).optional().default(""),
   diagnosisSource: z.string().trim().max(80).optional().default(""),
   diagnosisResultType: z.string().trim().max(80).optional().default(""),
+  diagnosisAudienceType: z.string().trim().max(80).optional().default(""),
   companyWebsite: z.string().trim().max(200).optional().default(""),
 });
 
@@ -30,6 +31,7 @@ type InquiryRecord = {
   createdAt: string;
   source: string;
   diagnosisResultType: string | null;
+  diagnosisAudienceType: string | null;
   name: string;
   contact: string;
   concernType: string;
@@ -131,6 +133,7 @@ function buildNotionProperties(schema: Record<string, NotionPropertySchema>, rec
   applyNotionProperty(properties, schema, "Contact", record.contact);
   applyNotionProperty(properties, schema, "Source", record.source);
   applyNotionProperty(properties, schema, "Diagnosis Type", record.diagnosisResultType ?? "");
+  applyNotionProperty(properties, schema, "Diagnosis Audience", record.diagnosisAudienceType ?? "");
   applyNotionProperty(properties, schema, "Concern", record.concernType);
   applyNotionProperty(properties, schema, "Stage", record.stage);
   applyNotionProperty(properties, schema, "Consultation Type", record.consultationType);
@@ -198,6 +201,7 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
     source: parsed.data.diagnosisSource || "contact",
     diagnosisResultType: parsed.data.diagnosisResultType || null,
+    diagnosisAudienceType: parsed.data.diagnosisAudienceType || null,
     name: parsed.data.name,
     contact: parsed.data.contact,
     concernType: parsed.data.concernType,

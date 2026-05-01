@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import {
+  diagnosisAudiences,
+  diagnosisResults,
+  type DiagnosisAudienceType,
+  type DiagnosisResultType,
+} from "@/components/diagnosis/diagnosis-data";
 
 const concernTypes = [
   "학생 진로/과목 선택이 막혔습니다",
@@ -15,14 +21,7 @@ const concernTypes = [
 const stages = ["학생/부모", "20대 커리어", "재직 중", "전환 준비", "40~50대 후반전 커리어"];
 const consultationTypes = ["30분 방향 진단", "학생 진로", "이력서/면접", "재취업/전직", "AI 커리어 적용"];
 
-const diagnosisResultLabels = {
-  direction: "방향 탐색형",
-  rebuild: "역량 재정렬형",
-  ai_tool: "AI 도구 활용형",
-  transition: "전환 준비형",
-} as const;
-
-const diagnosisDefaults: Record<keyof typeof diagnosisResultLabels, { concernType: string; stage: string; consultationType: string }> = {
+const diagnosisDefaults: Record<DiagnosisResultType, { concernType: string; stage: string; consultationType: string }> = {
   direction: {
     concernType: "아직 모르겠지만 지금 선택이 막혔습니다",
     stage: "학생/부모",
@@ -45,8 +44,14 @@ const diagnosisDefaults: Record<keyof typeof diagnosisResultLabels, { concernTyp
   },
 };
 
+const audienceStageDefaults: Record<DiagnosisAudienceType, string> = {
+  student: "학생/부모",
+  young_career: "20대 커리어",
+  worker: "재직 중",
+  second_career: "40~50대 후반전 커리어",
+};
+
 type InquiryStatus = { type: "idle" } | { type: "success"; message: string; inquiryId?: string } | { type: "error"; message: string };
-type DiagnosisResultType = keyof typeof diagnosisResultLabels;
 
 const fieldClass = "min-h-12 w-full min-w-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-white outline-none placeholder:text-white/32 focus:border-[#ff6b35]/55";
 
@@ -59,8 +64,19 @@ export function ConsultationInquiryForm() {
   const searchParams = useSearchParams();
   const source = searchParams.get("source") ?? "";
   const rawDiagnosisType = searchParams.get("type") ?? "";
-  const diagnosisType = rawDiagnosisType in diagnosisResultLabels ? (rawDiagnosisType as DiagnosisResultType) : null;
+  const rawAudienceType = searchParams.get("segment") ?? "";
+  const diagnosisType = rawDiagnosisType in diagnosisResults ? (rawDiagnosisType as DiagnosisResultType) : null;
+  const audienceType = diagnosisAudiences.some((item) => item.type === rawAudienceType) ? (rawAudienceType as DiagnosisAudienceType) : null;
   const isDiagnosisLead = source === "diagnosis" && diagnosisType !== null;
+  const diagnosisResult = diagnosisType ? diagnosisResults[diagnosisType] : null;
+  const audience = audienceType ? diagnosisAudiences.find((item) => item.type === audienceType) : null;
+  const segmentReport = diagnosisType && audienceType ? diagnosisResults[diagnosisType].segmentReports[audienceType] : null;
+  const diagnosisSummary = segmentReport?.summary ?? diagnosisResult?.summary;
+  const diagnosisNextAction = segmentReport?.nextAction ?? diagnosisResult?.nextAction;
+  const diagnosisConsultationFocus = segmentReport?.consultationFocus ?? diagnosisResult?.consultationFocus;
+  const messagePlaceholder = isDiagnosisLead
+    ? `방금 본 진단 결과에서 특히 맞다고 느낀 부분을 적어주세요.\n예: ${diagnosisNextAction ?? "다음 행동을 혼자 정리하기 어렵습니다."}\n지금 상황, 고민 중인 선택지, 이미 해본 일을 함께 적어주시면 더 좋습니다.`
+    : "예: 과목 선택은 했는데 진로 문장이 없습니다\n이력서에 쓸 경험은 있는데 설득력이 약합니다\n재취업을 준비해야 하는데 첫 문장을 어떻게 잡을지 모르겠습니다";
 
   const [concernType, setConcernType] = useState(concernTypes[0]);
   const [stage, setStage] = useState(stages[0]);
@@ -72,9 +88,9 @@ export function ConsultationInquiryForm() {
     if (!diagnosisType) return;
     const defaults = diagnosisDefaults[diagnosisType];
     setConcernType(defaults.concernType);
-    setStage(defaults.stage);
+    setStage(audienceType ? audienceStageDefaults[audienceType] : defaults.stage);
     setConsultationType(defaults.consultationType);
-  }, [diagnosisType]);
+  }, [diagnosisType, audienceType]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -93,6 +109,7 @@ export function ConsultationInquiryForm() {
       preferredSchedule: String(formData.get("preferredSchedule") ?? "").trim(),
       diagnosisSource: isDiagnosisLead ? "diagnosis" : "",
       diagnosisResultType: diagnosisType ?? "",
+      diagnosisAudienceType: audienceType ?? "",
       companyWebsite: String(formData.get("companyWebsite") ?? "").trim(),
     };
     try {
@@ -114,17 +131,29 @@ export function ConsultationInquiryForm() {
   return <form onSubmit={handleSubmit} className="grid min-w-0 gap-8">
     {isDiagnosisLead ? (
       <div className="min-w-0 rounded-[24px] border border-[#ff6b35]/25 bg-[#ff6b35]/10 px-4 py-4 text-sm leading-7 text-white/76">
-        <p className="font-black text-white">진단 결과: {diagnosisResultLabels[diagnosisType]}</p>
-        <p className="mt-1">아래 신청서는 방금 본 결과를 기준으로 미리 정리해 두었습니다. 상황만 조금 더 적어주시면 방향 진단을 더 구체적으로 시작할 수 있습니다.</p>
+        <p className="font-black text-white">
+          진단 결과: {diagnosisResult?.title}
+          {audience ? <span className="text-white/54"> · {audience.title}</span> : null}
+        </p>
+        {diagnosisSummary ? <p className="mt-2">{diagnosisSummary}</p> : null}
+        {diagnosisConsultationFocus ? (
+          <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#ffb199]">상담에서 먼저 볼 지점</p>
+            <p className="mt-2 font-bold text-white/82">{diagnosisConsultationFocus}</p>
+          </div>
+        ) : null}
+        {diagnosisNextAction ? (
+          <p className="mt-3 text-xs font-bold leading-6 text-white/56">결과 리포트의 다음 행동: {diagnosisNextAction}</p>
+        ) : null}
       </div>
     ) : null}
     <div className="min-w-0"><label className="text-sm font-bold text-white">지금 막힌 선택은 무엇인가요?</label><div className="mt-4 flex min-w-0 flex-wrap gap-3">{concernTypes.map((item) => <button key={item} type="button" onClick={() => setConcernType(item)} className={optionClass(concernType === item, "pill")}>{item}</button>)}</div></div>
     <div className="grid min-w-0 gap-5 sm:grid-cols-2"><label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">이름</span><input name="name" autoComplete="name" className={fieldClass} placeholder="성함 또는 닉네임" required /></label><label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">연락처</span><input name="contact" autoComplete="email" className={fieldClass} placeholder="이메일 / 전화번호 / 카카오톡 ID" required /></label></div>
     <div className="grid min-w-0 gap-5 sm:grid-cols-2"><div><p className="text-sm font-bold text-white">현재 상황</p><div className="mt-4 grid gap-3">{stages.map((item) => <button key={item} type="button" onClick={() => setStage(item)} className={optionClass(stage === item)}>{item}</button>)}</div></div><div><p className="text-sm font-bold text-white">진단 주제</p><div className="mt-4 grid gap-3">{consultationTypes.map((item) => <button key={item} type="button" onClick={() => setConsultationType(item)} className={optionClass(consultationType === item)}>{item}</button>)}</div></div></div>
-    <label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">현재 상황을 자유롭게 적어주세요</span><textarea name="message" className="min-h-[190px] w-full min-w-0 rounded-[24px] border border-white/10 bg-white/[0.04] px-4 py-4 text-white outline-none placeholder:text-white/32 focus:border-[#ff6b35]/55" placeholder={"예: 과목 선택은 했는데 진로 문장이 없습니다\n이력서에 쓸 경험은 있는데 설득력이 약합니다\n재취업을 준비해야 하는데 첫 문장을 어떻게 잡을지 모르겠습니다"} required minLength={10} /></label>
+    <label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">현재 상황을 자유롭게 적어주세요</span><textarea name="message" className="min-h-[190px] w-full min-w-0 rounded-[24px] border border-white/10 bg-white/[0.04] px-4 py-4 text-white outline-none placeholder:text-white/32 focus:border-[#ff6b35]/55" placeholder={messagePlaceholder} required minLength={10} /></label>
     <div className="grid min-w-0 gap-5 sm:grid-cols-2"><label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">참고 자료</span><input name="referenceUrl" className={fieldClass} placeholder="이력서, 생기부, 포트폴리오, SNS, 노션 등" /></label><label className="grid gap-2 text-sm text-white/78"><span className="font-bold text-white">희망 시간</span><input name="preferredSchedule" className={fieldClass} placeholder="예: 평일 저녁, 토요일 오전" /></label></div>
     <input name="companyWebsite" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
-    <div className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/70"><p className="font-bold text-white">30분 방향 진단에서 남길 것</p><ul className="mt-3 grid gap-2 leading-6"><li>현재 막힌 선택 1개를 한 문장으로 정리합니다.</li><li>AI 시대 직업 변화 속에서 무엇을 먼저 봐야 할지 기준을 잡습니다.</li><li>다음 7일에 할 행동 3개를 제안합니다.</li></ul></div>
+    <div className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm text-white/70"><p className="font-bold text-white">30분 방향 진단에서 남길 것</p><ul className="mt-3 grid gap-2 leading-6"><li>현재 막힌 선택 1개를 한 문장으로 정리합니다.</li><li>{audience?.resultLens ?? "AI 시대 직업 변화 속에서 무엇을 먼저 봐야 할지 기준을 잡습니다."}</li><li>{diagnosisNextAction ? `다음 행동 후보를 현실적인 순서로 조정합니다: ${diagnosisNextAction}` : "다음 7일에 할 행동 3개를 제안합니다."}</li></ul></div>
     {status.type !== "idle" ? <div className={`rounded-[22px] border px-4 py-4 text-sm leading-6 ${status.type === "success" ? "border-[#a8d8b3]/30 bg-[#e8fff0]/10 text-[#d9ffe4]" : "border-[#f3a6a6]/30 bg-[#fff0f0]/10 text-[#ffd6d6]"}`}><p className="font-bold">{status.type === "success" ? "접수 완료" : "접수 실패"}</p><p className="mt-1">{status.message}</p>{status.type === "success" && status.inquiryId ? <p className="mt-2 text-xs opacity-70">접수 번호: {status.inquiryId}</p> : null}</div> : null}
     <div className="grid min-w-0 gap-3"><button type="submit" disabled={isSubmitting} className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white disabled:cursor-not-allowed disabled:opacity-60">{isSubmitting ? "접수 중..." : "30분 방향 진단 신청"}</button><p className="text-xs leading-6 text-white/52">접수 후 현재 상황에 맞는 시작점을 먼저 안내드립니다.</p></div>
   </form>;
