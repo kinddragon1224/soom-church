@@ -21,7 +21,7 @@ const rules = [
 const highlights = [
   { label: "SERVER", value: "64" },
   { label: "CLUB", value: "KOREA" },
-  { label: "CHAT", value: "KakaoTalk" },
+  { label: "MASTER", value: "백마탄" },
 ];
 
 export default function KofAfkKoreaClubPage() {
@@ -55,7 +55,7 @@ export default function KofAfkKoreaClubPage() {
               </h1>
               <p className="mt-6 max-w-2xl text-lg font-bold leading-8 text-white/72 sm:text-xl sm:leading-9">
                 KOF AFK 64섭에서 같이 성장할 클럽원을 찾습니다.
-                보상, 정보, 콘텐츠 타이밍을 함께 챙기고 편하게 오래 갈 분이면 환영합니다.
+                클마 백마탄과 함께 보상, 정보, 콘텐츠 타이밍을 챙기고 편하게 오래 갈 분이면 환영합니다.
               </p>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -89,15 +89,23 @@ export default function KofAfkKoreaClubPage() {
                     </div>
                   ))}
                 </div>
-                <div className="text-center">
-                  <p className="text-[5.2rem] font-black leading-none tracking-[-0.12em] text-white drop-shadow-[0_12px_34px_rgba(0,0,0,0.55)] sm:text-[6.4rem]">
-                    K
-                  </p>
-                  <p className="mt-1 text-3xl font-black tracking-[0.2em] text-white">KOREA</p>
+                <div className="mx-auto w-full max-w-sm text-center">
+                  <div className="relative mx-auto flex aspect-square max-w-[310px] items-center justify-center overflow-hidden rounded-full border border-[#c987ff]/45 bg-[radial-gradient(circle_at_50%_24%,rgba(202,135,255,0.88)_0%,rgba(111,55,255,0.42)_34%,rgba(4,4,12,0.92)_72%)] shadow-[0_0_80px_rgba(145,71,255,0.38)]">
+                    <div className="absolute inset-3 rounded-full border border-white/15" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_26%,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0)_18%),linear-gradient(135deg,rgba(255,255,255,0.1)_0_1px,transparent_1px_15px)] opacity-70" />
+                    <div className="relative">
+                      <p className="text-[11px] font-black tracking-[0.28em] text-[#f5d6ff]">CLUB MASTER</p>
+                      <p className="mt-3 text-5xl font-black tracking-[-0.12em] text-white drop-shadow-[0_10px_24px_rgba(0,0,0,0.5)]">
+                        백마탄
+                      </p>
+                      <p className="mt-3 text-sm font-black tracking-[0.22em] text-[#d9b7ff]">KOF AFK</p>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-3xl font-black tracking-[0.2em] text-white">KOREA</p>
                   <p className="mt-3 text-sm font-bold text-white/58">64 SERVER CLUB</p>
                 </div>
                 <div className="rounded-[28px] border border-white/10 bg-black/30 p-4 text-center text-sm font-bold leading-6 text-white/62 backdrop-blur">
-                  공식 페이지가 아닌 64섭 KOREA 클럽 안내 페이지입니다.
+                  클마 백마탄이 운영하는 64섭 KOREA 클럽 안내 페이지입니다.
                 </div>
               </div>
             </section>
@@ -110,7 +118,7 @@ export default function KofAfkKoreaClubPage() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ffbd40]">Join Guide</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.06em] text-white sm:text-5xl">
-              같이 치고 올라갈 사람들.
+              백마탄이랑 같이 치고 올라갈 사람들.
             </h2>
             <p className="mt-5 text-sm font-bold leading-7 text-white/58">
               강제보다 꾸준함, 눈치보다 소통. 64섭 KOREA는 게임을 오래 즐기는 사람들을 위한 클럽입니다.
