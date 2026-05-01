@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     siteName: "KOREA Club",
     images: [
       {
-        url: "/kof-afk-bisa-guide/opengraph-image",
+        url: "/kof-afk-sunbisa-kusanagi-main.webp",
         width: 1200,
         height: 630,
-        alt: "KOF AFK 초보자 공략 가이드",
+        alt: "선비사의 쿠사나기 메인 캐릭터 이미지",
       },
     ],
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KOF AFK 초보자 공략 가이드",
     description: "선비사의 3번째 부캐가 알려주는 초반 성장 루트와 실수 방지 노트",
-    images: ["/kof-afk-bisa-guide/opengraph-image"],
+    images: ["/kof-afk-sunbisa-kusanagi-main.webp"],
   },
   robots: {
     index: false,
@@ -151,9 +151,11 @@ export default function KofAfkBisaGuidePage() {
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,214,88,0.32)_0%,rgba(255,67,40,0.34)_28%,rgba(101,38,255,0.22)_55%,rgba(0,0,0,0)_72%)]" />
                     <div className="absolute h-[88%] w-[88%] rounded-full border border-[#ffcc52]/30" />
                     <div className="absolute h-[66%] w-[66%] rotate-45 rounded-[34px] border border-white/14 bg-black/28" />
-                    <div className="relative flex h-36 w-36 rotate-[-10deg] items-center justify-center rounded-[34px] border border-[#ffcc52]/40 bg-[linear-gradient(135deg,#ff4328_0%,#5711c8_62%,#08050b_100%)] shadow-[0_0_70px_rgba(255,67,40,0.5)]">
-                      <span className="text-6xl font-black tracking-[-0.12em] text-white">K</span>
-                    </div>
+                    <img
+                      src="/kof-afk-sunbisa-kusanagi-main.webp"
+                      alt="선비사가 좋아하는 쿠사나기풍 메인 캐릭터"
+                      className="relative h-full w-full scale-110 object-cover object-center mix-blend-screen"
+                    />
                   </div>
                   <p className="mt-6 text-3xl font-black tracking-[-0.04em] text-white">선비사의 3번째 부캐</p>
                   <p className="mt-3 text-sm font-bold text-white/58">초보자 공략 · 불꽃 덕후 · 쉬운 설명</p>
@@ -195,19 +197,28 @@ export default function KofAfkBisaGuidePage() {
 
       <section className="border-t border-white/10 bg-[#08050b]">
         <div className="mx-auto grid max-w-7xl gap-6 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:px-10 lg:py-20">
-          <div className="rounded-[38px] border border-white/10 bg-white/[0.045] p-6 sm:p-8">
+          <div className="overflow-hidden rounded-[38px] border border-white/10 bg-white/[0.045] p-6 sm:p-8">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff8f74]">Teacher Profile</p>
             <h2 className="mt-4 text-4xl font-black leading-tight tracking-[-0.06em] text-white sm:text-5xl">
               쿠사나기 좋아하는 씹덕후,
               <br />
               설명은 친절하게.
             </h2>
-            <div className="mt-6 grid gap-3">
-              {teacherNotes.map((note) => (
-                <div key={note} className="rounded-[22px] border border-white/10 bg-black/24 px-4 py-3 text-sm font-bold leading-6 text-white/68">
-                  {note}
-                </div>
-              ))}
+            <div className="mt-6 grid gap-3 sm:grid-cols-[0.72fr_1fr]">
+              <div className="overflow-hidden rounded-[28px] border border-white/10 bg-black/24">
+                <img
+                  src="/kof-afk-sunbisa-kusanagi-stand.png"
+                  alt="불꽃을 든 쿠사나기풍 전신 캐릭터"
+                  className="h-full max-h-[360px] w-full object-cover object-top"
+                />
+              </div>
+              <div className="grid gap-3">
+                {teacherNotes.map((note) => (
+                  <div key={note} className="rounded-[22px] border border-white/10 bg-black/24 px-4 py-3 text-sm font-bold leading-6 text-white/68">
+                    {note}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
