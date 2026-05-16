@@ -66,7 +66,7 @@ export default function KofAfkEntryEventPage() {
               src={posterImagePath}
               alt="KOF AFK 참전 이벤트 타임라인"
               width={1800}
-              height={3210}
+              height={3552}
               priority
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 92vw, 1040px"
               className="h-auto w-full select-none"
