@@ -39,11 +39,42 @@ Vercel 프로덕션에서 Notion 저장이 실패하면 `/tmp/diagnosis-report-r
 node scripts/diagnosis-leads-summary.mjs
 ```
 
+동작 방식:
+
+- Notion 환경값과 데이터베이스 ID가 있으면 Notion 요청 목록을 먼저 요약한다.
+- Notion 설정이 없거나 조회가 실패하면 로컬 JSONL을 요약한다.
+- 로컬 JSONL만 강제로 보고 싶으면 `--source jsonl`을 사용한다.
+- Notion만 강제로 보고 싶으면 `--source notion`을 사용한다.
+
 자동화/연동용 JSON 출력이 필요하면 아래를 사용한다.
 
 ```bash
 node scripts/diagnosis-leads-summary.mjs --json
 ```
+
+운영 확인 예시:
+
+```bash
+node scripts/diagnosis-leads-summary.mjs --source notion
+node scripts/diagnosis-leads-summary.mjs --source jsonl
+node scripts/diagnosis-leads-summary.mjs --source notion --json
+```
+
+요약에서 확인할 항목:
+
+- 총 요청 수.
+- track 분포.
+- source 파라미터 분포.
+- diagnosisResultType 분포.
+- 최근 요청 5개.
+
+리드가 0건이면 먼저 확인할 것:
+
+- 실제 폼 제출이 `/api/diagnosis/report-intake`에 성공했는지.
+- Vercel 환경변수에 Notion API key와 database ID가 들어있는지.
+- Notion 데이터베이스에 integration이 초대되어 있는지.
+- Notion 데이터베이스에 `Contact`, `Track`, `Source`, `Created At` 같은 속성이 있는지.
+- Notion이 실패했을 때 `/tmp` fallback만 발생한 것은 아닌지.
 
 각 줄은 하나의 요청이며, 주요 필드는 다음과 같다.
 
