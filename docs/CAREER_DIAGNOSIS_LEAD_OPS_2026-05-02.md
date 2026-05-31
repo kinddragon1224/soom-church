@@ -6,11 +6,32 @@
 
 ## 저장 위치
 
-상세 리포트 베타 요청은 JSONL로 저장한다.
+상세 리포트 베타 요청은 Notion 저장을 우선 시도하고, Notion 설정이 없거나 실패하면 JSONL fallback으로 저장한다.
+
+Notion 저장에 사용할 수 있는 환경값은 다음 순서로 확인한다.
+
+```txt
+NOTION_DIAGNOSIS_API_KEY
+NOTION_CONTACT_API_KEY
+NOTION_API_KEY_SOOM_BLOG
+NOTION_API_KEY
+
+NOTION_DIAGNOSIS_REPORT_DATABASE_ID
+NOTION_REPORT_INTAKE_DATABASE_ID
+NOTION_CONTACT_DATABASE_ID
+NOTION_CONSULTATION_DATABASE_ID
+NOTION_INQUIRY_DATABASE_ID
+```
+
+Notion 데이터베이스에 해당 속성이 있으면 자동으로 채우고, 없는 속성은 무시한다. 그래서 처음에는 `이름`, `연락처`, `Track`, `Wanted Outcome`, `Created At`처럼 필요한 속성만 만들어도 된다.
+
+JSONL fallback 위치는 아래와 같다.
 
 ```txt
 ops/diagnosis-report-requests/requests.jsonl
 ```
+
+Vercel 프로덕션에서 Notion 저장이 실패하면 `/tmp/diagnosis-report-requests/requests.jsonl`에 임시 fallback으로 저장된다. 이 값은 영구 운영 저장소가 아니므로, 실제 런칭 전에는 Notion 환경값을 우선 확인한다.
 
 요청 현황은 아래 명령으로 빠르게 확인한다.
 
