@@ -76,6 +76,46 @@ node scripts/diagnosis-leads-summary.mjs --source notion --json
 - Notion 데이터베이스에 `Contact`, `Track`, `Source`, `Created At` 같은 속성이 있는지.
 - Notion이 실패했을 때 `/tmp` fallback만 발생한 것은 아닌지.
 
+## Notion DB 스키마 점검
+
+실제 런칭 전에는 아래 명령으로 Notion 데이터베이스 속성이 충분한지 확인한다.
+
+```bash
+node scripts/diagnosis-notion-schema-check.mjs
+```
+
+자동화/공유용 JSON 출력:
+
+```bash
+node scripts/diagnosis-notion-schema-check.mjs --json
+```
+
+필수 속성:
+
+- `Contact`: `rich_text`, `email`, `phone_number` 중 하나.
+- `Track`: `select` 또는 `rich_text`.
+- `Source`: `select` 또는 `rich_text`.
+- `Created At`: `date` 또는 `rich_text`.
+
+권장 속성:
+
+- `Request ID`
+- `Diagnosis Type`
+- `Target Type`
+- `Stage`
+- `Focus`
+- `Child Grade Or Age`
+- `Current Anxiety`
+- `Avoid Future`
+- `Tried Activities`
+- `Current Situation`
+- `Wanted Outcome`
+- `Strengths`
+- `Avoid Path`
+- `Reference URL`
+
+필수 속성이 빠져도 API는 가능한 범위에서 저장을 시도하지만, 운영자가 리드를 분류하기 어려워진다. 런칭 전에는 필수 속성 4개와 title 속성 1개를 먼저 맞춘다.
+
 각 줄은 하나의 요청이며, 주요 필드는 다음과 같다.
 
 - `requestId`
