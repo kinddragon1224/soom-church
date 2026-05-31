@@ -17,10 +17,10 @@ const navItems = [
   { href: "/", label: "홈", key: "home" },
   { href: "/about", label: "진단 관점", key: "about" },
   { href: "/diagnosis", label: "진단하기", key: "diagnosis" },
-  { href: "/contact", label: "30분 방향 진단", key: "contact" },
+  { href: "/contact", label: "1:1 문의", key: "contact" },
 ] as const;
 
-export default function SiteHeader({ theme = "light", current, ctaHref = "/contact", ctaLabel = "30분 방향 진단 신청", loggedIn = false, adminMode = false }: SiteHeaderProps) {
+export default function SiteHeader({ theme = "light", current, ctaHref = "/diagnosis", ctaLabel = "무료 포지션 체크", loggedIn = false, adminMode = false }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const isDark = theme === "dark";
 
@@ -40,7 +40,7 @@ export default function SiteHeader({ theme = "light", current, ctaHref = "/conta
   return (
     <>
       <header className="relative z-20 flex min-w-0 items-center justify-between gap-3">
-        <Link href="/" className={`shrink-0 text-[1.9rem] font-black tracking-[-0.1em] sm:text-[2.35rem] ${isDark ? "text-white" : "text-[#080b12]"}`}>soom</Link>
+        <Link href="/" className={`shrink-0 text-[1.15rem] font-black tracking-[-0.035em] sm:text-[1.45rem] ${isDark ? "text-white" : "text-[#080b12]"}`}>THE LUMEN</Link>
         <nav className={`hidden min-w-0 items-center gap-7 text-sm font-bold md:flex ${navClass}`}>
           {navItems.map((item) => (
             <Link key={item.href} href={item.href} className={current === item.key ? activeClass : undefined}>
@@ -66,7 +66,7 @@ export default function SiteHeader({ theme = "light", current, ctaHref = "/conta
         <div className={`fixed inset-0 z-[100] overflow-y-auto md:hidden ${mobileSurfaceClass}`}>
           <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6">
             <div className="flex items-center justify-between">
-              <Link href="/" onClick={() => setOpen(false)} className="text-[1.9rem] font-black tracking-[-0.1em]">soom</Link>
+              <Link href="/" onClick={() => setOpen(false)} className="text-[1.2rem] font-black tracking-[-0.035em]">THE LUMEN</Link>
               <button type="button" aria-label="메뉴 닫기" onClick={() => setOpen(false)} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-current/15"><X className="h-5 w-5" /></button>
             </div>
             <div className="mt-10 grid gap-3">

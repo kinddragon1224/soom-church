@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
-  aiToolCategories,
-  diagnosisAudiences,
+  audienceTracks,
   diagnosisQuestions,
   diagnosisResults,
   resultPriority,
-  workFields,
-  type DiagnosisAudienceType,
+  type AudienceTrackType,
   type DiagnosisResultType,
 } from "@/components/diagnosis/diagnosis-data";
 
@@ -30,82 +28,83 @@ function getResultType(answers: Answers): DiagnosisResultType {
   }, resultPriority[0]);
 }
 
+function getRankedResultTypes(answers: Answers): DiagnosisResultType[] {
+  const scores = resultPriority.reduce<Record<DiagnosisResultType, number>>((acc, type) => {
+    acc[type] = 0;
+    return acc;
+  }, {} as Record<DiagnosisResultType, number>);
+
+  Object.values(answers).forEach((type) => {
+    if (type) scores[type] += 1;
+  });
+
+  return [...resultPriority].sort((a, b) => {
+    if (scores[b] !== scores[a]) return scores[b] - scores[a];
+    return resultPriority.indexOf(a) - resultPriority.indexOf(b);
+  });
+}
+
 export function CareerDiagnosisFlow() {
-  const [audienceType, setAudienceType] = useState<DiagnosisAudienceType | null>(null);
   const [answers, setAnswers] = useState<Answers>({});
   const [showResult, setShowResult] = useState(false);
-  const [copiedReport, setCopiedReport] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<AudienceTrackType>("student_parent");
 
   const answeredCount = Object.keys(answers).length;
   const totalCount = diagnosisQuestions.length;
-  const progress = Math.round(((audienceType ? 1 : 0) + answeredCount) / (totalCount + 1) * 100);
+  const progress = Math.round((answeredCount / totalCount) * 100);
   const canShowResult = answeredCount === totalCount;
   const resultType = useMemo(() => getResultType(answers), [answers]);
+  const rankedResultTypes = useMemo(() => getRankedResultTypes(answers), [answers]);
   const result = diagnosisResults[resultType];
-  const audience = diagnosisAudiences.find((item) => item.type === audienceType);
-  const segmentReport = audienceType ? result.segmentReports[audienceType] : null;
-  const toolStarterPack = result.toolCategories.map((type) => aiToolCategories[type]);
-  const matchedWorkFields = result.workFields.map((type) => workFields[type]);
-  const reportSnapshot = [
-    "Soom AI 시대 커리어 방향 진단 결과",
-    `결과 유형: ${result.title}`,
-    audience ? `대상: ${audience.title}` : "",
-    `요약: ${segmentReport?.summary ?? result.summary}`,
-    `현재 강점: ${result.strength}`,
-    `막힌 지점: ${result.blocker}`,
-    `AI 도구 방향: ${result.aiDirection}`,
-    `다음 행동: ${segmentReport?.nextAction ?? result.nextAction}`,
-    `상담에서 볼 지점: ${segmentReport?.consultationFocus ?? result.consultationFocus}`,
-  ].filter(Boolean).join("\n");
-  const contactHref = `/contact?source=diagnosis&type=${resultType}${audienceType ? `&segment=${audienceType}` : ""}&report=${encodeURIComponent(reportSnapshot)}`;
+  const secondaryType = rankedResultTypes.find((type) => type !== resultType) ?? resultPriority[1];
+  const secondaryResult = diagnosisResults[secondaryType];
+  const track = audienceTracks.find((item) => item.type === selectedTrack) ?? audienceTracks[0];
+  const reportHref = `/diagnosis/report-intake?source=diagnosis&type=${resultType}&track=${selectedTrack}`;
+  const sessionHref = `/contact?source=diagnosis&type=${resultType}&offer=premium-direction-session`;
 
   function selectAnswer(questionId: number, type: DiagnosisResultType) {
     setAnswers((current) => ({ ...current, [questionId]: type }));
   }
 
   function resetDiagnosis() {
-    setAudienceType(null);
     setAnswers({});
     setShowResult(false);
-    setCopiedReport(false);
-  }
-
-  async function copyDiagnosisReport() {
-    await navigator.clipboard.writeText(reportSnapshot);
-    setCopiedReport(true);
-    window.setTimeout(() => setCopiedReport(false), 2200);
   }
 
   if (showResult) {
     return (
-      <section className="w-full max-w-[calc(100vw-40px)] min-w-0 overflow-hidden rounded-[34px] sm:max-w-full border border-white/10 bg-[#0d1117] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
+      <section className="w-full max-w-[calc(100vw-40px)] min-w-0 overflow-hidden rounded-[34px] border border-white/10 bg-[#0d1117] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.28)] sm:max-w-full sm:p-8 lg:p-10">
         <div className="flex flex-col gap-4 border-b border-white/10 pb-7 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">Diagnosis Result</p>
-            <h2 className="mt-3 break-words [overflow-wrap:anywhere] text-[2rem] font-black leading-[1] tracking-[-0.06em] text-white sm:text-[4rem]">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">Position Result</p>
+            <h2 className="mt-3 break-words [word-break:keep-all] text-[2rem] font-black leading-[1] tracking-[-0.06em] text-white sm:text-[4rem]">
               {result.title}
             </h2>
-            {audience ? (
-              <p className="mt-3 text-sm font-bold text-white/54">
-                {audience.title} · {audience.resultLens}
-              </p>
-            ) : null}
+            <p className="mt-3 text-sm font-black text-white/54">{result.plainName}</p>
           </div>
           <span className="w-fit rounded-full border border-[#73d6b6]/25 bg-[#73d6b6]/10 px-4 py-2 text-xs font-black text-[#bff4e4]">
-            8단계 완료
+            7문항 완료
           </span>
         </div>
 
-        <p className="mt-7 max-w-3xl break-words text-base font-bold leading-8 text-white/78">
-          {segmentReport?.summary ?? result.summary}
+        <p className="mt-7 max-w-3xl break-words [word-break:keep-all] text-base font-bold leading-8 text-white/78">
+          현재 주 포지션은 <span className="text-white">{result.title}</span>입니다. 무료 체크는 여기서 끝내지 않고, 보조 가능성과 남는 면을 함께 봐야 다음 행동이 선명해집니다.
         </p>
+
+        <div className="mt-6 rounded-[24px] border border-[#ff6b35]/25 bg-[#ff6b35]/10 px-5 py-4">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#ffb199]">Selected Track</p>
+          <p className="mt-2 text-base font-black text-white">{track.title}</p>
+          <p className="mt-1 text-sm leading-6 text-white/70">{track.promise}</p>
+        </div>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">
           {[
-            ["현재 강점", result.strength],
-            ["막힌 지점", result.blocker],
-            ["AI 시대 도구 방향", result.aiDirection],
-            ["다음 행동 1개", segmentReport?.nextAction ?? result.nextAction],
+            ["현재 주 포지션", result.summary],
+            ["보조 포지션 가능성", `${secondaryResult.title}: ${secondaryResult.strength}`],
+            ["넓은 대체면", result.broadAlternative],
+            ["남는 잔존면", result.residualSurface],
+            ["다음 7일 행동", result.sevenDayAction],
+            ["리포트에서 더 볼 것", "무료 결과는 방향을 좁히는 미리보기입니다. 실제 상황, 불안, 피하고 싶은 미래를 넣으면 리포트에서 판단 기준을 더 구체화합니다."],
           ].map(([label, value]) => (
             <article key={label} className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.045] p-5">
               <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff6b35]">{label}</p>
@@ -114,138 +113,25 @@ export function CareerDiagnosisFlow() {
           ))}
         </div>
 
-        <div className="mt-5 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-          <article className="min-w-0 rounded-[26px] border border-[#ff6b35]/18 bg-[#ff6b35]/[0.07] p-5">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff6b35]">AI Starter Routine</p>
-            <p className="mt-3 break-words text-sm font-bold leading-7 text-white/78">{result.aiRoutine}</p>
-            {audience ? (
-              <p className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs font-bold leading-6 text-white/56">
-                {audience.aiQuestion}
-              </p>
-            ) : null}
-          </article>
-          <article className="min-w-0 rounded-[26px] border border-white/10 bg-white/[0.045] p-5">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#73d6b6]">30-Min Session Focus</p>
-            <p className="mt-3 break-words text-sm font-bold leading-7 text-white/78">{segmentReport?.consultationFocus ?? result.consultationFocus}</p>
-            <div className="mt-4 grid gap-2">
-              {result.preparation.map((item) => (
-                <div key={item} className="rounded-2xl border border-white/10 bg-[#050507]/45 px-4 py-3 text-xs font-bold leading-5 text-white/60">
-                  준비하면 좋은 것 · {item}
-                </div>
-              ))}
-            </div>
-          </article>
-        </div>
-
-        <div className="mt-5 rounded-[30px] border border-white/10 bg-white/[0.035] p-5 sm:p-6">
-          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#ff6b35]">Soom Work Map</p>
-              <h3 className="mt-2 break-words text-2xl font-black tracking-[-0.05em] text-white">
-                가까운 일의 지도
-              </h3>
-            </div>
-            <p className="max-w-md text-xs font-bold leading-6 text-white/48">
-              NCS식 직무 분류를 초보자 언어로 바꾼 지도입니다. 직업명보다 먼저 “내가 어떤 일을 잘 다루는지”를 봅니다.
-            </p>
-          </div>
-          <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            {matchedWorkFields.map((field, index) => (
-              <article key={field.type} className="min-w-0 rounded-[24px] border border-white/10 bg-[#050507]/55 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-black text-white">{index + 1}. {field.title}</p>
-                  <span className="rounded-full border border-[#ff6b35]/20 bg-[#ff6b35]/10 px-2.5 py-1 text-[10px] font-black text-[#ffb199]">
-                    match
-                  </span>
-                </div>
-                <p className="mt-3 text-xs font-bold leading-6 text-white/62">{field.plainDescription}</p>
-                <p className="mt-3 rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3 text-[11px] font-bold leading-5 text-white/46">
-                  {field.ncsHint}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {field.examplePaths.map((path) => (
-                    <span key={path} className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1.5 text-[10px] font-black text-white/58">
-                      {path}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-4 rounded-2xl border border-[#73d6b6]/15 bg-[#73d6b6]/[0.06] px-4 py-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#bff4e4]">AI 첫 실험</p>
-                  <p className="mt-2 text-xs font-bold leading-6 text-white/72">{field.aiFirstMove}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-5 rounded-[30px] border border-white/10 bg-[#050507]/70 p-5 sm:p-6">
-          <div className="flex flex-col gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#73d6b6]">AI Tool Starter Pack</p>
-              <h3 className="mt-2 break-words text-2xl font-black tracking-[-0.05em] text-white">
-                지금 써볼 AI 도구 3가지
-              </h3>
-            </div>
-            <p className="max-w-sm text-xs font-bold leading-6 text-white/48">
-              도구를 많이 아는 것보다, 내 상황에 맞는 첫 실험을 작게 해보는 것이 먼저입니다.
-            </p>
-          </div>
-          <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            {toolStarterPack.map((tool) => (
-              <article key={tool.type} className="min-w-0 rounded-[24px] border border-white/10 bg-white/[0.045] p-4">
-                <p className="text-xs font-black text-[#ff6b35]">{tool.title}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {tool.tools.map((name) => (
-                    <span key={name} className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] font-black text-white/66">
-                      {name}
-                    </span>
-                  ))}
-                </div>
-                <p className="mt-4 text-xs font-bold leading-6 text-white/58">{tool.beginnerUse}</p>
-                <div className="mt-4 rounded-2xl border border-[#73d6b6]/15 bg-[#73d6b6]/[0.06] px-4 py-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#bff4e4]">이번 주 실험</p>
-                  <p className="mt-2 text-xs font-bold leading-6 text-white/72">{tool.weeklyExperiment}</p>
-                </div>
-                <p className="mt-3 text-[11px] font-bold leading-5 text-white/42">
-                  상담에서: {tool.sessionSetup}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-
         <div className="mt-8 rounded-[26px] border border-white/10 bg-[#050507] p-5">
           <p className="text-sm leading-7 text-white/58">
-            이 진단은 상담 전 방향을 좁히기 위한 간단한 self-check입니다. 결과는 저장되거나 서버로 전송되지 않습니다.
-            KRIVET·커리어넷 등 공공 진로/직업 자료 관점을 참고해 해석합니다.
+              무료 체크로 가까운 포지션을 확인했습니다. 리포트는 상담 전에 상황을 정리하는 단계입니다. 아이의 실제 조건, 지금까지 해본 활동, 피하고 싶은 미래까지 반영하면 미니/상세 5포지션 리포트로 더 구체화할 수 있습니다.
           </p>
-          <div className="mt-5 rounded-[22px] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#73d6b6]">상담 전 요약</p>
-            <pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-black/25 p-4 text-xs font-bold leading-6 text-white/62">
-              {reportSnapshot}
-            </pre>
-          </div>
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-5 grid gap-3">
             <Link
-              href={contactHref}
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white"
+              href={reportHref}
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-center text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white"
             >
-              {audience?.consultationCta ?? "내 상황에 맞게 점검받기"}
+              내 상황 기준 5포지션 리포트 요청하기
             </Link>
-            <button
-              type="button"
-              onClick={copyDiagnosisReport}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#73d6b6]/25 bg-[#73d6b6]/10 px-6 text-sm font-black text-[#bff4e4] transition hover:border-[#73d6b6]/45 hover:bg-[#73d6b6]/16"
-            >
-              {copiedReport ? "요약을 복사했어요" : "결과 요약 복사"}
-            </button>
-            <button
-              type="button"
-              onClick={resetDiagnosis}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/12 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/30 hover:bg-white/10"
-            >
-              다시 진단하기
-            </button>
+            <div className="flex flex-col gap-2 text-center text-xs font-black text-white/46 sm:flex-row sm:justify-center sm:gap-5">
+              <Link href={sessionHref} className="transition hover:text-white">
+                리포트 이후에도 복잡하면 1:1 상담
+              </Link>
+              <button type="button" onClick={resetDiagnosis} className="transition hover:text-white">
+                다시 진단하기
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -253,20 +139,20 @@ export function CareerDiagnosisFlow() {
   }
 
   return (
-    <section className="w-full max-w-[calc(100vw-40px)] min-w-0 overflow-hidden rounded-[34px] sm:max-w-full border border-white/10 bg-[#0d1117] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
+    <section className="w-full max-w-[calc(100vw-40px)] min-w-0 overflow-hidden rounded-[34px] border border-white/10 bg-[#0d1117] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.28)] sm:max-w-full sm:p-8 lg:p-10">
       <div className="flex flex-col gap-5 border-b border-white/10 pb-7 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">3-minute self-check</p>
-          <h2 className="mt-3 break-all break-words [overflow-wrap:anywhere] text-[1.72rem] font-black leading-[1.04] tracking-[-0.055em] text-white sm:text-[3.7rem] sm:leading-[1]">
-            AI 시대 커리어 방향 진단
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff5b2e]">Free position check</p>
+          <h2 className="mt-3 break-words [word-break:keep-all] text-[1.72rem] font-black leading-[1.04] tracking-[-0.055em] text-white sm:text-[3.7rem] sm:leading-[1]">
+            AI 시대 진로 포지션 체크
           </h2>
-          <p style={{ overflowWrap: "anywhere", wordBreak: "break-all" }} className="mt-4 max-w-2xl break-words break-all [overflow-wrap:anywhere] text-sm leading-7 text-white/58">
-            먼저 현재 상황을 고르고, 7개 질문에 답하면 AI 활용 방향과 다음 행동 1개를 확인할 수 있습니다.
+          <p className="mt-4 max-w-2xl break-words [word-break:keep-all] text-sm leading-7 text-white/58">
+            무료 체크로 먼저 가까운 포지션을 확인하세요. 직업 이름을 찍기 전에, 내가 AI 시대에 어디에 서야 하는지 봅니다.
           </p>
         </div>
         <div className="min-w-0">
           <div className="flex items-center justify-between gap-4 text-xs font-black text-white/58">
-            <span>{(audienceType ? 1 : 0) + answeredCount} / {totalCount + 1}</span>
+            <span>{answeredCount} / {totalCount}</span>
             <span>{progress}%</span>
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10 lg:w-64">
@@ -275,37 +161,29 @@ export function CareerDiagnosisFlow() {
         </div>
       </div>
 
-      <div className="mt-7 rounded-[28px] border border-white/10 bg-[#050507]/45 p-4 sm:p-5">
-        <div className="flex items-start gap-3">
-          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#73d6b6] text-xs font-black text-[#07110f]">
-            0
-          </span>
-          <div className="min-w-0 flex-1">
-            <h3 className="break-words text-base font-black leading-7 text-white">지금 어디에 가장 가까우신가요?</h3>
-            <p className="mt-1 text-sm leading-6 text-white/48">문항은 같아도 결과 리포트의 해석 기준이 달라집니다.</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {diagnosisAudiences.map((item) => {
-                const active = audienceType === item.type;
-                return (
-                  <button
-                    key={item.type}
-                    type="button"
-                    onClick={() => setAudienceType(item.type)}
-                    className={`min-w-0 rounded-[22px] border px-4 py-4 text-left transition ${
-                      active
-                        ? "border-[#73d6b6]/70 bg-[#73d6b6]/14 text-white shadow-[0_14px_32px_rgba(115,214,182,0.08)]"
-                        : "border-white/10 bg-white/[0.035] text-white/72 hover:border-[#73d6b6]/35 hover:bg-[#73d6b6]/10"
-                    }`}
-                  >
-                    <span className="block text-sm font-black">{item.title}</span>
-                    <span className="mt-2 block text-xs font-bold leading-5 text-white/52">{item.description}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+      <div className="mt-7 grid gap-2 sm:grid-cols-3">
+        {audienceTracks.map((item) => {
+          const active = selectedTrack === item.type;
+          return (
+            <button
+              key={item.type}
+              type="button"
+              onClick={() => setSelectedTrack(item.type)}
+              className={`rounded-[18px] border px-4 py-3 text-left transition ${
+                active
+                  ? "border-[#ff6b35]/70 bg-[#ff6b35]/14 text-white"
+                  : "border-white/10 bg-white/[0.035] text-white/66 hover:border-[#ff6b35]/35 hover:bg-[#ff6b35]/8"
+              }`}
+            >
+              <p className="text-xs font-black text-[#ffb199]">{item.label}</p>
+              <p className="mt-1 text-sm font-black leading-5 text-white">{item.title}</p>
+            </button>
+          );
+        })}
       </div>
+      <p className="mt-3 rounded-[18px] border border-white/10 bg-white/[0.035] px-4 py-3 text-xs font-bold leading-6 text-white/58">
+        {track.detail}
+      </p>
 
       <div className="mt-7 grid gap-5">
         {diagnosisQuestions.map((question) => (
@@ -315,7 +193,7 @@ export function CareerDiagnosisFlow() {
                 {question.id}
               </span>
               <div className="min-w-0 flex-1">
-                <h3 className="break-words break-all [overflow-wrap:anywhere] text-base font-black leading-7 text-white">{question.title}</h3>
+                <h3 className="break-words [word-break:keep-all] text-base font-black leading-7 text-white">{question.title}</h3>
                 <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
                   {question.options.map((option) => {
                     const active = answers[question.id] === option.type;
@@ -324,8 +202,7 @@ export function CareerDiagnosisFlow() {
                         key={option.label}
                         type="button"
                         onClick={() => selectAnswer(question.id, option.type)}
-                        style={{ overflowWrap: "anywhere", whiteSpace: "normal", wordBreak: "break-all" }}
-                        className={`min-h-12 min-w-0 whitespace-normal break-all break-words [overflow-wrap:anywhere] rounded-2xl border px-4 py-3 text-left text-sm font-bold leading-6 transition ${
+                        className={`min-h-12 min-w-0 whitespace-normal break-words [word-break:keep-all] rounded-2xl border px-4 py-3 text-left text-sm font-bold leading-6 transition ${
                           active
                             ? "border-[#ff6b35]/75 bg-[#ff6b35]/16 text-white shadow-[0_12px_32px_rgba(255,107,53,0.1)]"
                             : "border-white/10 bg-[#050507]/45 text-white/70 hover:border-[#ff6b35]/40 hover:bg-[#ff6b35]/10"
@@ -343,22 +220,16 @@ export function CareerDiagnosisFlow() {
       </div>
 
       <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-6 text-white/48">개인정보 입력 없이 브라우저 안에서만 결과를 계산합니다.</p>
+        <p className="text-xs leading-6 text-white/48">개인정보 입력 없이 브라우저 안에서만 결과를 계산합니다. 무료 결과는 미리보기이고, 유료 전환은 5포지션 리포트 요청을 사용자가 선택할 때만 시작됩니다.</p>
         <button
           type="button"
-          disabled={!audienceType || !canShowResult}
+          disabled={!canShowResult}
           onClick={() => setShowResult(true)}
           className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
         >
-          결과 보기
+          포지션 결과 보기
         </button>
       </div>
     </section>
   );
 }
-
-
-
-
-
-

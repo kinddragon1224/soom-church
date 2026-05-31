@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const heroChips = ["학생 진로", "AI 활용 커리어", "재취업/전직", "경력 재정의"];
+const heroChips = ["도구 운용자", "결과 제작자", "맥락 해석자", "문제 발견자", "관계 조율자"];
 
 const floatingSignals = [
   { label: "AI SIGNAL", value: "work shift detected", className: "left-4 top-[18%] sm:left-[-1.5rem]" },
@@ -98,42 +98,42 @@ export default function HomePage() {
 
         <div className="relative mx-auto flex min-h-screen w-full max-w-[1500px] flex-col px-5 pb-6 pt-5 sm:px-8 lg:px-10">
           <header className="z-30 flex items-center justify-between gap-4">
-            <Link href="/" className="text-[2rem] font-black tracking-[-0.12em] text-white sm:text-[2.45rem]">
-              soom
+            <Link href="/" className="text-[1.35rem] font-black tracking-[-0.04em] text-white sm:text-[1.65rem]">
+              THE LUMEN
             </Link>
             <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-white/54 backdrop-blur md:flex">
               <span className="h-2 w-2 rounded-full bg-[#73d6b6] shadow-[0_0_22px_rgba(115,214,182,0.95)]" />
               live career signal / Seoul
             </div>
-            <Link href="/contact" className="hidden min-h-11 items-center justify-center rounded-full border border-white/15 bg-white px-5 text-sm font-black text-[#050507] transition hover:bg-[#ff5b2e] hover:text-white sm:inline-flex">
-              30분 방향 진단 신청
+            <Link href="/diagnosis" className="hidden min-h-11 items-center justify-center rounded-full border border-white/15 bg-white px-5 text-sm font-black text-[#050507] transition hover:bg-[#ff5b2e] hover:text-white sm:inline-flex">
+              무료 포지션 체크
             </Link>
           </header>
 
           <div className="relative grid min-w-0 flex-1 items-center gap-8 py-10 lg:grid-cols-[0.82fr_1.18fr] lg:py-12">
             <div className="relative z-20 w-full max-w-[22rem] min-w-0 sm:max-w-3xl">
-              <p className="text-[11px] font-black uppercase tracking-[0.35em] text-[#ff6b35]">AI Career Intelligence</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.35em] text-[#ff6b35]">THE LUMEN Position Check</p>
               <h1 className="mt-5 max-w-full break-all text-[clamp(2.65rem,13vw,3.35rem)] sm:break-normal font-black leading-[0.9] tracking-[-0.075em] text-white sm:leading-[0.78] sm:tracking-[-0.13em] sm:text-[7rem] lg:text-[8.8rem]">
-                커리어는
+                직업 이름보다
                 <br />
-                이제 해석의
+                포지션이
                 <br />
-                문제입니다.
+                먼저입니다.
               </h1>
               <div className="mt-7 w-full max-w-[22rem] min-w-0 sm:max-w-2xl border-l border-[#ff5b2e] pl-5">
                 <p className="break-words text-base font-bold leading-8 text-[#f3efe7] break-all sm:text-xl sm:break-normal">
-                  AI 시대 진로·직업·커리어의 막힌 선택을 읽고, 다음 7일의 행동으로 번역합니다.
+                  AI 시대 진로는 적성 찾기가 아니라 위치 찾기입니다. 더루멘은 내가 어디에 서야 하는지 먼저 봅니다.
                 </p>
                 <p className="mt-3 break-words text-sm leading-7 text-[#9ca3af] break-all sm:break-normal">
-                  학생 진로, 20대 커리어, 40~50대 후반전 커리어까지. 더 많은 정보가 아니라 지금 선택할 기준을 만듭니다.
+                  무료 체크로 가까운 5포지션을 확인하고, 필요하면 리포트로 상담 전 상황을 정리합니다.
                 </p>
               </div>
               <div className="mt-8 flex w-full max-w-full flex-col gap-3 sm:flex-row">
                 <Link href="/diagnosis" className="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#ff5b2e] px-6 text-sm font-black text-white shadow-[0_20px_70px_rgba(255,91,46,0.34)] transition hover:bg-white hover:text-[#050507]">
-                  3분 커리어 진단 시작
+                  무료 포지션 체크 시작
                 </Link>
-                <Link href="/contact" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10 sm:w-auto">
-                  30분 방향 진단 신청
+                <Link href="/diagnosis/report-intake?source=home-hero&track=early_career" className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/14 bg-white/[0.04] px-6 text-sm font-black text-white transition hover:border-white/35 hover:bg-white/10 sm:w-auto">
+                  리포트 요청은 체크 이후
                 </Link>
               </div>
               <div className="mt-7 grid w-full max-w-[22rem] min-w-0 sm:max-w-xl grid-cols-2 gap-2.5 sm:grid-cols-4">
@@ -145,10 +145,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative z-10 min-h-[560px] w-full min-w-0 overflow-hidden lg:min-h-[760px] lg:overflow-visible">
-              <div className="absolute left-1/2 top-1/2 h-[32rem] w-[32rem] sm:h-[54rem] sm:w-[54rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_210deg,rgba(255,91,46,0.02),rgba(79,123,255,0.22),rgba(115,214,182,0.12),rgba(255,91,46,0.24),rgba(255,91,46,0.02))] opacity-90 blur-[1px]" />
-              <div className="absolute left-1/2 top-1/2 h-[25rem] w-[25rem] sm:h-[39rem] sm:w-[39rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/18" />
-              <div className="absolute left-1/2 top-1/2 h-[18rem] w-[18rem] sm:h-[25rem] sm:w-[25rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#4b7bff]/28" />
+            <div className="relative z-10 min-h-[380px] w-full min-w-0 overflow-hidden sm:min-h-[560px] lg:min-h-[760px] lg:overflow-visible">
+              <div className="absolute left-1/2 top-1/2 h-[27rem] w-[27rem] sm:h-[54rem] sm:w-[54rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[conic-gradient(from_210deg,rgba(255,91,46,0.02),rgba(79,123,255,0.22),rgba(115,214,182,0.12),rgba(255,91,46,0.24),rgba(255,91,46,0.02))] opacity-90 blur-[1px]" />
+              <div className="absolute left-1/2 top-1/2 h-[20rem] w-[20rem] sm:h-[39rem] sm:w-[39rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-white/18" />
+              <div className="absolute left-1/2 top-1/2 h-[14rem] w-[14rem] sm:h-[25rem] sm:w-[25rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#4b7bff]/28" />
 
               <div className="absolute left-[4%] right-[4%] top-[8%] z-0 hidden text-center text-[7.5rem] font-black uppercase leading-none tracking-[-0.12em] text-white/[0.045] lg:block">
                 CAREER<br />INTEL
@@ -159,20 +159,20 @@ export default function HomePage() {
                 <div className="absolute left-1/2 top-0 h-full w-px bg-gradient-to-b from-transparent via-white/24 to-transparent" />
                 <img
                   src="/sunyong-profile.jpg"
-                  alt="AI 시대 커리어 인텔리전스 스튜디오 숨의 시그니처 인물 사진"
+                  alt="AI 시대 진로 포지션 체크를 안내하는 더루멘의 시그니처 인물 사진"
                   className="absolute bottom-0 left-1/2 h-[98%] max-w-none -translate-x-1/2 object-contain grayscale contrast-125 saturate-50 [filter:grayscale(1)_contrast(1.2)_drop-shadow(0_28px_80px_rgba(0,0,0,0.74))]"
                 />
                 <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-[#080b12]/72 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#050507] via-[#050507]/42 to-transparent" />
               </div>
 
-              <div className="absolute left-0 top-[12%] z-20 w-[min(13.5rem,56vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#ff5b2e]/55">
+              <div className="absolute left-0 top-[12%] z-20 hidden w-[min(13.5rem,56vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#ff5b2e]/55 sm:block">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#ff6b35]">AI SIGNAL</p>
                 <p className="mt-2 text-xl font-black tracking-[-0.05em] text-white">직업 변화 감지</p>
                 <div className="mt-4 flex items-end gap-1.5">{[18, 28, 14, 34, 24, 42].map((h) => <span key={h} className="w-1.5 rounded-full bg-[#ff5b2e]" style={{ height: `${h}px` }} />)}</div>
               </div>
 
-              <div className="absolute right-0 top-[18%] z-20 w-[min(14rem,50vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#4b7bff]/55">
+              <div className="absolute right-0 top-[18%] z-20 hidden w-[min(14rem,50vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#4b7bff]/55 sm:block">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#4b7bff]">CAREER MAP</p>
                 <div className="mt-4 grid gap-2 text-xs font-bold text-white/70">
                   <span>Student / Parent</span>
@@ -187,7 +187,7 @@ export default function HomePage() {
                 <p className="mt-3 text-xs font-bold leading-5 text-[#4b5563]">정답보다 먼저 움직일 기준을 만듭니다.</p>
               </div>
 
-              <div className="absolute bottom-[9%] right-0 z-20 w-[min(15rem,58vw)] sm:right-[3%] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#73d6b6]/55">
+              <div className="absolute bottom-[9%] right-0 z-20 hidden w-[min(15rem,58vw)] rounded-3xl border border-white/12 bg-[#080b12]/78 p-4 shadow-[0_22px_70px_rgba(0,0,0,0.42)] backdrop-blur-md transition hover:-translate-y-1 hover:border-[#73d6b6]/55 sm:right-[3%] sm:block">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#73d6b6]">WORK SHIFT</p>
                 <p className="mt-2 text-sm font-bold leading-6 text-white/76">정보 → 기준 → 문장 → 행동</p>
                 <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full w-[72%] rounded-full bg-[#73d6b6]" /></div>
@@ -231,7 +231,7 @@ export default function HomePage() {
           <div className="lg:sticky lg:top-10 lg:self-start">
             <SectionLabel>Read / Translate / Act</SectionLabel>
             <h2 className="mt-5 break-words text-[2.15rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.2rem] sm:leading-[1] sm:tracking-[-0.078em]">
-              숨은 커리어를
+              더루멘은 포지션을
               <br />
               세 단계로 봅니다.
             </h2>
@@ -279,16 +279,16 @@ export default function HomePage() {
       <section id="offer" className="border-b border-white/10 bg-[#050507]">
         <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-10 lg:py-24">
           <div>
-            <SectionLabel>Primary Session</SectionLabel>
+            <SectionLabel>Report First</SectionLabel>
             <h2 className="mt-5 break-words text-[2.15rem] font-black leading-[1.06] tracking-[-0.045em] text-white break-all sm:break-normal sm:text-[4.2rem] sm:leading-[1] sm:tracking-[-0.078em]">
-              30분이면 정답은 몰라도,
+              리포트는 상담 전에
               <br />
-              다음 행동은 정할 수 있습니다.
+              상황을 정리하는 단계입니다.
             </h2>
           </div>
           <div className="rounded-[40px] border border-white/10 bg-[#f4e7d0] p-6 text-[#080b12] shadow-[0_30px_100px_rgba(244,231,208,0.08)] sm:p-8">
-            <p className="text-xs font-black uppercase tracking-[0.26em] text-[#9c4a24]">30-minute AI Career Direction Session</p>
-            <h3 className="mt-5 text-[2.35rem] font-black leading-[1] tracking-[-0.08em]">30분 AI 커리어 방향 진단</h3>
+            <p className="text-xs font-black uppercase tracking-[0.26em] text-[#9c4a24]">5-position report ladder</p>
+            <h3 className="mt-5 text-[2.35rem] font-black leading-[1] tracking-[-0.08em]">무료 체크 → 리포트 → 필요 시 1:1</h3>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               {offerItems.map((item) => (
                 <div key={item} className="rounded-2xl border border-[#080b12]/10 bg-white/55 px-4 py-4 text-sm font-black text-[#18140f]">
@@ -296,8 +296,8 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <Link href="/contact" className="mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-[#080b12] px-6 text-sm font-black text-white transition hover:bg-[#ff5b2e]">
-              내 상황 정리하기
+            <Link href="/diagnosis" className="mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-[#080b12] px-6 text-sm font-black text-white transition hover:bg-[#ff5b2e]">
+              무료 포지션 체크부터 보기
             </Link>
           </div>
         </div>
@@ -314,7 +314,7 @@ export default function HomePage() {
                 글과 상담의 기준을 업데이트합니다.
               </h2>
               <p className="mt-6 max-w-xl text-sm leading-7 text-[#aab0bb]">
-                숨은 감으로만 말하지 않습니다. 매일 진로, 직업, AI 커리어 자료를 수집하고 학생·20대·중장년의 선택 문제로 번역합니다.
+                더루멘은 감으로만 말하지 않습니다. 진로, 직업, AI 커리어 자료를 읽고 학생·20대·중장년의 선택 문제를 5포지션 언어로 번역합니다.
               </p>
             </div>
             <div className="grid min-w-0 gap-3 self-end">
@@ -335,16 +335,16 @@ export default function HomePage() {
           <div>
             <SectionLabel>Final Action</SectionLabel>
             <h2 className="mt-5 max-w-5xl text-[2.8rem] font-black leading-[0.96] tracking-[-0.085em] text-white sm:text-[5rem]">
-              지금 막힌 선택을
+              무료 체크로 좁히고
               <br />
-              하나만 가져오세요.
+              리포트로 정리하세요.
             </h2>
             <p className="mt-6 max-w-2xl text-sm leading-7 text-[#aab0bb]">
-              과목, 학과, 이력서, 퇴사, 재취업, AI 활용. 문제를 크게 들고 와도 괜찮습니다. 먼저 한 문장으로 접고, 다음 행동 하나부터 정리합니다.
+              과목, 학과, 이력서, 퇴사, 재취업, AI 활용. 먼저 가까운 포지션을 보고, 필요하면 내 상황 기준 5포지션 리포트 요청을 남기세요.
             </p>
           </div>
-          <Link href="/contact" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#050507] transition hover:bg-[#ff5b2e] hover:text-white">
-            30분 방향 진단 신청
+          <Link href="/diagnosis" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#050507] transition hover:bg-[#ff5b2e] hover:text-white">
+            무료 포지션 체크
           </Link>
         </div>
       </section>
