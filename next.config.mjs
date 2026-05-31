@@ -13,11 +13,6 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: "/pricing",
-        destination: "/contact",
-        permanent: false,
-      },
-      {
         source: "/workspace/:path*",
         destination: "/diagnosis",
         permanent: false,
