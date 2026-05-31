@@ -48,11 +48,13 @@ export function CareerDiagnosisFlow() {
   const [answers, setAnswers] = useState<Answers>({});
   const [showResult, setShowResult] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<AudienceTrackType>("student_parent");
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const answeredCount = Object.keys(answers).length;
   const totalCount = diagnosisQuestions.length;
   const progress = Math.round((answeredCount / totalCount) * 100);
   const canShowResult = answeredCount === totalCount;
+  const currentQuestion = diagnosisQuestions[currentQuestionIndex];
   const resultType = useMemo(() => getResultType(answers), [answers]);
   const rankedResultTypes = useMemo(() => getRankedResultTypes(answers), [answers]);
   const result = diagnosisResults[resultType];
@@ -64,11 +66,21 @@ export function CareerDiagnosisFlow() {
 
   function selectAnswer(questionId: number, type: DiagnosisResultType) {
     setAnswers((current) => ({ ...current, [questionId]: type }));
+    if (currentQuestionIndex < totalCount - 1) {
+      setCurrentQuestionIndex((current) => current + 1);
+      return;
+    }
+    setShowResult(true);
   }
 
   function resetDiagnosis() {
     setAnswers({});
     setShowResult(false);
+    setCurrentQuestionIndex(0);
+  }
+
+  function goToPreviousQuestion() {
+    setCurrentQuestionIndex((current) => Math.max(0, current - 1));
   }
 
   if (showResult) {
@@ -185,42 +197,48 @@ export function CareerDiagnosisFlow() {
         {track.detail}
       </p>
 
-      <div className="mt-7 grid gap-5">
-        {diagnosisQuestions.map((question) => (
-          <article key={question.id} className="min-w-0 overflow-hidden rounded-[26px] border border-white/10 bg-white/[0.035] p-4 sm:p-5">
-            <div className="flex gap-3">
-              <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ff5b2e] text-xs font-black text-white">
-                {question.id}
-              </span>
-              <div className="min-w-0 flex-1">
-                <h3 className="break-words [word-break:keep-all] text-base font-black leading-7 text-white">{question.title}</h3>
-                <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
-                  {question.options.map((option) => {
-                    const active = answers[question.id] === option.type;
-                    return (
-                      <button
-                        key={option.label}
-                        type="button"
-                        onClick={() => selectAnswer(question.id, option.type)}
-                        className={`min-h-12 min-w-0 whitespace-normal break-words [word-break:keep-all] rounded-2xl border px-4 py-3 text-left text-sm font-bold leading-6 transition ${
-                          active
-                            ? "border-[#ff6b35]/75 bg-[#ff6b35]/16 text-white shadow-[0_12px_32px_rgba(255,107,53,0.1)]"
-                            : "border-white/10 bg-[#050507]/45 text-white/70 hover:border-[#ff6b35]/40 hover:bg-[#ff6b35]/10"
-                        }`}
-                      >
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </article>
-        ))}
+      <div className="mt-7">
+        <article className="min-w-0 overflow-hidden rounded-[28px] border border-white/10 bg-[#050507]/54 p-5 sm:p-7">
+          <div className="flex items-center justify-between gap-4">
+            <span className="rounded-full bg-[#ff5b2e] px-3 py-1.5 text-xs font-black text-white">
+              {currentQuestion.id} / {totalCount}
+            </span>
+            <button
+              type="button"
+              onClick={goToPreviousQuestion}
+              disabled={currentQuestionIndex === 0}
+              className="text-xs font-black text-white/42 transition hover:text-white disabled:opacity-30"
+            >
+              이전
+            </button>
+          </div>
+          <h3 className="mt-5 break-words [word-break:keep-all] text-[1.7rem] font-black leading-[1.12] tracking-[-0.045em] text-white sm:text-4xl">
+            {currentQuestion.title}
+          </h3>
+          <div className="mt-6 grid gap-2.5">
+            {currentQuestion.options.map((option) => {
+              const active = answers[currentQuestion.id] === option.type;
+              return (
+                <button
+                  key={option.label}
+                  type="button"
+                  onClick={() => selectAnswer(currentQuestion.id, option.type)}
+                  className={`min-h-14 min-w-0 whitespace-normal break-words [word-break:keep-all] rounded-2xl border px-4 py-3 text-left text-sm font-black leading-6 transition sm:text-base ${
+                    active
+                      ? "border-[#ff6b35]/75 bg-[#ff6b35]/16 text-white shadow-[0_12px_32px_rgba(255,107,53,0.1)]"
+                      : "border-white/10 bg-white/[0.035] text-white/76 hover:border-[#ff6b35]/40 hover:bg-[#ff6b35]/10"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+        </article>
       </div>
 
       <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-6 text-white/48">개인정보 입력 없이 브라우저 안에서만 결과를 계산합니다. 무료 결과는 미리보기이고, 유료 전환은 5포지션 리포트 요청을 사용자가 선택할 때만 시작됩니다.</p>
+        <p className="text-xs leading-6 text-white/48">선택하면 다음 질문으로 바로 넘어갑니다. 개인정보 없이 결과 먼저 확인합니다.</p>
         <button
           type="button"
           disabled={!canShowResult}
