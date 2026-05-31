@@ -2,16 +2,16 @@ import Link from "next/link";
 import SiteHeader from "@/components/site-header";
 
 const lenses = [
-  { title: "READ", desc: "AI, 직업 변화, 교육/채용 신호와 개인의 현재 위치를 같이 읽습니다." },
-  { title: "TRANSLATE", desc: "불안과 경험을 과목, 직무, 경력, 포트폴리오 언어로 바꿉니다." },
-  { title: "ACT", desc: "다음 7일에 확인할 행동, 문장, 작은 실험으로 정리합니다." },
+  { title: "READ", desc: "직업명보다 먼저 AI 시대에 남는 역할 위치를 읽습니다." },
+  { title: "TRANSLATE", desc: "불안과 경험을 도구 운용, 결과 제작, 맥락 해석, 문제 발견, 관계 조율 언어로 바꿉니다." },
+  { title: "ACT", desc: "주 포지션과 보조 가능성을 기준으로 다음 7일 행동을 정합니다." },
 ];
 
 const principles = [
   "점술처럼 맞히지 않습니다. 흐름과 기준을 함께 봅니다.",
-  "정보를 더 쌓기보다, 지금 선택할 기준을 먼저 만듭니다.",
-  "학생·20대·중장년의 선택 문제를 각각 다른 언어로 읽습니다.",
-  "방향 진단의 끝에는 다음 7일에 할 행동이 남아야 합니다.",
+  "직업 이름을 빨리 고르기보다, 지금 가까운 포지션을 먼저 봅니다.",
+  "학생·20대·중장년의 선택 문제를 5포지션 언어로 다시 읽습니다.",
+  "포지션 체크의 끝에는 다음 7일에 할 행동이 남아야 합니다.",
 ];
 
 export default function AboutPage() {
@@ -19,27 +19,27 @@ export default function AboutPage() {
     <main className="min-h-screen overflow-x-hidden bg-[#080b12] text-white">
       <section className="border-b border-white/10 bg-[#080b12]">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-10">
-          <SiteHeader theme="dark" current="about" ctaHref="/contact" ctaLabel="30분 방향 진단 신청" />
+          <SiteHeader theme="dark" current="about" ctaHref="/diagnosis" ctaLabel="무료 포지션 체크" />
         </div>
       </section>
 
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(255,91,46,0.2)_0%,rgba(255,91,46,0)_30%),radial-gradient(circle_at_88%_10%,rgba(79,123,255,0.18)_0%,rgba(79,123,255,0)_28%)]" />
         <div className="relative mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-24">
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">About Soom</p>
+          <p className="text-xs font-black uppercase tracking-[0.28em] text-[#ff6b35]">About THE LUMEN</p>
           <h1 className="mt-5 w-full max-w-[22rem] break-all sm:max-w-6xl sm:break-normal text-[2rem] font-black leading-[1.08] tracking-[-0.035em] break-all sm:text-[5.3rem] sm:leading-[0.96] sm:tracking-[-0.085em] sm:break-normal">
-            숨은 AI 시대의
+            더루멘은 직업 이름보다
             <br />
-            진로·직업·커리어를 읽는
+            먼저 포지션을 보는
             <br />
-            방향 진단 서비스입니다.
+            진로 해석 시스템입니다.
           </h1>
           <div className="mt-9 grid w-full max-w-[22rem] min-w-0 sm:max-w-5xl gap-5 break-words text-base leading-8 text-white/66 break-all sm:break-normal lg:grid-cols-2">
             <p>
-              선택이 막히는 순간은 대부분 정보가 부족해서가 아닙니다. 과목, 이력서, 퇴사, 재취업, AI 활용 앞에서 무엇을 기준으로 봐야 할지 흐려졌기 때문입니다.
+              선택이 막히는 순간은 대부분 정보가 부족해서가 아닙니다. 과목, 이력서, 퇴사, 재취업, AI 활용 앞에서 내가 어떤 역할 위치에 서야 할지 흐려졌기 때문입니다.
             </p>
             <p>
-              숨은 학생 진로, 20대 커리어, 중장년 후반전 커리어를 AI 시대의 직업 변화 속에서 다시 읽고, 지금 할 수 있는 다음 행동으로 정리합니다.
+              더루멘은 학생 진로, 20대 첫 커리어, 40~50대 전환 문제를 5포지션으로 읽고, 리포트로 상담 전 상황을 정리합니다.
             </p>
           </div>
         </div>
@@ -79,10 +79,10 @@ export default function AboutPage() {
       <section className="bg-[#050507]">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-5 py-14 sm:px-8 lg:flex-row lg:items-end lg:px-10">
           <h2 className="max-w-4xl break-all sm:break-normal text-[2.1rem] font-black leading-[1.08] tracking-[-0.04em] break-all sm:text-[4.1rem] sm:leading-[1] sm:tracking-[-0.074em]">
-            지금 막힌 선택을 하나만 가져오세요.
+            먼저 가까운 포지션부터 확인하세요.
           </h2>
-          <Link href="/contact" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white">
-            30분 방향 진단 신청
+          <Link href="/diagnosis" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-white px-6 text-sm font-black text-[#080b12] transition hover:bg-[#ff6b35] hover:text-white">
+            무료 포지션 체크
           </Link>
         </div>
       </section>

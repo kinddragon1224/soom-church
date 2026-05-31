@@ -18,6 +18,7 @@ const inquirySchema = z.object({
   diagnosisResultType: z.string().trim().max(80).optional().default(""),
   diagnosisAudienceType: z.string().trim().max(80).optional().default(""),
   diagnosisReportSnapshot: z.string().trim().max(3000).optional().default(""),
+  offer: z.string().trim().max(80).optional().default("premium-direction-session"),
   companyWebsite: z.string().trim().max(200).optional().default(""),
 });
 
@@ -34,6 +35,7 @@ type InquiryRecord = {
   diagnosisResultType: string | null;
   diagnosisAudienceType: string | null;
   diagnosisReportSnapshot: string;
+  offer: string;
   name: string;
   contact: string;
   concernType: string;
@@ -137,6 +139,7 @@ function buildNotionProperties(schema: Record<string, NotionPropertySchema>, rec
   applyNotionProperty(properties, schema, "Diagnosis Type", record.diagnosisResultType ?? "");
   applyNotionProperty(properties, schema, "Diagnosis Audience", record.diagnosisAudienceType ?? "");
   applyNotionProperty(properties, schema, "Diagnosis Report", record.diagnosisReportSnapshot);
+  applyNotionProperty(properties, schema, "Offer", record.offer);
   applyNotionProperty(properties, schema, "Concern", record.concernType);
   applyNotionProperty(properties, schema, "Stage", record.stage);
   applyNotionProperty(properties, schema, "Consultation Type", record.consultationType);
@@ -195,7 +198,7 @@ export async function POST(request: Request) {
   }
 
   if (parsed.data.companyWebsite) {
-    return NextResponse.json({ message: "30분 방향 진단 신청이 접수되었습니다." });
+    return NextResponse.json({ message: "1:1 미래설계 상담 문의가 접수되었습니다." });
   }
 
   const inquiryId = createInquiryId();
@@ -206,6 +209,7 @@ export async function POST(request: Request) {
     diagnosisResultType: parsed.data.diagnosisResultType || null,
     diagnosisAudienceType: parsed.data.diagnosisAudienceType || null,
     diagnosisReportSnapshot: parsed.data.diagnosisReportSnapshot,
+    offer: parsed.data.offer || "premium-direction-session",
     name: parsed.data.name,
     contact: parsed.data.contact,
     concernType: parsed.data.concernType,
@@ -223,6 +227,6 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     inquiryId,
-    message: "30분 방향 진단 신청이 접수되었습니다. 남겨주신 상황을 기준으로 먼저 방향을 정리해 보겠습니다.",
+    message: "1:1 미래설계 상담 문의가 접수되었습니다. 남겨주신 상황을 보고 5포지션 리포트 또는 직접 세션 중 더 맞는 경로를 안내드리겠습니다.",
   });
 }
