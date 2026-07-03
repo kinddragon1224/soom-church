@@ -1,49 +1,47 @@
-﻿import "./globals.css";
+import "./globals.css";
 import type { Metadata } from "next";
 
 const siteUrl = "https://soom.io.kr";
-const siteTitle = "더루멘 | AI 시대 진로 포지션 체크";
-const siteDescription = "더루멘은 직업 이름보다 먼저 AI 시대의 역할 위치를 봅니다. 도구 운용자, 결과 제작자, 맥락 해석자, 문제 발견자, 관계 조율자 중 어디에 가까운지 확인합니다.";
-const ogImage = "/blog-hero-portrait-dark.jpg";
+const siteTitle = "한국사 진로 세특 로드맵";
+const siteDescription =
+  "한국사를 외우는 과목에서, 내 진로를 설명하는 탐구 과목으로. 한국사 단원과 진로를 연결해 탐구보고서, 발표, 세특 주제를 설계합니다.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: siteTitle, template: "%s | 더루멘" },
+  title: { default: siteTitle, template: "%s | 한국사 진로 세특 로드맵" },
   description: siteDescription,
-  applicationName: "더루멘",
+  applicationName: "한국사 진로 세특 로드맵",
   keywords: [
-    "더루멘",
-    "THE LUMEN",
-    "soom",
-    "AI 진로",
-    "AI 시대 진로 포지션",
-    "진로 포지션",
-    "미래 포지션 설계",
-    "직업상담",
-    "도구 운용자",
-    "결과 제작자",
-    "맥락 해석자",
-    "문제 발견자",
-    "관계 조율자",
-    "고교학점제",
+    "한국사 세특",
+    "한국사 탐구보고서",
+    "진로 세특",
+    "수행평가 주제",
+    "한국사 발표 주제",
+    "한국사 진로",
+    "탐구 주제 설계",
   ],
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/history-roadmap" },
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    url: siteUrl,
-    siteName: "더루멘",
+    url: `${siteUrl}/history-roadmap`,
+    siteName: "한국사 진로 세특 로드맵",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: ogImage, width: 1200, height: 630, alt: "더루멘 - AI 시대 진로 포지션 체크" }],
   },
-  twitter: { card: "summary_large_image", title: siteTitle, description: siteDescription, images: [ogImage] },
+  twitter: { card: "summary", title: siteTitle, description: siteDescription },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
-  category: "business",
+  category: "education",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

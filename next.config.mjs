@@ -1,24 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '2mb'
-    }
-  },
-  async redirects() {
-    return [
-      {
-        source: "/features",
-        destination: "/diagnosis",
-        permanent: false,
-      },
-      {
-        source: "/workspace/:path*",
-        destination: "/diagnosis",
-        permanent: false,
-      },
-    ];
-  },
-};
+const nextConfig = {};
 
 export default nextConfig;
