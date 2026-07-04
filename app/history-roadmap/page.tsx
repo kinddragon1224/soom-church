@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { HistoryRoadmapForm } from "@/components/history-roadmap/history-roadmap-form";
 
 export const metadata: Metadata = {
@@ -38,6 +39,26 @@ const creatorPrinciples = [
   "세특 문장을 대신 써주는 도구가 아니라, 학생이 직접 탐구할 질문을 설계합니다.",
   "한국사 사실관계는 공신력 있는 자료와 교과서 기준으로 다시 확인하도록 안내합니다.",
   "진로 연결은 억지로 붙이지 않고, 단원 속 사건·제도·사상이 가진 문제의식에서 출발합니다.",
+];
+
+const creatorCredentials = [
+  {
+    label: "국가자격",
+    value: "직업상담사 2급",
+    meta: "고용노동부",
+  },
+  {
+    label: "역사 이해",
+    value: "2021년 한국사능력검정시험 1급 취득",
+    meta: "국사편찬위원회",
+  },
+];
+
+const creatorExperiences = [
+  "현) 더루멘(THE RUMEN) 대표",
+  "전) 중도일보 근무",
+  "전) 유료 독서모임 핑거문 대표",
+  "전) 신혼여행 전문 상담 여행사 근무",
 ];
 
 export default function HistoryRoadmapPage() {
@@ -106,27 +127,58 @@ export default function HistoryRoadmapPage() {
         </div>
       </section>
 
-      <section id="creator" className="border-y border-[#e7bd62]/15 bg-[#fffaf0] px-5 py-10 text-[#172033] sm:px-8 lg:py-14">
-        <div className="mx-auto grid max-w-6xl gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-          <div>
+      <section
+        id="creator"
+        className="border-y border-[#e7bd62]/15 bg-[#fffaf0] px-5 py-10 text-[#172033] sm:px-8 lg:py-14"
+      >
+        <div className="mx-auto grid max-w-6xl gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+          <div className="rounded-[2rem] border border-[#eadcaf] bg-white p-3 shadow-[0_18px_55px_rgba(0,0,0,0.12)]">
+            <Image
+              src="/history-roadmap/kim-sunyong.jpg"
+              alt="한국사 진로 세특 로드맵을 만든 김선용 프로필 사진"
+              width={720}
+              height={1280}
+              className="h-auto w-full rounded-[1.5rem] bg-[#f3f4f6] object-cover"
+              sizes="(min-width: 1024px) 340px, 92vw"
+            />
+            <div className="px-3 py-4">
+              <p className="text-2xl font-black tracking-[-0.05em] text-[#111827]">김선용</p>
+              <p className="mt-1 text-sm font-black text-[#9a6a16]">더루멘(THE RUMEN) 대표</p>
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-[#eadcaf] bg-white p-5 shadow-[0_18px_55px_rgba(0,0,0,0.12)] sm:p-7">
             <p className="text-xs font-black uppercase tracking-[0.24em] text-[#b9801e]">Creator</p>
             <h2 className="mt-3 text-3xl font-black leading-tight tracking-[-0.05em] text-[#111827] sm:text-4xl">
               만든 이
             </h2>
-            <p className="mt-4 text-sm font-black leading-7 text-[#9a6a16]">
-              The Rumen 교육콘텐츠연구소 · K선생
-            </p>
-          </div>
-
-          <div className="rounded-[2rem] border border-[#eadcaf] bg-white p-5 shadow-[0_18px_55px_rgba(0,0,0,0.12)] sm:p-7">
-            <p className="text-lg font-black leading-8 tracking-[-0.03em] text-[#111827] sm:text-2xl">
-              직업상담사 2급 × 한국사 1급 관점으로 만든 한국사 탐구 설계 도구입니다.
+            <p className="mt-4 text-lg font-black leading-8 tracking-[-0.03em] text-[#111827] sm:text-2xl">
+              직업상담과 한국사 이해를 바탕으로, 학생이 스스로 탐구 주제를 잡을 수 있게 설계했습니다.
             </p>
             <p className="mt-4 text-sm leading-7 text-[#64748b]">
-              목표는 학생이 한국사를 외우는 과목으로만 끝내지 않고, 자신의 진로를 설명하는 탐구 과목으로
-              다시 읽게 돕는 것입니다. 그래서 이 서비스는 완성문을 대신 써주기보다 주제, 질문, 자료 확인,
-              4주 실행 순서를 먼저 잡아줍니다.
+              한국사를 외우는 과목으로 끝내지 않고, 자신의 진로를 설명하는 탐구 과목으로 다시 읽게 돕는 것이
+              목표입니다. 그래서 이 서비스는 완성문을 대신 쓰기보다 주제, 질문, 자료 확인, 4주 실행 순서를
+              먼저 잡아줍니다.
             </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {creatorCredentials.map((credential) => (
+                <div key={credential.value} className="rounded-2xl border border-[#eadcaf] bg-[#fffaf0] px-4 py-4">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#b9801e]">{credential.label}</p>
+                  <p className="mt-2 text-base font-black leading-6 text-[#111827]">{credential.value}</p>
+                  <p className="mt-1 text-xs font-bold text-[#64748b]">{credential.meta}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-2xl bg-[#172033] px-4 py-4 text-white">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#e7bd62]">Background</p>
+              <div className="mt-3 grid gap-2">
+                {creatorExperiences.map((experience) => (
+                  <p key={experience} className="text-sm font-bold leading-6 text-white/82">
+                    {experience}
+                  </p>
+                ))}
+              </div>
+            </div>
             <div className="mt-5 grid gap-3">
               {creatorPrinciples.map((principle) => (
                 <div key={principle} className="rounded-2xl bg-[#f4ead1] px-4 py-3 text-sm font-bold leading-6 text-[#5f4930]">
