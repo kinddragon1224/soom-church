@@ -38,7 +38,7 @@ const sourceLinks = [
 export default function HistoryRoadmapPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#061326] text-white">
-      <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden px-5 py-8 sm:min-h-screen sm:px-8">
+      <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden px-5 py-6 sm:min-h-screen sm:px-8 sm:py-8">
         <div className="absolute inset-0 -z-30 bg-[#061326]">
           <video
             aria-hidden="true"
@@ -48,7 +48,7 @@ export default function HistoryRoadmapPage() {
             playsInline
             preload="auto"
             poster="/history-roadmap/hero-history-roadmap-poster.jpg"
-            className="h-full w-full object-cover object-center opacity-[0.96] brightness-[1.18] contrast-[1.12] saturate-[1.22] sm:opacity-[0.78] sm:brightness-[1.08] sm:contrast-[1.08] sm:saturate-[1.12]"
+            className="h-full w-full object-contain object-center opacity-[0.96] brightness-[1.18] contrast-[1.12] saturate-[1.22] sm:object-cover sm:opacity-[0.78] sm:brightness-[1.08] sm:contrast-[1.08] sm:saturate-[1.12]"
           >
             <source
               media="(max-width: 639px)"
@@ -61,34 +61,34 @@ export default function HistoryRoadmapPage() {
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.18),transparent_28%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.08),transparent_26%),linear-gradient(180deg,rgba(6,19,38,0.32)_0%,rgba(6,19,38,0.12)_44%,rgba(6,19,38,0.62)_100%)] sm:bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.22),transparent_26%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.10),transparent_25%),linear-gradient(180deg,rgba(6,19,38,0.50)_0%,rgba(6,19,38,0.28)_42%,rgba(6,19,38,0.74)_100%)]" />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,19,38,0.18)_0%,rgba(6,19,38,0.03)_28%,rgba(6,19,38,0.03)_72%,rgba(6,19,38,0.18)_100%)] sm:bg-[linear-gradient(90deg,rgba(6,19,38,0.56)_0%,rgba(6,19,38,0.08)_28%,rgba(6,19,38,0.08)_72%,rgba(6,19,38,0.56)_100%)]" />
         <div className="absolute inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:46px_46px] sm:opacity-[0.06]" />
-        <div className="absolute left-1/2 top-1/2 -z-10 h-[44rem] w-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#e7bd62]/20" />
-        <div className="absolute left-1/2 top-[42%] -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
+        <div className="absolute left-1/2 top-1/2 -z-10 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#e7bd62]/20 sm:h-[44rem] sm:w-[44rem]" />
+        <div className="absolute left-1/2 top-[42%] -z-10 h-[18rem] w-[18rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 sm:h-[24rem] sm:w-[24rem]" />
         <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 hidden text-center text-[9rem] font-black leading-none tracking-[-0.12em] text-white/[0.035] sm:block lg:text-[12rem]">
           HISTORY
         </div>
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center text-center">
-          <p className="rounded-full border border-[#e7bd62]/30 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-[#e7bd62] backdrop-blur">
+          <p className="rounded-full border border-[#e7bd62]/30 bg-white/[0.06] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#e7bd62] backdrop-blur sm:px-4 sm:text-[11px] sm:tracking-[0.24em]">
             한국사 진로 세특 로드맵
           </p>
 
           <h1
             aria-label="내 진로로 다시 읽는 한국사"
-            className="mt-7 max-w-4xl text-5xl font-black leading-[0.96] tracking-[-0.07em] drop-shadow-[0_8px_34px_rgba(0,0,0,0.36)] sm:text-7xl lg:text-8xl"
+            className="mt-5 max-w-4xl text-[2.65rem] font-black leading-[0.96] tracking-[-0.07em] drop-shadow-[0_8px_34px_rgba(0,0,0,0.36)] sm:mt-7 sm:text-7xl lg:text-8xl"
           >
             <span aria-hidden="true">내 진로로</span>
             <br />
             <span aria-hidden="true">다시 읽는 한국사</span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg font-black leading-8 text-[#fff3cf] sm:text-2xl">
+          <p className="mt-5 max-w-2xl text-base font-black leading-7 text-[#fff3cf] sm:mt-6 sm:text-2xl sm:leading-8">
             한국사를 외우는 과목에서, 내 진로를 설명하는 탐구 과목으로.
           </p>
 
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-white/66 sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-white/66 sm:mt-4 sm:text-base sm:leading-7">
             희망 진로를 한 줄로 넣으면 수행평가·탐구보고서·발표·세특으로 이어질 한국사 탐구 주제를 잡아줍니다.
           </p>
 
-          <div className="mt-9 w-full">
+          <div className="mt-7 w-full sm:mt-9">
             <HistoryRoadmapForm />
           </div>
 

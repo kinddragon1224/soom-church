@@ -199,9 +199,9 @@ export function HistoryRoadmapForm() {
   return (
     <form id="history-roadmap-form" onSubmit={onSubmit} className="mx-auto w-full max-w-4xl">
       <fieldset disabled={isLoading} className="grid gap-4 disabled:opacity-75">
-        <div className="rounded-[2rem] border border-[#e7bd62]/35 bg-[#fffaf0] p-3 text-[#172033] shadow-[0_30px_120px_rgba(0,0,0,0.34)] sm:rounded-[2.5rem] sm:p-4">
+        <div className="rounded-[1.6rem] border border-[#e7bd62]/35 bg-[#fffaf0] p-2.5 text-[#172033] shadow-[0_30px_120px_rgba(0,0,0,0.34)] sm:rounded-[2.5rem] sm:p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="flex min-h-14 flex-1 items-center gap-3 rounded-[1.45rem] bg-white px-4 ring-1 ring-[#eadcaf] sm:min-h-16 sm:px-5">
+            <div className="flex min-h-[3.25rem] flex-1 items-center gap-2 rounded-[1.2rem] bg-white px-3.5 ring-1 ring-[#eadcaf] sm:min-h-16 sm:gap-3 sm:rounded-[1.45rem] sm:px-5">
               <span className="hidden text-2xl sm:block" aria-hidden="true">
                 ⌕
               </span>
@@ -210,25 +210,25 @@ export function HistoryRoadmapForm() {
                 value={query}
                 onChange={(event) => updateQuery(event.target.value)}
                 placeholder="예: 고2 간호사 일제강점기 탐구보고서"
-                className="min-w-0 flex-1 bg-transparent text-base font-black text-[#111827] outline-none placeholder:text-[#9a917c] sm:text-xl"
+                className="min-w-0 flex-1 bg-transparent text-[15px] font-black text-[#111827] outline-none placeholder:text-[#9a917c] sm:text-xl"
                 autoComplete="off"
               />
             </div>
             <button
               type="submit"
-              className="min-h-14 rounded-[1.45rem] bg-[#f97316] px-6 text-base font-black text-white shadow-[0_18px_44px_rgba(249,115,22,0.32)] transition hover:bg-[#ea580c] focus:outline-none focus:ring-4 focus:ring-[#f97316]/30 disabled:cursor-not-allowed sm:min-h-16 sm:px-8"
+              className="min-h-[3.25rem] rounded-[1.2rem] bg-[#f97316] px-5 text-[15px] font-black text-white shadow-[0_18px_44px_rgba(249,115,22,0.32)] transition hover:bg-[#ea580c] focus:outline-none focus:ring-4 focus:ring-[#f97316]/30 disabled:cursor-not-allowed sm:min-h-16 sm:rounded-[1.45rem] sm:px-8 sm:text-base"
             >
               {isLoading ? "찾는 중..." : "탐구 주제 만들기"}
             </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-2 px-1">
+          <div className="mt-3 flex flex-wrap justify-center gap-1.5 px-0.5 sm:gap-2 sm:px-1">
             {exampleQueries.map((example) => (
               <button
                 key={example}
                 type="button"
                 onClick={() => applyExample(example)}
-                className="rounded-full border border-[#e7bd62]/35 bg-[#f7edd7] px-3 py-2 text-xs font-black text-[#7b5315] transition hover:border-[#f97316]/45 hover:bg-[#fff2df]"
+                className="max-w-full rounded-full border border-[#e7bd62]/35 bg-[#f7edd7] px-2.5 py-1.5 text-[11px] font-black leading-5 text-[#7b5315] transition hover:border-[#f97316]/45 hover:bg-[#fff2df] sm:px-3 sm:py-2 sm:text-xs"
               >
                 {example}
               </button>
@@ -236,7 +236,7 @@ export function HistoryRoadmapForm() {
           </div>
         </div>
 
-        <details className="group rounded-[1.75rem] border border-white/12 bg-white/[0.07] p-4 text-left backdrop-blur">
+        <details className="group rounded-[1.45rem] border border-white/12 bg-white/[0.07] p-3.5 text-left backdrop-blur sm:rounded-[1.75rem] sm:p-4">
           <summary className="cursor-pointer list-none text-sm font-black text-[#fff3cf] outline-none">
             세부 조건 보기
             <span className="ml-2 text-white/45 group-open:hidden">+</span>
