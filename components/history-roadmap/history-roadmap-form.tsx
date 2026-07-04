@@ -199,9 +199,9 @@ export function HistoryRoadmapForm() {
   return (
     <form id="history-roadmap-form" onSubmit={onSubmit} className="mx-auto w-full max-w-4xl">
       <fieldset disabled={isLoading} className="grid gap-4 disabled:opacity-75">
-        <div className="rounded-[1.6rem] border border-[#e7bd62]/35 bg-[#fffaf0] p-2.5 text-[#172033] shadow-[0_30px_120px_rgba(0,0,0,0.34)] sm:rounded-[2.5rem] sm:p-4">
+        <div className="rounded-[1.6rem] border border-[#e7bd62]/35 bg-[#fffaf0]/85 p-2.5 text-[#172033] shadow-[0_30px_120px_rgba(0,0,0,0.34)] backdrop-blur-md sm:rounded-[2.5rem] sm:bg-[#fffaf0] sm:p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="flex min-h-[3.25rem] flex-1 items-center gap-2 rounded-[1.2rem] bg-white px-3.5 ring-1 ring-[#eadcaf] sm:min-h-16 sm:gap-3 sm:rounded-[1.45rem] sm:px-5">
+            <div className="flex min-h-[3.25rem] flex-1 items-center gap-2 rounded-[1.2rem] bg-white/90 px-3.5 ring-1 ring-[#eadcaf] sm:min-h-16 sm:gap-3 sm:rounded-[1.45rem] sm:bg-white sm:px-5">
               <span className="hidden text-2xl sm:block" aria-hidden="true">
                 ⌕
               </span>
@@ -228,7 +228,7 @@ export function HistoryRoadmapForm() {
                 key={example}
                 type="button"
                 onClick={() => applyExample(example)}
-                className="max-w-full rounded-full border border-[#e7bd62]/35 bg-[#f7edd7] px-2.5 py-1.5 text-[11px] font-black leading-5 text-[#7b5315] transition hover:border-[#f97316]/45 hover:bg-[#fff2df] sm:px-3 sm:py-2 sm:text-xs"
+                className="max-w-full rounded-full border border-[#e7bd62]/35 bg-[#f7edd7]/85 px-2.5 py-1.5 text-[11px] font-black leading-5 text-[#7b5315] transition hover:border-[#f97316]/45 hover:bg-[#fff2df] sm:bg-[#f7edd7] sm:px-3 sm:py-2 sm:text-xs"
               >
                 {example}
               </button>

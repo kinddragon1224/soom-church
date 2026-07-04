@@ -48,7 +48,7 @@ export default function HistoryRoadmapPage() {
             playsInline
             preload="auto"
             poster="/history-roadmap/hero-history-roadmap-poster.jpg"
-            className="h-full w-full object-contain object-center opacity-[0.96] brightness-[1.18] contrast-[1.12] saturate-[1.22] sm:object-cover sm:opacity-[0.78] sm:brightness-[1.08] sm:contrast-[1.08] sm:saturate-[1.12]"
+            className="h-full w-full object-contain object-top opacity-[0.98] brightness-[1.2] contrast-[1.12] saturate-[1.24] sm:object-cover sm:object-center sm:opacity-[0.78] sm:brightness-[1.08] sm:contrast-[1.08] sm:saturate-[1.12]"
           >
             <source
               media="(max-width: 639px)"
