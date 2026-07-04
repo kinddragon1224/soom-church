@@ -43,22 +43,22 @@ const creatorPrinciples = [
 
 const creatorCredentials = [
   {
-    label: "국가자격",
+    label: "자격",
     value: "직업상담사 2급",
-    meta: "고용노동부",
   },
   {
-    label: "역사 이해",
-    value: "2021년 한국사능력검정시험 1급 취득",
-    meta: "국사편찬위원회",
+    label: "자격",
+    value: "한국사능력검정시험 1급",
+  },
+  {
+    label: "학력",
+    value: "배재대학교 중국통상학 전공, 경영학사",
   },
 ];
 
 const creatorExperiences = [
-  "현) 더루멘(THE RUMEN) 대표",
-  "전) 중도일보 근무",
-  "전) 유료 독서모임 핑거문 대표",
-  "전) 신혼여행 전문 상담 여행사 근무",
+  "중도일보 근무",
+  "독서·진로 콘텐츠 모임 기획 및 운영",
 ];
 
 export default function HistoryRoadmapPage() {
@@ -144,6 +144,7 @@ export default function HistoryRoadmapPage() {
             <div className="px-3 py-4">
               <p className="text-2xl font-black tracking-[-0.05em] text-[#111827]">김선용</p>
               <p className="mt-1 text-sm font-black text-[#9a6a16]">더루멘(THE RUMEN) 대표</p>
+              <p className="mt-1 text-sm font-bold text-[#64748b]">AI 진로·교육 콘텐츠 기획자</p>
             </div>
           </div>
 
@@ -153,7 +154,7 @@ export default function HistoryRoadmapPage() {
               만든 이
             </h2>
             <p className="mt-4 text-lg font-black leading-8 tracking-[-0.03em] text-[#111827] sm:text-2xl">
-              직업상담과 한국사 이해를 바탕으로, 학생이 스스로 탐구 주제를 잡을 수 있게 설계했습니다.
+              AI 진로·교육 콘텐츠 기획자의 관점으로, 학생이 스스로 탐구 주제를 잡을 수 있게 설계했습니다.
             </p>
             <p className="mt-4 text-sm leading-7 text-[#64748b]">
               한국사를 외우는 과목으로 끝내지 않고, 자신의 진로를 설명하는 탐구 과목으로 다시 읽게 돕는 것이
@@ -165,7 +166,6 @@ export default function HistoryRoadmapPage() {
                 <div key={credential.value} className="rounded-2xl border border-[#eadcaf] bg-[#fffaf0] px-4 py-4">
                   <p className="text-xs font-black uppercase tracking-[0.16em] text-[#b9801e]">{credential.label}</p>
                   <p className="mt-2 text-base font-black leading-6 text-[#111827]">{credential.value}</p>
-                  <p className="mt-1 text-xs font-bold text-[#64748b]">{credential.meta}</p>
                 </div>
               ))}
             </div>
