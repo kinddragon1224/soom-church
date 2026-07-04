@@ -83,29 +83,27 @@ export default function HistoryRoadmapPage() {
             희망 진로를 한 줄로 넣으면 수행평가·탐구보고서·발표·세특으로 이어질 한국사 탐구 주제를 잡아줍니다.
           </p>
 
-          <div className="mt-5 flex w-full max-w-3xl flex-col items-center gap-3 rounded-[1.5rem] border border-[#e7bd62]/20 bg-[#071426]/70 px-4 py-3 text-left shadow-[0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur sm:flex-row sm:px-5">
+          <div className="mt-9 w-full">
+            <HistoryRoadmapForm />
+          </div>
+
+          <div className="mt-4 flex w-full max-w-3xl items-center gap-3 rounded-2xl border border-white/10 bg-[#071426]/52 px-4 py-2.5 text-left text-white/78 backdrop-blur sm:px-5">
             <Image
               src="/history-roadmap/kim-sunyong.jpg"
               alt="한국사 진로 세특 로드맵을 설계한 김선용"
-              width={96}
-              height={96}
-              className="h-12 w-12 shrink-0 rounded-2xl border border-[#e7bd62]/25 bg-[#f3f4f6] object-cover object-top"
-              sizes="48px"
+              width={80}
+              height={80}
+              className="h-9 w-9 shrink-0 rounded-xl border border-[#e7bd62]/20 bg-[#f3f4f6] object-cover object-top"
+              sizes="36px"
             />
-            <div className="min-w-0 text-center sm:text-left">
-              <p className="text-sm font-black text-white">
-                설계자 김선용
-                <span className="ml-2 font-bold text-white/58">더루멘 대표</span>
+            <div className="min-w-0">
+              <p className="text-xs font-black leading-5 text-[#fff3cf] sm:text-sm">
+                직업상담사 2급 × 한국사능력검정시험 1급 기반 설계
               </p>
-              <p className="mt-1 text-xs font-bold leading-5 text-[#fff3cf]/80">
-                직업상담사 2급 · 한국사능력검정시험 1급 관점으로, 세특 문장보다 먼저 탐구 질문과 자료 확인 순서를
-                잡습니다.
+              <p className="text-[11px] font-bold leading-5 text-white/58 sm:text-xs">
+                세특 문장보다 먼저, 탐구 질문과 자료 확인 순서를 잡습니다.
               </p>
             </div>
-          </div>
-
-          <div className="mt-9 w-full">
-            <HistoryRoadmapForm />
           </div>
 
           <p className="mt-7 max-w-3xl text-xs font-bold leading-6 text-white/52 sm:text-sm">

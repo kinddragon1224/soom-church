@@ -218,7 +218,7 @@ export function HistoryRoadmapForm() {
               type="submit"
               className="min-h-14 rounded-[1.45rem] bg-[#f97316] px-6 text-base font-black text-white shadow-[0_18px_44px_rgba(249,115,22,0.32)] transition hover:bg-[#ea580c] focus:outline-none focus:ring-4 focus:ring-[#f97316]/30 disabled:cursor-not-allowed sm:min-h-16 sm:px-8"
             >
-              {isLoading ? "찾는 중..." : "찾기"}
+              {isLoading ? "찾는 중..." : "탐구 주제 만들기"}
             </button>
           </div>
 
@@ -261,13 +261,6 @@ export function HistoryRoadmapForm() {
             />
           </div>
         </details>
-
-        <div className="flex flex-wrap justify-center gap-2 text-xs font-black text-white/62">
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2">감지: {input.grade}</span>
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2">{input.field}</span>
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2">{input.historyUnit}</span>
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2">{input.assignmentType}</span>
-        </div>
 
         {error ? (
           <div className="mx-auto max-w-3xl rounded-2xl border border-[#f97316]/35 bg-[#fff7ed] px-4 py-3 text-sm font-bold leading-6 text-[#9a3412]">
