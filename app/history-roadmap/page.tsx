@@ -154,12 +154,12 @@ export default function HistoryRoadmapPage() {
               만든 이
             </h2>
             <p className="mt-4 text-lg font-black leading-8 tracking-[-0.03em] text-[#111827] sm:text-2xl">
-              AI 진로·교육 콘텐츠 기획자의 관점으로, 학생이 스스로 탐구 주제를 잡을 수 있게 설계했습니다.
+              직업상담사 2급과 한국사능력검정시험 1급의 관점을 바탕으로, 학생의 희망 진로와 한국사 단원을
+              연결해 탐구 주제를 설계합니다.
             </p>
             <p className="mt-4 text-sm leading-7 text-[#64748b]">
-              한국사를 외우는 과목으로 끝내지 않고, 자신의 진로를 설명하는 탐구 과목으로 다시 읽게 돕는 것이
-              목표입니다. 그래서 이 서비스는 완성문을 대신 쓰기보다 주제, 질문, 자료 확인, 4주 실행 순서를
-              먼저 잡아줍니다.
+              이 서비스는 세특 문장을 대신 써주는 도구가 아닙니다. 사건·인물·제도·사상을 진로와 연결해
+              학생이 직접 탐구할 질문, 자료 확인 방향, 실행 순서를 잡도록 돕습니다.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {creatorCredentials.map((credential) => (
