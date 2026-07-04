@@ -13,7 +13,7 @@ const resultItems = [
   "가장 좋은 주제 1개",
   "탐구 질문 3개",
   "보고서 목차 5단계",
-  "세특 방향 예시",
+  "4주 실행 플랜",
 ];
 
 const sourceLinks = [

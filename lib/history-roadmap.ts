@@ -78,6 +78,19 @@ export const historyRoadmapResultSchema = z.object({
   presentationTitle: z.string().min(1),
   seteukDirection: z.string().min(1),
   nextSteps: z.array(z.string().min(1)).length(3),
+  weeklyPlan: z
+    .array(
+      z.object({
+        week: z.string().min(1),
+        stage: z.string().min(1),
+        focus: z.string().min(1),
+        actions: z.array(z.string().min(1)).length(3),
+        output: z.string().min(1),
+      }),
+    )
+    .length(4)
+    .optional(),
+  sourceKeywords: z.array(z.string().min(1)).min(3).max(8).optional(),
   caution: z.string().min(1),
 });
 
@@ -134,6 +147,21 @@ export function formatHistoryRoadmapResult(result: HistoryRoadmapResult) {
     "",
     "[다음 활동 제안]",
     result.nextSteps.map((step, index) => `${index + 1}. ${step}`).join("\n"),
+    ...(result.weeklyPlan
+      ? [
+          "",
+          "[4주 탐구 로드맵]",
+          result.weeklyPlan
+            .map(
+              (week) =>
+                `${week.week}. ${week.stage}\n   초점: ${week.focus}\n   실행: ${week.actions.join(" / ")}\n   산출물: ${week.output}`,
+            )
+            .join("\n\n"),
+        ]
+      : []),
+    ...(result.sourceKeywords
+      ? ["", "[자료 검색 키워드]", result.sourceKeywords.map((keyword) => `- ${keyword}`).join("\n")]
+      : []),
     "",
     "[주의사항]",
     result.caution,

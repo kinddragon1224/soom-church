@@ -207,6 +207,67 @@ function makeOutline(input: HistoryRoadmapInput, unit: UnitProfile) {
   ];
 }
 
+function makeSourceKeywords(career: string, unit: UnitProfile, field: FieldProfile) {
+  return [
+    `${unit.unit} ${unit.concepts[0]}`,
+    `${unit.unit} ${unit.anchors[0]}`,
+    `${unit.concepts[1]} ${field.topicAngles[0]}`,
+    `${career} ${field.topicAngles[0]} 역사 탐구`,
+    `${unit.unit} ${unit.concepts[2] ?? unit.concepts[0]} 자료`,
+  ];
+}
+
+function makeWeeklyPlan(career: string, unit: UnitProfile, field: FieldProfile) {
+  const sourceKeywords = makeSourceKeywords(career, unit, field);
+
+  return [
+    {
+      week: "1주차",
+      stage: "자료 수집",
+      focus: "주제를 바로 쓰기 전에 단원 개념과 사실관계를 먼저 고정합니다.",
+      actions: [
+        `우리역사넷에서 "${sourceKeywords[0]}" 검색하기`,
+        `한국민족문화대백과에서 "${unit.concepts[1]}" 개념 확인하기`,
+        "교과서 또는 수업 안내문에서 제출 조건과 단원 범위 표시하기",
+      ],
+      output: "핵심 자료 3개와 각 자료에서 확인한 사실 1문장씩",
+    },
+    {
+      week: "2주차",
+      stage: "탐구 질문 심화",
+      focus: "좋아 보이는 주제를 질문으로 쪼개서 억지 진로 연결을 줄입니다.",
+      actions: [
+        `"${unit.anchors[0]}"의 원인과 결과를 각각 한 줄로 정리하기`,
+        `"${field.questionFocus[1]}" 질문에 답할 사례 2개 찾기`,
+        `${career} 진로와 연결되는 판단 기준을 3개 단어로 뽑기`,
+      ],
+      output: "상위 질문 1개와 하위 질문 3개",
+    },
+    {
+      week: "3주차",
+      stage: "보고서 작성",
+      focus: "역사 사실, 진로 연결, 내 생각이 섞이지 않도록 목차별로 분리합니다.",
+      actions: [
+        "주제 선정 이유를 진로 관심과 연결해 5문장으로 쓰기",
+        `${unit.concepts[0]}·${unit.concepts[1]} 개념을 본문에 각각 1번 이상 사용하기`,
+        "마지막 문단에 오늘의 진로 관점에서 배운 점 쓰기",
+      ],
+      output: "5단계 목차를 채운 보고서 초안",
+    },
+    {
+      week: "4주차",
+      stage: "발표·제출",
+      focus: "발표는 정보를 많이 넣기보다, 왜 이 주제가 내 진로와 이어지는지를 설득합니다.",
+      actions: [
+        "발표 첫 문장을 문제 제기형으로 바꾸기",
+        "예상 질문 3개와 답변 키워드 준비하기",
+        "세특 방향 예시가 실제 활동 기록과 맞는지 점검하기",
+      ],
+      output: "발표 제목, 1분 발표 뼈대, 예상 질문 3개",
+    },
+  ];
+}
+
 export function generateHistoryRoadmap(input: HistoryRoadmapInput): HistoryRoadmapResult {
   const career = compactCareer(input.career);
   const field = fieldProfiles[input.field] ?? fieldProfiles["아직 모름"];
@@ -214,6 +275,7 @@ export function generateHistoryRoadmap(input: HistoryRoadmapInput): HistoryRoadm
   const recommendedTopics = makeTopics(career, field, unit, input.assignmentType);
   const bestTopic = recommendedTopics[0];
   const concepts = Array.from(new Set([...unit.concepts.slice(0, 5), ...field.topicAngles.slice(0, 2)])).slice(0, 7);
+  const sourceKeywords = makeSourceKeywords(career, unit, field);
 
   return {
     summary: {
@@ -239,6 +301,8 @@ export function generateHistoryRoadmap(input: HistoryRoadmapInput): HistoryRoadm
       `한국민족문화대백과에서 "${unit.concepts[1]}" 개념을 확인하고 한 문장으로 정리하기`,
       `${career} 진로와 연결되는 판단 기준을 "당시 상황-오늘의 의미-내 생각" 3칸 표로 작성하기`,
     ],
+    weeklyPlan: makeWeeklyPlan(career, unit, field),
+    sourceKeywords,
     caution:
       "이 결과는 자동 탐구 설계 초안입니다. 실제 제출 전에는 교과서, 수업 안내문, 공신력 있는 역사 자료로 사실관계를 확인해야 하며, 세특 문장은 실제 수업 활동과 교사의 판단에 따라 달라질 수 있습니다.",
   };

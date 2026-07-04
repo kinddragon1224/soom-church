@@ -30,6 +30,51 @@ function ResultCard({
   );
 }
 
+function getWeeklyPlan(result: HistoryRoadmapResult) {
+  return (
+    result.weeklyPlan ?? [
+      {
+        week: "1주차",
+        stage: "자료 수집",
+        focus: "단원 개념과 사실관계를 먼저 확인합니다.",
+        actions: result.nextSteps,
+        output: "핵심 자료 3개와 확인한 사실 3문장",
+      },
+      {
+        week: "2주차",
+        stage: "탐구 질문 심화",
+        focus: "추천 주제를 하위 질문으로 쪼갭니다.",
+        actions: result.researchQuestions,
+        output: "상위 질문 1개와 하위 질문 3개",
+      },
+      {
+        week: "3주차",
+        stage: "보고서 작성",
+        focus: "목차별로 역사 사실과 진로 연결을 분리합니다.",
+        actions: result.reportOutline.slice(0, 3),
+        output: "5단계 목차를 채운 보고서 초안",
+      },
+      {
+        week: "4주차",
+        stage: "발표·제출",
+        focus: "내 진로와 이어지는 이유를 짧게 설득합니다.",
+        actions: ["발표 첫 문장 정리하기", "예상 질문 3개 만들기", "세특 방향과 실제 활동 비교하기"],
+        output: "발표 뼈대와 최종 제출 체크",
+      },
+    ]
+  );
+}
+
+function getSourceKeywords(result: HistoryRoadmapResult) {
+  return (
+    result.sourceKeywords ?? [
+      `${result.summary.historyUnit} ${result.historyConcepts[0]}`,
+      `${result.summary.historyUnit} ${result.historyConcepts[1]}`,
+      `${result.summary.career} 한국사 탐구`,
+    ]
+  );
+}
+
 export function HistoryRoadmapResultView() {
   const [result, setResult] = useState<HistoryRoadmapResult | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -144,6 +189,9 @@ export function HistoryRoadmapResultView() {
     );
   }
 
+  const weeklyPlan = getWeeklyPlan(result);
+  const sourceKeywords = getSourceKeywords(result);
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#071426] text-white">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(231,189,98,0.2),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(249,115,22,0.16),transparent_28%)]" />
@@ -238,6 +286,16 @@ export function HistoryRoadmapResultView() {
         </ResultCard>
 
         <ResultCard eyebrow="Source Check" title="자료 확인 루트">
+          <div className="mb-4 rounded-2xl border border-[#eadcaf] bg-white px-4 py-4">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#b9801e]">Search Keywords</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {sourceKeywords.map((keyword) => (
+                <span key={keyword} className="rounded-full bg-[#f4ead1] px-3 py-2 text-xs font-black text-[#6b4a12]">
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </div>
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               ["우리역사넷", "https://contents.history.go.kr/", "사료, 연대기, 교과서 용어를 먼저 확인"],
@@ -254,6 +312,28 @@ export function HistoryRoadmapResultView() {
                 <p className="font-black text-[#172033]">{name}</p>
                 <p className="mt-2 text-xs font-bold leading-5 text-[#64748b]">{desc}</p>
               </a>
+            ))}
+          </div>
+        </ResultCard>
+
+        <ResultCard eyebrow="4 Week Roadmap" title="주제를 받은 뒤, 4주 동안 이렇게 진행하세요">
+          <div className="grid gap-3 lg:grid-cols-4">
+            {weeklyPlan.map((week) => (
+              <article key={week.week} className="rounded-2xl border border-[#eadcaf] bg-white px-4 py-4">
+                <p className="text-xs font-black text-[#c07917]">{week.week}</p>
+                <h3 className="mt-1 text-base font-black text-[#111827]">{week.stage}</h3>
+                <p className="mt-2 text-sm font-bold leading-6 text-[#475569]">{week.focus}</p>
+                <ul className="mt-3 grid gap-2">
+                  {week.actions.map((action) => (
+                    <li key={action} className="rounded-xl bg-[#f4ead1] px-3 py-2 text-xs font-bold leading-5 text-[#5f4930]">
+                      {action}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 rounded-xl border border-[#e7bd62]/35 px-3 py-2 text-xs font-black leading-5 text-[#7b5315]">
+                  산출물: {week.output}
+                </p>
+              </article>
             ))}
           </div>
         </ResultCard>
