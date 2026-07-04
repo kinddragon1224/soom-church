@@ -38,7 +38,7 @@ const sourceLinks = [
 export default function HistoryRoadmapPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#061326] text-white">
-      <section className="relative isolate flex min-h-screen items-center overflow-hidden px-5 py-8 sm:px-8">
+      <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden px-5 py-8 sm:min-h-screen sm:px-8">
         <div className="absolute inset-0 -z-30 bg-[#061326]">
           <video
             aria-hidden="true"
@@ -48,14 +48,19 @@ export default function HistoryRoadmapPage() {
             playsInline
             preload="auto"
             poster="/history-roadmap/hero-history-roadmap-poster.jpg"
-            className="h-full w-full object-cover opacity-[0.58] saturate-[0.9]"
+            className="h-full w-full object-cover object-center opacity-[0.82] brightness-[1.08] contrast-[1.1] saturate-[1.16] sm:opacity-[0.68] sm:brightness-[1.02] sm:contrast-[1.06] sm:saturate-[1.08]"
           >
+            <source
+              media="(max-width: 639px)"
+              src="/history-roadmap/hero-history-roadmap-mobile.mp4"
+              type="video/mp4"
+            />
             <source src="/history-roadmap/hero-history-roadmap.mp4" type="video/mp4" />
           </video>
         </div>
-        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.30),transparent_24%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.16),transparent_24%),linear-gradient(180deg,rgba(6,19,38,0.78)_0%,rgba(6,19,38,0.55)_42%,rgba(6,19,38,0.88)_100%)]" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,19,38,0.86)_0%,rgba(6,19,38,0.18)_28%,rgba(6,19,38,0.18)_72%,rgba(6,19,38,0.86)_100%)]" />
-        <div className="absolute inset-0 -z-10 opacity-[0.10] [background-image:linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:46px_46px]" />
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.24),transparent_26%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.12),transparent_25%),linear-gradient(180deg,rgba(6,19,38,0.50)_0%,rgba(6,19,38,0.24)_44%,rgba(6,19,38,0.74)_100%)] sm:bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.28),transparent_24%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.14),transparent_24%),linear-gradient(180deg,rgba(6,19,38,0.66)_0%,rgba(6,19,38,0.42)_42%,rgba(6,19,38,0.82)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,19,38,0.34)_0%,rgba(6,19,38,0.08)_28%,rgba(6,19,38,0.08)_72%,rgba(6,19,38,0.34)_100%)] sm:bg-[linear-gradient(90deg,rgba(6,19,38,0.74)_0%,rgba(6,19,38,0.14)_28%,rgba(6,19,38,0.14)_72%,rgba(6,19,38,0.74)_100%)]" />
+        <div className="absolute inset-0 -z-10 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:46px_46px] sm:opacity-[0.08]" />
         <div className="absolute left-1/2 top-1/2 -z-10 h-[44rem] w-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#e7bd62]/20" />
         <div className="absolute left-1/2 top-[42%] -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
         <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 hidden text-center text-[9rem] font-black leading-none tracking-[-0.12em] text-white/[0.035] sm:block lg:text-[12rem]">
