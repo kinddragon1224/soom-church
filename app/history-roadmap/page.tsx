@@ -38,9 +38,23 @@ export default function HistoryRoadmapPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#061326] text-white">
       <section className="relative isolate flex min-h-screen items-center overflow-hidden px-5 py-8 sm:px-8">
-        <div className="absolute inset-0 -z-30 bg-[#061326]" />
-        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.28),transparent_24%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.15),transparent_24%),linear-gradient(180deg,#071426_0%,#0a1830_52%,#071426_100%)]" />
-        <div className="absolute inset-0 -z-10 opacity-[0.14] [background-image:linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:46px_46px]" />
+        <div className="absolute inset-0 -z-30 bg-[#061326]">
+          <video
+            aria-hidden="true"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/history-roadmap/hero-history-roadmap-poster.jpg"
+            className="h-full w-full object-cover opacity-[0.58] saturate-[0.9]"
+          >
+            <source src="/history-roadmap/hero-history-roadmap.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_50%_18%,rgba(231,189,98,0.30),transparent_24%),radial-gradient(circle_at_80%_35%,rgba(249,115,22,0.16),transparent_24%),linear-gradient(180deg,rgba(6,19,38,0.78)_0%,rgba(6,19,38,0.55)_42%,rgba(6,19,38,0.88)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,19,38,0.86)_0%,rgba(6,19,38,0.18)_28%,rgba(6,19,38,0.18)_72%,rgba(6,19,38,0.86)_100%)]" />
+        <div className="absolute inset-0 -z-10 opacity-[0.10] [background-image:linear-gradient(rgba(255,255,255,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:46px_46px]" />
         <div className="absolute left-1/2 top-1/2 -z-10 h-[44rem] w-[44rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#e7bd62]/20" />
         <div className="absolute left-1/2 top-[42%] -z-10 h-[24rem] w-[24rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
         <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 hidden text-center text-[9rem] font-black leading-none tracking-[-0.12em] text-white/[0.035] sm:block lg:text-[12rem]">
@@ -54,7 +68,7 @@ export default function HistoryRoadmapPage() {
 
           <h1
             aria-label="내 진로로 다시 읽는 한국사"
-            className="mt-7 max-w-4xl text-5xl font-black leading-[0.96] tracking-[-0.07em] sm:text-7xl lg:text-8xl"
+            className="mt-7 max-w-4xl text-5xl font-black leading-[0.96] tracking-[-0.07em] drop-shadow-[0_8px_34px_rgba(0,0,0,0.36)] sm:text-7xl lg:text-8xl"
           >
             <span aria-hidden="true">내 진로로</span>
             <br />
