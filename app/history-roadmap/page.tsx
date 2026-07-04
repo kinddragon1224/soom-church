@@ -35,32 +35,6 @@ const sourceLinks = [
   },
 ];
 
-const creatorPrinciples = [
-  "세특 문장을 대신 써주는 도구가 아니라, 학생이 직접 탐구할 질문을 설계합니다.",
-  "한국사 사실관계는 공신력 있는 자료와 교과서 기준으로 다시 확인하도록 안내합니다.",
-  "진로 연결은 억지로 붙이지 않고, 단원 속 사건·제도·사상이 가진 문제의식에서 출발합니다.",
-];
-
-const creatorCredentials = [
-  {
-    label: "자격",
-    value: "직업상담사 2급",
-  },
-  {
-    label: "자격",
-    value: "한국사능력검정시험 1급",
-  },
-  {
-    label: "학력",
-    value: "배재대학교 중국통상학 전공, 경영학사",
-  },
-];
-
-const creatorExperiences = [
-  "중도일보 근무",
-  "독서·진로 콘텐츠 모임 기획 및 운영",
-];
-
 export default function HistoryRoadmapPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#061326] text-white">
@@ -87,13 +61,6 @@ export default function HistoryRoadmapPage() {
         <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 hidden text-center text-[9rem] font-black leading-none tracking-[-0.12em] text-white/[0.035] sm:block lg:text-[12rem]">
           HISTORY
         </div>
-        <a
-          href="#creator"
-          className="absolute right-4 top-4 z-10 rounded-full border border-[#e7bd62]/30 bg-[#061326]/55 px-4 py-2 text-xs font-black text-[#fff3cf] shadow-[0_16px_44px_rgba(0,0,0,0.24)] backdrop-blur transition hover:border-[#f97316]/50 hover:bg-[#0a1830]/70 sm:right-8 sm:top-7"
-        >
-          만든 이
-        </a>
-
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center text-center">
           <p className="rounded-full border border-[#e7bd62]/30 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-[#e7bd62] backdrop-blur">
             한국사 진로 세특 로드맵
@@ -116,6 +83,27 @@ export default function HistoryRoadmapPage() {
             희망 진로를 한 줄로 넣으면 수행평가·탐구보고서·발표·세특으로 이어질 한국사 탐구 주제를 잡아줍니다.
           </p>
 
+          <div className="mt-5 flex w-full max-w-3xl flex-col items-center gap-3 rounded-[1.5rem] border border-[#e7bd62]/20 bg-[#071426]/70 px-4 py-3 text-left shadow-[0_18px_54px_rgba(0,0,0,0.18)] backdrop-blur sm:flex-row sm:px-5">
+            <Image
+              src="/history-roadmap/kim-sunyong.jpg"
+              alt="한국사 진로 세특 로드맵을 설계한 김선용"
+              width={96}
+              height={96}
+              className="h-12 w-12 shrink-0 rounded-2xl border border-[#e7bd62]/25 bg-[#f3f4f6] object-cover object-top"
+              sizes="48px"
+            />
+            <div className="min-w-0 text-center sm:text-left">
+              <p className="text-sm font-black text-white">
+                설계자 김선용
+                <span className="ml-2 font-bold text-white/58">더루멘 대표</span>
+              </p>
+              <p className="mt-1 text-xs font-bold leading-5 text-[#fff3cf]/80">
+                직업상담사 2급 · 한국사능력검정시험 1급 관점으로, 세특 문장보다 먼저 탐구 질문과 자료 확인 순서를
+                잡습니다.
+              </p>
+            </div>
+          </div>
+
           <div className="mt-9 w-full">
             <HistoryRoadmapForm />
           </div>
@@ -124,69 +112,6 @@ export default function HistoryRoadmapPage() {
             세특 문장을 대신 써주는 생성기가 아닙니다. 사건·인물·제도·사상을 진로와 연결해
             스스로 탐구할 질문을 설계합니다.
           </p>
-        </div>
-      </section>
-
-      <section
-        id="creator"
-        className="border-y border-[#e7bd62]/15 bg-[#fffaf0] px-5 py-10 text-[#172033] sm:px-8 lg:py-14"
-      >
-        <div className="mx-auto grid max-w-6xl gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
-          <div className="rounded-[2rem] border border-[#eadcaf] bg-white p-3 shadow-[0_18px_55px_rgba(0,0,0,0.12)]">
-            <Image
-              src="/history-roadmap/kim-sunyong.jpg"
-              alt="한국사 진로 세특 로드맵을 만든 김선용 프로필 사진"
-              width={720}
-              height={1280}
-              className="h-auto w-full rounded-[1.5rem] bg-[#f3f4f6] object-cover"
-              sizes="(min-width: 1024px) 340px, 92vw"
-            />
-            <div className="px-3 py-4">
-              <p className="text-2xl font-black tracking-[-0.05em] text-[#111827]">김선용</p>
-              <p className="mt-1 text-sm font-black text-[#9a6a16]">더루멘(THE RUMEN) 대표</p>
-              <p className="mt-1 text-sm font-bold text-[#64748b]">AI 진로·교육 콘텐츠 기획자</p>
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-[#eadcaf] bg-white p-5 shadow-[0_18px_55px_rgba(0,0,0,0.12)] sm:p-7">
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#b9801e]">Creator</p>
-            <h2 className="mt-3 text-3xl font-black leading-tight tracking-[-0.05em] text-[#111827] sm:text-4xl">
-              만든 이
-            </h2>
-            <p className="mt-4 text-lg font-black leading-8 tracking-[-0.03em] text-[#111827] sm:text-2xl">
-              직업상담사 2급과 한국사능력검정시험 1급의 관점을 바탕으로, 학생의 희망 진로와 한국사 단원을
-              연결해 탐구 주제를 설계합니다.
-            </p>
-            <p className="mt-4 text-sm leading-7 text-[#64748b]">
-              이 서비스는 세특 문장을 대신 써주는 도구가 아닙니다. 사건·인물·제도·사상을 진로와 연결해
-              학생이 직접 탐구할 질문, 자료 확인 방향, 실행 순서를 잡도록 돕습니다.
-            </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {creatorCredentials.map((credential) => (
-                <div key={credential.value} className="rounded-2xl border border-[#eadcaf] bg-[#fffaf0] px-4 py-4">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#b9801e]">{credential.label}</p>
-                  <p className="mt-2 text-base font-black leading-6 text-[#111827]">{credential.value}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-2xl bg-[#172033] px-4 py-4 text-white">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#e7bd62]">Background</p>
-              <div className="mt-3 grid gap-2">
-                {creatorExperiences.map((experience) => (
-                  <p key={experience} className="text-sm font-bold leading-6 text-white/82">
-                    {experience}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div className="mt-5 grid gap-3">
-              {creatorPrinciples.map((principle) => (
-                <div key={principle} className="rounded-2xl bg-[#f4ead1] px-4 py-3 text-sm font-bold leading-6 text-[#5f4930]">
-                  {principle}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
