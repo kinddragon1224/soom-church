@@ -34,6 +34,12 @@ const sourceLinks = [
   },
 ];
 
+const creatorPrinciples = [
+  "세특 문장을 대신 써주는 도구가 아니라, 학생이 직접 탐구할 질문을 설계합니다.",
+  "한국사 사실관계는 공신력 있는 자료와 교과서 기준으로 다시 확인하도록 안내합니다.",
+  "진로 연결은 억지로 붙이지 않고, 단원 속 사건·제도·사상이 가진 문제의식에서 출발합니다.",
+];
+
 export default function HistoryRoadmapPage() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#061326] text-white">
@@ -60,6 +66,12 @@ export default function HistoryRoadmapPage() {
         <div className="pointer-events-none absolute inset-x-0 top-[18%] -z-10 hidden text-center text-[9rem] font-black leading-none tracking-[-0.12em] text-white/[0.035] sm:block lg:text-[12rem]">
           HISTORY
         </div>
+        <a
+          href="#creator"
+          className="absolute right-4 top-4 z-10 rounded-full border border-[#e7bd62]/30 bg-[#061326]/55 px-4 py-2 text-xs font-black text-[#fff3cf] shadow-[0_16px_44px_rgba(0,0,0,0.24)] backdrop-blur transition hover:border-[#f97316]/50 hover:bg-[#0a1830]/70 sm:right-8 sm:top-7"
+        >
+          만든 이
+        </a>
 
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center text-center">
           <p className="rounded-full border border-[#e7bd62]/30 bg-white/[0.06] px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-[#e7bd62] backdrop-blur">
@@ -91,6 +103,38 @@ export default function HistoryRoadmapPage() {
             세특 문장을 대신 써주는 생성기가 아닙니다. 사건·인물·제도·사상을 진로와 연결해
             스스로 탐구할 질문을 설계합니다.
           </p>
+        </div>
+      </section>
+
+      <section id="creator" className="border-y border-[#e7bd62]/15 bg-[#fffaf0] px-5 py-10 text-[#172033] sm:px-8 lg:py-14">
+        <div className="mx-auto grid max-w-6xl gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#b9801e]">Creator</p>
+            <h2 className="mt-3 text-3xl font-black leading-tight tracking-[-0.05em] text-[#111827] sm:text-4xl">
+              만든 이
+            </h2>
+            <p className="mt-4 text-sm font-black leading-7 text-[#9a6a16]">
+              The Rumen 교육콘텐츠연구소 · K선생
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-[#eadcaf] bg-white p-5 shadow-[0_18px_55px_rgba(0,0,0,0.12)] sm:p-7">
+            <p className="text-lg font-black leading-8 tracking-[-0.03em] text-[#111827] sm:text-2xl">
+              직업상담사 2급 × 한국사 1급 관점으로 만든 한국사 탐구 설계 도구입니다.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-[#64748b]">
+              목표는 학생이 한국사를 외우는 과목으로만 끝내지 않고, 자신의 진로를 설명하는 탐구 과목으로
+              다시 읽게 돕는 것입니다. 그래서 이 서비스는 완성문을 대신 써주기보다 주제, 질문, 자료 확인,
+              4주 실행 순서를 먼저 잡아줍니다.
+            </p>
+            <div className="mt-5 grid gap-3">
+              {creatorPrinciples.map((principle) => (
+                <div key={principle} className="rounded-2xl bg-[#f4ead1] px-4 py-3 text-sm font-bold leading-6 text-[#5f4930]">
+                  {principle}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
