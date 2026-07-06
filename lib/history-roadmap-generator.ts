@@ -106,18 +106,18 @@ const unitProfiles: Record<string, UnitProfile> = {
   },
   "조선 후기": {
     unit: "조선 후기",
-    concepts: ["실학", "상업 발달", "대동법", "탕평책", "서민 문화", "향촌 질서", "신분제 동요"],
+    concepts: ["실학", "상업 발달", "대동법", "탕평책", "서민 문화", "향촌 질서", "신분제 동요", "천주교 수용"],
     anchors: ["상업과 시장의 성장", "수취 제도 개편", "실학의 문제의식", "서민 문화와 사회 변화"],
   },
   개항기: {
     unit: "개항기",
-    concepts: ["개항", "갑신정변", "동학농민운동", "갑오개혁", "독립협회", "근대 문물", "주권 수호"],
-    anchors: ["근대 국가 만들기", "개혁과 저항", "외세와 주권", "근대 문물의 수용"],
+    concepts: ["개항", "갑신정변", "동학농민운동", "갑오개혁", "독립협회", "근대 문물", "주권 수호", "선교", "근대 교육"],
+    anchors: ["근대 국가 만들기", "개혁과 저항", "외세와 주권", "근대 문물의 수용", "선교와 교육·의료 활동"],
   },
   일제강점기: {
     unit: "일제강점기",
-    concepts: ["식민지 지배", "무단 통치", "문화 통치", "민족 운동", "수탈", "위생 경찰", "강제 동원"],
-    anchors: ["식민지 지배 정책", "독립운동과 사회 변화", "수탈과 통제", "근대 제도의 양면성"],
+    concepts: ["식민지 지배", "무단 통치", "문화 통치", "민족 운동", "수탈", "위생 경찰", "강제 동원", "3·1운동", "신사참배"],
+    anchors: ["식민지 지배 정책", "독립운동과 사회 변화", "수탈과 통제", "근대 제도의 양면성", "종교계의 민족운동"],
   },
   "광복과 대한민국 정부 수립": {
     unit: "광복과 대한민국 정부 수립",
@@ -130,6 +130,48 @@ const unitProfiles: Record<string, UnitProfile> = {
     anchors: ["경제 성장과 사회 변화", "노동과 도시 생활", "민주주의의 확대", "시민 참여와 권리"],
   },
 };
+
+type FieldKey = keyof typeof fieldProfiles;
+type UnitKey = keyof typeof unitProfiles;
+
+type CareerProfile = {
+  keywords: string[];
+  field: FieldKey;
+  preferredUnit: UnitKey;
+  lens: string;
+  connection: string;
+  topicAngles: string[];
+  historyConcepts: string[];
+  unitAnchors: Partial<Record<UnitKey, string[]>>;
+  researchQuestions: string[];
+  sourceKeywords: string[];
+};
+
+const careerProfiles: CareerProfile[] = [
+  {
+    keywords: ["목사", "목회", "목회자", "전도사", "신학", "교회", "선교", "사역", "종교", "종교지도자"],
+    field: "복지상담",
+    preferredUnit: "일제강점기",
+    lens: "종교 지도자가 공동체의 불안, 양심, 돌봄, 공적 책임을 어떻게 감당했는지 보는 관점",
+    connection:
+      "목회·신학 진로는 단순한 종교 지식보다 공동체를 돌보고, 갈등 상황에서 말과 행동의 책임을 세우는 힘이 중요합니다. 한국사에서는 종교계의 민족운동, 교육·구호 활동, 양심의 자유 문제를 통해 이 진로를 자연스럽게 탐구할 수 있습니다.",
+    topicAngles: ["공동체 돌봄", "양심과 신앙", "종교계 민족운동", "교육·구호 활동", "공적 책임"],
+    historyConcepts: ["3·1운동", "민족대표 33인", "종교계 민족운동", "신사참배", "양심의 자유", "선교", "근대 교육"],
+    unitAnchors: {
+      일제강점기: ["3·1운동과 종교계의 참여", "신사참배 강요와 양심의 자유", "종교 공동체의 교육·구호 활동", "식민지 통제와 신앙 공동체"],
+      개항기: ["선교와 근대 교육·의료 활동", "근대 문물 수용과 종교 공동체", "개항 이후 새로운 사상의 확산", "공동체 돌봄 방식의 변화"],
+      "조선 후기": ["천주교 수용과 박해", "새로운 사상의 확산", "향촌 질서와 신앙 공동체", "신분 질서 속 양심의 문제"],
+      "광복과 대한민국 정부 수립": ["해방 이후 종교계의 사회 참여", "국가 건설과 시민 윤리", "분단과 공동체 회복", "전쟁 이후 구호와 돌봄"],
+      "산업화와 민주화": ["민주화 운동과 종교계의 역할", "도시화 속 공동체 돌봄", "노동·인권 문제와 종교 윤리", "시민 사회와 공적 책임"],
+    },
+    researchQuestions: [
+      "종교 지도자는 공동체가 위기에 놓였을 때 어디까지 공적 책임을 져야 하는가?",
+      "국가 권력과 개인의 양심이 충돌할 때 종교 공동체는 어떤 선택을 했는가?",
+      "오늘날 목회·신학 진로는 역사 속 종교계의 선택에서 어떤 책임 기준을 배울 수 있는가?",
+    ],
+    sourceKeywords: ["3·1운동 종교계", "민족대표 33인 종교", "신사참배 강요", "개항기 선교 근대 교육", "종교계 민족운동"],
+  },
+];
 
 const unitRecommendationByField: Record<string, keyof typeof unitProfiles> = {
   보건의료: "일제강점기",
@@ -146,19 +188,86 @@ const unitRecommendationByField: Record<string, keyof typeof unitProfiles> = {
   "아직 모름": "조선 후기",
 };
 
-function resolveUnit(input: HistoryRoadmapInput) {
+function resolveCareerProfile(career: string) {
+  const normalizedCareer = career.toLowerCase();
+
+  return careerProfiles.find(({ keywords }) =>
+    keywords.some((keyword) => normalizedCareer.includes(keyword.toLowerCase())),
+  );
+}
+
+function resolveEffectiveField(input: HistoryRoadmapInput, careerProfile?: CareerProfile) {
+  if (input.field === "아직 모름" && careerProfile) {
+    return careerProfile.field;
+  }
+
+  return input.field;
+}
+
+function resolveUnit(input: HistoryRoadmapInput, fieldKey: string, careerProfile?: CareerProfile) {
   if (input.historyUnit !== "전체 단원에서 추천") {
     return unitProfiles[input.historyUnit];
   }
 
-  return unitProfiles[unitRecommendationByField[input.field] ?? "조선 후기"];
+  if (careerProfile) {
+    return unitProfiles[careerProfile.preferredUnit];
+  }
+
+  return unitProfiles[unitRecommendationByField[fieldKey] ?? "조선 후기"];
 }
 
 function compactCareer(career: string) {
   return career.trim().replace(/\s+/g, " ");
 }
 
-function makeTopics(career: string, field: FieldProfile, unit: UnitProfile, assignmentType: string) {
+function getCareerAnchors(unit: UnitProfile, careerProfile?: CareerProfile) {
+  return careerProfile?.unitAnchors[unit.unit] ?? unit.anchors;
+}
+
+function makeCareerSpecificTopics(
+  career: string,
+  careerProfile: CareerProfile,
+  unit: UnitProfile,
+  assignmentType: string,
+) {
+  const anchors = getCareerAnchors(unit, careerProfile);
+  const topicType = assignmentType === "아직 모름" ? "탐구" : assignmentType;
+
+  return [
+    {
+      title: `${unit.unit} ${anchors[0]}: ${career}의 공적 책임 탐구`,
+      shortReason: `${career} 진로의 핵심인 ${careerProfile.topicAngles[4]}을 역사 사례와 연결해 ${topicType} 주제로 쓰기 좋습니다.`,
+    },
+    {
+      title: `${unit.unit} ${anchors[1]}: ${career} 진로로 본 양심과 권력의 충돌`,
+      shortReason: `${careerProfile.topicAngles[1]} 문제를 한국사 사건 속에서 구체적으로 비교할 수 있습니다.`,
+    },
+    {
+      title: `${unit.unit} ${anchors[2] ?? unit.anchors[0]}: 종교 공동체는 사람을 어떻게 돌보았는가`,
+      shortReason: `${career}가 맡는 돌봄과 상담 역할을 역사 속 공동체 활동으로 설명할 수 있습니다.`,
+    },
+    {
+      title: `${unit.unit} ${unit.concepts[0]}·${careerProfile.historyConcepts[0]}: 신앙 공동체의 선택 분석`,
+      shortReason: `교과 개념을 먼저 확인한 뒤 ${career} 진로의 판단 기준으로 해석할 수 있어 억지 연결을 줄입니다.`,
+    },
+    {
+      title: `${unit.unit} 자료로 보는 ${career}의 말·기록·공동체 리더십`,
+      shortReason: `설교, 기록, 교육, 구호처럼 말과 실천이 공동체에 미친 영향을 탐구할 수 있습니다.`,
+    },
+  ];
+}
+
+function makeTopics(
+  career: string,
+  field: FieldProfile,
+  unit: UnitProfile,
+  assignmentType: string,
+  careerProfile?: CareerProfile,
+) {
+  if (careerProfile) {
+    return makeCareerSpecificTopics(career, careerProfile, unit, assignmentType);
+  }
+
   const anchors = unit.anchors;
   const angles = field.topicAngles;
   const topicType = assignmentType === "아직 모름" ? "탐구" : assignmentType;
@@ -187,7 +296,11 @@ function makeTopics(career: string, field: FieldProfile, unit: UnitProfile, assi
   ];
 }
 
-function makeQuestions(career: string, field: FieldProfile, unit: UnitProfile) {
+function makeQuestions(career: string, field: FieldProfile, unit: UnitProfile, careerProfile?: CareerProfile) {
+  if (careerProfile) {
+    return careerProfile.researchQuestions;
+  }
+
   return [
     `${unit.anchors[0]}은 당시 사람들의 삶과 선택을 어떻게 바꾸었는가?`,
     `"${field.questionFocus[1]}"라는 질문을 ${unit.unit} 사례로 설명할 수 있는가?`,
@@ -195,8 +308,19 @@ function makeQuestions(career: string, field: FieldProfile, unit: UnitProfile) {
   ];
 }
 
-function makeOutline(input: HistoryRoadmapInput, unit: UnitProfile) {
+function makeOutline(input: HistoryRoadmapInput, unit: UnitProfile, career: string, careerProfile?: CareerProfile) {
   const assignment = input.assignmentType === "아직 모름" ? "탐구 활동" : input.assignmentType;
+  const anchors = getCareerAnchors(unit, careerProfile);
+
+  if (careerProfile) {
+    return [
+      `${assignment} 주제 선정 이유와 ${career} 진로 관심 소개`,
+      `${unit.unit} 단원의 역사적 배경과 ${anchors[0]} 사실 확인`,
+      `주요 사례 분석: ${anchors[0]}, ${anchors[1]}`,
+      `${career} 진로와 연결되는 책임 기준 정리: ${careerProfile.topicAngles[0]}, ${careerProfile.topicAngles[1]}`,
+      "오늘날 진로 관점에서 배울 점, 한계, 다음 탐구 질문 작성",
+    ];
+  }
 
   return [
     `${assignment} 주제 선정 이유와 진로 관심 소개`,
@@ -207,7 +331,17 @@ function makeOutline(input: HistoryRoadmapInput, unit: UnitProfile) {
   ];
 }
 
-function makeSourceKeywords(career: string, unit: UnitProfile, field: FieldProfile) {
+function makeSourceKeywords(career: string, unit: UnitProfile, field: FieldProfile, careerProfile?: CareerProfile) {
+  if (careerProfile) {
+    return Array.from(
+      new Set([
+        ...careerProfile.sourceKeywords,
+        `${unit.unit} ${careerProfile.historyConcepts[0]}`,
+        `${career} ${careerProfile.topicAngles[0]} 한국사`,
+      ]),
+    ).slice(0, 8);
+  }
+
   return [
     `${unit.unit} ${unit.concepts[0]}`,
     `${unit.unit} ${unit.anchors[0]}`,
@@ -217,8 +351,12 @@ function makeSourceKeywords(career: string, unit: UnitProfile, field: FieldProfi
   ];
 }
 
-function makeWeeklyPlan(career: string, unit: UnitProfile, field: FieldProfile) {
-  const sourceKeywords = makeSourceKeywords(career, unit, field);
+function makeWeeklyPlan(career: string, unit: UnitProfile, field: FieldProfile, careerProfile?: CareerProfile) {
+  const sourceKeywords = makeSourceKeywords(career, unit, field, careerProfile);
+  const anchors = getCareerAnchors(unit, careerProfile);
+  const questionFocus = careerProfile?.researchQuestions[0] ?? field.questionFocus[1];
+  const conceptA = careerProfile?.historyConcepts[0] ?? unit.concepts[0];
+  const conceptB = careerProfile?.historyConcepts[1] ?? unit.concepts[1];
 
   return [
     {
@@ -237,8 +375,8 @@ function makeWeeklyPlan(career: string, unit: UnitProfile, field: FieldProfile) 
       stage: "탐구 질문 심화",
       focus: "좋아 보이는 주제를 질문으로 쪼개서 억지 진로 연결을 줄입니다.",
       actions: [
-        `"${unit.anchors[0]}"의 원인과 결과를 각각 한 줄로 정리하기`,
-        `"${field.questionFocus[1]}" 질문에 답할 사례 2개 찾기`,
+        `"${anchors[0]}"의 원인과 결과를 각각 한 줄로 정리하기`,
+        `"${questionFocus}" 질문에 답할 사례 2개 찾기`,
         `${career} 진로와 연결되는 판단 기준을 3개 단어로 뽑기`,
       ],
       output: "상위 질문 1개와 하위 질문 3개",
@@ -249,7 +387,7 @@ function makeWeeklyPlan(career: string, unit: UnitProfile, field: FieldProfile) 
       focus: "역사 사실, 진로 연결, 내 생각이 섞이지 않도록 목차별로 분리합니다.",
       actions: [
         "주제 선정 이유를 진로 관심과 연결해 5문장으로 쓰기",
-        `${unit.concepts[0]}·${unit.concepts[1]} 개념을 본문에 각각 1번 이상 사용하기`,
+        `${conceptA}·${conceptB} 개념을 본문에 각각 1번 이상 사용하기`,
         "마지막 문단에 오늘의 진로 관점에서 배운 점 쓰기",
       ],
       output: "5단계 목차를 채운 보고서 초안",
@@ -270,38 +408,48 @@ function makeWeeklyPlan(career: string, unit: UnitProfile, field: FieldProfile) 
 
 export function generateHistoryRoadmap(input: HistoryRoadmapInput): HistoryRoadmapResult {
   const career = compactCareer(input.career);
-  const field = fieldProfiles[input.field] ?? fieldProfiles["아직 모름"];
-  const unit = resolveUnit(input);
-  const recommendedTopics = makeTopics(career, field, unit, input.assignmentType);
+  const careerProfile = resolveCareerProfile(career);
+  const fieldKey = resolveEffectiveField(input, careerProfile);
+  const field = fieldProfiles[fieldKey] ?? fieldProfiles["아직 모름"];
+  const unit = resolveUnit(input, fieldKey, careerProfile);
+  const recommendedTopics = makeTopics(career, field, unit, input.assignmentType, careerProfile);
   const bestTopic = recommendedTopics[0];
-  const concepts = Array.from(new Set([...unit.concepts.slice(0, 5), ...field.topicAngles.slice(0, 2)])).slice(0, 7);
-  const sourceKeywords = makeSourceKeywords(career, unit, field);
+  const concepts = Array.from(
+    new Set([
+      ...(careerProfile?.historyConcepts ?? []),
+      ...unit.concepts.slice(0, 5),
+      ...(careerProfile?.topicAngles ?? field.topicAngles).slice(0, 2),
+    ]),
+  ).slice(0, 7);
+  const sourceKeywords = makeSourceKeywords(career, unit, field, careerProfile);
+  const lens = careerProfile?.lens ?? field.lens;
+  const connection = careerProfile?.connection ?? field.connection;
 
   return {
     summary: {
       grade: input.grade,
       career,
-      field: input.field,
+      field: fieldKey,
       historyUnit: unit.unit,
       assignmentType: input.assignmentType,
     },
     recommendedTopics,
     bestTopic: {
       title: bestTopic.title,
-      reason: `${career} 진로의 핵심 관심을 ${unit.unit} 단원의 "${unit.anchors[0]}" 흐름과 연결할 수 있습니다. 역사적 사실을 먼저 확인한 뒤, ${field.lens}으로 해석하면 억지 연결을 피하면서도 수행평가에 바로 쓸 수 있는 탐구 구조가 만들어집니다.`,
+      reason: `${career} 진로의 핵심 관심을 ${unit.unit} 단원의 "${getCareerAnchors(unit, careerProfile)[0]}" 흐름과 연결할 수 있습니다. 역사적 사실을 먼저 확인한 뒤, ${lens}으로 해석하면 억지 연결을 피하면서도 수행평가에 바로 쓸 수 있는 탐구 구조가 만들어집니다.`,
     },
-    careerConnection: field.connection,
+    careerConnection: connection,
     historyConcepts: concepts,
-    researchQuestions: makeQuestions(career, field, unit),
-    reportOutline: makeOutline(input, unit),
-    presentationTitle: `${unit.unit} ${unit.anchors[0]}: ${career}의 역할 다시 읽기`,
-    seteukDirection: `${unit.unit} 단원의 ${unit.concepts[0]}, ${unit.concepts[1]} 관련 자료를 조사하고, 이를 ${career} 진로의 관점에서 해석하는 방향으로 활동을 정리할 수 있습니다. 완성된 세특 문장을 대신 쓰기보다, 자료 확인-질문 설정-진로 연결-느낀 점의 흐름을 남기는 것이 좋습니다.`,
+    researchQuestions: makeQuestions(career, field, unit, careerProfile),
+    reportOutline: makeOutline(input, unit, career, careerProfile),
+    presentationTitle: `${unit.unit} ${getCareerAnchors(unit, careerProfile)[0]}: ${career}의 역할 다시 읽기`,
+    seteukDirection: `${unit.unit} 단원의 ${concepts[0]}, ${concepts[1]} 관련 자료를 조사하고, 이를 ${career} 진로의 관점에서 해석하는 방향으로 활동을 정리할 수 있습니다. 완성된 세특 문장을 대신 쓰기보다, 자료 확인-질문 설정-진로 연결-느낀 점의 흐름을 남기는 것이 좋습니다.`,
     nextSteps: [
-      `우리역사넷에서 "${unit.unit} ${unit.concepts[0]}" 또는 "${unit.anchors[0]}" 키워드로 자료 2개 찾기`,
-      `한국민족문화대백과에서 "${unit.concepts[1]}" 개념을 확인하고 한 문장으로 정리하기`,
+      `우리역사넷에서 "${sourceKeywords[0]}" 또는 "${getCareerAnchors(unit, careerProfile)[0]}" 키워드로 자료 2개 찾기`,
+      `한국민족문화대백과에서 "${concepts[1]}" 개념을 확인하고 한 문장으로 정리하기`,
       `${career} 진로와 연결되는 판단 기준을 "당시 상황-오늘의 의미-내 생각" 3칸 표로 작성하기`,
     ],
-    weeklyPlan: makeWeeklyPlan(career, unit, field),
+    weeklyPlan: makeWeeklyPlan(career, unit, field, careerProfile),
     sourceKeywords,
     caution:
       "이 결과는 자동 탐구 설계 초안입니다. 실제 제출 전에는 교과서, 수업 안내문, 공신력 있는 역사 자료로 사실관계를 확인해야 하며, 세특 문장은 실제 수업 활동과 교사의 판단에 따라 달라질 수 있습니다.",
